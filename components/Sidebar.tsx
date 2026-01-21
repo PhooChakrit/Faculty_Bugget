@@ -17,7 +17,7 @@ export function Sidebar() {
     { icon: Home, label: "หน้าหลัก", href: "/" },
     { icon: FileText, label: "ข้อมูลโครงการ", href: "/projects" },
     { icon: ClipboardPlus, label: "เพิ่มโครงการ", href: "/add-project" },
-    { icon: BarChart3, label: "ประเมินโครงการ", href: "/evaluate" },
+    { icon: BarChart3, label: "สรุปโครงการ", href: "/overviews" },
   ];
 
   return (
