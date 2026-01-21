@@ -5,13 +5,33 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
+import { Badge } from "@/components/ui/badge";
 
-// Mock user role - can be changed to test different permissions
-const MOCK_USER_ROLE: UserRole = "กายภาพ";
-
+/**
+ * RBAC CONFIGURATION
+ */
 type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
 
-type ProjectData = {
+const EDIT_PERMISSIONS: Record<string, UserRole> = {
+  boardMeetingNo: "งานวิจัย",
+  boardMeetingDate: "งานวิจัย",
+  deanDecisionNo: "งานวิจัย",
+  deanDecisionDate: "งานวิจัย",
+  vendorCode: "งานคลัง",
+  costCenter: "งานแผน",
+  maintenanceFee: "กายภาพ",
+  electricityFee: "กายภาพ",
+};
+
+const ROLE_COLORS: Record<UserRole, string> = {
+  งานวิจัย: "bg-blue-100 border-blue-300 text-blue-700",
+  งานคลัง: "bg-amber-100 border-amber-300 text-amber-700",
+  งานแผน: "bg-green-100 border-green-300 text-green-700",
+  กายภาพ: "bg-purple-100 border-purple-300 text-purple-700",
+  ภาควิชา: "bg-slate-100 border-slate-300 text-slate-700",
+};
+
+interface ProjectData {
   id: string;
   receiptNumber: string;
   projectCode: string;
@@ -28,363 +48,300 @@ type ProjectData = {
   operatingCost: string;
   materialCost: string;
   utilities: string;
-  academicDevelopmentFund: string;
+  academicFund: string;
   generalReserve: string;
+  amountGovExternal: string;
+  amountPrivateExternal: string;
+  amountForeignExternal: string;
+  amountUnivRevenue: string;
   startDate: string;
   endDate: string;
   fundOwner: string;
   vendorCode: string;
+  costCenter: string;
+  maintenanceFee: string;
+  electricityFee: string;
   serviceType: string;
   strategyType: string;
   targetGroup: string;
   participantCount: string;
   projectDescription: string;
-  amountGovExternal: string;
-  amountPrivateExternal: string;
-  amountForeignExternal: string;
-  amountUniversityRevenue: string;
-  status1: string;
-  status1Date: string;
-  status2: string;
-  status2Date: string;
-  status3: string;
-  status3Date: string;
-  status4: string;
-  status4Date: string;
-  status5: string;
-  status5Date: string;
+  status1: string; status1Date: string;
+  status2: string; status2Date: string;
+  status3: string; status3Date: string;
+  status4: string; status4Date: string;
+  status5: string; status5Date: string;
   responsible: string;
-  documentNumber: string;
-  documentDate: string;
-  documentLink: string;
-};
+  docNumber: string;
+  docDate: string;
+  docLink: string;
+}
 
-// Permission matrix: [canView, canEdit]
-const PERMISSIONS: Record<UserRole, Record<string, { view: boolean; edit: boolean }>> = {
-  ภาควิชา: {
-    boardMeetingNo: { view: true, edit: false },
-    boardMeetingDate: { view: true, edit: false },
-    deanDecisionNo: { view: true, edit: false },
-    deanDecisionDate: { view: true, edit: false },
-    vendorCode: { view: true, edit: false },
-    costCenter: { view: true, edit: false },
-    maintenanceFee: { view: true, edit: false },
-    electricityFee: { view: true, edit: false },
-  },
-  งานวิจัย: {
-    boardMeetingNo: { view: false, edit: false },
-    boardMeetingDate: { view: false, edit: false },
-    deanDecisionNo: { view: false, edit: false },
-    deanDecisionDate: { view: false, edit: false },
-    vendorCode: { view: true, edit: false },
-    costCenter: { view: true, edit: false },
-    maintenanceFee: { view: true, edit: false },
-    electricityFee: { view: true, edit: false },
-  },
-  งานแผน: {
-    boardMeetingNo: { view: true, edit: true },
-    boardMeetingDate: { view: true, edit: true },
-    deanDecisionNo: { view: true, edit: true },
-    deanDecisionDate: { view: true, edit: true },
-    vendorCode: { view: false, edit: false },
-    costCenter: { view: true, edit: true },
-    maintenanceFee: { view: true, edit: false },
-    electricityFee: { view: true, edit: false },
-  },
-  งานคลัง: {
-    boardMeetingNo: { view: true, edit: false },
-    boardMeetingDate: { view: true, edit: false },
-    deanDecisionNo: { view: true, edit: false },
-    deanDecisionDate: { view: true, edit: false },
-    vendorCode: { view: false, edit: true },
-    costCenter: { view: false, edit: false },
-    maintenanceFee: { view: false, edit: false },
-    electricityFee: { view: false, edit: false },
-  },
-  กายภาพ: {
-    boardMeetingNo: { view: true, edit: false },
-    boardMeetingDate: { view: true, edit: false },
-    deanDecisionNo: { view: true, edit: false },
-    deanDecisionDate: { view: true, edit: false },
-    vendorCode: { view: true, edit: false },
-    costCenter: { view: true, edit: false },
-    maintenanceFee: { view: false, edit: true },
-    electricityFee: { view: false, edit: true },
-  },
-};
-
-// Mock data
-const mockProjects: ProjectData[] = [
-  {
-    id: "1",
-    receiptNumber: "2827/2568, 3367/2568",
-    projectCode: "ACS001-69",
-    boardMeetingNo: "17/2568",
-    boardMeetingDate: "8 กันยายน 2568",
-    deanDecisionNo: "16/2568",
-    deanDecisionDate: "24 กันยายน 2568",
-    purpose: "ขอความเห็นชอบจัดโครงการ",
-    memoTitle: "โครงการบริการวิชาการ การจัดการเรียนการสอนรายวิชาสุขภาพและความงาม",
-    department: "ภาควิชาชีวเคมี",
-    projectHead: "รองศาสตราจารย์ xxxxx",
-    totalBudget: "xxxxx",
-    compensation: "xxxx",
-    operatingCost: "-",
-    materialCost: "-",
-    utilities: "xxxx",
-    academicDevelopmentFund: "xxxx",
-    generalReserve: "-",
-    startDate: "1 กรกฏคม 2568",
-    endDate: "30 พฤศจิิกายน 2568",
-    fundOwner: "สถาบันการพยาบาลศรี xxxx xx",
-    vendorCode: "3014106",
-    serviceType: "06.งานบริการทางวิชาการลักษณะอื่น",
-    strategyType: "04.INTERNAL GROWTH",
-    targetGroup: "10.หน่วยงานภายนอกภาครัฐ, หน่วยงานภายนอกภาคเอกชน/อุตสาหกรรม",
-    participantCount: "60",
-    projectDescription: "การจัดการเรียนการสอนในรายวิชาสุขภาพและความงาม",
-    amountGovExternal: "35,348.00",
-    amountPrivateExternal: "",
-    amountForeignExternal: "",
-    amountUniversityRevenue: "",
-    status1: "inner คณะ",
-    status1Date: "3/9/2025",
-    status2: "ออกจากบอร์ด",
-    status2Date: "9/9/2025",
-    status3: "ส่งไป ศหก",
-    status3Date: "11/9/2025",
-    status4: "",
-    status4Date: "",
-    status5: "",
-    status5Date: "",
-    responsible: "",
-    documentNumber: "",
-    documentDate: "",
-    documentLink: "",
-  },
-];
-
-export default function OverviewsPage() {
-  const [projects, setProjects] = useState<ProjectData[]>(mockProjects);
+export default function ComprehensiveProjectPage() {
+  const [userRole, setUserRole] = useState<UserRole>("งานแผน");
   const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [projects, setProjects] = useState<ProjectData[]>([
+    {
+      id: "1",
+      receiptNumber: "2827/2568, 3367/2568",
+      projectCode: "ACS001-69",
+      boardMeetingNo: "17/2568",
+      boardMeetingDate: "8 กันยายน 2568",
+      deanDecisionNo: "16/2568",
+      deanDecisionDate: "24 กันยายน 2568",
+      purpose: "ขอความเห็นชอบจัดโครงการ",
+      memoTitle: "โครงการบริการวิชาการ การจัดการเรียนการสอนรายวิชาสุขภาพและความงามให้กับ “สถาบันการพยาบาลxxxxx xxxx” ในปีการศึกษา 2568 ภาคต้น",
+      department: "ภาควิชาชีวเคมี",
+      projectHead: "รองศาสตราจารย์ xxxxx",
+      totalBudget: "35,348.00",
+      compensation: "xxxx",
+      operatingCost: "-",
+      materialCost: "-",
+      utilities: "xxxx",
+      academicFund: "xxxx",
+      generalReserve: "-",
+      amountGovExternal: "35,348.00",
+      amountPrivateExternal: "",
+      amountForeignExternal: "",
+      amountUnivRevenue: "",
+      startDate: "1 กรกฏคม 2568",
+      endDate: "30 พฤศจิิกายน 2568",
+      fundOwner: "สถาบันการพยาบาลศรี xxxx xx",
+      vendorCode: "3014106",
+      costCenter: "",
+      maintenanceFee: "",
+      electricityFee: "",
+      serviceType: "06.งานบริการทางวิชาการลักษณะอื่น",
+      strategyType: "04.INTERNAL GROWTH",
+      targetGroup: "10.หน่วยงานภายนอกภาครัฐ...",
+      participantCount: "60",
+      projectDescription: "การจัดการเรียนการสอนในรายวิชาสุขภาพและความงาม...",
+      status1: "inner คณะ", status1Date: "3/9/2025",
+      status2: "ออกจากบอร์ด", status2Date: "9/9/2025",
+      status3: "ส่งไป ศหก", status3Date: "11/9/2025",
+      status4: "", status4Date: "",
+      status5: "", status5Date: "",
+      responsible: "",
+      docNumber: "",
+      docDate: "",
+      docLink: "",
+    },
+  ]);
 
-  const userRole = MOCK_USER_ROLE;
-
-  const canView = (field: string) => {
-    const permission = PERMISSIONS[userRole][field];
-    return permission ? permission.view : true; // Default to view if not in permission matrix
+  const handleUpdate = (id: string, field: keyof ProjectData, value: string) => {
+    setProjects(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
 
-  const canEdit = (field: string) => {
-    const permission = PERMISSIONS[userRole][field];
-    return permission ? permission.edit : false; // Default to no edit if not in permission matrix
-  };
-
-  const handleCellClick = (projectId: string, field: string) => {
-    if (canEdit(field)) {
-      setEditingCell({ id: projectId, field });
-    }
-  };
-
-  const handleCellChange = (projectId: string, field: keyof ProjectData, value: string) => {
-    setProjects((prev) =>
-      prev.map((project) =>
-        project.id === projectId ? { ...project, [field]: value } : project
-      )
+  const filteredProjects = projects.filter(project => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      project.projectCode.toLowerCase().includes(query) ||
+      project.memoTitle.toLowerCase().includes(query) ||
+      project.department.toLowerCase().includes(query) ||
+      project.projectHead.toLowerCase().includes(query)
     );
-  };
+  });
 
-  const handleCellBlur = () => {
-    setEditingCell(null);
-  };
-
-  const renderCell = (project: ProjectData, field: keyof ProjectData, label: string) => {
+  const DataCell = ({ project, field, label, isNumeric = false }: { project: ProjectData, field: keyof ProjectData, label?: string, isNumeric?: boolean }) => {
+    const canEdit = EDIT_PERMISSIONS[field] === userRole;
     const isEditing = editingCell?.id === project.id && editingCell?.field === field;
     const value = project[field];
-    const editable = canEdit(field);
-    const viewable = canView(field);
-
-    if (!viewable) {
-      return <td className="border border-gray-300 px-2 py-1 text-center text-xs">-</td>;
-    }
+    const ownerRole = EDIT_PERMISSIONS[field];
 
     return (
-      <td
-        className={`border border-gray-300 px-2 py-1 text-xs ${
-          editable ? "cursor-pointer hover:bg-blue-50" : ""
-        }`}
-        onClick={() => handleCellClick(project.id, field)}
+      <div 
+        onClick={() => canEdit && setEditingCell({ id: project.id, field })}
+        className={`flex flex-col px-3 py-2 min-h-[48px] justify-center transition-all ${canEdit ? "cursor-pointer hover:bg-blue-50 hover:shadow-sm group" : "hover:bg-slate-50/50"}`}
       >
+        {label && (
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[9px] uppercase text-slate-500 font-semibold tracking-wide">{label}</span>
+            {ownerRole && (
+              <Badge variant="outline" className={`text-[7px] h-4 px-1 ${canEdit ? 'bg-blue-500 text-white border-blue-600' : 'bg-slate-100 text-slate-500 border-slate-300'}`}>
+                {ownerRole}
+              </Badge>
+            )}
+          </div>
+        )}
         {isEditing ? (
-          <Input
-            value={value}
-            onChange={(e) => handleCellChange(project.id, field, e.target.value)}
-            onBlur={handleCellBlur}
-            autoFocus
-            className="h-7 text-xs"
+          <Input 
+            autoFocus 
+            className="h-7 text-xs px-2 border-blue-400 focus:ring-2 focus:ring-blue-200" 
+            value={value} 
+            onBlur={() => setEditingCell(null)}
+            onChange={(e) => handleUpdate(project.id, field, e.target.value)}
           />
         ) : (
-          <span className={editable ? "text-blue-600" : ""}>{value || "-"}</span>
+          <div className="flex items-center justify-between">
+            <span className={`text-xs ${!value ? "text-slate-400 italic" : "text-slate-700"} ${canEdit ? "text-blue-700 font-semibold" : ""} ${isNumeric ? "font-mono" : ""}`}>
+              {value || "ไม่มีข้อมูล"}
+            </span>
+            {canEdit && <span className="text-xs opacity-0 group-hover:opacity-100 text-blue-500 transition-opacity">✎</span>}
+          </div>
         )}
-      </td>
+      </div>
     );
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <Sidebar />
-      <div className="flex-1 p-6 overflow-auto">
-        <Card className="p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">สรุปโครงการบริการวิชาการ</h1>
-            <p className="text-sm text-gray-600 mt-1">
-              บทบาทปัจจุบัน: <span className="font-semibold text-blue-600">{userRole}</span>
-            </p>
-          </div>
-          <Button>เพิ่มโครงการ</Button>
-        </div>
-
-        <div className="overflow-x-auto">
-          <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden border border-gray-300 rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      เลขที่รับ วจบ
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      รหัสโครงการ
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      ประชุมบอร์ด ครั้งที่
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      ประชุมบอร์ด วันที่
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      มติคณบดี ครั้งที่
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      มติคณบดี วันที่
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      เพื่อดำเนินการ
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      ชื่อบันทึกข้อความ
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      ภาควิชา/หน่วยงาน
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      หัวหน้าโครงการ
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      งบประมาณรวม
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      รหัสเจ้าหนี้
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      วันเริ่มต้น
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      วันสิ้นสุด
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      สถานะการดำเนินงาน 1
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      วันที่
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      สถานะการดำเนินงาน 2
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      วันที่
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      สถานะการดำเนินงาน 3
-                    </th>
-                    <th className="border border-gray-300 px-2 py-2 text-xs font-semibold">
-                      วันที่
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {projects.map((project) => (
-                    <tr key={project.id} className="hover:bg-gray-50">
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.receiptNumber}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.projectCode}
-                      </td>
-                      {renderCell(project, "boardMeetingNo", "ประชุมบอร์ด ครั้งที่")}
-                      {renderCell(project, "boardMeetingDate", "ประชุมบอร์ด วันที่")}
-                      {renderCell(project, "deanDecisionNo", "มติคณบดี ครั้งที่")}
-                      {renderCell(project, "deanDecisionDate", "มติคณบดี วันที่")}
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.purpose}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs max-w-xs truncate">
-                        {project.memoTitle}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.department}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.projectHead}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs text-right">
-                        {project.totalBudget}
-                      </td>
-                      {renderCell(project, "vendorCode", "รหัสเจ้าหนี้")}
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.startDate}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.endDate}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.status1}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.status1Date}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.status2}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.status2Date}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.status3}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-1 text-xs">
-                        {project.status3Date}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      <main className="flex-1 p-8 overflow-hidden flex flex-col">
+        {/* Header Section */}
+        <div className="flex justify-between items-start mb-6">
+          <header>
+            <h1 className="text-2xl font-bold text-slate-800 mb-2">ระบบติดตามโครงการบริการวิชาการ</h1>
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className={`${ROLE_COLORS[userRole]} border-2 px-3 py-1`}>
+                <span className="text-xs font-semibold">บทบาท: {userRole}</span>
+              </Badge>
+              <span className="text-xs text-slate-500">•</span>
+              <span className="text-xs text-slate-500">{filteredProjects.length} โครงการ</span>
             </div>
+          </header>
+          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 shadow-md">
+            + เพิ่มโครงการ
+          </Button>
+        </div>
+
+        {/* Search & Role Switcher */}
+        <div className="flex gap-3 mb-4">
+          <div className="flex-1">
+            <Input 
+              placeholder="ค้นหา: รหัสโครงการ, ชื่อโครงการ, หน่วยงาน..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full shadow-sm"
+            />
+          </div>
+          <div className="flex gap-2">
+            {(["ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"] as UserRole[]).map((role) => (
+              <Button
+                key={role}
+                variant={userRole === role ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUserRole(role)}
+                className="text-xs"
+              >
+                {role}
+              </Button>
+            ))}
           </div>
         </div>
 
-        <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-semibold text-sm mb-2">คำแนะนำ:</h3>
-          <ul className="text-xs space-y-1 text-gray-700">
-            <li>• คอลัมน์ที่แสดงเป็น <span className="text-blue-600">สีน้ำเงิน</span> สามารถแก้ไขได้</li>
-            <li>• คลิกที่เซลล์เพื่อแก้ไข</li>
-            <li>• สิทธิ์ในการดูและแก้ไขขึ้นอยู่กับบทบาทของคุณ</li>
-            <li>• คอลัมน์ที่แสดง "-" หมายถึงคุณไม่มีสิทธิ์ดูข้อมูล</li>
-          </ul>
-        </div>
-      </Card>
-      </div>
+        {/* Main Table */}
+        <Card className="flex-1 overflow-hidden border-slate-200 shadow-2xl rounded-lg bg-white">
+          <div className="overflow-auto h-full">
+            <table className="w-full border-collapse table-fixed min-w-[2000px]">
+              <thead className="sticky top-0 z-10">
+                <tr className="bg-slate-800 text-white text-[10px] uppercase tracking-wider shadow-md">
+                  <th className="w-72 p-4 text-left font-bold">📋 ข้อมูลพื้นฐาน</th>
+                  <th className="w-64 p-4 text-left border-l border-slate-600 font-bold">📅 มติที่ประชุม</th>
+                  <th className="w-80 p-4 text-left border-l border-slate-600 font-bold">💰 งบประมาณ</th>
+                  <th className="w-72 p-4 text-left border-l border-slate-600 font-bold">🎯 แหล่งทุน</th>
+                  <th className="w-56 p-4 text-left border-l border-slate-600 font-bold">🔐 ข้อมูลตามสิทธิ์</th>
+                  <th className="w-80 p-4 text-left border-l border-slate-600 font-bold">📊 สถานะ</th>
+                  <th className="w-56 p-4 text-left border-l border-slate-600 font-bold">📄 เอกสาร</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 bg-white">
+                {filteredProjects.map((project) => (
+                  <tr key={project.id} className="align-top hover:bg-blue-50/20 transition-colors group">
+                    <td className="p-4 bg-slate-50/50">
+                      <div className="space-y-3">
+                        <Badge className="text-[9px] bg-blue-600 text-white">{project.projectCode}</Badge>
+                        <div className="text-xs font-semibold text-slate-800 leading-snug">{project.memoTitle}</div>
+                        <div className="space-y-1 pt-2 border-t border-slate-200 text-[10px] text-slate-600">
+                          <div><span className="font-semibold">เลขรับ:</span> {project.receiptNumber}</div>
+                          <div><span className="font-semibold">หน่วยงาน:</span> {project.department}</div>
+                          <div><span className="font-semibold">หัวหน้า:</span> {project.projectHead}</div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="p-0 border-l border-slate-200 divide-y divide-slate-100">
+                      <div className="bg-blue-50/30"><DataCell project={project} field="boardMeetingNo" label="ประชุมบอร์ด ครั้งที่" /></div>
+                      <div className="bg-blue-50/30"><DataCell project={project} field="boardMeetingDate" label="วันที่ประชุมบอร์ด" /></div>
+                      <div><DataCell project={project} field="deanDecisionNo" label="มติคณบดี ครั้งที่" /></div>
+                      <div><DataCell project={project} field="deanDecisionDate" label="วันที่มติคณบดี" /></div>
+                    </td>
+
+                    <td className="p-3 border-l border-slate-200 bg-green-50/20">
+                      <div className="space-y-2">
+                        <div className="bg-white p-2 rounded border border-green-200 flex justify-between">
+                          <span className="text-[10px] font-bold">งบรวม:</span>
+                          <span className="text-xs font-mono font-bold text-green-700">{project.totalBudget}</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1">
+                          <DataCell project={project} field="compensation" label="ค่าตอบแทน" isNumeric />
+                          <DataCell project={project} field="operatingCost" label="ค่าใช้สอย" isNumeric />
+                          <DataCell project={project} field="materialCost" label="ค่าวัสดุ" isNumeric />
+                          <DataCell project={project} field="utilities" label="สาธารณูปโภค" isNumeric />
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="p-3 border-l border-slate-200 bg-amber-50/20">
+                      <div className="text-[10px] text-slate-700 bg-white/80 p-2 rounded border border-amber-100 mb-2">
+                        {project.projectDescription}
+                      </div>
+                      <div className="grid grid-cols-1 gap-1">
+                        <div className="flex justify-between text-[10px] border-b pb-1"><span>ภาครัฐ:</span> <span>{project.amountGovExternal || "0.00"}</span></div>
+                        <div className="flex justify-between text-[10px]"><span>รายได้ ม.:</span> <span>{project.amountUnivRevenue || "0.00"}</span></div>
+                      </div>
+                    </td>
+
+                    <td className="p-0 border-l border-slate-200 divide-y divide-slate-100">
+                      <div className="bg-amber-50/40"><DataCell project={project} field="vendorCode" label="รหัสเจ้าหนี้" /></div>
+                      <div className="bg-green-50/40"><DataCell project={project} field="costCenter" label="ศูนย์ต้นทุน" /></div>
+                      <div className="bg-purple-50/40"><DataCell project={project} field="maintenanceFee" label="ค่าบำรุงสถานที่" /></div>
+                      <div className="bg-purple-50/40"><DataCell project={project} field="electricityFee" label="ค่าไฟฟ้า" /></div>
+                    </td>
+
+                    <td className="p-3 border-l border-slate-200 bg-slate-50/30">
+                      <div className="space-y-2">
+                        {[1, 2, 3].map((num) => {
+                          const statusKey = `status${num}` as keyof ProjectData;
+                          const dateKey = `status${num}Date` as keyof ProjectData;
+                          if (!project[statusKey]) return null;
+                          return (
+                            <div key={num} className="border-l-2 border-blue-400 pl-2 bg-white p-1 rounded shadow-sm">
+                              <div className="text-[10px] font-bold">{project[statusKey]}</div>
+                              <div className="text-[9px] text-slate-500">{project[dateKey]}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </td>
+
+                    <td className="p-3 border-l border-slate-200 space-y-2">
+                      <DataCell project={project} field="docNumber" label="เลขที่หนังสือ" />
+                      <div className="pt-2">
+                        {project.docLink ? (
+                          <a href={project.docLink} target="_blank" className="text-[10px] text-blue-600 underline">📎 ดูประกาศเอกสาร</a>
+                        ) : (
+                          <span className="text-[10px] text-slate-400 italic">ไม่มีลิงก์เอกสาร</span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+
+        {/* Footer */}
+        <footer className="mt-4 flex items-center justify-between text-[10px] text-slate-500">
+          <div className="flex gap-4">
+            <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-blue-500" /> สิทธิ์แก้ไข</div>
+            <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-slate-300" /> ดูอย่างเดียว</div>
+          </div>
+          <span>* คลิกที่ช่องข้อมูลที่เป็นสีน้ำเงินเพื่อทำการแก้ไข</span>
+        </footer>
+      </main>
     </div>
   );
 }
