@@ -4,7 +4,6 @@ import { useState } from "react";
 
 interface MultiSelectProps {
   label: string;
-  name: string;
   options: { value: string; label: string }[];
   value?: string[];
   onChange?: (values: string[]) => void;
@@ -15,7 +14,6 @@ interface MultiSelectProps {
 
 export default function MultiSelect({
   label,
-  name,
   options,
   value = [],
   onChange,

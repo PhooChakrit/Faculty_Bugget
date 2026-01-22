@@ -1,24 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { FormData } from "@/features/add-project/types";
 
-export function BudgetTableSection() {
-  // Mock data for display - in real app, this would come from props
-  const incomeItems = [
-    { label: "เงินสนับสนุน", amount: 70000 },
-    { label: "ค่าลงทะเบียน", amount: 30000 },
-  ];
+interface BudgetTableSectionProps {
+  formData: FormData;
+}
 
-  const expenseItems = [
-    { label: "หมวดค่าตอบแทน", amount: 20000 },
-    { label: "หมวดค่าใช้สอย", amount: 30000 },
-    { label: "หมวดค่าวัสดุ", amount: 25000 },
-    { label: "หมวดสาธารณูปโภค", amount: 10000 },
-    { label: "หมวดเงินอุดหนุน", amount: 10000 },
-    { label: "หมวดเงินสำรอง", amount: 5000 },
-  ];
-
-  const totalIncome = incomeItems.reduce((sum, item) => sum + item.amount, 0);
-  const totalExpense = expenseItems.reduce((sum, item) => sum + item.amount, 0);
-
+export function BudgetTableSection({ formData }: BudgetTableSectionProps) {
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString("th-TH", {
       minimumFractionDigits: 2,
@@ -26,12 +13,27 @@ export function BudgetTableSection() {
     });
   };
 
+  const calculateIncomeTotal = () => {
+    return (
+      Number(formData.incomeSupport || 0) +
+      Number(formData.incomeRegistration || 0)
+    );
+  };
+
+  const calculateExpenseTotal = () => {
+    return (
+      Number(formData.expenseRemuneration || 0) +
+      Number(formData.expenseSupplies || 0) +
+      Number(formData.expenseMaterials || 0) +
+      Number(formData.expenseUtilities || 0) +
+      Number(formData.expenseSubsidy || 0) +
+      Number(formData.expenseReserve || 0)
+    );
+  };
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>งบประมาณรายรับ-รายจ่าย</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 pt-6">
         <div>
           <h3 className="font-medium mb-3">ประมาณการรายรับ</h3>
           <div className="border rounded-lg overflow-hidden">
@@ -45,18 +47,22 @@ export function BudgetTableSection() {
                 </tr>
               </thead>
               <tbody>
-                {incomeItems.map((item, idx) => (
-                  <tr key={idx} className="border-t">
-                    <td className="p-3">{item.label}</td>
-                    <td className="p-3 text-right">
-                      {formatCurrency(item.amount)}
-                    </td>
-                  </tr>
-                ))}
+                <tr className="border-t">
+                  <td className="p-3">เงินสนับสนุน</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(Number(formData.incomeSupport || 0))}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">ค่าลงทะเบียน</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(Number(formData.incomeRegistration || 0))}
+                  </td>
+                </tr>
                 <tr className="border-t bg-muted font-medium">
                   <td className="p-3">รวมประมาณการรายรับ</td>
                   <td className="p-3 text-right">
-                    {formatCurrency(totalIncome)}
+                    {formatCurrency(calculateIncomeTotal())}
                   </td>
                 </tr>
               </tbody>
@@ -77,18 +83,46 @@ export function BudgetTableSection() {
                 </tr>
               </thead>
               <tbody>
-                {expenseItems.map((item, idx) => (
-                  <tr key={idx} className="border-t">
-                    <td className="p-3">{item.label}</td>
-                    <td className="p-3 text-right">
-                      {formatCurrency(item.amount)}
-                    </td>
-                  </tr>
-                ))}
+                <tr className="border-t">
+                  <td className="p-3">หมวดค่าตอบแทน</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(Number(formData.expenseRemuneration || 0))}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดค่าใช้สอย</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(Number(formData.expenseSupplies || 0))}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดค่าวัสดุ</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(Number(formData.expenseMaterials || 0))}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดสาธารณูปโภค</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(Number(formData.expenseUtilities || 0))}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดเงินอุดหนุน</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(Number(formData.expenseSubsidy || 0))}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดเงินสำรอง</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(Number(formData.expenseReserve || 0))}
+                  </td>
+                </tr>
                 <tr className="border-t bg-muted font-medium">
                   <td className="p-3">รวมประมาณการรายจ่าย</td>
                   <td className="p-3 text-right">
-                    {formatCurrency(totalExpense)}
+                    {formatCurrency(calculateExpenseTotal())}
                   </td>
                 </tr>
               </tbody>
