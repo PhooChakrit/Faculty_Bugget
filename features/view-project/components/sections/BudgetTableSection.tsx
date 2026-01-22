@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function BudgetTableSection() {
   // Mock data for display - in real app, this would come from props
@@ -28,9 +28,6 @@ export function BudgetTableSection() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>งบประมาณรายรับ-รายจ่าย</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-6">
         <div>
           <h3 className="font-medium mb-3">ประมาณการรายรับ</h3>

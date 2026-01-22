@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FormData } from "@/features/add-project/types";
 import { Badge } from "@/components/ui/badge";
 
@@ -18,9 +18,6 @@ export function BasicInfoSection({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>ข้อมูลพื้นฐาน</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label className="text-muted-foreground">เลขที่รับ วจบ</Label>

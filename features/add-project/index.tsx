@@ -7,10 +7,10 @@ import { Collaborator, Manager, FormData, Notes } from "./types";
 
 // Import Sections
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
-import { CollaboratorsSection } from "./components/sections/CollaboratorsSection";
+import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
 import { ManagersSection } from "./components/sections/ManagersSection";
 import { DatesVenueSection } from "./components/sections/DatesVenueSection";
-import { ProjectDetailsSection } from "./components/sections/ProjectDetailsSection";
+
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
 import { BudgetSourcesSection } from "./components/sections/BudgetSourcesSection";
 import { BudgetTableSection } from "./components/sections/BudgetTableSection";
@@ -77,6 +77,14 @@ export default function AddProjectPage() {
     budgetSourceExtPrivate: "",
     budgetSourceExtForeign: "",
     budgetSourceInternal: "",
+    incomeSupport: "",
+    incomeRegistration: "",
+    expenseRemuneration: "",
+    expenseSupplies: "",
+    expenseMaterials: "",
+    expenseUtilities: "",
+    expenseSubsidy: "",
+    expenseReserve: "",
   });
 
   const [collaborators, setCollaborators] = useState<Collaborator[]>([
@@ -123,28 +131,18 @@ export default function AddProjectPage() {
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            <ReceiptInfoSection
+              formData={formData}
+              handleChange={handleInputChange}
+            />
+
             <BasicInfoSection
               formData={formData}
               handleChange={handleInputChange}
               setFormData={setFormData}
               departmentOptions={departmentOptions}
-            />
-
-            <CollaboratorsSection
               collaborators={collaborators}
               setCollaborators={setCollaborators}
-            />
-
-            <ManagersSection managers={managers} setManagers={setManagers} />
-
-            <DatesVenueSection
-              formData={formData}
-              handleChange={handleInputChange}
-            />
-
-            <ProjectDetailsSection
-              formData={formData}
-              handleChange={handleInputChange}
             />
 
             <ClassificationsSection
@@ -160,7 +158,10 @@ export default function AddProjectPage() {
               handleChange={handleInputChange}
             />
 
-            <BudgetTableSection />
+            <BudgetTableSection
+              formData={formData}
+              handleChange={handleInputChange}
+            />
 
             <NotesSection notes={notes} setNotes={setNotes} />
 

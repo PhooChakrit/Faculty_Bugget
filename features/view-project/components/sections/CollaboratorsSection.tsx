@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Collaborator } from "@/features/add-project/types";
 
 interface CollaboratorsSectionProps {
@@ -12,9 +12,6 @@ export function CollaboratorsSection({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>ร่วมกับ</CardTitle>
-      </CardHeader>
       <CardContent>
         {hasCollaborators ? (
           <div className="space-y-2">

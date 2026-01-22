@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { FormData } from "@/features/add-project/types";
@@ -37,9 +37,6 @@ export function ClassificationsSection({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>การจำแนกประเภท</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
           <Label className="text-muted-foreground">

@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FormData } from "@/features/add-project/types";
 
 interface BudgetSourcesSectionProps {
@@ -24,9 +24,6 @@ export function BudgetSourcesSection({ formData }: BudgetSourcesSectionProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>แหล่งที่มาของงบประมาณ</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
           <div className="flex justify-between items-center py-2 border-b">

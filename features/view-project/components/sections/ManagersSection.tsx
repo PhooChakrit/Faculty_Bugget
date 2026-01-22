@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Manager } from "@/features/add-project/types";
 
 interface ManagersSectionProps {
@@ -12,9 +12,6 @@ export function ManagersSection({ managers }: ManagersSectionProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>ผู้จัดการโครงการ/ผู้ประสานงาน</CardTitle>
-      </CardHeader>
       <CardContent>
         {hasManagers ? (
           <div className="space-y-3">
