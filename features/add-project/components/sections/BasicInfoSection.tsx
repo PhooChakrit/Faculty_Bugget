@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Check, Plus, Minus } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { FormData, Collaborator } from "../../types";
 import { Separator } from "@/components/ui/separator";

@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 import { Notes } from "@/features/add-project/types";
 
 interface NotesSectionProps {

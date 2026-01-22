@@ -8,9 +8,6 @@ import { Collaborator, Manager, FormData, Notes } from "./types";
 // Import Sections
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
 import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
-import { ManagersSection } from "./components/sections/ManagersSection";
-import { DatesVenueSection } from "./components/sections/DatesVenueSection";
-
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
 import { BudgetSourcesSection } from "./components/sections/BudgetSourcesSection";
 import { BudgetTableSection } from "./components/sections/BudgetTableSection";
@@ -91,9 +88,7 @@ export default function AddProjectPage() {
     { id: 1, name: "" },
   ]);
 
-  const [managers, setManagers] = useState<Manager[]>([
-    { id: 1, name: "", position: "" },
-  ]);
+  const [managers] = useState<Manager[]>([{ id: 1, name: "", position: "" }]);
 
   const [notes, setNotes] = useState<Notes>({
     note1: false,
