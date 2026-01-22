@@ -35,6 +35,14 @@ export interface FormData {
   budgetSourceExtPrivate: string;
   budgetSourceExtForeign: string;
   budgetSourceInternal: string;
+  incomeSupport: string;
+  incomeRegistration: string;
+  expenseRemuneration: string;
+  expenseSupplies: string;
+  expenseMaterials: string;
+  expenseUtilities: string;
+  expenseSubsidy: string;
+  expenseReserve: string;
 }
 
 export interface Notes {
