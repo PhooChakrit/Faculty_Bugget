@@ -13,9 +13,7 @@ export function BasicInfoSection({
   departmentOptions,
 }: BasicInfoSectionProps) {
   const getDepartmentLabel = (value: string) => {
-    return (
-      departmentOptions.find((opt) => opt.value === value)?.label || value
-    );
+    return departmentOptions.find((opt) => opt.value === value)?.label || value;
   };
 
   return (
@@ -26,9 +24,7 @@ export function BasicInfoSection({
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label className="text-muted-foreground">เลขที่รับ วจบ</Label>
-          <div className="text-base">
-            {formData.receiptNumber || "-"}
-          </div>
+          <div className="text-base">{formData.receiptNumber || "-"}</div>
         </div>
 
         <div className="space-y-2">
@@ -54,16 +50,16 @@ export function BasicInfoSection({
           </div>
           <div className="space-y-2">
             <Label className="text-muted-foreground">ตำแหน่ง</Label>
-            <div className="text-base">
-              {formData.leaderPosition || "-"}
-            </div>
+            <div className="text-base">{formData.leaderPosition || "-"}</div>
           </div>
         </div>
 
         <div className="space-y-2">
           <Label className="text-muted-foreground">ภาควิชา/หน่วยงาน</Label>
           <div className="text-base">
-            {formData.department ? getDepartmentLabel(formData.department) : "-"}
+            {formData.department
+              ? getDepartmentLabel(formData.department)
+              : "-"}
           </div>
         </div>
 

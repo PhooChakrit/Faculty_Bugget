@@ -42,7 +42,9 @@ export function ClassificationsSection({
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
-          <Label className="text-muted-foreground">ประเภทงานบริการวิชาการ</Label>
+          <Label className="text-muted-foreground">
+            ประเภทงานบริการวิชาการ
+          </Label>
           <div className="text-base">
             {formData.serviceType
               ? getServiceTypeLabel(formData.serviceType)
