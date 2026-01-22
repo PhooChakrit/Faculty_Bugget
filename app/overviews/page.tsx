@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
 import { Badge } from "@/components/ui/badge";
-
 /**
  * RBAC CONFIGURATION
  */
@@ -81,53 +80,16 @@ export default function ComprehensiveProjectPage() {
   const [userRole, setUserRole] = useState<UserRole>("งานแผน");
   const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [projects, setProjects] = useState<ProjectData[]>([
-    {
-      id: "1",
-      receiptNumber: "2827/2568, 3367/2568",
-      projectCode: "ACS001-69",
-      boardMeetingNo: "17/2568",
-      boardMeetingDate: "8 กันยายน 2568",
-      deanDecisionNo: "16/2568",
-      deanDecisionDate: "24 กันยายน 2568",
-      purpose: "ขอความเห็นชอบจัดโครงการ",
-      memoTitle: "โครงการบริการวิชาการ การจัดการเรียนการสอนรายวิชาสุขภาพและความงามให้กับ “สถาบันการพยาบาลxxxxx xxxx” ในปีการศึกษา 2568 ภาคต้น",
-      department: "ภาควิชาชีวเคมี",
-      projectHead: "รองศาสตราจารย์ xxxxx",
-      totalBudget: "35,348.00",
-      compensation: "xxxx",
-      operatingCost: "-",
-      materialCost: "-",
-      utilities: "xxxx",
-      academicFund: "xxxx",
-      generalReserve: "-",
-      amountGovExternal: "35,348.00",
-      amountPrivateExternal: "",
-      amountForeignExternal: "",
-      amountUnivRevenue: "",
-      startDate: "1 กรกฏคม 2568",
-      endDate: "30 พฤศจิิกายน 2568",
-      fundOwner: "สถาบันการพยาบาลศรี xxxx xx",
-      vendorCode: "3014106",
-      costCenter: "",
-      maintenanceFee: "",
-      electricityFee: "",
-      serviceType: "06.งานบริการทางวิชาการลักษณะอื่น",
-      strategyType: "04.INTERNAL GROWTH",
-      targetGroup: "10.หน่วยงานภายนอกภาครัฐ...",
-      participantCount: "60",
-      projectDescription: "การจัดการเรียนการสอนในรายวิชาสุขภาพและความงาม...",
-      status1: "inner คณะ", status1Date: "3/9/2025",
-      status2: "ออกจากบอร์ด", status2Date: "9/9/2025",
-      status3: "ส่งไป ศหก", status3Date: "11/9/2025",
-      status4: "", status4Date: "",
-      status5: "", status5Date: "",
-      responsible: "",
-      docNumber: "",
-      docDate: "",
-      docLink: "",
-    },
-  ]);
+const [projects, setProjects] = useState<ProjectData[]>([]);
+
+useEffect(() => {
+    const loadMockData = async () => {
+        const response = await fetch('/mock.json');
+        const data = await response.json();
+        setProjects(data);
+    };
+    loadMockData();
+}, []);
 
   const handleUpdate = (id: string, field: keyof ProjectData, value: string) => {
     setProjects(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
