@@ -77,12 +77,14 @@ interface ProjectData {
 }
 
 export default function ComprehensiveProjectPage() {
-  const [userRole, setUserRole] = useState<UserRole>("งานแผน");
+  const [userRole, setUserRole] = useState<UserRole>("ภาควิชา");
   const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
-useEffect(() => {
+  useEffect(() => {
     const loadMockData = async () => {
         const response = await fetch('/mock.json');
         const data = await response.json();
@@ -102,9 +104,21 @@ useEffect(() => {
       project.projectCode.toLowerCase().includes(query) ||
       project.memoTitle.toLowerCase().includes(query) ||
       project.department.toLowerCase().includes(query) ||
-      project.projectHead.toLowerCase().includes(query)
+      project.projectHead.toLowerCase().includes(query) ||
+      project.receiptNumber.toLowerCase().includes(query)
     );
   });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentProjects = filteredProjects.slice(startIndex, endIndex);
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const DataCell = ({ project, field, label, isNumeric = false }: { project: ProjectData, field: keyof ProjectData, label?: string, isNumeric?: boolean }) => {
     const canEdit = EDIT_PERMISSIONS[field] === userRole;
@@ -178,7 +192,7 @@ useEffect(() => {
               className="w-full shadow-sm"
             />
           </div>
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             {(["ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"] as UserRole[]).map((role) => (
               <Button
                 key={role}
@@ -190,11 +204,11 @@ useEffect(() => {
                 {role}
               </Button>
             ))}
-          </div>
+          </div> */}
         </div>
 
         {/* Main Table */}
-        <Card className="flex-1 overflow-hidden border-slate-200 shadow-2xl rounded-lg bg-white">
+        <Card className="flex-1 overflow-hidden border-slate-200 shadow-2xl rounded-lg bg-white p-0">
           <div className="overflow-auto h-full">
             <table className="w-full border-collapse table-fixed min-w-[2000px]">
               <thead className="sticky top-0 z-10">
@@ -209,7 +223,15 @@ useEffect(() => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 bg-white">
-                {filteredProjects.map((project) => (
+                {currentProjects.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-12 text-center text-slate-400">
+                      <div className="text-4xl mb-2">🔍</div>
+                      <div className="text-sm">ไม่พบโครงการ</div>
+                    </td>
+                  </tr>
+                ) : (
+                  currentProjects.map((project) => (
                   <tr key={project.id} className="align-top hover:bg-blue-50/20 transition-colors group">
                     <td className="p-4 bg-slate-50/50">
                       <div className="space-y-3">
@@ -289,11 +311,69 @@ useEffect(() => {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </Card>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-4 flex items-center justify-between bg-white rounded-lg shadow-md p-4 border border-slate-200">
+            <div className="text-xs text-slate-600">
+              แสดง {startIndex + 1}-{Math.min(endIndex, filteredProjects.length)} จาก {filteredProjects.length} โครงการ
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="text-xs"
+              >
+                ← ก่อนหน้า
+              </Button>
+              
+              <div className="flex gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(page => {
+                    // Show first page, last page, current page, and pages around current
+                    return page === 1 || 
+                           page === totalPages || 
+                           Math.abs(page - currentPage) <= 1;
+                  })
+                  .map((page, idx, arr) => {
+                    // Add ellipsis if there's a gap
+                    const showEllipsis = idx > 0 && page - arr[idx - 1] > 1;
+                    return (
+                      <div key={page} className="flex items-center">
+                        {showEllipsis && <span className="px-2 text-slate-400">...</span>}
+                        <Button
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(page)}
+                          className="text-xs min-w-[32px]"
+                        >
+                          {page}
+                        </Button>
+                      </div>
+                    );
+                  })}
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="text-xs"
+              >
+                ถัดไป →
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <footer className="mt-4 flex items-center justify-between text-[10px] text-slate-500">
