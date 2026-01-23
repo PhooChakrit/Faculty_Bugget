@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Minus, Check } from "lucide-react";
 import { Manager } from "../../types";
 
@@ -28,12 +28,6 @@ export function ManagersSection({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>ผู้รับผิดชอบโครงการ</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          ตำแหน่งหน้าที่ เช่น นายทะเบียนสโมสรนิสิต, ตัวแทนนิสิตชั้นปีที่ 4
-        </p>
-      </CardHeader>
       <CardContent className="space-y-3">
         {managers.map((manager, index) => (
           <div

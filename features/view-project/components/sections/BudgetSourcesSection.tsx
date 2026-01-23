@@ -1,17 +1,17 @@
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FormData } from "@/features/add-project/types";
 
 interface BudgetSourcesSectionProps {
   formData: FormData;
 }
 
-export function BudgetSourcesSection({
-  formData,
-}: BudgetSourcesSectionProps) {
+export function BudgetSourcesSection({ formData }: BudgetSourcesSectionProps) {
   const formatCurrency = (value: string) => {
     if (!value || value === "0") return "-";
-    return `${parseFloat(value).toLocaleString("th-TH")} บาท`;
+    return parseFloat(value).toLocaleString("th-TH", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   };
 
   const calculateTotal = () => {
@@ -26,52 +26,55 @@ export function BudgetSourcesSection({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>แหล่งที่มาของงบประมาณ</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
-          <div className="flex justify-between items-center py-2 border-b">
-            <Label className="text-muted-foreground">
-              แหล่งทุนภายนอกภาครัฐ
-            </Label>
-            <div className="text-base font-medium">
-              {formatCurrency(formData.budgetSourceExtGov)}
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center py-2 border-b">
-            <Label className="text-muted-foreground">
-              แหล่งทุนภายนอกภาคเอกชน
-            </Label>
-            <div className="text-base font-medium">
-              {formatCurrency(formData.budgetSourceExtPrivate)}
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center py-2 border-b">
-            <Label className="text-muted-foreground">
-              แหล่งทุนภายนอกต่างประเทศ
-            </Label>
-            <div className="text-base font-medium">
-              {formatCurrency(formData.budgetSourceExtForeign)}
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center py-2 border-b">
-            <Label className="text-muted-foreground">
-              แหล่งทุนภายในมหาวิทยาลัย
-            </Label>
-            <div className="text-base font-medium">
-              {formatCurrency(formData.budgetSourceInternal)}
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center py-3 bg-muted px-3 rounded-md">
-            <Label className="font-semibold">รวมทั้งหมด</Label>
-            <div className="text-base font-bold">
-              {total > 0 ? `${total.toLocaleString("th-TH")} บาท` : "-"}
-            </div>
+      <CardContent className="space-y-4 pt-6">
+        <div>
+          <h3 className="font-medium mb-3">แหล่งงบประมาณ</h3>
+          <div className="border rounded-lg overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-muted">
+                <tr>
+                  <th className="text-left p-3">รายละเอียด</th>
+                  <th className="text-right p-3 w-48">จำนวนเงิน (บาท)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-t">
+                  <td className="p-3">ภายนอกภาครัฐ</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(formData.budgetSourceExtGov)}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">ภายนอกภาคเอกชน</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(formData.budgetSourceExtPrivate)}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">ภายนอกต่างประเทศ</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(formData.budgetSourceExtForeign)}
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">รายได้มหาวิทยาลัย</td>
+                  <td className="p-3 text-right">
+                    {formatCurrency(formData.budgetSourceInternal)}
+                  </td>
+                </tr>
+                <tr className="border-t bg-muted font-medium">
+                  <td className="p-3">รวมแหล่งงบประมาณ</td>
+                  <td className="p-3 text-right">
+                    {total > 0
+                      ? total.toLocaleString("th-TH", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : "-"}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </CardContent>

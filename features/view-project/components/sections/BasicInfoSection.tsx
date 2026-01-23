@@ -1,36 +1,35 @@
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FormData } from "@/features/add-project/types";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { FormData, Collaborator } from "@/features/add-project/types";
+import { Separator } from "@/components/ui/separator";
 
 interface BasicInfoSectionProps {
   formData: FormData;
   departmentOptions: { value: string; label: string }[];
+  collaborators: Collaborator[];
 }
 
 export function BasicInfoSection({
   formData,
   departmentOptions,
+  collaborators,
 }: BasicInfoSectionProps) {
   const getDepartmentLabel = (value: string) => {
-    return (
-      departmentOptions.find((opt) => opt.value === value)?.label || value
-    );
+    return departmentOptions.find((opt) => opt.value === value)?.label || value;
+  };
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "-";
+    return new Date(dateStr).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>ข้อมูลพื้นฐาน</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-muted-foreground">เลขที่รับ วจบ</Label>
-          <div className="text-base">
-            {formData.receiptNumber || "-"}
-          </div>
-        </div>
-
+      <CardContent className="space-y-6 pt-6">
         <div className="space-y-2">
           <Label className="text-muted-foreground">ชื่อโครงการ (ภาษาไทย)</Label>
           <div className="text-base font-medium">
@@ -38,14 +37,10 @@ export function BasicInfoSection({
           </div>
         </div>
 
-        {formData.projectNameEng && (
-          <div className="space-y-2">
-            <Label className="text-muted-foreground">
-              ชื่อโครงการภาษาอังกฤษ
-            </Label>
-            <div className="text-base">{formData.projectNameEng}</div>
-          </div>
-        )}
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">ชื่อโครงการภาษาอังกฤษ</Label>
+          <div className="text-base">{formData.projectNameEng || "-"}</div>
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -54,22 +49,87 @@ export function BasicInfoSection({
           </div>
           <div className="space-y-2">
             <Label className="text-muted-foreground">ตำแหน่ง</Label>
-            <div className="text-base">
-              {formData.leaderPosition || "-"}
+            <div className="text-base">{formData.leaderPosition || "-"}</div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">อีเมลหัวหน้าโครงการ</Label>
+          <div className="text-base">{formData.leaderEmail || "-"}</div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">
+            หน่วยงาน/ภาควิชาที่รับผิดชอบ
+          </Label>
+          <div className="text-base">
+            {formData.department
+              ? getDepartmentLabel(formData.department)
+              : "-"}
+          </div>
+        </div>
+
+        {collaborators.length > 0 && (
+          <div className="space-y-2">
+            <Label className="text-muted-foreground">ผู้ร่วมโครงการ</Label>
+            <div className="space-y-1">
+              {collaborators.map((collab, index) => (
+                <div key={collab.id} className="text-base">
+                  {index + 1}. {collab.name}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-2">
-          <Label className="text-muted-foreground">ภาควิชา/หน่วยงาน</Label>
-          <div className="text-base">
-            {formData.department ? getDepartmentLabel(formData.department) : "-"}
+        <Separator />
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label className="text-muted-foreground">วันที่เริ่มต้น</Label>
+            <div className="text-base">{formatDate(formData.startDate)}</div>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-muted-foreground">วันที่สิ้นสุด</Label>
+            <div className="text-base">{formatDate(formData.endDate)}</div>
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label className="text-muted-foreground">อีเมล</Label>
-          <div className="text-base">{formData.leaderEmail || "-"}</div>
+          <Label className="text-muted-foreground">
+            ความเป็นมา หลักการและเหตุผล
+          </Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.background || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">รายละเอียดโครงการ</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.projectDetails || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">วัตถุประสงค์</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.objectives || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">ขอบเขตการดำเนินการ</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.scope || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">แผนการดำเนินการ</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.implementationPlan || "-"}
+          </div>
         </div>
       </CardContent>
     </Card>
