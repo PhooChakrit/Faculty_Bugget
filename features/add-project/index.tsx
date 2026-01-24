@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
-import { Collaborator, Manager, FormData, Notes } from "./types";
+import { Collaborator, FormData, Notes } from "./types";
 
 // Import Sections
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
@@ -88,8 +88,6 @@ export default function AddProjectPage() {
     { id: 1, name: "" },
   ]);
 
-  const [managers] = useState<Manager[]>([{ id: 1, name: "", position: "" }]);
-
   const [notes, setNotes] = useState<Notes>({
     note1: false,
     note2: false,
@@ -109,7 +107,6 @@ export default function AddProjectPage() {
     console.log("Form submitted:", {
       formData,
       collaborators,
-      managers,
       notes,
     });
     alert("บันทึกข้อมูลสำเร็จ!");
@@ -122,7 +119,7 @@ export default function AddProjectPage() {
       <main className="flex-1 p-8 bg-slate-50 overflow-y-auto">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-semibold mb-8">
-            แบบฟอร์มโครงการสโมสรนิสิต
+            แบบฟอร์มโครงการบริการวิชาการ
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">

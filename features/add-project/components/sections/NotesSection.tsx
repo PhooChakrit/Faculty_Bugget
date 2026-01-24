@@ -11,6 +11,7 @@ export function NotesSection({ notes, setNotes }: NotesSectionProps) {
   return (
     <Card>
       <CardContent className="space-y-4">
+        <h1 className="">หมายเหตุ</h1>
         <div className="flex items-start space-x-3">
           <Checkbox
             id="note1"
