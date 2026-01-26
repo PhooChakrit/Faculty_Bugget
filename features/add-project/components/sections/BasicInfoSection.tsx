@@ -49,14 +49,13 @@ export function BasicInfoSection({
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="projectNameThai">
-            ชื่อโครงการ (ภาษาไทย) <span className="text-red-500">*</span>
+            ชื่อโครงการภาษาไทย <span className="text-red-500">*</span>
           </Label>
           <Input
             id="projectNameThai"
             name="projectNameThai"
             value={formData.projectNameThai}
             onChange={handleChange}
-            placeholder="ชื่อโครงการภาษาไทย"
           />
         </div>
 
@@ -69,7 +68,6 @@ export function BasicInfoSection({
             name="projectNameEng"
             value={formData.projectNameEng}
             onChange={handleChange}
-            placeholder="ชื่อโครงการภาษาอังกฤษ"
           />
         </div>
 
@@ -83,7 +81,6 @@ export function BasicInfoSection({
               name="leaderName"
               value={formData.leaderName}
               onChange={handleChange}
-              placeholder="ชื่อ นามสกุล"
             />
           </div>
           <div className="space-y-2">
@@ -93,7 +90,6 @@ export function BasicInfoSection({
               name="leaderPosition"
               value={formData.leaderPosition}
               onChange={handleChange}
-              placeholder="ตำแหน่งหน้าที่"
             />
           </div>
         </div>
@@ -107,7 +103,6 @@ export function BasicInfoSection({
             type="email"
             value={formData.leaderEmail}
             onChange={handleChange}
-            placeholder="email@example.com"
           />
         </div>
         <div className="space-y-2">
@@ -121,7 +116,7 @@ export function BasicInfoSection({
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="เลือกหน่วยงาน..." />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {departmentOptions.map((opt) => (
@@ -132,11 +127,13 @@ export function BasicInfoSection({
             </SelectContent>
           </Select>
         </div>
+        <Label>
+          ผู้ร่วมโครงการ
+        </Label>
         {collaborators.map((collab, index) => (
           <div key={collab.id} className="flex items-center gap-3">
             <span className="text-muted-foreground w-6">{index + 1}.</span>
             <Input
-              placeholder="ชื่อหน่วยงาน"
               value={collab.name}
               onChange={(e) => {
                 const newData = [...collaborators];
@@ -209,7 +206,6 @@ export function BasicInfoSection({
             name="background"
             value={formData.background}
             onChange={handleChange}
-            placeholder="อธิบายความเป็นมาและเหตุผลของโครงการ"
             rows={4}
           />
         </div>
@@ -223,7 +219,6 @@ export function BasicInfoSection({
             name="objectives"
             value={formData.objectives}
             onChange={handleChange}
-            placeholder="ระบุวัตถุประสงค์ของโครงการ"
             rows={3}
           />
         </div>
@@ -235,7 +230,6 @@ export function BasicInfoSection({
             name="scope"
             value={formData.scope}
             onChange={handleChange}
-            placeholder="ระบุขอบเขตการดำเนินการ"
             rows={3}
           />
         </div>
@@ -247,7 +241,6 @@ export function BasicInfoSection({
             name="implementationPlan"
             value={formData.implementationPlan}
             onChange={handleChange}
-            placeholder="ระบุแผนการดำเนินการ"
             rows={3}
           />
         </div>
@@ -260,7 +253,6 @@ export function BasicInfoSection({
             name="projectDetails"
             value={formData.projectDetails}
             onChange={handleChange}
-            placeholder="รายละเอียดโครงการโดยย่อ"
             maxLength={200}
             rows={3}
           />

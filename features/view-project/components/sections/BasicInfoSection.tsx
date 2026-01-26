@@ -71,7 +71,7 @@ export function BasicInfoSection({
 
         {collaborators.length > 0 && (
           <div className="space-y-2">
-            <Label className="text-muted-foreground">ผู้ร่วมโครงการ</Label>
+            <Label className="text-muted-foreground">ร่วมกับ</Label>
             <div className="space-y-1">
               {collaborators.map((collab, index) => (
                 <div key={collab.id} className="text-base">
@@ -105,13 +105,6 @@ export function BasicInfoSection({
         </div>
 
         <div className="space-y-2">
-          <Label className="text-muted-foreground">รายละเอียดโครงการ</Label>
-          <div className="text-base whitespace-pre-wrap">
-            {formData.projectDetails || "-"}
-          </div>
-        </div>
-
-        <div className="space-y-2">
           <Label className="text-muted-foreground">วัตถุประสงค์</Label>
           <div className="text-base whitespace-pre-wrap">
             {formData.objectives || "-"}
@@ -129,6 +122,13 @@ export function BasicInfoSection({
           <Label className="text-muted-foreground">แผนการดำเนินการ</Label>
           <div className="text-base whitespace-pre-wrap">
             {formData.implementationPlan || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">รายละเอียดโครงการ</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.projectDetails || "-"}
           </div>
         </div>
       </CardContent>

@@ -3,15 +3,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
-import { Collaborator, Manager, FormData, Notes } from "./types";
+import { Collaborator, FormData, Notes } from "./types";
 
 // Import Sections
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
 import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
-import { BudgetSourcesSection } from "./components/sections/BudgetSourcesSection";
-import { BudgetTableSection } from "./components/sections/BudgetTableSection";
-import { NotesSection } from "./components/sections/NotesSection";
+import { ProjectDetailsSection } from "./components/sections/ProjectDetailsSection";
+import { BudgetAndNotesSection } from "./components/sections/BudgetAndNotesSection";
 
 // Options for dropdowns
 const departmentOptions = [
@@ -88,8 +87,6 @@ export default function AddProjectPage() {
     { id: 1, name: "" },
   ]);
 
-  const [managers] = useState<Manager[]>([{ id: 1, name: "", position: "" }]);
-
   const [notes, setNotes] = useState<Notes>({
     note1: false,
     note2: false,
@@ -109,7 +106,6 @@ export default function AddProjectPage() {
     console.log("Form submitted:", {
       formData,
       collaborators,
-      managers,
       notes,
     });
     alert("บันทึกข้อมูลสำเร็จ!");
@@ -122,7 +118,7 @@ export default function AddProjectPage() {
       <main className="flex-1 p-8 bg-slate-50 overflow-y-auto">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-semibold mb-8">
-            แบบฟอร์มโครงการสโมสรนิสิต
+            แบบฟอร์มโครงการบริการวิชาการ
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -148,17 +144,17 @@ export default function AddProjectPage() {
               strategyOptions={strategyOptions}
             />
 
-            <BudgetSourcesSection
+            <ProjectDetailsSection
               formData={formData}
               handleChange={handleInputChange}
             />
 
-            <BudgetTableSection
+            <BudgetAndNotesSection
               formData={formData}
               handleChange={handleInputChange}
+              notes={notes}
+              setNotes={setNotes}
             />
-
-            <NotesSection notes={notes} setNotes={setNotes} />
 
             {/* Submit Buttons */}
             <div className="flex justify-end gap-4 pt-4">

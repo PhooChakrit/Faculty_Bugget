@@ -57,7 +57,6 @@ export function BudgetTableSection({
                       type="number"
                       value={formData.incomeSupport}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -70,7 +69,6 @@ export function BudgetTableSection({
                       type="number"
                       value={formData.incomeRegistration}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -78,8 +76,6 @@ export function BudgetTableSection({
                   <td className="p-3">รวมประมาณการรายรับ</td>
                   <td className="p-3">
                     <Input
-                      type="number"
-                      placeholder="0.00"
                       readOnly
                       value={calculateIncomeTotal()}
                     />
@@ -112,7 +108,6 @@ export function BudgetTableSection({
                       type="number"
                       value={formData.expenseRemuneration}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -125,7 +120,6 @@ export function BudgetTableSection({
                       type="number"
                       value={formData.expenseSupplies}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -138,7 +132,6 @@ export function BudgetTableSection({
                       type="number"
                       value={formData.expenseMaterials}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -151,7 +144,6 @@ export function BudgetTableSection({
                       type="number"
                       value={formData.expenseUtilities}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -164,7 +156,6 @@ export function BudgetTableSection({
                       type="number"
                       value={formData.expenseSubsidy}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -177,7 +168,6 @@ export function BudgetTableSection({
                       type="number"
                       value={formData.expenseReserve}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -185,8 +175,6 @@ export function BudgetTableSection({
                   <td className="p-3">รวมประมาณการรายจ่าย</td>
                   <td className="p-3">
                     <Input
-                      type="number"
-                      placeholder="0.00"
                       readOnly
                       value={calculateExpenseTotal()}
                     />

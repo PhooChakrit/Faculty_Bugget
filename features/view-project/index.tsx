@@ -9,9 +9,8 @@ import { Collaborator, FormData, Notes } from "../add-project/types";
 import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
-import { BudgetSourcesSection } from "./components/sections/BudgetSourcesSection";
-import { BudgetTableSection } from "./components/sections/BudgetTableSection";
-import { NotesSection } from "./components/sections/NotesSection";
+import { ProjectDetailsSection } from "./components/sections/ProjectDetailsSection";
+import { BudgetAndNotesSection } from "./components/sections/BudgetAndNotesSection";
 
 // Options for dropdowns
 const departmentOptions = [
@@ -108,7 +107,9 @@ export default function ViewProjectPage() {
       <main className="flex-1 p-8 bg-slate-50 overflow-y-auto">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-semibold">รายละเอียดโครงการ</h1>
+            <h1 className="text-2xl font-semibold">
+              ข้อมูลโครงการบริการวิชาการ
+            </h1>
             <div className="flex gap-2">
               <Button variant="outline">แก้ไข</Button>
               <Button variant="outline">พิมพ์</Button>
@@ -131,11 +132,9 @@ export default function ViewProjectPage() {
               strategyOptions={strategyOptions}
             />
 
-            <BudgetSourcesSection formData={formData} />
+            <ProjectDetailsSection formData={formData} />
 
-            <BudgetTableSection formData={formData} />
-
-            <NotesSection notes={notes} />
+            <BudgetAndNotesSection formData={formData} notes={notes} />
           </div>
         </div>
       </main>
