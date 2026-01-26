@@ -9,9 +9,8 @@ import { Collaborator, FormData, Notes } from "../add-project/types";
 import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
-import { BudgetSourcesSection } from "./components/sections/BudgetSourcesSection";
-import { BudgetTableSection } from "./components/sections/BudgetTableSection";
-import { NotesSection } from "./components/sections/NotesSection";
+import { ProjectDetailsSection } from "./components/sections/ProjectDetailsSection";
+import { BudgetAndNotesSection } from "./components/sections/BudgetAndNotesSection";
 
 // Options for dropdowns
 const departmentOptions = [
@@ -133,11 +132,9 @@ export default function ViewProjectPage() {
               strategyOptions={strategyOptions}
             />
 
-            <BudgetSourcesSection formData={formData} />
+            <ProjectDetailsSection formData={formData} />
 
-            <BudgetTableSection formData={formData} />
-
-            <NotesSection notes={notes} />
+            <BudgetAndNotesSection formData={formData} notes={notes} />
           </div>
         </div>
       </main>

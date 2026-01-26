@@ -9,9 +9,8 @@ import { Collaborator, FormData, Notes } from "./types";
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
 import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
-import { BudgetSourcesSection } from "./components/sections/BudgetSourcesSection";
-import { BudgetTableSection } from "./components/sections/BudgetTableSection";
-import { NotesSection } from "./components/sections/NotesSection";
+import { ProjectDetailsSection } from "./components/sections/ProjectDetailsSection";
+import { BudgetAndNotesSection } from "./components/sections/BudgetAndNotesSection";
 
 // Options for dropdowns
 const departmentOptions = [
@@ -145,17 +144,17 @@ export default function AddProjectPage() {
               strategyOptions={strategyOptions}
             />
 
-            <BudgetSourcesSection
+            <ProjectDetailsSection
               formData={formData}
               handleChange={handleInputChange}
             />
 
-            <BudgetTableSection
+            <BudgetAndNotesSection
               formData={formData}
               handleChange={handleInputChange}
+              notes={notes}
+              setNotes={setNotes}
             />
-
-            <NotesSection notes={notes} setNotes={setNotes} />
 
             {/* Submit Buttons */}
             <div className="flex justify-end gap-4 pt-4">
