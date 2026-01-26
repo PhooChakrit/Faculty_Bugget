@@ -42,7 +42,7 @@ export function ClassificationsSection({
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="เลือกประเภท..." />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {serviceTypeOptions.map((opt) => (

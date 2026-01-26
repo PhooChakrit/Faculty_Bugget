@@ -24,7 +24,6 @@ export function ReceiptInfoSection({
             name="receiptNumber"
             value={formData.receiptNumber}
             onChange={handleChange}
-            placeholder="กรอกเลขที่รับ วจบ"
           />
         </div>
       </CardContent>
