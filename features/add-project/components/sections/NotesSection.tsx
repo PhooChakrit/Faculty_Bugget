@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Notes } from "../../types";
 
 interface NotesSectionProps {
@@ -10,9 +10,6 @@ interface NotesSectionProps {
 export function NotesSection({ notes, setNotes }: NotesSectionProps) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>หมายเหตุ</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-start space-x-3">
           <Checkbox

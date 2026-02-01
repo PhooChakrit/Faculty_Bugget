@@ -1,12 +1,39 @@
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { FormData } from "../../types";
 
-export function BudgetTableSection() {
+interface BudgetTableSectionProps {
+  formData: FormData;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
+}
+
+export function BudgetTableSection({
+  formData,
+  handleChange,
+}: BudgetTableSectionProps) {
+  // Helpers to calculate totals safely
+  const calculateIncomeTotal = () => {
+    return (
+      Number(formData.incomeSupport || 0) +
+      Number(formData.incomeRegistration || 0)
+    ).toFixed(2);
+  };
+
+  const calculateExpenseTotal = () => {
+    return (
+      Number(formData.expenseRemuneration || 0) +
+      Number(formData.expenseSupplies || 0) +
+      Number(formData.expenseMaterials || 0) +
+      Number(formData.expenseUtilities || 0) +
+      Number(formData.expenseSubsidy || 0) +
+      Number(formData.expenseReserve || 0)
+    ).toFixed(2);
+  };
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>งบประมาณรายรับ-รายจ่าย</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-6">
         <div>
           <h3 className="font-medium mb-3">ประมาณการรายรับ</h3>
@@ -24,19 +51,38 @@ export function BudgetTableSection() {
                 <tr className="border-t">
                   <td className="p-3">เงินสนับสนุน</td>
                   <td className="p-3">
-                    <Input type="number" placeholder="0.00" />
+                    <Input
+                      id="incomeSupport"
+                      name="incomeSupport"
+                      type="number"
+                      value={formData.incomeSupport}
+                      onChange={handleChange}
+                      placeholder="0.00"
+                    />
                   </td>
                 </tr>
                 <tr className="border-t">
                   <td className="p-3">ค่าลงทะเบียน</td>
                   <td className="p-3">
-                    <Input type="number" placeholder="0.00" />
+                    <Input
+                      id="incomeRegistration"
+                      name="incomeRegistration"
+                      type="number"
+                      value={formData.incomeRegistration}
+                      onChange={handleChange}
+                      placeholder="0.00"
+                    />
                   </td>
                 </tr>
                 <tr className="border-t bg-muted font-medium">
                   <td className="p-3">รวมประมาณการรายรับ</td>
                   <td className="p-3">
-                    <Input type="number" placeholder="0.00" readOnly />
+                    <Input
+                      type="number"
+                      placeholder="0.00"
+                      readOnly
+                      value={calculateIncomeTotal()}
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -57,25 +103,93 @@ export function BudgetTableSection() {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  "หมวดค่าตอบแทน",
-                  "หมวดค่าใช้สอย",
-                  "หมวดค่าวัสดุ",
-                  "หมวดสาธารณูปโภค",
-                  "หมวดเงินอุดหนุน",
-                  "หมวดเงินสำรอง",
-                ].map((item) => (
-                  <tr key={item} className="border-t">
-                    <td className="p-3">{item}</td>
-                    <td className="p-3">
-                      <Input type="number" placeholder="0.00" />
-                    </td>
-                  </tr>
-                ))}
+                <tr className="border-t">
+                  <td className="p-3">หมวดค่าตอบแทน</td>
+                  <td className="p-3">
+                    <Input
+                      id="expenseRemuneration"
+                      name="expenseRemuneration"
+                      type="number"
+                      value={formData.expenseRemuneration}
+                      onChange={handleChange}
+                      placeholder="0.00"
+                    />
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดค่าใช้สอย</td>
+                  <td className="p-3">
+                    <Input
+                      id="expenseSupplies"
+                      name="expenseSupplies"
+                      type="number"
+                      value={formData.expenseSupplies}
+                      onChange={handleChange}
+                      placeholder="0.00"
+                    />
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดค่าวัสดุ</td>
+                  <td className="p-3">
+                    <Input
+                      id="expenseMaterials"
+                      name="expenseMaterials"
+                      type="number"
+                      value={formData.expenseMaterials}
+                      onChange={handleChange}
+                      placeholder="0.00"
+                    />
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดสาธารณูปโภค</td>
+                  <td className="p-3">
+                    <Input
+                      id="expenseUtilities"
+                      name="expenseUtilities"
+                      type="number"
+                      value={formData.expenseUtilities}
+                      onChange={handleChange}
+                      placeholder="0.00"
+                    />
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดเงินอุดหนุน</td>
+                  <td className="p-3">
+                    <Input
+                      id="expenseSubsidy"
+                      name="expenseSubsidy"
+                      type="number"
+                      value={formData.expenseSubsidy}
+                      onChange={handleChange}
+                      placeholder="0.00"
+                    />
+                  </td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-3">หมวดเงินสำรอง</td>
+                  <td className="p-3">
+                    <Input
+                      id="expenseReserve"
+                      name="expenseReserve"
+                      type="number"
+                      value={formData.expenseReserve}
+                      onChange={handleChange}
+                      placeholder="0.00"
+                    />
+                  </td>
+                </tr>
                 <tr className="border-t bg-muted font-medium">
                   <td className="p-3">รวมประมาณการรายจ่าย</td>
                   <td className="p-3">
-                    <Input type="number" placeholder="0.00" readOnly />
+                    <Input
+                      type="number"
+                      placeholder="0.00"
+                      readOnly
+                      value={calculateExpenseTotal()}
+                    />
                   </td>
                 </tr>
               </tbody>

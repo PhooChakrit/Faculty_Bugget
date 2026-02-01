@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
-import { Collaborator, Manager, FormData, Notes } from "../add-project/types";
+import { Collaborator, FormData, Notes } from "../add-project/types";
 
 // Import Sections
+import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
-import { CollaboratorsSection } from "./components/sections/CollaboratorsSection";
-import { ManagersSection } from "./components/sections/ManagersSection";
-import { DatesVenueSection } from "./components/sections/DatesVenueSection";
-import { ProjectDetailsSection } from "./components/sections/ProjectDetailsSection";
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
 import { BudgetSourcesSection } from "./components/sections/BudgetSourcesSection";
 import { BudgetTableSection } from "./components/sections/BudgetTableSection";
@@ -51,7 +48,7 @@ const strategyOptions = [
 ];
 
 export default function ViewProjectPage() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData] = useState<FormData>({
     receiptNumber: "วจบ-2026-001",
     projectNameThai: "โครงการอบรมเชิงปฏิบัติการด้านวิทยาศาสตร์สำหรับนิสิต",
     projectNameEng: "Science Workshop Training Program for Students",
@@ -82,19 +79,22 @@ export default function ViewProjectPage() {
     budgetSourceExtPrivate: "30000",
     budgetSourceExtForeign: "0",
     budgetSourceInternal: "20000",
+    incomeSupport: "30000",
+    incomeRegistration: "70000",
+    expenseRemuneration: "20000",
+    expenseSupplies: "30000",
+    expenseMaterials: "25000",
+    expenseUtilities: "10000",
+    expenseSubsidy: "10000",
+    expenseReserve: "5000",
   });
 
-  const [collaborators, setCollaborators] = useState<Collaborator[]>([
+  const [collaborators] = useState<Collaborator[]>([
     { id: 1, name: "ภาควิชาเคมี" },
     { id: 2, name: "ศูนย์เครื่องมือวิทยาศาสตร์" },
   ]);
 
-  const [managers, setManagers] = useState<Manager[]>([
-    { id: 1, name: "ดร.วิภา สุขใจ", position: "ผู้จัดการโครงการ" },
-    { id: 2, name: "อ.สมศรี ดีมาก", position: "ผู้ประสานงาน" },
-  ]);
-
-  const [notes, setNotes] = useState<Notes>({
+  const [notes] = useState<Notes>({
     note1: false,
     note2: true,
     note3: false,
@@ -116,18 +116,13 @@ export default function ViewProjectPage() {
           </div>
 
           <div className="space-y-6">
+            <ReceiptInfoSection formData={formData} />
+
             <BasicInfoSection
               formData={formData}
               departmentOptions={departmentOptions}
+              collaborators={collaborators}
             />
-
-            <CollaboratorsSection collaborators={collaborators} />
-
-            <ManagersSection managers={managers} />
-
-            <DatesVenueSection formData={formData} />
-
-            <ProjectDetailsSection formData={formData} />
 
             <ClassificationsSection
               formData={formData}
@@ -138,7 +133,7 @@ export default function ViewProjectPage() {
 
             <BudgetSourcesSection formData={formData} />
 
-            <BudgetTableSection />
+            <BudgetTableSection formData={formData} />
 
             <NotesSection notes={notes} />
           </div>

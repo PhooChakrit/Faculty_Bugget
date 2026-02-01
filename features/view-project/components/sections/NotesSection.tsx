@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, X } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Check } from "lucide-react";
 import { Notes } from "@/features/add-project/types";
 
 interface NotesSectionProps {
@@ -28,9 +28,6 @@ export function NotesSection({ notes }: NotesSectionProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>หมายเหตุ</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-4">
         {noteItems.map((item) => (
           <div key={item.key} className="flex items-start space-x-3">
