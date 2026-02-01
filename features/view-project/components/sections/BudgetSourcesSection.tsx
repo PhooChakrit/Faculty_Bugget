@@ -6,9 +6,7 @@ interface BudgetSourcesSectionProps {
   formData: FormData;
 }
 
-export function BudgetSourcesSection({
-  formData,
-}: BudgetSourcesSectionProps) {
+export function BudgetSourcesSection({ formData }: BudgetSourcesSectionProps) {
   const formatCurrency = (value: string) => {
     if (!value || value === "0") return "-";
     return `${parseFloat(value).toLocaleString("th-TH")} บาท`;

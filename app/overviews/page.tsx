@@ -1,21 +1,44 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
 import { Badge } from "@/components/ui/badge";
+import {
+  Pencil,
+  Save,
+  Loader2,
+  Search,
+  ArrowLeftRight,
+  Table as TableIcon,
+  Eye, // ✅ Added Eye icon
+  X, // ✅ Added X icon
+} from "lucide-react";
+
 /**
  * RBAC CONFIGURATION
  */
 type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
 
+// Permissions mapping
 const EDIT_PERMISSIONS: Record<string, UserRole> = {
+  receiptNumber: "งานวิจัย",
   boardMeetingNo: "งานวิจัย",
   boardMeetingDate: "งานวิจัย",
   deanDecisionNo: "งานวิจัย",
   deanDecisionDate: "งานวิจัย",
+  status1: "งานวิจัย",
+  status1Date: "งานวิจัย",
+  status2: "งานวิจัย",
+  status2Date: "งานวิจัย",
+  status3: "งานวิจัย",
+  status3Date: "งานวิจัย",
+  status4: "งานวิจัย",
+  status4Date: "งานวิจัย",
+  status5: "งานวิจัย",
+  status5Date: "งานวิจัย",
   vendorCode: "งานคลัง",
   costCenter: "งานแผน",
   maintenanceFee: "กายภาพ",
@@ -30,6 +53,7 @@ const ROLE_COLORS: Record<UserRole, string> = {
   ภาควิชา: "bg-slate-100 border-slate-300 text-slate-700",
 };
 
+// Data Interface
 interface ProjectData {
   id: string;
   receiptNumber: string;
@@ -49,340 +73,601 @@ interface ProjectData {
   utilities: string;
   academicFund: string;
   generalReserve: string;
-  amountGovExternal: string;
-  amountPrivateExternal: string;
-  amountForeignExternal: string;
-  amountUnivRevenue: string;
   startDate: string;
   endDate: string;
   fundOwner: string;
   vendorCode: string;
-  costCenter: string;
-  maintenanceFee: string;
-  electricityFee: string;
   serviceType: string;
   strategyType: string;
   targetGroup: string;
   participantCount: string;
   projectDescription: string;
-  status1: string; status1Date: string;
-  status2: string; status2Date: string;
-  status3: string; status3Date: string;
-  status4: string; status4Date: string;
-  status5: string; status5Date: string;
+  amountGovExternal: string;
+  amountPrivateExternal: string;
+  amountForeignExternal: string;
+  amountUnivRevenue: string;
+  status1: string;
+  status1Date: string;
+  status2: string;
+  status2Date: string;
+  status3: string;
+  status3Date: string;
+  status4: string;
+  status4Date: string;
+  status5: string;
+  status5Date: string;
   responsible: string;
   docNumber: string;
   docDate: string;
   docLink: string;
 }
 
+type ColumnDef = {
+  key: keyof ProjectData;
+  label: string;
+  width: string;
+  isNumeric?: boolean;
+};
+
+// MASTER COLUMN LIST
+const ALL_COLUMNS: ColumnDef[] = [
+  { key: "receiptNumber", label: "เลขที่รับ วจบ", width: "min-w-[120px]" },
+  { key: "projectCode", label: "รหัสโครงการ", width: "min-w-[100px]" },
+  {
+    key: "boardMeetingNo",
+    label: "ประชุมบอร์ด ครั้งที่",
+    width: "min-w-[100px]",
+  },
+  {
+    key: "boardMeetingDate",
+    label: "ประชุมบอร์ด วันที่",
+    width: "min-w-[100px]",
+  },
+  { key: "deanDecisionNo", label: "มติคณบดี ครั้งที่", width: "min-w-[100px]" },
+  { key: "deanDecisionDate", label: "มติคณบดี วันที่", width: "min-w-[100px]" },
+  { key: "purpose", label: "เพื่อดำเนินการ", width: "min-w-[150px]" },
+  { key: "memoTitle", label: "ชื่อบันทึกข้อความ", width: "min-w-[250px]" }, // ✅ Increased width slightly
+  { key: "department", label: "ภาควิชา/หน่วยงาน", width: "min-w-[120px]" },
+  { key: "projectHead", label: "หัวหน้าโครงการ", width: "min-w-[120px]" },
+  {
+    key: "totalBudget",
+    label: "งบประมาณรวม",
+    width: "min-w-[100px]",
+    isNumeric: true,
+  },
+  {
+    key: "compensation",
+    label: "ค่าตอบแทน",
+    width: "min-w-[100px]",
+    isNumeric: true,
+  },
+  {
+    key: "operatingCost",
+    label: "ค่าใช้สอย",
+    width: "min-w-[100px]",
+    isNumeric: true,
+  },
+  {
+    key: "materialCost",
+    label: "ค่าวัสดุ",
+    width: "min-w-[100px]",
+    isNumeric: true,
+  },
+  {
+    key: "utilities",
+    label: "ค่าสาธารณูปโภค (≥5%)",
+    width: "min-w-[120px]",
+    isNumeric: true,
+  },
+  {
+    key: "academicFund",
+    label: "เงินอุดหนุนพัฒนาวิชาการ (คณะ) (≥10%)",
+    width: "min-w-[150px]",
+    isNumeric: true,
+  },
+  {
+    key: "generalReserve",
+    label: "เงินสำรองทั่วไป (≥5%)",
+    width: "min-w-[120px]",
+    isNumeric: true,
+  },
+  { key: "startDate", label: "วันเริ่มต้น", width: "min-w-[100px]" },
+  { key: "endDate", label: "วันสิ้นสุด", width: "min-w-[100px]" },
+  { key: "fundOwner", label: "เจ้าของแหล่งทุน", width: "min-w-[120px]" },
+  { key: "vendorCode", label: "รหัสเจ้าหนี้ (Vendor)", width: "min-w-[120px]" },
+  {
+    key: "serviceType",
+    label: "ประเภทงานบริการวิชาการ",
+    width: "min-w-[150px]",
+  },
+  {
+    key: "strategyType",
+    label: "ประเภทยุทธศาสตร์ (คก.บริการวิชาการ)",
+    width: "min-w-[150px]",
+  },
+  { key: "targetGroup", label: "กลุ่มเป้าหมาย", width: "min-w-[120px]" },
+  {
+    key: "participantCount",
+    label: "จำนวน ผู้รับบริการ",
+    width: "min-w-[100px]",
+    isNumeric: true,
+  },
+  {
+    key: "projectDescription",
+    label: "รายละเอียดโครงการแบบย่อ (200ตัวอักษร)",
+    width: "min-w-[250px]",
+  },
+  {
+    key: "amountGovExternal",
+    label: "ภายนอกภาครัฐ จำนวนเงิน(บาท)",
+    width: "min-w-[150px]",
+    isNumeric: true,
+  },
+  {
+    key: "amountPrivateExternal",
+    label: "ภายนอกภาคเอกชน จำนวนเงิน(บาท)",
+    width: "min-w-[150px]",
+    isNumeric: true,
+  },
+  {
+    key: "amountForeignExternal",
+    label: "ภายนอกต่างประเทศ จำนวนเงิน(บาท)",
+    width: "min-w-[150px]",
+    isNumeric: true,
+  },
+  {
+    key: "amountUnivRevenue",
+    label: "รายได้มหาวิทยาลัย จำนวนเงิน(บาท)",
+    width: "min-w-[150px]",
+    isNumeric: true,
+  },
+  { key: "status1", label: "สถานะการดำเนินงาน 1", width: "min-w-[150px]" },
+  { key: "status1Date", label: "วันที่", width: "min-w-[100px]" },
+  { key: "status2", label: "สถานะการดำเนินงาน 2", width: "min-w-[150px]" },
+  { key: "status2Date", label: "วันที่", width: "min-w-[100px]" },
+  { key: "status3", label: "สถานะการดำเนินงาน 3", width: "min-w-[150px]" },
+  { key: "status3Date", label: "วันที่", width: "min-w-[100px]" },
+  { key: "status4", label: "สถานะการดำเนินงาน 4", width: "min-w-[150px]" },
+  { key: "status4Date", label: "วันที่", width: "min-w-[100px]" },
+  { key: "status5", label: "สถานะการดำเนินงาน 5", width: "min-w-[150px]" },
+  { key: "status5Date", label: "วันที่", width: "min-w-[100px]" },
+  { key: "responsible", label: "ผู้รับผิดชอบ", width: "min-w-[120px]" },
+  { key: "docNumber", label: "เลขที่หนังสือ", width: "min-w-[120px]" },
+  { key: "docDate", label: "วันที่เลขที่หนังสือ", width: "min-w-[120px]" },
+  {
+    key: "docLink",
+    label: "LINK ประกาศเอกสารที่เกี่ยวข้อง",
+    width: "min-w-[200px]",
+  },
+];
+
 export default function ComprehensiveProjectPage() {
-  const [userRole, setUserRole] = useState<UserRole>("ภาควิชา");
-  const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null);
+  const [userRole, setUserRole] = useState<UserRole>("งานวิจัย");
   const [searchQuery, setSearchQuery] = useState("");
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] =
+    useState<string>("ทั้งหมด");
+
+  // ✅ State for "Full Text View" Modal
+  const [viewingFullText, setViewingFullText] = useState<{
+    title: string;
+    text: string;
+  } | null>(null);
+
   useEffect(() => {
     const loadMockData = async () => {
-        const response = await fetch('/mock.json');
-        const data = await response.json();
-        setProjects(data);
+      const response = await fetch("/mock.json");
+      const data = await response.json();
+      setProjects(data);
     };
     loadMockData();
-}, []);
+  }, []);
 
-  const handleUpdate = (id: string, field: keyof ProjectData, value: string) => {
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
+  const handleUpdate = (
+    id: string,
+    field: keyof ProjectData,
+    value: string,
+  ) => {
+    setProjects((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, [field]: value } : p)),
+    );
   };
 
-  const filteredProjects = projects.filter(project => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      project.projectCode.toLowerCase().includes(query) ||
-      project.memoTitle.toLowerCase().includes(query) ||
-      project.department.toLowerCase().includes(query) ||
-      project.projectHead.toLowerCase().includes(query) ||
-      project.receiptNumber.toLowerCase().includes(query)
-    );
-  });
+  const toggleSave = async () => {
+    if (isEditMode) {
+      setIsSaving(true);
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setIsSaving(false);
+      setIsEditMode(false);
+    } else {
+      setIsEditMode(true);
+    }
+  };
 
-  // Pagination calculations
+  const departments = useMemo(() => {
+    const uniqueDepts = new Set(
+      projects.map((p) => p.department).filter(Boolean),
+    );
+    return ["ทั้งหมด", ...Array.from(uniqueDepts).sort()];
+  }, [projects]);
+
+  const filteredProjects = useMemo(() => {
+    return projects.filter((project) => {
+      // Department filter
+      if (
+        selectedDepartment !== "ทั้งหมด" &&
+        project.department !== selectedDepartment
+      ) {
+        return false;
+      }
+
+      // Search filter
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        project.receiptNumber.toLowerCase().includes(query) ||
+        project.projectCode.toLowerCase().includes(query) ||
+        project.memoTitle.toLowerCase().includes(query) ||
+        project.projectHead.toLowerCase().includes(query)
+      );
+    });
+  }, [projects, searchQuery, selectedDepartment]);
+
+  const tableColumns = useMemo(() => {
+    const primaryKey = "receiptNumber";
+    const primaryCol = ALL_COLUMNS.find((c) => c.key === primaryKey)!;
+    const otherCols = ALL_COLUMNS.filter((c) => c.key !== primaryKey);
+
+    if (!isEditMode) {
+      return [primaryCol, ...otherCols];
+    } else {
+      const editableCols = otherCols.filter(
+        (c) => EDIT_PERMISSIONS[c.key] === userRole,
+      );
+      const readonlyCols = otherCols.filter(
+        (c) => EDIT_PERMISSIONS[c.key] !== userRole,
+      );
+      return [primaryCol, ...editableCols, ...readonlyCols];
+    }
+  }, [isEditMode, userRole]);
+
+  // Pagination
   const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentProjects = filteredProjects.slice(startIndex, endIndex);
+  const currentProjects = filteredProjects.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
-  // Reset to page 1 when search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
+  const DataCell = ({
+    project,
+    col,
+  }: {
+    project: ProjectData;
+    col: ColumnDef;
+  }) => {
+    const roleRequired = EDIT_PERMISSIONS[col.key as string];
+    const canEdit = isEditMode && roleRequired === userRole;
+    const value = project[col.key];
 
-  const DataCell = ({ project, field, label, isNumeric = false }: { project: ProjectData, field: keyof ProjectData, label?: string, isNumeric?: boolean }) => {
-    const canEdit = EDIT_PERMISSIONS[field] === userRole;
-    const isEditing = editingCell?.id === project.id && editingCell?.field === field;
-    const value = project[field];
-    const ownerRole = EDIT_PERMISSIONS[field];
+    // ✅ Edit Mode: Input
+    if (canEdit) {
+      return (
+        <Input
+          value={value as string}
+          onChange={(e) => handleUpdate(project.id, col.key, e.target.value)}
+          className={`h-7 text-sm border shadow-sm ${roleRequired ? `border-${ROLE_COLORS[roleRequired].split(" ")[1].replace("border-", "")}` : "border-slate-300"}`}
+        />
+      );
+    }
 
+    // ✅ View Mode: Special case for "memoTitle" (ชื่อบันทึกข้อความ)
+    if (col.key === "memoTitle" && value) {
+      return (
+        <div className="flex items-center justify-between group h-7 gap-2 px-2">
+          <span
+            className="truncate text-xs text-slate-700 max-w-[180px]"
+            title={value as string}
+          >
+            {value}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
+            onClick={() =>
+              setViewingFullText({
+                title: "ชื่อบันทึกข้อความ",
+                text: value as string,
+              })
+            }
+          >
+            <Eye className="h-3 w-3" />
+          </Button>
+        </div>
+      );
+    }
+
+    // ✅ View Mode: Standard
     return (
-      <div 
-        onClick={() => canEdit && setEditingCell({ id: project.id, field })}
-        className={`flex flex-col px-3 py-2 min-h-[48px] justify-center transition-all ${canEdit ? "cursor-pointer hover:bg-blue-50 hover:shadow-sm group" : "hover:bg-slate-50/50"}`}
+      <div
+        className={`text-xs px-2 py-1 truncate h-7 flex items-center ${!value ? "text-slate-300 italic" : "text-slate-700"} ${col.isNumeric ? "justify-end font-mono" : ""}`}
       >
-        {label && (
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[9px] uppercase text-slate-500 font-semibold tracking-wide">{label}</span>
-            {ownerRole && (
-              <Badge variant="outline" className={`text-[7px] h-4 px-1 ${canEdit ? 'bg-blue-500 text-white border-blue-600' : 'bg-slate-100 text-slate-500 border-slate-300'}`}>
-                {ownerRole}
-              </Badge>
-            )}
-          </div>
-        )}
-        {isEditing ? (
-          <Input 
-            autoFocus 
-            className="h-7 text-xs px-2 border-blue-400 focus:ring-2 focus:ring-blue-200" 
-            value={value} 
-            onBlur={() => setEditingCell(null)}
-            onChange={(e) => handleUpdate(project.id, field, e.target.value)}
-          />
+        {col.key === "docLink" && value ? (
+          <a
+            href={value as string}
+            target="_blank"
+            className="text-blue-600 underline hover:text-blue-800 flex items-center gap-1"
+          >
+            📎 เปิดลิงก์
+          </a>
         ) : (
-          <div className="flex items-center justify-between">
-            <span className={`text-xs ${!value ? "text-slate-400 italic" : "text-slate-700"} ${canEdit ? "text-blue-700 font-semibold" : ""} ${isNumeric ? "font-mono" : ""}`}>
-              {value || "ไม่มีข้อมูล"}
-            </span>
-            {canEdit && <span className="text-xs opacity-0 group-hover:opacity-100 text-blue-500 transition-opacity">✎</span>}
-          </div>
+          value || "-"
         )}
       </div>
     );
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="flex min-h-screen bg-slate-50 font-sans relative">
       <Sidebar />
-      <main className="flex-1 p-8 overflow-hidden flex flex-col">
-        {/* Header Section */}
-        <div className="flex justify-between items-start mb-6">
-          <header>
-            <h1 className="text-2xl font-bold text-slate-800 mb-2">ระบบติดตามโครงการบริการวิชาการ</h1>
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className={`${ROLE_COLORS[userRole]} border-2 px-3 py-1`}>
-                <span className="text-xs font-semibold">บทบาท: {userRole}</span>
-              </Badge>
-              <span className="text-xs text-slate-500">•</span>
-              <span className="text-xs text-slate-500">{filteredProjects.length} โครงการ</span>
+      <main className="flex-1 flex flex-col h-screen overflow-hidden">
+        {/* Header */}
+        <header className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0 shadow-sm z-30">
+          <div className="flex items-center gap-4">
+            <div className="bg-blue-600 p-2 rounded-lg shadow-sm">
+              <TableIcon className="h-5 w-5 text-white" />
             </div>
-          </header>
-          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 shadow-md">
-            + เพิ่มโครงการ
-          </Button>
-        </div>
-
-        {/* Search & Role Switcher */}
-        <div className="flex gap-3 mb-4">
-          <div className="flex-1">
-            <Input 
-              placeholder="ค้นหา: รหัสโครงการ, ชื่อโครงการ, หน่วยงาน..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full shadow-sm"
-            />
+            <div>
+              <h1 className="text-lg font-bold text-slate-800">
+                ระบบติดตามโครงการ
+              </h1>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                  {filteredProjects.length} รายการ
+                </span>
+                {isEditMode && (
+                  <span className="text-[10px] text-green-600 flex items-center gap-1 animate-pulse">
+                    <ArrowLeftRight className="h-3 w-3" />{" "}
+                    จัดเรียงคอลัมน์อัตโนมัติเพื่อการแก้ไข
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
-          {/* <div className="flex gap-2">
-            {(["ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"] as UserRole[]).map((role) => (
-              <Button
-                key={role}
-                variant={userRole === role ? "default" : "outline"}
-                size="sm"
-                onClick={() => setUserRole(role)}
-                className="text-xs"
+
+          <div className="flex items-center gap-4">
+            {/* Role Switcher */}
+            <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-md border border-slate-200">
+              <span className="text-[10px] font-semibold text-slate-500 pl-2">
+                สิทธิ์:
+              </span>
+              <select
+                value={userRole}
+                onChange={(e) => setUserRole(e.target.value as UserRole)}
+                className="text-xs bg-white border-0 rounded px-2 py-1 cursor-pointer focus:ring-0 text-slate-700 shadow-sm"
               >
-                {role}
-              </Button>
-            ))}
-          </div> */}
-        </div>
+                {Object.keys(ROLE_COLORS).map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* Main Table */}
-        <Card className="flex-1 overflow-hidden border-slate-200 shadow-2xl rounded-lg bg-white p-0">
-          <div className="overflow-auto h-full">
-            <table className="w-full border-collapse table-fixed min-w-[2000px]">
-              <thead className="sticky top-0 z-10">
-                <tr className="bg-slate-800 text-white text-[10px] uppercase tracking-wider shadow-md">
-                  <th className="w-72 p-4 text-left font-bold">📋 ข้อมูลพื้นฐาน</th>
-                  <th className="w-64 p-4 text-left border-l border-slate-600 font-bold">📅 มติที่ประชุม</th>
-                  <th className="w-80 p-4 text-left border-l border-slate-600 font-bold">💰 งบประมาณ</th>
-                  <th className="w-72 p-4 text-left border-l border-slate-600 font-bold">🎯 แหล่งทุน</th>
-                  <th className="w-56 p-4 text-left border-l border-slate-600 font-bold">🔐 ข้อมูลตามสิทธิ์</th>
-                  <th className="w-80 p-4 text-left border-l border-slate-600 font-bold">📊 สถานะ</th>
-                  <th className="w-56 p-4 text-left border-l border-slate-600 font-bold">📄 เอกสาร</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 bg-white">
-                {currentProjects.length === 0 ? (
+            {/* Department Filter */}
+            <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-md border border-slate-200">
+              <span className="text-[10px] font-semibold text-slate-500 pl-2">
+                หน่วยงาน:
+              </span>
+              <select
+                value={selectedDepartment}
+                onChange={(e) => {
+                  setSelectedDepartment(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="text-xs bg-white border-0 rounded px-2 py-1 cursor-pointer focus:ring-0 text-slate-700 shadow-sm max-w-[180px]"
+              >
+                {departments.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="h-6 w-px bg-slate-300 mx-2" />
+
+            {/* Search */}
+            <div className="relative w-64">
+              <Search className="absolute left-2 top-2 h-4 w-4 text-slate-400" />
+              <Input
+                placeholder="ค้นหา: เลขรับ, รหัส, ชื่อ..."
+                className="pl-8 h-9 text-xs"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+
+            {/* Edit Button */}
+            <Button
+              onClick={toggleSave}
+              disabled={isSaving}
+              className={`h-9 min-w-[110px] shadow-sm transition-all duration-300 ${isEditMode ? "bg-green-600 hover:bg-green-700 ring-2 ring-green-100" : "bg-blue-600 hover:bg-blue-700"}`}
+            >
+              {isSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : isEditMode ? (
+                <Save className="h-4 w-4 mr-2" />
+              ) : (
+                <Pencil className="h-4 w-4 mr-2" />
+              )}
+              {isSaving
+                ? "บันทึก..."
+                : isEditMode
+                  ? "บันทึกข้อมูล"
+                  : "แก้ไขข้อมูล"}
+            </Button>
+          </div>
+        </header>
+
+        {/* Table Container */}
+        <div className="flex-1 overflow-auto bg-slate-100 p-4 relative">
+          <Card className="shadow-md border-slate-200 bg-white h-full flex flex-col rounded-lg overflow-hidden">
+            <div className="overflow-auto flex-1 relative">
+              <table className="w-full border-collapse">
+                <thead className="bg-slate-800 text-white sticky top-0 z-20 shadow-md">
                   <tr>
-                    <td colSpan={7} className="p-12 text-center text-slate-400">
-                      <div className="text-4xl mb-2">🔍</div>
-                      <div className="text-sm">ไม่พบโครงการ</div>
-                    </td>
+                    {tableColumns.map((col, idx) => {
+                      const isPrimary = col.key === "receiptNumber";
+                      const isEditable =
+                        isEditMode && EDIT_PERMISSIONS[col.key] === userRole;
+
+                      return (
+                        <th
+                          key={col.key}
+                          className={`
+                                    p-2 text-[10px] font-medium border-r border-slate-700 uppercase tracking-wider text-left
+                                    ${isPrimary ? "sticky left-0 z-30 bg-slate-900 border-r-2 border-slate-500 shadow-[2px_0_5px_rgba(0,0,0,0.3)]" : "bg-slate-800"}
+                                    ${isEditable ? "bg-blue-900/50 text-blue-100" : "text-slate-300"}
+                                    ${col.width}
+                                `}
+                        >
+                          <div className="flex flex-col gap-0.5">
+                            <span>{col.label}</span>
+                          </div>
+                        </th>
+                      );
+                    })}
                   </tr>
-                ) : (
-                  currentProjects.map((project) => (
-                  <tr key={project.id} className="align-top hover:bg-blue-50/20 transition-colors group">
-                    <td className="p-4 bg-slate-50/50">
-                      <div className="space-y-3">
-                        <Badge className="text-[9px] bg-blue-600 text-white">{project.projectCode}</Badge>
-                        <div className="text-xs font-semibold text-slate-800 leading-snug">{project.memoTitle}</div>
-                        <div className="space-y-1 pt-2 border-t border-slate-200 text-[10px] text-slate-600">
-                          <div><span className="font-semibold">เลขรับ:</span> {project.receiptNumber}</div>
-                          <div><span className="font-semibold">หน่วยงาน:</span> {project.department}</div>
-                          <div><span className="font-semibold">หัวหน้า:</span> {project.projectHead}</div>
-                        </div>
-                      </div>
-                    </td>
+                </thead>
 
-                    <td className="p-0 border-l border-slate-200 divide-y divide-slate-100">
-                      <div className="bg-blue-50/30"><DataCell project={project} field="boardMeetingNo" label="ประชุมบอร์ด ครั้งที่" /></div>
-                      <div className="bg-blue-50/30"><DataCell project={project} field="boardMeetingDate" label="วันที่ประชุมบอร์ด" /></div>
-                      <div><DataCell project={project} field="deanDecisionNo" label="มติคณบดี ครั้งที่" /></div>
-                      <div><DataCell project={project} field="deanDecisionDate" label="วันที่มติคณบดี" /></div>
-                    </td>
+                <tbody className="divide-y divide-slate-100">
+                  {currentProjects.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={tableColumns.length}
+                        className="p-10 text-center text-slate-400"
+                      >
+                        ไม่พบข้อมูล
+                      </td>
+                    </tr>
+                  ) : (
+                    currentProjects.map((project, idx) => (
+                      <tr
+                        key={project.id}
+                        className={`group transition-colors ${idx % 2 === 0 ? "bg-white" : "bg-slate-50"}`}
+                      >
+                        {tableColumns.map((col) => {
+                          const isPrimary = col.key === "receiptNumber";
+                          const isEditable =
+                            isEditMode &&
+                            EDIT_PERMISSIONS[col.key] === userRole;
 
-                    <td className="p-3 border-l border-slate-200 bg-green-50/20">
-                      <div className="space-y-2">
-                        <div className="bg-white p-2 rounded border border-green-200 flex justify-between">
-                          <span className="text-[10px] font-bold">งบรวม:</span>
-                          <span className="text-xs font-mono font-bold text-green-700">{project.totalBudget}</span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-1">
-                          <DataCell project={project} field="compensation" label="ค่าตอบแทน" isNumeric />
-                          <DataCell project={project} field="operatingCost" label="ค่าใช้สอย" isNumeric />
-                          <DataCell project={project} field="materialCost" label="ค่าวัสดุ" isNumeric />
-                          <DataCell project={project} field="utilities" label="สาธารณูปโภค" isNumeric />
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="p-3 border-l border-slate-200 bg-amber-50/20">
-                      <div className="text-[10px] text-slate-700 bg-white/80 p-2 rounded border border-amber-100 mb-2">
-                        {project.projectDescription}
-                      </div>
-                      <div className="grid grid-cols-1 gap-1">
-                        <div className="flex justify-between text-[10px] border-b pb-1"><span>ภาครัฐ:</span> <span>{project.amountGovExternal || "0.00"}</span></div>
-                        <div className="flex justify-between text-[10px]"><span>รายได้ ม.:</span> <span>{project.amountUnivRevenue || "0.00"}</span></div>
-                      </div>
-                    </td>
-
-                    <td className="p-0 border-l border-slate-200 divide-y divide-slate-100">
-                      <div className="bg-amber-50/40"><DataCell project={project} field="vendorCode" label="รหัสเจ้าหนี้" /></div>
-                      <div className="bg-green-50/40"><DataCell project={project} field="costCenter" label="ศูนย์ต้นทุน" /></div>
-                      <div className="bg-purple-50/40"><DataCell project={project} field="maintenanceFee" label="ค่าบำรุงสถานที่" /></div>
-                      <div className="bg-purple-50/40"><DataCell project={project} field="electricityFee" label="ค่าไฟฟ้า" /></div>
-                    </td>
-
-                    <td className="p-3 border-l border-slate-200 bg-slate-50/30">
-                      <div className="space-y-2">
-                        {[1, 2, 3].map((num) => {
-                          const statusKey = `status${num}` as keyof ProjectData;
-                          const dateKey = `status${num}Date` as keyof ProjectData;
-                          if (!project[statusKey]) return null;
                           return (
-                            <div key={num} className="border-l-2 border-blue-400 pl-2 bg-white p-1 rounded shadow-sm">
-                              <div className="text-[10px] font-bold">{project[statusKey]}</div>
-                              <div className="text-[9px] text-slate-500">{project[dateKey]}</div>
-                            </div>
+                            <td
+                              key={col.key}
+                              className={`
+                                    p-1 border-r border-slate-100 align-middle
+                                    ${isPrimary ? "sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r-2 border-slate-200 shadow-[2px_0_5px_rgba(0,0,0,0.05)]" : ""}
+                                    ${isEditable ? "bg-blue-50/30" : ""}
+                                `}
+                            >
+                              <DataCell project={project} col={col} />
+                            </td>
                           );
                         })}
-                      </div>
-                    </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-                    <td className="p-3 border-l border-slate-200 space-y-2">
-                      <DataCell project={project} field="docNumber" label="เลขที่หนังสือ" />
-                      <div className="pt-2">
-                        {project.docLink ? (
-                          <a href={project.docLink} target="_blank" className="text-[10px] text-blue-600 underline">📎 ดูประกาศเอกสาร</a>
-                        ) : (
-                          <span className="text-[10px] text-slate-400 italic">ไม่มีลิงก์เอกสาร</span>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                  ))
+            {/* Footer */}
+            <div className="bg-white border-t border-slate-200 px-4 py-2 flex justify-between items-center shrink-0 z-20">
+              <div className="text-xs text-slate-500 flex items-center gap-2">
+                <span>
+                  แสดง {startIndex + 1}-
+                  {Math.min(startIndex + itemsPerPage, filteredProjects.length)}{" "}
+                  จาก {filteredProjects.length}
+                </span>
+                <div className="h-3 w-px bg-slate-300" />
+                <span className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-slate-900 rounded-full" />{" "}
+                  คือคอลัมน์หลัก
+                </span>
+                {isEditMode && (
+                  <span className="flex items-center gap-1 text-green-600">
+                    <div className="w-2 h-2 bg-blue-100 border border-blue-300 rounded-full" />{" "}
+                    พื้นที่แก้ไขข้อมูล
+                  </span>
                 )}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="mt-4 flex items-center justify-between bg-white rounded-lg shadow-md p-4 border border-slate-200">
-            <div className="text-xs text-slate-600">
-              แสดง {startIndex + 1}-{Math.min(endIndex, filteredProjects.length)} จาก {filteredProjects.length} โครงการ
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="text-xs"
-              >
-                ← ก่อนหน้า
-              </Button>
-              
-              <div className="flex gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter(page => {
-                    // Show first page, last page, current page, and pages around current
-                    return page === 1 || 
-                           page === totalPages || 
-                           Math.abs(page - currentPage) <= 1;
-                  })
-                  .map((page, idx, arr) => {
-                    // Add ellipsis if there's a gap
-                    const showEllipsis = idx > 0 && page - arr[idx - 1] > 1;
-                    return (
-                      <div key={page} className="flex items-center">
-                        {showEllipsis && <span className="px-2 text-slate-400">...</span>}
-                        <Button
-                          variant={currentPage === page ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setCurrentPage(page)}
-                          className="text-xs min-w-[32px]"
-                        >
-                          {page}
-                        </Button>
-                      </div>
-                    );
-                  })}
               </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-                className="text-xs"
-              >
-                ถัดไป →
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((c) => Math.max(1, c - 1))}
+                  disabled={currentPage === 1}
+                  className="h-7 text-xs"
+                >
+                  ก่อนหน้า
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((c) => Math.min(totalPages, c + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="h-7 text-xs"
+                >
+                  ถัดไป
+                </Button>
+              </div>
             </div>
+          </Card>
+        </div>
+
+        {/* ✅ Full Text Modal Overlay */}
+        {viewingFullText && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <Card className="w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-200">
+              <div className="flex justify-between items-center border-b p-4 bg-slate-50 rounded-t-lg">
+                <h3 className="font-semibold text-slate-800">
+                  {viewingFullText.title}
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full hover:bg-slate-200"
+                  onClick={() => setViewingFullText(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="p-6 max-h-[60vh] overflow-y-auto">
+                <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
+                  {viewingFullText.text}
+                </p>
+              </div>
+              <div className="p-4 border-t bg-slate-50 rounded-b-lg flex justify-end">
+                <Button onClick={() => setViewingFullText(null)}>
+                  ปิดหน้าต่าง
+                </Button>
+              </div>
+            </Card>
           </div>
         )}
-
-        {/* Footer */}
-        <footer className="mt-4 flex items-center justify-between text-[10px] text-slate-500">
-          <div className="flex gap-4">
-            <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-blue-500" /> สิทธิ์แก้ไข</div>
-            <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-slate-300" /> ดูอย่างเดียว</div>
-          </div>
-          <span>* คลิกที่ช่องข้อมูลที่เป็นสีน้ำเงินเพื่อทำการแก้ไข</span>
-        </footer>
       </main>
     </div>
   );
