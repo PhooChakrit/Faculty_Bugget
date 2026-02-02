@@ -26,7 +26,6 @@ export function ProjectDetailsSection({
               id="participantCount"
               name="participantCount"
               type="number"
-              placeholder="ระบุจำนวนผู้เข้าร่วม"
               value={formData.participantCount}
               onChange={handleChange}
             />
@@ -36,7 +35,6 @@ export function ProjectDetailsSection({
             <Input
               id="venue"
               name="venue"
-              placeholder="ระบุสถานที่จัดโครงการ"
               value={formData.venue}
               onChange={handleChange}
             />
@@ -50,7 +48,6 @@ export function ProjectDetailsSection({
           <Textarea
             id="committee"
             name="committee"
-            placeholder="ระบุรายชื่อคณะกรรมการดำเนินงาน (ถ้ามี)"
             value={formData.committee}
             onChange={handleChange}
             rows={3}
@@ -64,7 +61,6 @@ export function ProjectDetailsSection({
           <Textarea
             id="expectedBenefits"
             name="expectedBenefits"
-            placeholder="ระบุประโยชน์ที่คาดว่าจะได้รับจากโครงการ"
             value={formData.expectedBenefits}
             onChange={handleChange}
             rows={4}
