@@ -60,9 +60,7 @@ export function BasicInfoSection({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="projectNameEng">
-            ชื่อโครงการภาษาอังกฤษ <span className="text-red-500">*</span>
-          </Label>
+          <Label htmlFor="projectNameEng">ชื่อโครงการภาษาอังกฤษ</Label>
           <Input
             id="projectNameEng"
             name="projectNameEng"
@@ -106,6 +104,26 @@ export function BasicInfoSection({
           />
         </div>
         <div className="space-y-2">
+          <Label htmlFor="coLeaderName">ชื่อผู้ประสานโครงการ</Label>
+          <Input
+            id="coLeaderName"
+            name="coLeaderName"
+            type="text"
+            value={formData.coLeaderName}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="coLeaderEmail">อีเมลผู้ประสานโครงการ</Label>
+          <Input
+            id="coLeaderEmail"
+            name="coLeaderEmail"
+            type="email"
+            value={formData.coLeaderEmail}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="space-y-2">
           <Label>
             หน่วยงาน/ภาควิชาที่รับผิดชอบ <span className="text-red-500">*</span>
           </Label>
@@ -127,9 +145,7 @@ export function BasicInfoSection({
             </SelectContent>
           </Select>
         </div>
-        <Label>
-          ผู้ร่วมโครงการ
-        </Label>
+        <Label>ร่วมกับ (ถ้ามี)</Label>
         {collaborators.map((collab, index) => (
           <div key={collab.id} className="flex items-center gap-3">
             <span className="text-muted-foreground w-6">{index + 1}.</span>
@@ -164,12 +180,13 @@ export function BasicInfoSection({
 
         <Separator />
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="startDate">
-              วันที่เริ่มต้น <span className="text-red-500">*</span>
-            </Label>
+        <div className="space-y-2">
+          <Label>
+            วันที่จัดโครงการ <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex items-center gap-3">
             <DatePicker
+              className="flex-1"
               value={
                 formData.startDate ? new Date(formData.startDate) : undefined
               }
@@ -180,12 +197,9 @@ export function BasicInfoSection({
                 }))
               }
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="endDate">
-              วันที่สิ้นสุด <span className="text-red-500">*</span>
-            </Label>
+            <span className="text-sm whitespace-nowrap">ถึง</span>
             <DatePicker
+              className="flex-1"
               value={formData.endDate ? new Date(formData.endDate) : undefined}
               onChange={(date) =>
                 setFormData((prev) => ({
@@ -235,7 +249,7 @@ export function BasicInfoSection({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="implementationPlan">แผนการดำเนินการ</Label>
+          <Label htmlFor="implementationPlan">ขั้นตอนการดำเนินการ</Label>
           <Textarea
             id="implementationPlan"
             name="implementationPlan"
@@ -246,7 +260,9 @@ export function BasicInfoSection({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="projectDetails">รายละเอียดโครงการ</Label>
+          <Label htmlFor="projectDetails">
+            รายละเอียดโครงการ <span className="text-red-500">*</span>
+          </Label>
           <p className="text-sm text-muted-foreground">ไม่เกิน 200 ตัวอักษร</p>
           <Textarea
             id="projectDetails"

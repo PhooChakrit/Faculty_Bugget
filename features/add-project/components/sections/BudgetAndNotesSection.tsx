@@ -125,7 +125,7 @@ export function BudgetAndNotesSection({
 
         {/* Income Estimates Section */}
         <div>
-          <h3 className="font-medium mb-3">ประมาณการรายรับ</h3>
+          <h3 className="font-medium mb-3">ประมาณการรายรับ <span className="text-red-500">*</span></h3>
           <div className="border rounded-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-muted">
@@ -176,7 +176,7 @@ export function BudgetAndNotesSection({
 
         {/* Expense Estimates Section */}
         <div>
-          <h3 className="font-medium mb-3">ประมาณการรายจ่าย</h3>
+          <h3 className="font-medium mb-3">ประมาณการรายจ่าย <span className="text-red-500">*</span></h3>
           <div className="border rounded-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-muted">

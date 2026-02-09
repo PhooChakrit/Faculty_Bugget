@@ -55,6 +55,8 @@ export default function ViewProjectPage() {
     leaderPosition: "อาจารย์ประจำภาควิชา",
     department: "sci",
     leaderEmail: "somchai.j@chula.ac.th",
+    coLeaderName: "",
+    coLeaderEmail: "",
     startDate: "2026-02-01",
     endDate: "2026-02-28",
     background:

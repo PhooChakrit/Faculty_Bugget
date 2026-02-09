@@ -55,6 +55,8 @@ export default function AddProjectPage() {
     leaderPosition: "",
     department: "",
     leaderEmail: "",
+    coLeaderName: "",
+    coLeaderEmail: "",
     startDate: "",
     endDate: "",
     background: "",

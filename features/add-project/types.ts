@@ -17,6 +17,8 @@ export interface FormData {
   leaderPosition: string;
   department: string;
   leaderEmail: string;
+  coLeaderName: string;
+  coLeaderEmail: string;
   startDate: string;
   endDate: string;
   background: string;

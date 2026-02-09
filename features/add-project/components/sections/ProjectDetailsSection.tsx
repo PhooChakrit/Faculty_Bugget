@@ -19,32 +19,41 @@ export function ProjectDetailsSection({
   return (
     <Card>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="participantCount">ผู้เข้าร่วม (จำนวนคน)</Label>
+        <div className="space-y-2">
+          <Label>ผู้เข้าร่วม</Label>
+          <div className="flex items-center gap-3">
             <Input
               id="participantCount"
               name="participantCount"
               type="number"
+              className="flex-1"
               value={formData.participantCount}
               onChange={handleChange}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="venue">สถานที่จัดโครงการ/อบรม</Label>
+            <span className="text-sm whitespace-nowrap">จำนวน</span>
             <Input
               id="venue"
               name="venue"
+              className="flex-1"
               value={formData.venue}
               onChange={handleChange}
             />
+            <span className="text-sm whitespace-nowrap">ท่าน</span>
           </div>
         </div>
 
         <Separator />
-
         <div className="space-y-2">
-          <Label htmlFor="committee">คณะกรรมการดำเนินงานโครงการ (ถ้ามี)</Label>
+          <Label htmlFor="venue">สถานที่จัดโครงการ/อบรม <span className="text-red-500">*</span></Label>
+          <Input
+            id="venue"
+            name="venue"
+            value={formData.venue}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="committee">คณะกรรมการดำเนินงานโครงการ <span className="text-red-500">*</span></Label>
           <Textarea
             id="committee"
             name="committee"
@@ -57,7 +66,7 @@ export function ProjectDetailsSection({
         <Separator />
 
         <div className="space-y-2">
-          <Label htmlFor="expectedBenefits">ประโยชน์ที่คาดว่าจะได้รับ</Label>
+          <Label htmlFor="expectedBenefits">ประโยชน์ที่คาดว่าจะได้รับ <span className="text-red-500">*</span></Label>
           <Textarea
             id="expectedBenefits"
             name="expectedBenefits"
