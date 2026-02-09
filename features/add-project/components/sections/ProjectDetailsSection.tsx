@@ -75,6 +75,26 @@ export function ProjectDetailsSection({
             rows={4}
           />
         </div>
+                <div className="space-y-2">
+          <Label htmlFor="expectedBenefits">ประโยชน์ที่คาดว่าจะได้รับ <span className="text-red-500">*</span></Label>
+          <Textarea
+            id="expectedBenefits"
+            name="expectedBenefits"
+            value={formData.expectedBenefits}
+            onChange={handleChange}
+            rows={4}
+          />
+        </div>        
+        <div className="space-y-2">
+          <Label htmlFor="expectedBenefits">การประเมินโครงการ (ถ้ามี)</Label>
+          <Textarea
+            id="expectedBenefits"
+            name="expectedBenefits"
+            value={formData.expectedBenefits}
+            onChange={handleChange}
+            rows={4}
+          />
+        </div>
       </CardContent>
     </Card>
   );

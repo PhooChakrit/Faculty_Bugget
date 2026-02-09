@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { FormData } from "../../types";
+import { FormData, IncomeItem } from "../../types";
 
 interface BudgetTableSectionProps {
   formData: FormData;
@@ -15,10 +15,15 @@ export function BudgetTableSection({
 }: BudgetTableSectionProps) {
   // Helpers to calculate totals safely
   const calculateIncomeTotal = () => {
-    return (
-      Number(formData.incomeSupport || 0) +
-      Number(formData.incomeRegistration || 0)
-    ).toFixed(2);
+    const supportTotal = formData.incomeSupportItems.reduce(
+      (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
+      0,
+    );
+    const registrationTotal = formData.incomeRegistrationItems.reduce(
+      (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
+      0,
+    );
+    return (supportTotal + registrationTotal).toFixed(2);
   };
 
   const calculateExpenseTotal = () => {
@@ -48,37 +53,40 @@ export function BudgetTableSection({
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
-                  <td className="p-3">เงินสนับสนุน</td>
-                  <td className="p-3">
-                    <Input
-                      id="incomeSupport"
-                      name="incomeSupport"
-                      type="number"
-                      value={formData.incomeSupport}
-                      onChange={handleChange}
-                    />
+                {/* เงินสนับสนุน Section */}
+                <tr className="border-t bg-gray-50">
+                  <td colSpan={2} className="p-3 font-medium text-gray-700">
+                    เงินสนับสนุน
                   </td>
                 </tr>
-                <tr className="border-t">
-                  <td className="p-3">ค่าลงทะเบียน</td>
-                  <td className="p-3">
-                    <Input
-                      id="incomeRegistration"
-                      name="incomeRegistration"
-                      type="number"
-                      value={formData.incomeRegistration}
-                      onChange={handleChange}
-                    />
+                {formData.incomeSupportItems.map((item) => (
+                  <tr key={item.id} className="border-t">
+                    <td className="p-3 pl-6">{item.name || "-"}</td>
+                    <td className="p-3">
+                      <Input type="number" value={item.amount} readOnly />
+                    </td>
+                  </tr>
+                ))}
+
+                {/* ค่าลงทะเบียน Section */}
+                <tr className="border-t bg-gray-50">
+                  <td colSpan={2} className="p-3 font-medium text-gray-700">
+                    ค่าลงทะเบียน
                   </td>
                 </tr>
+                {formData.incomeRegistrationItems.map((item) => (
+                  <tr key={item.id} className="border-t">
+                    <td className="p-3 pl-6">{item.name || "-"}</td>
+                    <td className="p-3">
+                      <Input type="number" value={item.amount} readOnly />
+                    </td>
+                  </tr>
+                ))}
+
                 <tr className="border-t bg-muted font-medium">
                   <td className="p-3">รวมประมาณการรายรับ</td>
                   <td className="p-3">
-                    <Input
-                      readOnly
-                      value={calculateIncomeTotal()}
-                    />
+                    <Input readOnly value={calculateIncomeTotal()} />
                   </td>
                 </tr>
               </tbody>
@@ -174,10 +182,7 @@ export function BudgetTableSection({
                 <tr className="border-t bg-muted font-medium">
                   <td className="p-3">รวมประมาณการรายจ่าย</td>
                   <td className="p-3">
-                    <Input
-                      readOnly
-                      value={calculateExpenseTotal()}
-                    />
+                    <Input readOnly value={calculateExpenseTotal()} />
                   </td>
                 </tr>
               </tbody>

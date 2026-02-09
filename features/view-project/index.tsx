@@ -76,12 +76,19 @@ export default function ViewProjectPage() {
     committee: "คณะกรรมการวิชาการคณะวิทยาศาสตร์",
     expectedBenefits:
       "นิสิตได้รับความรู้และทักษะในการใช้เครื่องมือวิทยาศาสตร์ สามารถนำไปประยุกต์ใช้ในการทำวิจัยได้",
+    projectEvaluation:
+      "ประเมินผลโดยใช้แบบสอบถามความพึงพอใจ และการทดสอบทักษะหลังการอบรม",
     budgetSourceExtGov: "50000",
     budgetSourceExtPrivate: "30000",
     budgetSourceExtForeign: "0",
     budgetSourceInternal: "20000",
-    incomeSupport: "30000",
-    incomeRegistration: "70000",
+    incomeSupportItems: [
+      { id: 1, name: "เงินสนับสนุนจากหน่วยงานภาครัฐ", amount: "30000" },
+    ],
+    incomeRegistrationItems: [
+      { id: 1, name: "ค่าลงทะเบียนนิสิต", amount: "50000" },
+      { id: 2, name: "ค่าลงทะเบียนบุคคลทั่วไป", amount: "20000" },
+    ],
     expenseRemuneration: "20000",
     expenseSupplies: "30000",
     expenseMaterials: "25000",
@@ -96,10 +103,8 @@ export default function ViewProjectPage() {
   ]);
 
   const [notes] = useState<Notes>({
-    note1: false,
     note2: true,
     note3: false,
-    note4: true,
   });
 
   return (

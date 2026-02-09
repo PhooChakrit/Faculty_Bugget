@@ -71,12 +71,13 @@ export default function AddProjectPage() {
     venue: "",
     committee: "",
     expectedBenefits: "",
+    projectEvaluation: "",
     budgetSourceExtGov: "",
     budgetSourceExtPrivate: "",
     budgetSourceExtForeign: "",
     budgetSourceInternal: "",
-    incomeSupport: "",
-    incomeRegistration: "",
+    incomeSupportItems: [{ id: 1, name: "", amount: "" }],
+    incomeRegistrationItems: [{ id: 1, name: "", amount: "" }],
     expenseRemuneration: "",
     expenseSupplies: "",
     expenseMaterials: "",
@@ -90,10 +91,8 @@ export default function AddProjectPage() {
   ]);
 
   const [notes, setNotes] = useState<Notes>({
-    note1: false,
     note2: false,
     note3: false,
-    note4: false,
   });
 
   const handleInputChange = (
@@ -154,6 +153,7 @@ export default function AddProjectPage() {
             <BudgetAndNotesSection
               formData={formData}
               handleChange={handleInputChange}
+              setFormData={setFormData}
               notes={notes}
               setNotes={setNotes}
             />

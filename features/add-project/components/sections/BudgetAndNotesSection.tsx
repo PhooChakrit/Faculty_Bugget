@@ -2,13 +2,17 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import { FormData, Notes } from "../../types";
+import { Button } from "@/components/ui/button";
+import { Plus, Minus } from "lucide-react";
+import { FormData, Notes, IncomeItem } from "../../types";
+import { InfoModal } from "@/components/InfoModal";
 
 interface BudgetAndNotesSectionProps {
   formData: FormData;
   handleChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   notes: Notes;
   setNotes: React.Dispatch<React.SetStateAction<Notes>>;
 }
@@ -16,6 +20,7 @@ interface BudgetAndNotesSectionProps {
 export function BudgetAndNotesSection({
   formData,
   handleChange,
+  setFormData,
   notes,
   setNotes,
 }: BudgetAndNotesSectionProps) {
@@ -30,10 +35,15 @@ export function BudgetAndNotesSection({
   };
 
   const calculateIncomeTotal = () => {
-    return (
-      Number(formData.incomeSupport || 0) +
-      Number(formData.incomeRegistration || 0)
-    ).toFixed(2);
+    const supportTotal = formData.incomeSupportItems.reduce(
+      (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
+      0,
+    );
+    const registrationTotal = formData.incomeRegistrationItems.reduce(
+      (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
+      0,
+    );
+    return (supportTotal + registrationTotal).toFixed(2);
   };
 
   const calculateExpenseTotal = () => {
@@ -45,6 +55,76 @@ export function BudgetAndNotesSection({
       Number(formData.expenseSubsidy || 0) +
       Number(formData.expenseReserve || 0)
     ).toFixed(2);
+  };
+
+  // Income Support items handlers
+  const addIncomeSupportItem = () => {
+    setFormData((prev) => ({
+      ...prev,
+      incomeSupportItems: [
+        ...prev.incomeSupportItems,
+        { id: Date.now(), name: "", amount: "" },
+      ],
+    }));
+  };
+
+  const removeIncomeSupportItem = (id: number) => {
+    if (formData.incomeSupportItems.length > 1) {
+      setFormData((prev) => ({
+        ...prev,
+        incomeSupportItems: prev.incomeSupportItems.filter(
+          (item) => item.id !== id,
+        ),
+      }));
+    }
+  };
+
+  const updateIncomeSupportItem = (
+    id: number,
+    field: keyof IncomeItem,
+    value: string,
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      incomeSupportItems: prev.incomeSupportItems.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item,
+      ),
+    }));
+  };
+
+  // Income Registration items handlers
+  const addIncomeRegistrationItem = () => {
+    setFormData((prev) => ({
+      ...prev,
+      incomeRegistrationItems: [
+        ...prev.incomeRegistrationItems,
+        { id: Date.now(), name: "", amount: "" },
+      ],
+    }));
+  };
+
+  const removeIncomeRegistrationItem = (id: number) => {
+    if (formData.incomeRegistrationItems.length > 1) {
+      setFormData((prev) => ({
+        ...prev,
+        incomeRegistrationItems: prev.incomeRegistrationItems.filter(
+          (item) => item.id !== id,
+        ),
+      }));
+    }
+  };
+
+  const updateIncomeRegistrationItem = (
+    id: number,
+    field: keyof IncomeItem,
+    value: string,
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      incomeRegistrationItems: prev.incomeRegistrationItems.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item,
+      ),
+    }));
   };
 
   return (
@@ -125,7 +205,9 @@ export function BudgetAndNotesSection({
 
         {/* Income Estimates Section */}
         <div>
-          <h3 className="font-medium mb-3">ประมาณการรายรับ <span className="text-red-500">*</span></h3>
+          <h3 className="font-medium mb-3">
+            ประมาณการรายรับ <span className="text-red-500">*</span>
+          </h3>
           <div className="border rounded-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-muted">
@@ -134,38 +216,144 @@ export function BudgetAndNotesSection({
                   <th className="text-left p-3 w-48">
                     งบประมาณที่ตั้งไว้ (บาท)
                   </th>
+                  <th className="p-3 w-16"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
-                  <td className="p-3">เงินสนับสนุน</td>
-                  <td className="p-3">
-                    <Input
-                      id="incomeSupport"
-                      name="incomeSupport"
-                      type="number"
-                      value={formData.incomeSupport}
-                      onChange={handleChange}
-                    />
+                {/* เงินสนับสนุน Section */}
+                <tr className="border-t bg-gray-50">
+                  <td colSpan={3} className="p-3 font-medium text-gray-700">
+                    เงินสนับสนุน
                   </td>
                 </tr>
+                {formData.incomeSupportItems.map((item) => (
+                  <tr key={item.id} className="border-t">
+                    <td className="p-3 pl-6">
+                      <Input
+                        placeholder="ระบุรายละเอียด"
+                        value={item.name}
+                        onChange={(e) =>
+                          updateIncomeSupportItem(
+                            item.id,
+                            "name",
+                            e.target.value,
+                          )
+                        }
+                      />
+                    </td>
+                    <td className="p-3">
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={item.amount}
+                        onChange={(e) =>
+                          updateIncomeSupportItem(
+                            item.id,
+                            "amount",
+                            e.target.value,
+                          )
+                        }
+                      />
+                    </td>
+                    <td className="p-3">
+                      {formData.incomeSupportItems.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => removeIncomeSupportItem(item.id)}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
                 <tr className="border-t">
-                  <td className="p-3">ค่าลงทะเบียน</td>
-                  <td className="p-3">
-                    <Input
-                      id="incomeRegistration"
-                      name="incomeRegistration"
-                      type="number"
-                      value={formData.incomeRegistration}
-                      onChange={handleChange}
-                    />
+                  <td colSpan={3} className="p-3 pl-6">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addIncomeSupportItem}
+                      className="bg-green-600 text-white hover:bg-green-700"
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      เพิ่มรายการ
+                    </Button>
                   </td>
                 </tr>
+
+                {/* ค่าลงทะเบียน Section */}
+                <tr className="border-t bg-gray-50">
+                  <td colSpan={3} className="p-3 font-medium text-gray-700">
+                    ค่าลงทะเบียน
+                  </td>
+                </tr>
+                {formData.incomeRegistrationItems.map((item) => (
+                  <tr key={item.id} className="border-t">
+                    <td className="p-3 pl-6">
+                      <Input
+                        placeholder="ระบุรายละเอียด"
+                        value={item.name}
+                        onChange={(e) =>
+                          updateIncomeRegistrationItem(
+                            item.id,
+                            "name",
+                            e.target.value,
+                          )
+                        }
+                      />
+                    </td>
+                    <td className="p-3">
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={item.amount}
+                        onChange={(e) =>
+                          updateIncomeRegistrationItem(
+                            item.id,
+                            "amount",
+                            e.target.value,
+                          )
+                        }
+                      />
+                    </td>
+                    <td className="p-3">
+                      {formData.incomeRegistrationItems.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => removeIncomeRegistrationItem(item.id)}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="border-t">
+                  <td colSpan={3} className="p-3 pl-6">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addIncomeRegistrationItem}
+                      className="bg-green-600 text-white hover:bg-green-700"
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      เพิ่มรายการ
+                    </Button>
+                  </td>
+                </tr>
+
                 <tr className="border-t bg-muted font-medium">
                   <td className="p-3">รวมประมาณการรายรับ</td>
                   <td className="p-3">
                     <Input readOnly value={calculateIncomeTotal()} />
                   </td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
@@ -176,7 +364,9 @@ export function BudgetAndNotesSection({
 
         {/* Expense Estimates Section */}
         <div>
-          <h3 className="font-medium mb-3">ประมาณการรายจ่าย <span className="text-red-500">*</span></h3>
+          <h3 className="font-medium mb-3">
+            ประมาณการรายจ่าย <span className="text-red-500">*</span>
+          </h3>
           <div className="border rounded-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-muted">
@@ -225,7 +415,15 @@ export function BudgetAndNotesSection({
                   </td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-3">หมวดสาธารณูปโภค</td>
+                  <td className="p-3">
+                    <span className="flex items-center gap-1">
+                      หมวดสาธารณูปโภค
+                      <InfoModal
+                        title="หมวดสาธารณูปโภค"
+                        content="รอเจ้าหน้าที่ส่งให้"
+                      />
+                    </span>
+                  </td>
                   <td className="p-3">
                     <Input
                       id="expenseUtilities"
@@ -237,7 +435,15 @@ export function BudgetAndNotesSection({
                   </td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-3">หมวดเงินอุดหนุน</td>
+                  <td className="p-3">
+                    <span className="flex items-center gap-1">
+                      หมวดเงินอุดหนุน
+                      <InfoModal
+                        title="หมวดเงินอุดหนุน"
+                        content="รอเจ้าหน้าที่ส่งให้"
+                      />
+                    </span>
+                  </td>
                   <td className="p-3">
                     <Input
                       id="expenseSubsidy"
@@ -249,7 +455,15 @@ export function BudgetAndNotesSection({
                   </td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-3">หมวดเงินสำรอง</td>
+                  <td className="p-3">
+                    <span className="flex items-center gap-1">
+                      หมวดเงินสำรอง
+                      <InfoModal
+                        title="หมวดเงินสำรอง"
+                        content="รอเจ้าหน้าที่ส่งให้"
+                      />
+                    </span>
+                  </td>
                   <td className="p-3">
                     <Input
                       id="expenseReserve"
@@ -277,22 +491,16 @@ export function BudgetAndNotesSection({
         <div className="space-y-4">
           <h3 className="font-medium">หมายเหตุ</h3>
           <div className="flex items-start space-x-3">
-            <Checkbox
-              id="note1"
-              checked={notes.note1}
-              onCheckedChange={(checked) =>
-                setNotes((prev) => ({
-                  ...prev,
-                  note1: checked as boolean,
-                }))
-              }
-            />
             <label htmlFor="note1" className="text-sm leading-relaxed">
               ขออนุมัติงบประมาณโครงการที่ไม่เป็นไปตามอัตราการเบิกจ่ายตามข้อบังคับจุฬาลงกรณ์ฯ
               ว่าด้วยการให้บริการทางวิชาการ พ.ศ. 2564
             </label>
           </div>
-
+          <div className="flex items-start space-x-3">
+            <label htmlFor="note4" className="text-sm leading-relaxed">
+              ขออนุมัติถัวเฉลี่ยทุกรายการ
+            </label>
+          </div>
           <div className="flex items-start space-x-3">
             <Checkbox
               id="note2"
@@ -322,22 +530,6 @@ export function BudgetAndNotesSection({
             />
             <label htmlFor="note3" className="text-sm leading-relaxed">
               ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการการเงิน ดังนี้ (ถ้ามี)
-            </label>
-          </div>
-
-          <div className="flex items-start space-x-3">
-            <Checkbox
-              id="note4"
-              checked={notes.note4}
-              onCheckedChange={(checked) =>
-                setNotes((prev) => ({
-                  ...prev,
-                  note4: checked as boolean,
-                }))
-              }
-            />
-            <label htmlFor="note4" className="text-sm leading-relaxed">
-              ขออนุมัติถัวเฉลี่ยทุกรายการ
             </label>
           </div>
         </div>

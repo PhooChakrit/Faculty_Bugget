@@ -9,6 +9,12 @@ export interface Manager {
   position: string;
 }
 
+export interface IncomeItem {
+  id: number;
+  name: string;
+  amount: string;
+}
+
 export interface FormData {
   receiptNumber: string;
   projectNameThai: string;
@@ -33,12 +39,13 @@ export interface FormData {
   venue: string;
   committee: string;
   expectedBenefits: string;
+  projectEvaluation: string;
   budgetSourceExtGov: string;
   budgetSourceExtPrivate: string;
   budgetSourceExtForeign: string;
   budgetSourceInternal: string;
-  incomeSupport: string;
-  incomeRegistration: string;
+  incomeSupportItems: IncomeItem[];
+  incomeRegistrationItems: IncomeItem[];
   expenseRemuneration: string;
   expenseSupplies: string;
   expenseMaterials: string;
@@ -48,8 +55,6 @@ export interface FormData {
 }
 
 export interface Notes {
-  note1: boolean;
   note2: boolean;
   note3: boolean;
-  note4: boolean;
 }
