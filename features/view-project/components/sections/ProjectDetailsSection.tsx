@@ -12,7 +12,46 @@ export function ProjectDetailsSection({
 }: ProjectDetailsSectionProps) {
   return (
     <Card>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 pt-6">
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">
+            ความเป็นมา หลักการและเหตุผล
+          </Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.background || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">รายละเอียดโครงการ</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.projectDetails || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">วัตถุประสงค์</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.objectives || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">ขอบเขตการดำเนินการ</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.scope || "-"}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">แผนการดำเนินการ</Label>
+          <div className="text-base whitespace-pre-wrap">
+            {formData.implementationPlan || "-"}
+          </div>
+        </div>
+
+        <Separator />
+
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-muted-foreground">
@@ -26,6 +65,13 @@ export function ProjectDetailsSection({
             </Label>
             <p className="font-medium">{formData.venue || "-"}</p>
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">รายละเอียดผู้เข้าร่วม</Label>
+          <p className="font-medium whitespace-pre-wrap">
+            {formData.participantDetails || "-"}
+          </p>
         </div>
 
         <Separator />
@@ -47,6 +93,13 @@ export function ProjectDetailsSection({
           </Label>
           <p className="font-medium whitespace-pre-wrap">
             {formData.expectedBenefits || "-"}
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">การประเมินผลโครงการ</Label>
+          <p className="font-medium whitespace-pre-wrap">
+            {formData.projectEvaluation || "-"}
           </p>
         </div>
       </CardContent>
