@@ -32,10 +32,10 @@ export function ProjectDetailsSection({
             />
             <span className="text-sm whitespace-nowrap">จำนวน</span>
             <Input
-              id="venue"
-              name="venue"
+              id="participantDetails"
+              name="participantDetails"
               className="flex-1"
-              value={formData.venue}
+              value={formData.participantDetails}
               onChange={handleChange}
             />
             <span className="text-sm whitespace-nowrap">ท่าน</span>
@@ -44,7 +44,9 @@ export function ProjectDetailsSection({
 
         <Separator />
         <div className="space-y-2">
-          <Label htmlFor="venue">สถานที่จัดโครงการ/อบรม <span className="text-red-500">*</span></Label>
+          <Label htmlFor="venue">
+            สถานที่จัดโครงการ/อบรม <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="venue"
             name="venue"
@@ -53,7 +55,9 @@ export function ProjectDetailsSection({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="committee">คณะกรรมการดำเนินงานโครงการ <span className="text-red-500">*</span></Label>
+          <Label htmlFor="committee">
+            คณะกรรมการดำเนินงานโครงการ <span className="text-red-500">*</span>
+          </Label>
           <Textarea
             id="committee"
             name="committee"
@@ -66,7 +70,9 @@ export function ProjectDetailsSection({
         <Separator />
 
         <div className="space-y-2">
-          <Label htmlFor="expectedBenefits">ประโยชน์ที่คาดว่าจะได้รับ <span className="text-red-500">*</span></Label>
+          <Label htmlFor="expectedBenefits">
+            ประโยชน์ที่คาดว่าจะได้รับ <span className="text-red-500">*</span>
+          </Label>
           <Textarea
             id="expectedBenefits"
             name="expectedBenefits"
@@ -75,22 +81,12 @@ export function ProjectDetailsSection({
             rows={4}
           />
         </div>
-                <div className="space-y-2">
-          <Label htmlFor="expectedBenefits">ประโยชน์ที่คาดว่าจะได้รับ <span className="text-red-500">*</span></Label>
-          <Textarea
-            id="expectedBenefits"
-            name="expectedBenefits"
-            value={formData.expectedBenefits}
-            onChange={handleChange}
-            rows={4}
-          />
-        </div>        
         <div className="space-y-2">
-          <Label htmlFor="expectedBenefits">การประเมินโครงการ (ถ้ามี)</Label>
+          <Label htmlFor="projectEvaluation">การประเมินโครงการ (ถ้ามี)</Label>
           <Textarea
-            id="expectedBenefits"
-            name="expectedBenefits"
-            value={formData.expectedBenefits}
+            id="projectEvaluation"
+            name="projectEvaluation"
+            value={formData.projectEvaluation}
             onChange={handleChange}
             rows={4}
           />

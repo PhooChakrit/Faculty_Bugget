@@ -52,6 +52,7 @@ model Project {
   implementationPlan String? @db.Text
   serviceType        String?
   participantCount   Int?
+  participantDetails String?
   venue              String?
   committee          String?
   expectedBenefits   String? @db.Text

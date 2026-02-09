@@ -26,8 +26,12 @@ export async function GET(request: NextRequest) {
       ...(status && { status }),
       ...(search && {
         OR: [
-          { projectNameThai: { contains: search, mode: "insensitive" as const } },
-          { projectNameEng: { contains: search, mode: "insensitive" as const } },
+          {
+            projectNameThai: { contains: search, mode: "insensitive" as const },
+          },
+          {
+            projectNameEng: { contains: search, mode: "insensitive" as const },
+          },
           { receiptNumber: { contains: search, mode: "insensitive" as const } },
         ],
       }),
@@ -91,48 +95,53 @@ export async function POST(request: NextRequest) {
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         // Create target group relations
-        ...(targetGroupIds && targetGroupIds.length > 0 && {
-          targetGroups: {
-            create: targetGroupIds.map((targetGroupId) => ({
-              targetGroup: { connect: { id: targetGroupId } },
-            })),
-          },
-        }),
+        ...(targetGroupIds &&
+          targetGroupIds.length > 0 && {
+            targetGroups: {
+              create: targetGroupIds.map((targetGroupId) => ({
+                targetGroup: { connect: { id: targetGroupId } },
+              })),
+            },
+          }),
         // Create strategy relations
-        ...(strategyIds && strategyIds.length > 0 && {
-          strategies: {
-            create: strategyIds.map((strategyId) => ({
-              strategy: { connect: { id: strategyId } },
-            })),
-          },
-        }),
+        ...(strategyIds &&
+          strategyIds.length > 0 && {
+            strategies: {
+              create: strategyIds.map((strategyId) => ({
+                strategy: { connect: { id: strategyId } },
+              })),
+            },
+          }),
         // Create income items
-        ...(incomeItems && incomeItems.length > 0 && {
-          incomeItems: {
-            create: incomeItems.map((item) => ({
-              type: item.type,
-              name: item.name,
-              amount: item.amount,
-            })),
-          },
-        }),
+        ...(incomeItems &&
+          incomeItems.length > 0 && {
+            incomeItems: {
+              create: incomeItems.map((item) => ({
+                type: item.type,
+                name: item.name,
+                amount: item.amount,
+              })),
+            },
+          }),
         // Create collaborators
-        ...(collaborators && collaborators.length > 0 && {
-          collaborators: {
-            create: collaborators.map((c) => ({
-              name: c.name,
-            })),
-          },
-        }),
+        ...(collaborators &&
+          collaborators.length > 0 && {
+            collaborators: {
+              create: collaborators.map((c) => ({
+                name: c.name,
+              })),
+            },
+          }),
         // Create managers
-        ...(managers && managers.length > 0 && {
-          managers: {
-            create: managers.map((m) => ({
-              name: m.name,
-              position: m.position,
-            })),
-          },
-        }),
+        ...(managers &&
+          managers.length > 0 && {
+            managers: {
+              create: managers.map((m) => ({
+                name: m.name,
+                position: m.position,
+              })),
+            },
+          }),
       },
       include: {
         leader: { select: { id: true, name: true, email: true } },

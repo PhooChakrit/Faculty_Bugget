@@ -72,6 +72,7 @@ export default function ViewProjectPage() {
     targetGroups: ["1"],
     strategies: ["2", "3"],
     participantCount: "50",
+    participantDetails: "นิสิตชั้นปีที่ 3-4",
     venue: "ห้องปฏิบัติการวิทยาศาสตร์ ชั้น 5 อาคาร SC",
     committee: "คณะกรรมการวิชาการคณะวิทยาศาสตร์",
     expectedBenefits:

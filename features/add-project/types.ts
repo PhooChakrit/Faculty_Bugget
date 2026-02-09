@@ -36,6 +36,7 @@ export interface FormData {
   targetGroups: string[];
   strategies: string[];
   participantCount: string;
+  participantDetails: string;
   venue: string;
   committee: string;
   expectedBenefits: string;

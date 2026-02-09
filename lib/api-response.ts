@@ -9,18 +9,21 @@ export type ApiResponse<T = unknown> = {
   details?: unknown;
 };
 
-export function successResponse<T>(data: T, status = 200): NextResponse<ApiResponse<T>> {
+export function successResponse<T>(
+  data: T,
+  status = 200,
+): NextResponse<ApiResponse<T>> {
   return NextResponse.json({ success: true, data }, { status });
 }
 
 export function errorResponse(
   message: string,
   status = 500,
-  details?: unknown
+  details?: unknown,
 ): NextResponse<ApiResponse> {
   return NextResponse.json(
     { success: false, error: message, details },
-    { status }
+    { status },
   );
 }
 
@@ -35,7 +38,7 @@ export function handleApiError(error: unknown): NextResponse<ApiResponse> {
       error.issues.map((e: ZodIssue) => ({
         field: e.path.join("."),
         message: e.message,
-      }))
+      })),
     );
   }
 

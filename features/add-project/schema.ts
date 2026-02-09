@@ -37,7 +37,11 @@ export const formDataSchema = z.object({
   department: z.string().min(1, "กรุณากรอกสังกัด"),
   leaderEmail: z.string().email("กรุณากรอกอีเมลให้ถูกต้อง"),
   coLeaderName: z.string().optional(),
-  coLeaderEmail: z.string().email("กรุณากรอกอีเมลให้ถูกต้อง").optional().or(z.literal("")),
+  coLeaderEmail: z
+    .string()
+    .email("กรุณากรอกอีเมลให้ถูกต้อง")
+    .optional()
+    .or(z.literal("")),
   startDate: z.string().min(1, "กรุณาเลือกวันที่เริ่มต้น"),
   endDate: z.string().min(1, "กรุณาเลือกวันที่สิ้นสุด"),
 
@@ -51,6 +55,7 @@ export const formDataSchema = z.object({
   targetGroups: z.array(z.string()).min(1, "กรุณาเลือกกลุ่มเป้าหมาย"),
   strategies: z.array(z.string()).optional(),
   participantCount: z.string().min(1, "กรุณากรอกจำนวนผู้เข้าร่วม"),
+  participantDetails: z.string().optional(),
   venue: z.string().min(1, "กรุณากรอกสถานที่จัดโครงการ"),
   committee: z.string().optional(),
   expectedBenefits: z.string().optional(),

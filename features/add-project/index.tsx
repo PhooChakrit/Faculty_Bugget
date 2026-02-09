@@ -74,6 +74,7 @@ const defaultFormValues: FormData = {
   targetGroups: [],
   strategies: [],
   participantCount: "",
+  participantDetails: "",
   venue: "",
   committee: "",
   expectedBenefits: "",

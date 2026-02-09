@@ -6,12 +6,12 @@ export const createProjectSchema = z.object({
   receiptNumber: z.string().optional(),
   projectNameThai: z.string().min(1, "กรุณากรอกชื่อโครงการ (ภาษาไทย)"),
   projectNameEng: z.string().optional(),
-  
+
   // Leader Info
   leaderId: z.string().min(1, "กรุณาระบุหัวหน้าโครงการ"),
   leaderPosition: z.string().min(1, "กรุณากรอกตำแหน่ง"),
   department: z.string().min(1, "กรุณากรอกสังกัด"),
-  
+
   // Co-Leader Info
   coLeaderId: z.string().optional(),
 
@@ -26,8 +26,9 @@ export const createProjectSchema = z.object({
   scope: z.string().optional(),
   implementationPlan: z.string().optional(),
   serviceType: z.string().optional(),
+  participantDetails: z.string().optional(),
   participantCount: z.number().optional(),
-  venue: z.string().optional(),
+  venue: z.string().min(1, "กรุณากรอกสถานที่จัดโครงการ"),
   committee: z.string().optional(),
   expectedBenefits: z.string().optional(),
   projectEvaluation: z.string().optional(),
@@ -53,18 +54,30 @@ export const createProjectSchema = z.object({
   // Relations
   targetGroupIds: z.array(z.string()).optional(),
   strategyIds: z.array(z.string()).optional(),
-  incomeItems: z.array(z.object({
-    type: z.enum(["SUPPORT", "REGISTRATION"]),
-    name: z.string(),
-    amount: z.number(),
-  })).optional(),
-  collaborators: z.array(z.object({
-    name: z.string(),
-  })).optional(),
-  managers: z.array(z.object({
-    name: z.string(),
-    position: z.string().optional(),
-  })).optional(),
+  incomeItems: z
+    .array(
+      z.object({
+        type: z.enum(["SUPPORT", "REGISTRATION"]),
+        name: z.string(),
+        amount: z.number(),
+      }),
+    )
+    .optional(),
+  collaborators: z
+    .array(
+      z.object({
+        name: z.string(),
+      }),
+    )
+    .optional(),
+  managers: z
+    .array(
+      z.object({
+        name: z.string(),
+        position: z.string().optional(),
+      }),
+    )
+    .optional(),
 });
 
 // Update Project Request Schema (all fields optional)
@@ -79,7 +92,17 @@ export const projectIdSchema = z.object({
 export const listProjectsQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
-  status: z.enum(["DRAFT", "PENDING_APPROVAL", "APPROVED", "REJECTED", "IN_PROGRESS", "COMPLETED", "CANCELLED"]).optional(),
+  status: z
+    .enum([
+      "DRAFT",
+      "PENDING_APPROVAL",
+      "APPROVED",
+      "REJECTED",
+      "IN_PROGRESS",
+      "COMPLETED",
+      "CANCELLED",
+    ])
+    .optional(),
   search: z.string().optional(),
 });
 
