@@ -1,9 +1,8 @@
-import Prisma from '@prisma/client';
-import 'dotenv/config';
-import prisma from '@/lib/prisma';
+import "dotenv/config";
+import prisma from "@/lib/prisma";
 
 async function main() {
-  console.log('Seeding static data...');
+  console.log("Seeding static data...");
 
   // Strategies from features/add-project/index.tsx
   const strategies = [
@@ -22,7 +21,7 @@ async function main() {
       create: { id: strategy.id, name: strategy.name },
     });
   }
-  console.log('Strategies seeded.');
+  console.log("Strategies seeded.");
 
   // TargetGroups from features/add-project/index.tsx
   const targetGroups = [
@@ -39,7 +38,7 @@ async function main() {
       create: { id: group.id, name: group.name },
     });
   }
-  console.log('TargetGroups seeded.');
+  console.log("TargetGroups seeded.");
 }
 
 main()

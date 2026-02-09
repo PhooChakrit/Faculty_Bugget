@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -106,13 +106,12 @@ export default function AddProjectPage() {
 
   const {
     handleSubmit,
-    watch,
     setValue,
     getValues,
     formState: { errors, isSubmitting },
   } = methods;
 
-  const watchedData = watch();
+  const watchedData = useWatch({ control: methods.control });
   // Cast to FormData for backward compatibility with section components
   const formData = watchedData as unknown as FormData;
 
@@ -242,7 +241,7 @@ export default function AddProjectPage() {
       };
 
       await projectService.createProject(apiData);
-      alert("บันทึกข้อมูลสำเร็จ!");
+      alert("บันทึกข้อมูลโครงการสำเร็จ");
       router.push("/projects"); // Redirect to list
     } catch (error) {
       console.error("Error creating project:", error);
