@@ -57,7 +57,13 @@ export function ProjectDetailsSection({
             <Label className="text-muted-foreground">
               ผู้เข้าร่วม (จำนวนคน)
             </Label>
-            <p className="font-medium">{formData.participantCount || "-"} คน</p>
+            <p className="font-medium">
+              {formData.participants?.reduce(
+                (sum, p) => sum + (parseInt(p.count) || 0),
+                0,
+              ) || "-"}{" "}
+              คน
+            </p>
           </div>
           <div className="space-y-2">
             <Label className="text-muted-foreground">
@@ -70,7 +76,10 @@ export function ProjectDetailsSection({
         <div className="space-y-2">
           <Label className="text-muted-foreground">รายละเอียดผู้เข้าร่วม</Label>
           <p className="font-medium whitespace-pre-wrap">
-            {formData.participantDetails || "-"}
+            {formData.participants
+              ?.map((p) => p.details)
+              .filter(Boolean)
+              .join(", ") || "-"}
           </p>
         </div>
 

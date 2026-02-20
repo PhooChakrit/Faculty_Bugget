@@ -75,8 +75,7 @@ const defaultFormValues: FormData = {
   serviceType: "",
   targetGroups: [],
   strategies: [],
-  participantCount: "",
-  participantDetails: "",
+  participants: [{ id: 1, count: "", details: "" }],
   venue: "",
   committee: "",
   expectedBenefits: "",
@@ -160,9 +159,16 @@ export default function AddProjectPage() {
       const apiData = {
         ...data,
         // Convert strings to numbers
-        participantCount: data.participantCount
-          ? parseInt(data.participantCount)
-          : undefined,
+        participantCount:
+          data.participants.reduce(
+            (sum, p) => sum + (parseInt(p.count) || 0),
+            0,
+          ) || undefined,
+        participantDetails:
+          data.participants
+            .map((p) => p.details)
+            .filter(Boolean)
+            .join(", ") || undefined,
         budgetSourceExtGov: data.budgetSourceExtGov
           ? parseFloat(data.budgetSourceExtGov)
           : undefined,
@@ -294,6 +300,7 @@ export default function AddProjectPage() {
               <ProjectDetailsSection
                 formData={formData}
                 handleChange={handleInputChange}
+                setFormData={setFormData}
               />
 
               <BudgetAndNotesSection

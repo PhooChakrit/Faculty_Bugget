@@ -78,8 +78,13 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
             project.strategies?.map(
               (s: { strategyId: string }) => s.strategyId,
             ) || [],
-          participantCount: project.participantCount?.toString() || "",
-          participantDetails: project.participantDetails || "",
+          participants: [
+            {
+              id: 1,
+              count: project.participantCount?.toString() || "",
+              details: project.participantDetails || "",
+            },
+          ],
           venue: project.venue || "",
           committee: project.committee || "",
           expectedBenefits: project.expectedBenefits || "",
