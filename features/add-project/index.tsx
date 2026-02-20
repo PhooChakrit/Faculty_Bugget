@@ -21,39 +21,14 @@ import { BudgetAndNotesSection } from "./components/sections/BudgetAndNotesSecti
 // Infer type from schema
 type FormDataSchemaType = z.infer<typeof formDataSchema>;
 
-// Options for dropdowns
-const departmentOptions = [
-  { value: "sci", label: "ภาควิชาวิทยาศาสตร์" },
-  { value: "chem", label: "ภาควิชาเคมี" },
-  { value: "bio", label: "ภาควิชาชีววิทยา" },
-  { value: "phy", label: "ภาควิชาฟิสิกส์" },
-  { value: "math", label: "ภาควิชาคณิตศาสตร์" },
-];
-
-const serviceTypeOptions = [
-  { value: "1", label: "อภิปราย บรรยาย อบรม ประชุม สัมมนา" },
-  { value: "2", label: "ออกแบบ ประดิษฐ์ วางแผน วางระบบ เขียน แปล" },
-  { value: "3", label: "CONSULT ทางวิชาการ เทคนิค วิชาชีพ" },
-  { value: "4", label: "วิเคราะห์ ทดสอบ ตรวจสอบ" },
-  { value: "5", label: "งานบริการทางวิชาการลักษณะอื่น" },
-  { value: "6", label: "งานให้บริการทางการแพทย์และสาธารณสุข" },
-];
-
-const targetGroupOptions = [
-  { value: "1", label: "ประชาคมจุฬาฯ" },
-  { value: "2", label: "ชุมชน" },
-  { value: "3", label: "หน่วยงานภายนอกภาครัฐ" },
-  { value: "4", label: "หน่วยงานภายนอกภาคเอกชน/อุตสาหกรรม" },
-];
-
-const strategyOptions = [
-  { value: "0", label: "ไม่สอดคล้องกับยุทธศาสตร์ใด ๆ" },
-  { value: "1", label: "INTERNATIONAL GROWTH" },
-  { value: "2", label: "IMPACTFUL GROWTH" },
-  { value: "3", label: "INTERNAL GROWTH" },
-  { value: "4", label: "INTEGRATED GROWTH" },
-  { value: "5", label: "สอดคล้องกับยุทธศาสตร์ส่วนงาน" },
-];
+// Import constants instead
+import {
+  departmentOptions,
+  serviceTypeOptions,
+  strategyOptions,
+  targetGroupOptions,
+} from "./constants";
+import { ProjectPreviewDialog } from "./components/ProjectPreviewDialog";
 
 const defaultFormValues: FormData = {
   receiptNumber: "",
@@ -123,6 +98,11 @@ export default function AddProjectPage() {
     note3: false,
   });
 
+  const [showPreview, setShowPreview] = useState(false);
+  const [validatedData, setValidatedData] = useState<FormDataSchemaType | null>(
+    null,
+  );
+
   // Legacy handleChange for sections not yet migrated to RHF
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -153,65 +133,72 @@ export default function AddProjectPage() {
     });
   };
 
-  const onSubmit = async (data: FormDataSchemaType) => {
+  const handlePreviewOpen = (data: FormDataSchemaType) => {
+    setValidatedData(data);
+    setShowPreview(true);
+  };
+
+  const onConfirmSubmit = async () => {
+    if (!validatedData) return;
+
     try {
       // Transform data to match API schema
       const apiData = {
-        ...data,
+        ...validatedData,
         // Convert strings to numbers
         participantCount:
-          data.participants.reduce(
+          validatedData.participants.reduce(
             (sum, p) => sum + (parseInt(p.count) || 0),
             0,
           ) || undefined,
         participantDetails:
-          data.participants
+          validatedData.participants
             .map((p) => p.details)
             .filter(Boolean)
             .join(", ") || undefined,
-        budgetSourceExtGov: data.budgetSourceExtGov
-          ? parseFloat(data.budgetSourceExtGov)
+        budgetSourceExtGov: validatedData.budgetSourceExtGov
+          ? parseFloat(validatedData.budgetSourceExtGov)
           : undefined,
-        budgetSourceExtPrivate: data.budgetSourceExtPrivate
-          ? parseFloat(data.budgetSourceExtPrivate)
+        budgetSourceExtPrivate: validatedData.budgetSourceExtPrivate
+          ? parseFloat(validatedData.budgetSourceExtPrivate)
           : undefined,
-        budgetSourceExtForeign: data.budgetSourceExtForeign
-          ? parseFloat(data.budgetSourceExtForeign)
+        budgetSourceExtForeign: validatedData.budgetSourceExtForeign
+          ? parseFloat(validatedData.budgetSourceExtForeign)
           : undefined,
-        budgetSourceInternal: data.budgetSourceInternal
-          ? parseFloat(data.budgetSourceInternal)
+        budgetSourceInternal: validatedData.budgetSourceInternal
+          ? parseFloat(validatedData.budgetSourceInternal)
           : undefined,
-        expenseRemuneration: data.expenseRemuneration
-          ? parseFloat(data.expenseRemuneration)
+        expenseRemuneration: validatedData.expenseRemuneration
+          ? parseFloat(validatedData.expenseRemuneration)
           : undefined,
-        expenseSupplies: data.expenseSupplies
-          ? parseFloat(data.expenseSupplies)
+        expenseSupplies: validatedData.expenseSupplies
+          ? parseFloat(validatedData.expenseSupplies)
           : undefined,
-        expenseMaterials: data.expenseMaterials
-          ? parseFloat(data.expenseMaterials)
+        expenseMaterials: validatedData.expenseMaterials
+          ? parseFloat(validatedData.expenseMaterials)
           : undefined,
-        expenseUtilities: data.expenseUtilities
-          ? parseFloat(data.expenseUtilities)
+        expenseUtilities: validatedData.expenseUtilities
+          ? parseFloat(validatedData.expenseUtilities)
           : undefined,
-        expenseSubsidy: data.expenseSubsidy
-          ? parseFloat(data.expenseSubsidy)
+        expenseSubsidy: validatedData.expenseSubsidy
+          ? parseFloat(validatedData.expenseSubsidy)
           : undefined,
-        expenseReserve: data.expenseReserve
-          ? parseFloat(data.expenseReserve)
+        expenseReserve: validatedData.expenseReserve
+          ? parseFloat(validatedData.expenseReserve)
           : undefined,
 
         // Map arrays and objects
-        targetGroupIds: data.targetGroups,
-        strategyIds: data.strategies,
+        targetGroupIds: validatedData.targetGroups,
+        strategyIds: validatedData.strategies,
 
         // Combine income items
         incomeItems: [
-          ...data.incomeSupportItems.map((item) => ({
+          ...validatedData.incomeSupportItems.map((item) => ({
             type: "SUPPORT" as const,
             name: item.name,
             amount: parseFloat(item.amount || "0"),
           })),
-          ...data.incomeRegistrationItems.map((item) => ({
+          ...validatedData.incomeRegistrationItems.map((item) => ({
             type: "REGISTRATION" as const,
             name: item.name,
             amount: parseFloat(item.amount || "0"),
@@ -248,6 +235,7 @@ export default function AddProjectPage() {
 
       await projectService.createProject(apiData);
       alert("บันทึกข้อมูลโครงการสำเร็จ");
+      setShowPreview(false);
       router.push("/projects"); // Redirect to list
     } catch (error) {
       console.error("Error creating project:", error);
@@ -272,7 +260,7 @@ export default function AddProjectPage() {
 
           <FormProvider {...methods}>
             <form
-              onSubmit={handleSubmit(onSubmit, onError)}
+              onSubmit={handleSubmit(handlePreviewOpen, onError)}
               className="space-y-6"
             >
               <ReceiptInfoSection
@@ -327,17 +315,33 @@ export default function AddProjectPage() {
 
               {/* Submit Buttons */}
               <div className="flex justify-end gap-4 pt-4">
-                <Button type="button" variant="outline">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.push("/projects")}
+                >
                   ยกเลิก
                 </Button>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
+                  เปิดดูข้อมูลก่อนบันทึก
                 </Button>
               </div>
             </form>
           </FormProvider>
         </div>
       </main>
+
+      {validatedData && (
+        <ProjectPreviewDialog
+          open={showPreview}
+          onOpenChange={setShowPreview}
+          onConfirm={onConfirmSubmit}
+          isSubmitting={isSubmitting}
+          formData={validatedData as unknown as FormData}
+          collaborators={collaborators}
+          notes={notes}
+        />
+      )}
     </div>
   );
 }
