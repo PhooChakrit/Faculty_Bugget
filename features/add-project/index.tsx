@@ -353,6 +353,82 @@ export default function AddProjectPage() {
 
                 {/* Submit Buttons */}
                 <div className="flex justify-end gap-4 pt-4">
+                  {process.env.NODE_ENV === "development" && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => {
+                        const dummyData: FormDataSchemaType = {
+                          receiptNumber: crypto.randomUUID(),
+                          projectNameThai: "โครงการทดสอบระบบบันทึกงบประมาณ",
+                          projectNameEng:
+                            "Budget Recording System Test Project",
+                          leaderName: "สมชาย ทดสอบ",
+                          leaderPosition: "อาจารย์ประจำภาควิชา",
+                          department: "sci",
+                          leaderEmail: "somchai.t@chula.ac.th",
+                          coLeaderName: "สมหญิง รักเรียน",
+                          coLeaderEmail: "somying.r@chula.ac.th",
+                          startDate: new Date().toISOString().split("T")[0],
+                          endDate: new Date(Date.now() + 86400000 * 7)
+                            .toISOString()
+                            .split("T")[0],
+                          background:
+                            "เพื่อทดสอบประสิทธิภาพของระบบและตรวจสอบความถูกต้องของการคำนวณงบประมาณ",
+                          projectDetails:
+                            "รายละเอียดโครงการทดสอบครอบคลุมถึงการกำหนดแผนการดำเนินงานและการประเมินผล",
+                          objectives:
+                            "1. เพื่อทดสอบระบบ\n2. เพื่อแสดงให้ลูกค้าดู",
+                          scope: "บุคลากรและนิสิตในคณะวิทยาศาสตร์",
+                          implementationPlan:
+                            "สัปดาห์ที่ 1: เตรียมการ\nสัปดาห์ที่ 2: ดำเนินงาน",
+                          serviceType: "1",
+                          targetGroups: ["1", "2"],
+                          strategies: ["2"],
+                          participants: [
+                            {
+                              id: 1,
+                              count: "50",
+                              details: "นิสิตคณะวิทยาศาสตร์",
+                            },
+                          ],
+                          venue: "ตึกแถบ นีละนิธิ คณะวิทยาศาสตร์",
+                          committee: "คณะกรรมการทดสอบระบบ",
+                          expectedBenefits: "ระบบทำงานได้อย่างถูกต้องและแม่นยำ",
+                          projectEvaluation: "แบบประเมินความพึงพอใจ",
+                          budgetSourceExtGov: "50000",
+                          budgetSourceExtPrivate: "0",
+                          budgetSourceExtForeign: "0",
+                          budgetSourceInternal: "0",
+                          incomeSupportItems: [
+                            {
+                              id: 1,
+                              name: "เงินอุดหนุนวิจัย",
+                              amount: "50000",
+                            },
+                          ],
+                          incomeRegistrationItems: [
+                            {
+                              id: 1,
+                              name: "ค่าลงทะเบียนนิสิต",
+                              amount: "10000",
+                            },
+                          ],
+                          expenseRemuneration: "20000",
+                          expenseSupplies: "10000",
+                          expenseMaterials: "5000",
+                          expenseUtilities: "2000",
+                          expenseSubsidy: "5000",
+                          expenseReserve: "8000",
+                        };
+                        methods.reset(dummyData);
+                        setCollaborators([{ id: 1, name: "นายสมชาย ใจดี" }]);
+                        setNotes({ note2: true, note3: true });
+                      }}
+                    >
+                      Fill Dummy Data
+                    </Button>
+                  )}
                   <Button
                     type="button"
                     variant="outline"
