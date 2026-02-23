@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,37 +11,56 @@ import {
   Save,
   Loader2,
   Table as TableIcon,
-  Eye,
   X,
-  Plus,
-  Trash2,
+  Search,
+  Filter,
+  Lock,
+  Unlock,
+  Eye,
+  FileEdit,
   FileText,
+  Plus,
 } from "lucide-react";
 
 // --- 1. Data Interface ---
 interface ProjectData {
   id: string;
-  receiptNumber: string;
-  projectCode: string;
+  projectCode: string; // 1. รหัสโครงการ
+  memoTitle: string; // 2. ชื่อโครงการ
+  department: string; // 3. ภาควิชา
+  purpose: string; // 4. เพื่อดำเนินการ
+
+  // Meeting data (source for Column 5)
   boardMeetingNo: string;
   boardMeetingDate: string;
   deanDecisionNo: string;
   deanDecisionDate: string;
-  purpose: string;
-  memoTitle: string;
-  department: string;
+
+  totalBudget: string; // 6. งบประมาณรวม
+  compensation: string; // 7. หมวดค่าตอบแทน
+  operatingCost: string; // 8. หมวดค่าใช้สอย
+
+  maintenanceFeeProposal: string; // 9. ค่าบำรุงสถานที่ (เสนอ) - Read Only
+  // 10. ค่าบำรุงสถานที่ (จริง) -> uses _maintenanceFee in Enhanced
+
+  materialCost: string; // 11. หมวดค่าวัสดุ
+  utilities: string; // 12. หมวดสาธารณูปโภค
+
+  electricityFeeProposal: string; // 13. ค่าไฟฟ้า (เสนอ) - Read Only
+  // 14. ค่าไฟฟ้า (จริง) -> uses _electricityFeeActual in Enhanced
+
+  academicFund: string; // 15. หมวดเงินอุดหนุน
+  generalReserve: string; // 16. หมวดเงินสำรอง
+
+  vendorCode: string; // 17. รหัสเจ้าหนี้
+  // 18. ศูนย์ต้นทุน -> uses _costCenter in Enhanced
+
+  // Other fields
+  receiptNumber: string;
   projectHead: string;
-  totalBudget: string;
-  compensation: string;
-  operatingCost: string;
-  materialCost: string;
-  utilities: string; // อันนี้คือ "งบตั้งต้น" (Read Only)
-  academicFund: string;
-  generalReserve: string;
   startDate: string;
   endDate: string;
   fundOwner: string;
-  vendorCode: string;
   serviceType: string;
   strategyType: string;
   targetGroup: string;
@@ -66,48 +86,183 @@ interface ProjectData {
   docLink: string;
 }
 
-// --- 2. Enhanced Interface ---
+// --- Project Status Constants ---
+const PROJECT_STATUSES = [
+  "1. งานบริหารวิจัยและบริการวิชาการ ดำเนินการตรวจสอบ/แก้ไข",
+  "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
+  "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
+  "4. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์อนุมัติ และให้เสนองานบริหารวิจัยและบริการวิชาการเพื่อดำเนินการต่อไป",
+  "5. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์เห็นชอบ และให้เสนอกลุ่มภารกิจการประชุม ศูนย์บริหารกลางเพื่อดำเนินการต่อไป",
+  "6. เสนอคณบดี เพื่อพิจารณาอนุมัติโครงการ",
+  "7. เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
+  "8. คณบดีอนุมัติโครงการ",
+  "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
+  "10. รองคณบดี (รองศาสตราจารย์ ดร.พิชญดา เกตุเมฆ) แจ้งต่อ หัวหน้าภาควิชาเพื่อโปรดทราบและดำเนินการต่อไป",
+  "11. รองคณบดี (รองศาสตราจารย์ ดร.พิชญดา เกตุเมฆ) แจ้งต่อ สายการเงินและบัญชี, งานนโยบายและแผน หรืองานบริหารกายภาพ (แล้วแต่กรณี) เพื่อโปรดทราบและดำเนินการต่อไป",
+  "12. รอภาควิชาจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน",
+  "13. ภาควิชาดำเนินการจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน เรียบร้อยแล้ว",
+  "14. ปิดโครงการ",
+] as const;
+
+// --- Meeting Record Interface ---
 interface MeetingRecord {
   id: string;
   type: "BOARD" | "DEAN";
   no: string;
   date: string;
+  purpose?: string; // เพื่อดำเนินการ
 }
 
+// --- 2. Enhanced Interface ---
 interface EnhancedProjectData extends ProjectData {
+  _projectStatus?: string;
   _meetings: MeetingRecord[];
-  _costCenter?: string;
-  _maintenanceFee?: string;
-  _electricityFeeActual?: string; // เก็บแยก: ค่าไฟฟ้าตามจริง (Editable)
+  _costCenter?: string; // 18.
+  _maintenanceFee?: string; // 10.
+  _electricityFeeActual?: string; // 14.
 }
 
 type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
 
 // --- Permissions Configuration ---
-// กำหนดว่า Column ไหน ใครแก้ได้บ้าง
 const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
+  _projectStatus: ["งานวิจัย"],
   _meetings: ["งานวิจัย", "งานแผน"],
   vendorCode: ["งานคลัง"],
   _costCenter: ["งานแผน"],
   _maintenanceFee: ["กายภาพ"],
-  _electricityFeeActual: ["กายภาพ"], // ** ช่องจ่ายจริง กายภาพแก้ได้ **
-  // utilities ไม่ใส่ในนี้ = Read Only เสมอ
+  _electricityFeeActual: ["กายภาพ"],
 };
 
-// --- Column Definitions (แยก Column ค่าไฟ) ---
+// --- Column Definitions ---
+// Ordered exactly as requested
 const COLUMNS = [
-  { key: "receiptNumber", label: "เลขที่รับ", width: "w-[140px]" },
-  { key: "memoTitle", label: "ชื่อโครงการ / แหล่งทุน", width: "w-[240px]" },
-  { key: "_meetings", label: "1-2. มติที่ประชุม", width: "w-[180px]" },
-  { key: "vendorCode", label: "3. รหัสเจ้าหนี้", width: "w-[140px]" },
-  { key: "_costCenter", label: "4. ศูนย์ต้นทุน", width: "w-[130px]" },
-  { key: "_maintenanceFee", label: "5. ค่าบำรุงฯ", width: "w-[130px]" },
-  { key: "utilities", label: "6. ค่าไฟฟ้าตามงบประมาณ", width: "w-[120px]" }, // Read Only
+  { key: "projectCode", label: "รหัสโครงการ", width: "min-w-[120px]" },
+  {
+    key: "_projectStatus",
+    label: "สถานะโครงการ",
+    width: "min-w-[250px]",
+    editable: true,
+    wrap: true,
+  },
+  {
+    key: "memoTitle",
+    label: "ชื่อโครงการ",
+    width: "min-w-[200px]",
+    wrap: true,
+  },
+  {
+    key: "department",
+    label: "ภาควิชา/หน่วยงาน",
+    width: "min-w-[140px]",
+    wrap: true,
+  },
+  {
+    key: "purpose",
+    label: "เพื่อดำเนินการ",
+    width: "min-w-[150px]",
+    wrap: true,
+  },
+  {
+    key: "boardMeetingNo",
+    label: "ตามมติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์ ครั้งที่",
+    width: "min-w-[180px]",
+    wrap: true,
+  },
+  { key: "boardMeetingDate", label: "วันที่", width: "min-w-[120px]" },
+  {
+    key: "deanDecisionNo",
+    label: "ตามมติที่ประชุมคณบดี ครั้งที่",
+    width: "min-w-[180px]",
+    wrap: true,
+  },
+  { key: "deanDecisionDate", label: "วันที่", width: "min-w-[120px]" },
+  {
+    key: "totalBudget",
+    label: "งบประมาณรวม",
+    width: "min-w-[120px]",
+    align: "right",
+  },
+  {
+    key: "compensation",
+    label: "หมวดค่าตอบแทน",
+    width: "min-w-[120px]",
+    align: "right",
+  },
+  {
+    key: "operatingCost",
+    label: "หมวดค่าใช้สอย",
+    width: "min-w-[120px]",
+    align: "right",
+  },
+  {
+    key: "maintenanceFeeProposal",
+    label: "ค่าบำรุงสถานที่ (แบบข้อเสนอโครงการ)",
+    width: "min-w-[140px]",
+    align: "right",
+    bg: "bg-slate-50",
+    wrap: true,
+  },
+  {
+    key: "_maintenanceFee",
+    label: "ค่าบำรุงสถานที่ (กายภาพ) = ใช้จริง",
+    width: "min-w-[140px]",
+    align: "right",
+    editable: true,
+    wrap: true,
+  },
+  {
+    key: "materialCost",
+    label: "หมวดค่าวัสดุ",
+    width: "min-w-[120px]",
+    align: "right",
+  },
+  {
+    key: "utilities",
+    label: "หมวดสาธารณูปโภค",
+    width: "min-w-[120px]",
+    align: "right",
+  },
+  {
+    key: "electricityFeeProposal",
+    label: "ค่าไฟฟ้า (แบบข้อเสนอโครงการ)",
+    width: "min-w-[140px]",
+    align: "right",
+    bg: "bg-slate-50",
+    wrap: true,
+  },
   {
     key: "_electricityFeeActual",
-    label: "7. ค่าไฟฟ้าตามจริง",
-    width: "w-[120px]",
-  }, // Editable
+    label: "ค่าไฟฟ้า (กายภาพ) = ใช้จริง",
+    width: "min-w-[140px]",
+    align: "right",
+    editable: true,
+    wrap: true,
+  },
+  {
+    key: "academicFund",
+    label: "หมวดเงินอุดหนุน",
+    width: "min-w-[120px]",
+    align: "right",
+  },
+  {
+    key: "generalReserve",
+    label: "หมวดเงินสำรอง",
+    width: "min-w-[120px]",
+    align: "right",
+  },
+  {
+    key: "vendorCode",
+    label: "รหัสเจ้าหนี้",
+    width: "min-w-[120px]",
+    editable: true,
+  },
+  {
+    key: "_costCenter",
+    label: "ศูนย์ต้นทุน",
+    width: "min-w-[120px]",
+    editable: true,
+  },
 ];
 
 export default function ProjectTrackingPage() {
@@ -115,9 +270,18 @@ export default function ProjectTrackingPage() {
   const [projects, setProjects] = useState<EnhancedProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState<string>("all");
 
+  // Individual cell editing state
+  const [editingCell, setEditingCell] = useState<{
+    projectId: string;
+    field: string;
+  } | null>(null);
+  const [editingValue, setEditingValue] = useState<string>("");
+  const [savingCell, setSavingCell] = useState<string | null>(null);
+
+  // Modal for meetings management
   const [editingMeetings, setEditingMeetings] = useState<{
     projectId: string;
     list: MeetingRecord[];
@@ -128,6 +292,7 @@ export default function ProjectTrackingPage() {
     const loadMockData = async () => {
       try {
         setIsLoading(true);
+        // Simulate loading data - in real app fetch from /api
         const response = await fetch("/mock.json");
         const data: ProjectData[] = await response.json();
 
@@ -140,6 +305,7 @@ export default function ProjectTrackingPage() {
               type: "BOARD",
               no: item.boardMeetingNo,
               date: item.boardMeetingDate,
+              purpose: item.purpose || "",
             });
           if (item.deanDecisionNo)
             meetings.push({
@@ -147,14 +313,28 @@ export default function ProjectTrackingPage() {
               type: "DEAN",
               no: item.deanDecisionNo,
               date: item.deanDecisionDate,
+              purpose: item.purpose || "",
             });
 
           return {
             ...item,
+            // Ensure fields exist if JSON is partial
+            purpose: item.purpose || "-",
+            totalBudget: item.totalBudget || "0.00",
+            compensation: item.compensation || "0.00",
+            operatingCost: item.operatingCost || "0.00",
+            maintenanceFeeProposal: "1,000.00", // Mock value for proposal
+            materialCost: item.materialCost || "0.00",
+            utilities: item.utilities || "0.00",
+            electricityFeeProposal: "500.00", // Mock value for proposal
+            academicFund: item.academicFund || "0.00",
+            generalReserve: item.generalReserve || "0.00",
+
+            _projectStatus: PROJECT_STATUSES[0],
             _meetings: meetings,
             _costCenter: "",
             _maintenanceFee: "",
-            _electricityFeeActual: "", // ค่าเริ่มต้นว่างไว้
+            _electricityFeeActual: "",
           };
         });
 
@@ -173,21 +353,52 @@ export default function ProjectTrackingPage() {
   const handleUpdateField = (
     id: string,
     field: keyof EnhancedProjectData,
-    value: string | MeetingRecord[],
+    value: string,
   ) => {
     setProjects((prev) =>
       prev.map((p) => (p.id === id ? { ...p, [field]: value } : p)),
     );
   };
 
-  const handleSaveMeetings = () => {
-    if (editingMeetings) {
+  // Start editing a cell
+  const handleStartEdit = (
+    projectId: string,
+    field: string,
+    currentValue: string,
+  ) => {
+    setEditingCell({ projectId, field });
+    setEditingValue(currentValue || "");
+  };
+
+  // Cancel editing
+  const handleCancelEdit = () => {
+    setEditingCell(null);
+    setEditingValue("");
+  };
+
+  // Save individual cell edit
+  const handleSaveCell = async () => {
+    if (!editingCell) return;
+
+    const cellKey = `${editingCell.projectId}-${editingCell.field}`;
+    setSavingCell(cellKey);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       handleUpdateField(
-        editingMeetings.projectId,
-        "_meetings",
-        editingMeetings.list,
+        editingCell.projectId,
+        editingCell.field as keyof EnhancedProjectData,
+        editingValue,
       );
-      setEditingMeetings(null);
+
+      setEditingCell(null);
+      setEditingValue("");
+    } catch (error) {
+      console.error("Error saving cell:", error);
+      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+    } finally {
+      setSavingCell(null);
     }
   };
 
@@ -196,76 +407,355 @@ export default function ProjectTrackingPage() {
     return allowedRoles && allowedRoles.includes(userRole);
   };
 
+  const isColumnEditable = (col: (typeof COLUMNS)[0]) => {
+    return col.editable && hasPermission(col.key);
+  };
+
+  // Save meetings modal
+  const handleSaveMeetings = async () => {
+    if (editingMeetings) {
+      const errors: string[] = [];
+      editingMeetings.list.forEach((m, idx) => {
+        if (!m.no || m.no.trim() === "")
+          errors.push(`มติที่ ${idx + 1}: กรุณาระบุครั้งที่`);
+        if (!m.date || m.date.trim() === "")
+          errors.push(`มติที่ ${idx + 1}: กรุณาระบุวันที่`);
+      });
+
+      if (errors.length > 0) {
+        alert("กรุณาตรวจสอบข้อมูล:\n" + errors.join("\n"));
+        return;
+      }
+
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        setProjects((prev) =>
+          prev.map((p) =>
+            p.id === editingMeetings.projectId
+              ? { ...p, _meetings: editingMeetings.list }
+              : p,
+          ),
+        );
+
+        setEditingMeetings(null);
+      } catch (error) {
+        alert("Error saving meetings");
+      }
+    }
+  };
+
   const filteredProjects = useMemo(() => {
-    return projects;
+    const query = searchQuery.toLowerCase();
+    return projects.filter((p) => {
+      const matchesSearch =
+        !query ||
+        p.projectCode.toLowerCase().includes(query) ||
+        p.memoTitle.toLowerCase().includes(query) ||
+        p.vendorCode.toLowerCase().includes(query);
+      const matchesDepartment =
+        departmentFilter === "all" || p.department === departmentFilter;
+      return matchesSearch && matchesDepartment;
+    });
+  }, [projects, searchQuery, departmentFilter]);
+
+  const departments = useMemo(() => {
+    const depts = new Set(projects.map((p) => p.department).filter(Boolean));
+    return Array.from(depts).sort();
   }, [projects]);
+
+  // Helper to render cell content based on column definition
+  const renderCell = (
+    project: EnhancedProjectData,
+    col: (typeof COLUMNS)[0],
+  ) => {
+    const value = project[col.key as keyof EnhancedProjectData];
+    const isEditable = col.editable && hasPermission(col.key);
+    const isEditing =
+      editingCell?.projectId === project.id && editingCell?.field === col.key;
+    const alignClass = col.align === "right" ? "text-right" : "text-left";
+    const fontClass = col.align === "right" ? "font-mono" : "font-normal";
+
+    // 1. Special Case: Project Code (Link)
+    if (col.key === "projectCode") {
+      return (
+        <Link
+          href={`/projects/${project.id}`}
+          className="text-sm font-semibold text-indigo-900 hover:text-indigo-600 hover:underline"
+        >
+          {(value as string) || "-"}
+        </Link>
+      );
+    }
+
+    // 2. Special Case: Purpose Column (Display from latest meeting)
+    if (col.key === "purpose") {
+      const canEditAny = hasPermission("_meetings");
+      const latestMeeting =
+        project._meetings.length > 0
+          ? project._meetings[project._meetings.length - 1]
+          : null;
+      const purposeValue = latestMeeting?.purpose || "-";
+
+      return (
+        <div className="flex items-start justify-between group">
+          <div className="text-sm text-slate-700 flex-1 leading-relaxed">
+            {purposeValue}
+          </div>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity ml-1 shrink-0 mt-0.5"
+            onClick={() =>
+              setEditingMeetings({
+                projectId: project.id,
+                list: [...project._meetings],
+              })
+            }
+          >
+            {canEditAny ? (
+              <FileEdit size={12} className="text-indigo-600" />
+            ) : (
+              <Eye size={12} className="text-slate-400" />
+            )}
+          </Button>
+        </div>
+      );
+    }
+
+    // 2b. Special Case: Meeting Columns (Combined Edit Card)
+    if (
+      [
+        "boardMeetingNo",
+        "boardMeetingDate",
+        "deanDecisionNo",
+        "deanDecisionDate",
+      ].includes(col.key)
+    ) {
+      const canEditAny = hasPermission("_meetings");
+
+      return (
+        <div className="flex items-start justify-between group">
+          <div className="text-sm text-slate-700 flex-1 leading-relaxed">
+            {(value as string) || "-"}
+          </div>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity ml-1 shrink-0 mt-0.5"
+            onClick={() =>
+              setEditingMeetings({
+                projectId: project.id,
+                list: [...project._meetings],
+              })
+            }
+          >
+            {canEditAny ? (
+              <FileEdit size={12} className="text-indigo-600" />
+            ) : (
+              <Eye size={12} className="text-slate-400" />
+            )}
+          </Button>
+        </div>
+      );
+    }
+
+    // 3. Special Case: Project Status (Dropdown)
+    if (col.key === "_projectStatus") {
+      if (isEditing) {
+        return (
+          <div className="flex gap-1 items-center z-50 relative">
+            <select
+              value={editingValue}
+              onChange={(e) => setEditingValue(e.target.value)}
+              className="h-8 text-sm border rounded px-2 w-full"
+              autoFocus
+            >
+              <option value="">-- เลือกสถานะ --</option>
+              {PROJECT_STATUSES.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 text-green-600 hover:bg-green-50 shrink-0"
+              onClick={handleSaveCell}
+              disabled={savingCell === `${project.id}-${col.key}`}
+            >
+              {savingCell === `${project.id}-${col.key}` ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Save size={14} />
+              )}
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 text-slate-400 hover:bg-slate-50 shrink-0"
+              onClick={handleCancelEdit}
+            >
+              <X size={14} />
+            </Button>
+          </div>
+        );
+      }
+
+      // Display mode for status
+      const statusNumber = (value as string)?.split(".")[0];
+      const statusColor =
+        statusNumber === "14" ? "text-green-700" : "text-slate-700";
+
+      return (
+        <div className={`flex items-start justify-between group ${alignClass}`}>
+          <div
+            className={`text-sm ${statusColor} flex-1 leading-relaxed`}
+            title={value as string}
+          >
+            {(value as string) || "-"}
+          </div>
+          {isEditable && (
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity ml-1 shrink-0 mt-0.5"
+              onClick={() =>
+                handleStartEdit(project.id, col.key, value as string)
+              }
+            >
+              <Pencil size={12} className="text-indigo-600" />
+            </Button>
+          )}
+        </div>
+      );
+    }
+
+    // 4. Editing Mode
+    if (isEditing) {
+      return (
+        <div className="flex gap-1 items-center z-50 relative">
+          <Input
+            value={editingValue}
+            onChange={(e) => setEditingValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSaveCell();
+              if (e.key === "Escape") handleCancelEdit();
+            }}
+            className={`h-8 text-sm ${alignClass} min-w-[80px]`}
+            autoFocus
+          />
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 text-green-600 hover:bg-green-50 shrink-0"
+            onClick={handleSaveCell}
+            disabled={savingCell === `${project.id}-${col.key}`}
+          >
+            {savingCell === `${project.id}-${col.key}` ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Save size={14} />
+            )}
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 text-slate-400 hover:bg-slate-50 shrink-0"
+            onClick={handleCancelEdit}
+          >
+            <X size={14} />
+          </Button>
+        </div>
+      );
+    }
+
+    // 5. Standard Display (Editable or Read-only)
+    const shouldWrap = col.wrap;
+
+    return (
+      <div className={`flex items-start justify-between group ${alignClass}`}>
+        <div
+          className={`text-sm text-slate-700 ${fontClass} flex-1 ${shouldWrap ? "leading-relaxed" : "truncate"}`}
+          title={value as string}
+        >
+          {(value as string) || "-"}
+        </div>
+        {isEditable && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity ml-1 shrink-0 mt-0.5"
+            onClick={() =>
+              handleStartEdit(project.id, col.key, value as string)
+            }
+          >
+            <Pencil size={12} className="text-indigo-600" />
+          </Button>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans">
       <Sidebar />
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b px-6 py-3 flex items-center justify-between shadow-sm shrink-0 z-20">
+        <header className="bg-white border-b px-4 py-3 flex items-center justify-between shadow-sm shrink-0 z-20 gap-4">
           <div className="flex items-center gap-3">
             <div className="bg-indigo-600 p-2 rounded-lg text-white shadow-md">
               <TableIcon size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-800">
+              <h1 className="text-lg font-bold text-slate-800">
                 ระบบติดตามโครงการ
               </h1>
               <p className="text-xs text-slate-500">
-                จัดการข้อมูลโดย:{" "}
+                จัดการโดย:{" "}
                 <span className="font-bold text-indigo-600">{userRole}</span>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            {/* Role Switcher */}
-            <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-md border border-slate-200">
-              <span className="text-xs font-semibold text-slate-500 pl-2">
-                เลือกบทบาท:
-              </span>
-              <select
-                value={userRole}
-                onChange={(e) => setUserRole(e.target.value as UserRole)}
-                className="text-sm bg-white border-0 rounded px-2 py-1 cursor-pointer focus:ring-0 text-slate-700 shadow-sm font-medium"
-              >
-                <option value="งานวิจัย">งานวิจัย (1,2)</option>
-                <option value="งานแผน">งานแผน (4)</option>
-                <option value="งานคลัง">งานคลัง (3)</option>
-                <option value="กายภาพ">กายภาพ (5,7)</option>
-              </select>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"
+                size={16}
+              />
+              <Input
+                type="text"
+                placeholder="ค้นหา..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 h-9 w-64 text-sm"
+              />
             </div>
-
-            <Button
-              onClick={() => {
-                if (isEditMode) {
-                  setIsSaving(true);
-                  setTimeout(() => {
-                    setIsSaving(false);
-                    setIsEditMode(false);
-                  }, 500);
-                } else {
-                  setIsEditMode(true);
-                }
-              }}
-              className={`h-9 px-5 transition-all font-medium ${
-                isEditMode
-                  ? "bg-green-600 hover:bg-green-700 ring-2 ring-green-100"
-                  : "bg-indigo-600 hover:bg-indigo-700"
-              }`}
+            <select
+              value={departmentFilter}
+              onChange={(e) => setDepartmentFilter(e.target.value)}
+              className="text-sm bg-slate-100 border-slate-200 rounded px-3 py-1.5 focus:ring-indigo-500"
             >
-              {isSaving ? (
-                <Loader2 className="animate-spin mr-2" size={16} />
-              ) : isEditMode ? (
-                <Save className="mr-2" size={16} />
-              ) : (
-                <Pencil className="mr-2" size={16} />
-              )}
-              {isSaving ? "บันทึก..." : isEditMode ? "บันทึกข้อมูล" : "แก้ไข"}
-            </Button>
+              <option value="all">ทุกภาควิชา</option>
+              {departments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
+            <select
+              value={userRole}
+              onChange={(e) => setUserRole(e.target.value as UserRole)}
+              className="text-sm bg-slate-100 border-slate-200 rounded px-3 py-1.5 focus:ring-indigo-500"
+            >
+              <option value="ภาควิชา">ภาควิชา (View)</option>
+              <option value="งานวิจัย">งานวิจัย (Edit Proj)</option>
+              <option value="งานแผน">งานแผน (Cost)</option>
+              <option value="งานคลัง">งานคลัง (Vendor)</option>
+              <option value="กายภาพ">กายภาพ (Utils)</option>
+            </select>
           </div>
         </header>
 
@@ -274,16 +764,39 @@ export default function ProjectTrackingPage() {
           <Card className="border-none shadow-lg overflow-hidden h-full flex flex-col bg-white rounded-lg">
             <div className="overflow-auto flex-1">
               <table className="w-full border-collapse text-left">
-                <thead className="bg-slate-800 text-slate-200 sticky top-0 z-10 text-xs uppercase tracking-wider shadow-sm">
+                <thead className="bg-slate-800 text-slate-200 sticky top-0 z-10 text-xs uppercase shadow-sm">
                   <tr>
-                    {COLUMNS.map((col) => (
-                      <th
-                        key={col.key}
-                        className={`p-3 font-semibold border-r border-slate-700/50 last:border-0 ${col.width}`}
-                      >
-                        {col.label}
-                      </th>
-                    ))}
+                    {COLUMNS.map((col) => {
+                      const canEdit = isColumnEditable(col);
+                      const isDetailsColumn = [
+                        "purpose",
+                        "boardMeetingNo",
+                        "boardMeetingDate",
+                        "deanDecisionNo",
+                        "deanDecisionDate",
+                      ].includes(col.key);
+                      const canEditDetails =
+                        isDetailsColumn && hasPermission("_meetings");
+
+                      return (
+                        <th
+                          key={col.key}
+                          className={`p-3 font-semibold border-r border-slate-700/50 last:border-0 ${col.width} ${
+                            col.wrap ? "whitespace-normal" : "whitespace-nowrap"
+                          } transition-colors`}
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className="leading-tight">{col.label}</span>
+                            {(canEdit || canEditDetails) && (
+                              <Unlock
+                                size={12}
+                                className="text-green-300 animate-pulse shrink-0"
+                              />
+                            )}
+                          </div>
+                        </th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -293,7 +806,7 @@ export default function ProjectTrackingPage() {
                         colSpan={COLUMNS.length}
                         className="p-10 text-center text-slate-400"
                       >
-                        กำลังโหลดข้อมูล...
+                        กำลังโหลด...
                       </td>
                     </tr>
                   ) : filteredProjects.length === 0 ? (
@@ -307,165 +820,38 @@ export default function ProjectTrackingPage() {
                     </tr>
                   ) : (
                     filteredProjects.map((project) => (
-                      <tr
-                        key={project.id}
-                        className={`group hover:bg-slate-50`}
-                      >
-                        {/* 1. เลขที่รับ */}
-                        <td className="p-3 align-top border-r border-slate-100">
-                          <div className="text-sm font-semibold text-indigo-900">
-                            {project.receiptNumber}
-                          </div>
-                          <div className="text-xs text-slate-400 mt-1">
-                            {project.projectCode}
-                          </div>
-                        </td>
+                      <tr key={project.id} className="group hover:bg-slate-50">
+                        {COLUMNS.map((col) => {
+                          const canEdit = isColumnEditable(col);
+                          const isDetailsColumn = [
+                            "purpose",
+                            "boardMeetingNo",
+                            "boardMeetingDate",
+                            "deanDecisionNo",
+                            "deanDecisionDate",
+                          ].includes(col.key);
+                          const canEditDetails =
+                            isDetailsColumn && hasPermission("_meetings");
 
-                        {/* 2. ชื่อโครงการ */}
-                        <td className="p-3 align-top border-r border-slate-100">
-                          <div className="flex flex-col gap-1">
-                            <span
-                              className="text-sm text-slate-700 font-medium line-clamp-2"
-                              title={project.memoTitle}
+                          return (
+                            <td
+                              key={col.key}
+                              className={`p-3 align-top border-r border-slate-100 last:border-0 transition-colors ${
+                                col.bg || ""
+                              } ${
+                                canEdit || canEditDetails
+                                  ? "bg-slate-100 hover:bg-slate-200"
+                                  : ""
+                              } ${
+                                col.wrap
+                                  ? "whitespace-normal"
+                                  : "whitespace-nowrap"
+                              }`}
                             >
-                              {project.memoTitle}
-                            </span>
-                            {project.fundOwner && (
-                              <span className="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded w-fit truncate max-w-full border">
-                                ทุน: {project.fundOwner}
-                              </span>
-                            )}
-                          </div>
-                        </td>
-
-                        {/* 3. มติประชุม */}
-                        <td className="p-3 align-top border-r border-slate-100">
-                          <div className="flex flex-col gap-2">
-                            <div className="bg-white border border-slate-200 rounded-md p-2 shadow-sm flex items-center justify-between">
-                              <div>
-                                <div className="text-[10px] uppercase text-slate-400 font-bold">
-                                  ล่าสุด
-                                </div>
-                                <div className="text-sm font-semibold text-slate-700">
-                                  {project._meetings.length > 0
-                                    ? `ครั้งที่ ${project._meetings[project._meetings.length - 1].no}`
-                                    : "-"}
-                                </div>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() =>
-                                  setEditingMeetings({
-                                    projectId: project.id,
-                                    list: [...project._meetings],
-                                  })
-                                }
-                                className="h-7 w-7 rounded-full hover:bg-indigo-50 hover:text-indigo-600"
-                              >
-                                {isEditMode && hasPermission("_meetings") ? (
-                                  <Pencil size={12} />
-                                ) : (
-                                  <Eye size={12} />
-                                )}
-                              </Button>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* 4. Vendor */}
-                        <td className="p-3 align-top border-r border-slate-100">
-                          {isEditMode && hasPermission("vendorCode") ? (
-                            <Input
-                              value={project.vendorCode}
-                              onChange={(e) =>
-                                handleUpdateField(
-                                  project.id,
-                                  "vendorCode",
-                                  e.target.value,
-                                )
-                              }
-                              className="h-8 text-sm"
-                            />
-                          ) : (
-                            <div className="text-sm text-slate-700 font-mono">
-                              {project.vendorCode || "-"}
-                            </div>
-                          )}
-                        </td>
-
-                        {/* 5. Cost Center */}
-                        <td className="p-3 align-top border-r border-slate-100">
-                          {isEditMode && hasPermission("_costCenter") ? (
-                            <Input
-                              value={project._costCenter}
-                              onChange={(e) =>
-                                handleUpdateField(
-                                  project.id,
-                                  "_costCenter",
-                                  e.target.value,
-                                )
-                              }
-                              className="h-8 text-sm"
-                            />
-                          ) : (
-                            <div className="text-sm text-slate-700 font-mono">
-                              {project._costCenter || "-"}
-                            </div>
-                          )}
-                        </td>
-
-                        {/* 6. ค่าบำรุงฯ */}
-                        <td className="p-3 align-top border-r border-slate-100">
-                          {isEditMode && hasPermission("_maintenanceFee") ? (
-                            <Input
-                              value={project._maintenanceFee}
-                              onChange={(e) =>
-                                handleUpdateField(
-                                  project.id,
-                                  "_maintenanceFee",
-                                  e.target.value,
-                                )
-                              }
-                              className="h-8 text-sm text-right"
-                            />
-                          ) : (
-                            <div className="text-sm text-right text-slate-700 font-mono">
-                              {project._maintenanceFee || "-"}
-                            </div>
-                          )}
-                        </td>
-
-                        {/* 7.1 ค่าไฟ (งบตั้งต้น) - Read Only */}
-                        <td className="p-3 align-top border-r border-slate-100 bg-slate-50/50">
-                          <div className="text-sm text-right text-slate-500 font-mono">
-                            {project.utilities || "-"}
-                          </div>
-                        </td>
-
-                        {/* 7.2 ค่าไฟ (จ่ายจริง) - Editable */}
-                        <td className="p-3 align-top border-r border-slate-100 bg-indigo-50/10">
-                          {isEditMode &&
-                          hasPermission("_electricityFeeActual") ? (
-                            <Input
-                              value={project._electricityFeeActual}
-                              onChange={(e) =>
-                                handleUpdateField(
-                                  project.id,
-                                  "_electricityFeeActual",
-                                  e.target.value,
-                                )
-                              }
-                              className="h-8 text-sm text-right font-bold text-indigo-700 border-indigo-200 focus:border-indigo-500"
-                            />
-                          ) : (
-                            <div
-                              className={`text-sm text-right font-mono ${project._electricityFeeActual ? "text-indigo-700 font-bold" : "text-slate-300 italic"}`}
-                            >
-                              {project._electricityFeeActual || "-"}
-                            </div>
-                          )}
-                        </td>
+                              {renderCell(project, col)}
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))
                   )}
@@ -475,17 +861,17 @@ export default function ProjectTrackingPage() {
           </Card>
         </div>
 
-        {/* --- MODAL: Meetings Management (เหมือนเดิม) --- */}
+        {/* --- MODAL: Meetings Management --- */}
         {editingMeetings && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <Card className="w-full max-w-2xl bg-white shadow-2xl rounded-xl flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200">
-              <div className="p-5 border-b flex justify-between items-center bg-slate-50 rounded-t-xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-2 md:p-4 animate-in fade-in duration-200">
+            <Card className="w-full max-w-4xl bg-white shadow-2xl rounded-xl flex flex-col max-h-[85vh] md:max-h-[80vh] animate-in zoom-in-95 duration-200">
+              <div className="p-2 md:p-3 border-b flex justify-between items-center bg-slate-50 rounded-t-xl">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <FileText className="text-indigo-600" size={20} />
+                  <h3 className="text-base md:text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <FileText className="text-indigo-600" size={18} />
                     จัดการมติที่ประชุม
                   </h3>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     ID: {editingMeetings.projectId}
                   </p>
                 </div>
@@ -493,147 +879,214 @@ export default function ProjectTrackingPage() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setEditingMeetings(null)}
-                  className="rounded-full"
+                  className="rounded-full h-8 w-8"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </Button>
               </div>
 
-              <div className="p-6 overflow-y-auto flex-1 bg-white">
-                <div className="space-y-4">
-                  {editingMeetings.list.map((m, idx) => (
-                    <div
-                      key={m.id || idx}
-                      className="relative group flex items-start gap-3 p-3 border rounded-lg bg-slate-50"
-                    >
-                      <div className="mt-2 w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">
-                        {idx + 1}
-                      </div>
-                      <div className="flex-1 grid grid-cols-3 gap-3">
-                        <div>
-                          <label className="text-[10px] text-slate-500 font-bold uppercase block mb-1">
-                            ประเภท
-                          </label>
-                          <select
-                            disabled={
-                              !isEditMode || !hasPermission("_meetings")
-                            }
-                            value={m.type}
-                            onChange={(e) => {
-                              const newList = [...editingMeetings.list];
-                              newList[idx].type = e.target.value as
-                                | "BOARD"
-                                | "DEAN";
+              <div className="p-3 md:p-4 overflow-y-auto flex-1 bg-white">
+                {hasPermission("_meetings") ? (
+                  <div className="space-y-0">
+                    {/* Meeting Cards */}
+                    {editingMeetings.list.map((m, idx) => (
+                      <div
+                        key={m.id || idx}
+                        className="py-2 border-b border-slate-100 last:border-b-0"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="text-sm font-semibold text-slate-700 min-w-[24px] pt-2">
+                            {idx + 1}.
+                          </span>
+
+                          <div className="flex-1 min-w-[320px] max-w-[400px]">
+                            <select
+                              value={m.type}
+                              onChange={(e) => {
+                                const newList = [...editingMeetings.list];
+                                newList[idx].type = e.target.value as
+                                  | "BOARD"
+                                  | "DEAN";
+                                setEditingMeetings({
+                                  ...editingMeetings,
+                                  list: newList,
+                                });
+                              }}
+                              className="w-full text-sm border border-slate-300 rounded focus:ring-indigo-500 px-3 py-2 h-auto whitespace-normal"
+                            >
+                              <option value="BOARD">
+                                มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์
+                              </option>
+                              <option value="DEAN">มติที่ประชุมคณบดี</option>
+                            </select>
+                          </div>
+
+                          <div className="w-[110px]">
+                            <Input
+                              placeholder="เช่น 17/2568"
+                              value={m.no}
+                              onChange={(e) => {
+                                const newList = [...editingMeetings.list];
+                                newList[idx].no = e.target.value;
+                                setEditingMeetings({
+                                  ...editingMeetings,
+                                  list: newList,
+                                });
+                              }}
+                              className="text-sm"
+                            />
+                          </div>
+
+                          <div className="w-[140px]">
+                            <Input
+                              type="date"
+                              value={m.date}
+                              onChange={(e) => {
+                                const newList = [...editingMeetings.list];
+                                newList[idx].date = e.target.value;
+                                setEditingMeetings({
+                                  ...editingMeetings,
+                                  list: newList,
+                                });
+                              }}
+                              className="text-sm"
+                            />
+                          </div>
+
+                          <div className="flex-1 min-w-[200px]">
+                            <Input
+                              placeholder="เพื่อดำเนินการ..."
+                              value={m.purpose || ""}
+                              onChange={(e) => {
+                                const newList = [...editingMeetings.list];
+                                newList[idx].purpose = e.target.value;
+                                setEditingMeetings({
+                                  ...editingMeetings,
+                                  list: newList,
+                                });
+                              }}
+                              className="text-sm"
+                            />
+                          </div>
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              const newList = editingMeetings.list.filter(
+                                (_, i) => i !== idx,
+                              );
                               setEditingMeetings({
                                 ...editingMeetings,
                                 list: newList,
                               });
                             }}
-                            className="w-full text-sm border-slate-300 rounded focus:ring-indigo-500"
+                            className="h-10 w-10 text-white bg-red-600 hover:bg-red-700 rounded-lg flex-shrink-0"
                           >
-                            <option value="BOARD">มติที่ประชุมคณะ</option>
-                            <option value="DEAN">มติคณบดี</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-[10px] text-slate-500 font-bold uppercase block mb-1">
-                            ครั้งที่
-                          </label>
-                          <Input
-                            disabled={
-                              !isEditMode || !hasPermission("_meetings")
-                            }
-                            value={m.no}
-                            onChange={(e) => {
-                              const newList = [...editingMeetings.list];
-                              newList[idx].no = e.target.value;
-                              setEditingMeetings({
-                                ...editingMeetings,
-                                list: newList,
-                              });
-                            }}
-                            className="h-9 bg-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] text-slate-500 font-bold uppercase block mb-1">
-                            วันที่
-                          </label>
-                          <Input
-                            disabled={
-                              !isEditMode || !hasPermission("_meetings")
-                            }
-                            value={m.date}
-                            onChange={(e) => {
-                              const newList = [...editingMeetings.list];
-                              newList[idx].date = e.target.value;
-                              setEditingMeetings({
-                                ...editingMeetings,
-                                list: newList,
-                              });
-                            }}
-                            className="h-9 bg-white"
-                          />
+                            <X className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
+                    ))}
 
-                      {isEditMode && hasPermission("_meetings") && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            const newList = editingMeetings.list.filter(
-                              (_, i) => i !== idx,
-                            );
-                            setEditingMeetings({
-                              ...editingMeetings,
-                              list: newList,
-                            });
-                          }}
-                          className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-
-                  {isEditMode && hasPermission("_meetings") && (
                     <Button
+                      type="button"
                       variant="outline"
+                      size="sm"
                       onClick={() => {
                         const newItem: MeetingRecord = {
                           id: `new-${Date.now()}`,
                           type: "BOARD",
                           no: "",
                           date: "",
+                          purpose: "",
                         };
                         setEditingMeetings({
                           ...editingMeetings,
                           list: [...editingMeetings.list, newItem],
                         });
                       }}
-                      className="w-full border-dashed py-4 text-slate-500 hover:text-indigo-600 hover:border-indigo-300"
+                      className="w-full bg-green-600 text-white hover:bg-green-700"
                     >
-                      <Plus className="mr-2" size={16} /> เพิ่มรายการใหม่
+                      <Plus className="w-4 h-4 mr-2" />
+                      เพิ่มมติ
                     </Button>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div className="space-y-0">
+                    {editingMeetings.list.length > 0 ? (
+                      <>
+                        {editingMeetings.list.map((m, idx) => (
+                          <div
+                            key={m.id || idx}
+                            className="py-2 border-b border-slate-100 last:border-b-0"
+                          >
+                            <div className="flex items-start gap-3">
+                              <span className="text-sm font-semibold text-slate-700 min-w-[24px] pt-2">
+                                {idx + 1}.
+                              </span>
+
+                              <div className="flex-1 min-w-[320px] max-w-[400px]">
+                                <div className="text-sm text-slate-700 px-3 py-2 border border-slate-200 rounded bg-slate-50 break-words">
+                                  {m.type === "BOARD"
+                                    ? "มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์"
+                                    : "มติที่ประชุมคณบดี"}
+                                </div>
+                              </div>
+
+                              <div className="w-[110px]">
+                                <div className="text-sm text-slate-700 px-3 py-2 border border-slate-200 rounded bg-slate-50">
+                                  {m.no || "-"}
+                                </div>
+                              </div>
+
+                              <div className="w-[140px]">
+                                <div className="text-sm text-slate-600 px-3 py-2 border border-slate-200 rounded bg-slate-50">
+                                  {m.date || "-"}
+                                </div>
+                              </div>
+
+                              <div className="flex-1 min-w-[200px]">
+                                <div className="text-sm text-slate-700 px-3 py-2 border border-slate-200 rounded bg-slate-50 break-words">
+                                  {m.purpose || "-"}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="text-center text-slate-400 py-6 text-sm">
+                        ไม่มีข้อมูลมติที่ประชุม
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <div className="p-5 border-t bg-slate-50 flex justify-end gap-3 rounded-b-xl">
-                <Button
-                  variant="outline"
-                  onClick={() => setEditingMeetings(null)}
-                >
-                  ยกเลิก
-                </Button>
-                {isEditMode && hasPermission("_meetings") && (
+              <div className="p-2 md:p-3 border-t bg-slate-50 flex flex-col sm:flex-row justify-end gap-2 rounded-b-xl">
+                {hasPermission("_meetings") ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => setEditingMeetings(null)}
+                    >
+                      ยกเลิก
+                    </Button>
+                    <Button
+                      onClick={handleSaveMeetings}
+                      className="bg-indigo-600 hover:bg-indigo-700"
+                    >
+                      ยืนยัน
+                    </Button>
+                  </>
+                ) : (
                   <Button
-                    onClick={handleSaveMeetings}
-                    className="bg-indigo-600 hover:bg-indigo-700"
+                    variant="outline"
+                    onClick={() => setEditingMeetings(null)}
                   >
-                    ยืนยัน
+                    ปิด
                   </Button>
                 )}
               </div>
