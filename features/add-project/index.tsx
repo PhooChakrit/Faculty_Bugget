@@ -279,10 +279,7 @@ export default function AddProjectPage() {
                 onSubmit={handleSubmit(handlePreviewOpen, onError)}
                 className="space-y-6 animate-in fade-in duration-300"
               >
-                <ReceiptInfoSection
-                  formData={formData}
-                  handleChange={handleInputChange}
-                />
+                <ReceiptInfoSection formData={formData} />
 
                 <BasicInfoSection
                   formData={formData}
@@ -324,17 +321,18 @@ export default function AddProjectPage() {
                     <ul className="list-disc list-inside text-red-600 text-sm space-y-1">
                       {Array.from(
                         new Set(
-                          (function extractMessages(errObj: any): string[] {
+                          (function extractMessages(errObj: unknown): string[] {
                             if (!errObj) return [];
                             if (typeof errObj === "string") return [errObj];
+                            const obj = errObj as Record<string, unknown>;
                             if (
-                              errObj.message &&
-                              typeof errObj.message === "string"
+                              obj.message &&
+                              typeof obj.message === "string"
                             ) {
-                              return [errObj.message];
+                              return [obj.message];
                             }
                             let msgs: string[] = [];
-                            if (typeof errObj === "object") {
+                            if (typeof errObj === "object" && errObj !== null) {
                               for (const val of Object.values(errObj)) {
                                 msgs = msgs.concat(extractMessages(val));
                               }

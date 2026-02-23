@@ -15,15 +15,9 @@ import { FormData } from "../../types";
 
 interface ReceiptInfoSectionProps {
   formData: FormData;
-  handleChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
 }
 
-export function ReceiptInfoSection({
-  formData,
-  handleChange,
-}: ReceiptInfoSectionProps) {
+export function ReceiptInfoSection({ formData }: ReceiptInfoSectionProps) {
   const { setValue } = useFormContext();
 
   const handleGenerateId = () => {

@@ -41,7 +41,10 @@ export const formDataSchema = z.object({
   leaderName: z.string().min(1, "กรุณากรอกชื่อหัวหน้าโครงการ"),
   leaderPosition: z.string().min(1, "กรุณากรอกตำแหน่ง"),
   department: z.string().min(1, "กรุณาเลือกหน่วยงาน/ภาควิชาที่รับผิดชอบ"),
-  leaderEmail: z.string().min(1, "กรุณากรอกอีเมลหัวหน้าโครงการ").email("รูปแบบอีเมลหัวหน้าโครงการไม่ถูกต้อง"),
+  leaderEmail: z
+    .string()
+    .min(1, "กรุณากรอกอีเมลหัวหน้าโครงการ")
+    .email("รูปแบบอีเมลหัวหน้าโครงการไม่ถูกต้อง"),
   coLeaderName: z.string().optional(),
   coLeaderEmail: z
     .string()
