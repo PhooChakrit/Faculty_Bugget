@@ -26,39 +26,49 @@ export const notesSchema = z.object({
   note3: z.boolean(),
 });
 
+export const participantSchema = z.object({
+  id: z.number(),
+  count: z.string().min(1, "กรุณากรอกจำนวนผู้เข้าร่วม"),
+  details: z.string().min(1, "กรุณากรอกรายละเอียดผู้เข้าร่วม"),
+});
+
 // Main Form Schema
 export const formDataSchema = z.object({
   // Basic Info
   receiptNumber: z.string().optional(),
-  projectNameThai: z.string().min(1, "กรุณากรอกชื่อโครงการ (ภาษาไทย)"),
+  projectNameThai: z.string().min(1, "กรุณากรอกชื่อโครงการภาษาไทย"),
   projectNameEng: z.string().optional(),
   leaderName: z.string().min(1, "กรุณากรอกชื่อหัวหน้าโครงการ"),
   leaderPosition: z.string().min(1, "กรุณากรอกตำแหน่ง"),
-  department: z.string().min(1, "กรุณากรอกสังกัด"),
-  leaderEmail: z.string().email("กรุณากรอกอีเมลให้ถูกต้อง"),
+  department: z.string().min(1, "กรุณาเลือกหน่วยงาน/ภาควิชาที่รับผิดชอบ"),
+  leaderEmail: z
+    .string()
+    .min(1, "กรุณากรอกอีเมลหัวหน้าโครงการ")
+    .email("รูปแบบอีเมลหัวหน้าโครงการไม่ถูกต้อง"),
   coLeaderName: z.string().optional(),
   coLeaderEmail: z
     .string()
-    .email("กรุณากรอกอีเมลให้ถูกต้อง")
+    .email("รูปแบบอีเมลผู้ประสานโครงการไม่ถูกต้อง")
     .optional()
     .or(z.literal("")),
-  startDate: z.string().min(1, "กรุณาเลือกวันที่เริ่มต้น"),
-  endDate: z.string().min(1, "กรุณาเลือกวันที่สิ้นสุด"),
+  startDate: z.string().min(1, "กรุณาเลือกวันที่จัดโครงการ (เริ่มต้น)"),
+  endDate: z.string().min(1, "กรุณาเลือกวันที่จัดโครงการ (สิ้นสุด)"),
 
   // Project Details
-  background: z.string().min(1, "กรุณากรอกความเป็นมาและความสำคัญ"),
+  background: z.string().min(1, "กรุณากรอกความเป็นมา หลักการและเหตุผล"),
   projectDetails: z.string().min(1, "กรุณากรอกรายละเอียดโครงการ"),
   objectives: z.string().min(1, "กรุณากรอกวัตถุประสงค์"),
   scope: z.string().optional(),
   implementationPlan: z.string().optional(),
-  serviceType: z.string().min(1, "กรุณาเลือกประเภทการให้บริการ"),
+  serviceType: z.string().min(1, "กรุณาเลือกประเภทงานบริการวิชาการ"),
   targetGroups: z.array(z.string()).min(1, "กรุณาเลือกกลุ่มเป้าหมาย"),
   strategies: z.array(z.string()).optional(),
-  participantCount: z.string().min(1, "กรุณากรอกจำนวนผู้เข้าร่วม"),
-  participantDetails: z.string().optional(),
-  venue: z.string().min(1, "กรุณากรอกสถานที่จัดโครงการ"),
-  committee: z.string().optional(),
-  expectedBenefits: z.string().optional(),
+  participants: z
+    .array(participantSchema)
+    .min(1, "กรุณาเพิ่มผู้เข้าร่วมอย่างน้อย 1 รายการ"),
+  venue: z.string().min(1, "กรุณากรอกสถานที่จัดโครงการ/อบรม"),
+  committee: z.string().min(1, "กรุณากรอกคณะกรรมการดำเนินงานโครงการ"),
+  expectedBenefits: z.string().min(1, "กรุณากรอกประโยชน์ที่คาดว่าจะได้รับ"),
   projectEvaluation: z.string().optional(),
 
   // Budget Sources

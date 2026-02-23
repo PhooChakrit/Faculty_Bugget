@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Minus } from "lucide-react";
@@ -133,16 +132,16 @@ export function BudgetAndNotesSection({
         {/* Budget Sources Section */}
         <div>
           <h3 className="font-medium mb-3">แหล่งงบประมาณ</h3>
-          <div className="border rounded-lg overflow-hidden">
+          <div>
             <table className="w-full">
-              <thead className="bg-muted">
+              <thead className="bg-muted rounded-t-lg">
                 <tr>
                   <th className="text-left p-3">รายละเอียด</th>
                   <th className="text-left p-3 w-48">จำนวนเงิน (บาท)</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">ภายนอกภาครัฐ</td>
                   <td className="p-3">
                     <Input
@@ -154,7 +153,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">ภายนอกภาคเอกชน</td>
                   <td className="p-3">
                     <Input
@@ -166,7 +165,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">ภายนอกต่างประเทศ</td>
                   <td className="p-3">
                     <Input
@@ -178,7 +177,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">รายได้มหาวิทยาลัย</td>
                   <td className="p-3">
                     <Input
@@ -190,7 +189,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t bg-muted font-medium">
+                <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมงบประมาณ</td>
                   <td className="p-3">
                     <Input readOnly value={calculateBudgetSourceTotal()} />
@@ -200,8 +199,6 @@ export function BudgetAndNotesSection({
             </table>
           </div>
         </div>
-
-        <Separator />
 
         {/* Income Estimates Section */}
         <div>
@@ -221,13 +218,13 @@ export function BudgetAndNotesSection({
               </thead>
               <tbody>
                 {/* เงินสนับสนุน Section */}
-                <tr className="border-t bg-gray-50">
+                <tr className="bg-gray-50">
                   <td colSpan={3} className="p-3 font-medium text-gray-700">
                     เงินสนับสนุน
                   </td>
                 </tr>
                 {formData.incomeSupportItems.map((item) => (
-                  <tr key={item.id} className="border-t">
+                  <tr key={item.id}>
                     <td className="p-3 pl-6">
                       <Input
                         placeholder="ระบุรายละเอียด"
@@ -269,7 +266,7 @@ export function BudgetAndNotesSection({
                     </td>
                   </tr>
                 ))}
-                <tr className="border-t">
+                <tr>
                   <td colSpan={3} className="p-3 pl-6">
                     <Button
                       type="button"
@@ -285,13 +282,13 @@ export function BudgetAndNotesSection({
                 </tr>
 
                 {/* ค่าลงทะเบียน Section */}
-                <tr className="border-t bg-gray-50">
+                <tr className="bg-gray-50">
                   <td colSpan={3} className="p-3 font-medium text-gray-700">
                     ค่าลงทะเบียน
                   </td>
                 </tr>
                 {formData.incomeRegistrationItems.map((item) => (
-                  <tr key={item.id} className="border-t">
+                  <tr key={item.id}>
                     <td className="p-3 pl-6">
                       <Input
                         placeholder="ระบุรายละเอียด"
@@ -333,7 +330,7 @@ export function BudgetAndNotesSection({
                     </td>
                   </tr>
                 ))}
-                <tr className="border-t">
+                <tr>
                   <td colSpan={3} className="p-3 pl-6">
                     <Button
                       type="button"
@@ -348,7 +345,7 @@ export function BudgetAndNotesSection({
                   </td>
                 </tr>
 
-                <tr className="border-t bg-muted font-medium">
+                <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมประมาณการรายรับ</td>
                   <td className="p-3">
                     <Input readOnly value={calculateIncomeTotal()} />
@@ -359,8 +356,6 @@ export function BudgetAndNotesSection({
             </table>
           </div>
         </div>
-
-        <Separator />
 
         {/* Expense Estimates Section */}
         <div>
@@ -378,7 +373,7 @@ export function BudgetAndNotesSection({
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">หมวดค่าตอบแทน</td>
                   <td className="p-3">
                     <Input
@@ -390,7 +385,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">หมวดค่าใช้สอย</td>
                   <td className="p-3">
                     <Input
@@ -402,7 +397,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">หมวดค่าวัสดุ</td>
                   <td className="p-3">
                     <Input
@@ -414,7 +409,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">
                     <span className="flex items-center gap-1">
                       หมวดสาธารณูปโภค
@@ -434,7 +429,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">
                     <span className="flex items-center gap-1">
                       หมวดเงินอุดหนุน
@@ -454,7 +449,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">
                     <span className="flex items-center gap-1">
                       หมวดเงินสำรอง
@@ -474,7 +469,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t bg-muted font-medium">
+                <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมประมาณการรายจ่าย</td>
                   <td className="p-3">
                     <Input readOnly value={calculateExpenseTotal()} />
@@ -485,20 +480,22 @@ export function BudgetAndNotesSection({
           </div>
         </div>
 
-        <Separator />
-
         {/* Notes Section */}
         <div className="space-y-4">
           <h3 className="font-medium">หมายเหตุ</h3>
           <div className="flex items-start space-x-3">
             <label htmlFor="note1" className="text-sm leading-relaxed">
-              ขออนุมัติงบประมาณโครงการที่ไม่เป็นไปตามอัตราการเบิกจ่ายตามข้อบังคับจุฬาลงกรณ์ฯ
-              ว่าด้วยการให้บริการทางวิชาการ พ.ศ. 2564
+              1.ขออนุมัติงบประมาณโครงการที่ไม่เป็นไปตามอัตราการเบิกจ่ายตามข้อบังคับจุฬาลงกรณ์ฯ
+              ว่า ด้วยการให้บริการทางวิชาการ พ.ศ. 2564,
+              ระเบียบจุฬาลงกรณ์มหาวิทยาลัย ว่าด้วย
+              การดำเนินโครงการการให้บริการวิชาการ พ.ศ. 2564
+              ประกาศจุฬาลงกรณ์มหาวิทยาลัย เรื่องเกณฑ์และอัตราการเบิกจ่าย
+              ในการให้บริการทางวิชาการ พ.ศ. 2564
             </label>
           </div>
           <div className="flex items-start space-x-3">
             <label htmlFor="note4" className="text-sm leading-relaxed">
-              ขออนุมัติถัวเฉลี่ยทุกรายการ
+              2. ขออนุมัติถัวเฉลี่ยทุกรายการ
             </label>
           </div>
           <div className="flex items-start space-x-3">
@@ -513,7 +510,7 @@ export function BudgetAndNotesSection({
               }
             />
             <label htmlFor="note2" className="text-sm leading-relaxed">
-              ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการบริหารคณะฯ ดังนี้ (ถ้ามี)
+              3. ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการบริหารคณะฯ ดังนี้ (ถ้ามี)
             </label>
           </div>
 
@@ -529,7 +526,7 @@ export function BudgetAndNotesSection({
               }
             />
             <label htmlFor="note3" className="text-sm leading-relaxed">
-              ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการการเงิน ดังนี้ (ถ้ามี)
+              4. ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการการเงิน ดังนี้ (ถ้ามี)
             </label>
           </div>
         </div>

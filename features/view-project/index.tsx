@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import { Collaborator, FormData, Notes, Manager } from "../add-project/types";
 
 // Import Sections
@@ -17,6 +19,7 @@ import { ManagersSection } from "./components/sections/ManagersSection";
 // ... options remain ...
 
 export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,8 +81,13 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
             project.strategies?.map(
               (s: { strategyId: string }) => s.strategyId,
             ) || [],
-          participantCount: project.participantCount?.toString() || "",
-          participantDetails: project.participantDetails || "",
+          participants: [
+            {
+              id: 1,
+              count: project.participantCount?.toString() || "",
+              details: project.participantDetails || "",
+            },
+          ],
           venue: project.venue || "",
           committee: project.committee || "",
           expectedBenefits: project.expectedBenefits || "",
@@ -147,9 +155,19 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
       <main className="flex-1 p-8 bg-slate-50 overflow-y-auto">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-semibold">
-              ข้อมูลโครงการบริการวิชาการ
-            </h1>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => router.push("/projects")}
+                className="h-10 w-10 text-slate-500 hover:text-slate-900"
+              >
+                <ArrowLeft size={18} />
+              </Button>
+              <h1 className="text-2xl font-semibold">
+                ข้อมูลโครงการบริการวิชาการ
+              </h1>
+            </div>
             <div className="flex gap-2">
               <Button variant="outline">แก้ไข</Button>
               <Button variant="outline">พิมพ์</Button>
