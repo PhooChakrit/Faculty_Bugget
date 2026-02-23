@@ -201,8 +201,6 @@ export function BudgetAndNotesSection({
           </div>
         </div>
 
-        
-
         {/* Income Estimates Section */}
         <div>
           <h3 className="font-medium mb-3">
@@ -360,8 +358,6 @@ export function BudgetAndNotesSection({
           </div>
         </div>
 
-        
-
         {/* Expense Estimates Section */}
         <div>
           <h3 className="font-medium mb-3">
@@ -485,15 +481,17 @@ export function BudgetAndNotesSection({
           </div>
         </div>
 
-        
-
         {/* Notes Section */}
         <div className="space-y-4">
           <h3 className="font-medium">หมายเหตุ</h3>
           <div className="flex items-start space-x-3">
             <label htmlFor="note1" className="text-sm leading-relaxed">
               1.ขออนุมัติงบประมาณโครงการที่ไม่เป็นไปตามอัตราการเบิกจ่ายตามข้อบังคับจุฬาลงกรณ์ฯ
-              ว่าด้วยการให้บริการทางวิชาการ พ.ศ. 2564
+              ว่า ด้วยการให้บริการทางวิชาการ พ.ศ. 2564,
+              ระเบียบจุฬาลงกรณ์มหาวิทยาลัย ว่าด้วย
+              การดำเนินโครงการการให้บริการวิชาการ พ.ศ. 2564
+              ประกาศจุฬาลงกรณ์มหาวิทยาลัย เรื่องเกณฑ์และอัตราการเบิกจ่าย
+              ในการให้บริการทางวิชาการ พ.ศ. 2564
             </label>
           </div>
           <div className="flex items-start space-x-3">

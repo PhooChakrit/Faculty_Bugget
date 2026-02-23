@@ -60,7 +60,9 @@ export const formDataSchema = z.object({
   serviceType: z.string().min(1, "กรุณาเลือกประเภทการให้บริการ"),
   targetGroups: z.array(z.string()).min(1, "กรุณาเลือกกลุ่มเป้าหมาย"),
   strategies: z.array(z.string()).optional(),
-  participants: z.array(participantSchema).min(1, "กรุณาเพิ่มผู้เข้าร่วมอย่างน้อย 1 รายการ"),
+  participants: z
+    .array(participantSchema)
+    .min(1, "กรุณาเพิ่มผู้เข้าร่วมอย่างน้อย 1 รายการ"),
   venue: z.string().min(1, "กรุณากรอกสถานที่จัดโครงการ"),
   committee: z.string().optional(),
   expectedBenefits: z.string().optional(),

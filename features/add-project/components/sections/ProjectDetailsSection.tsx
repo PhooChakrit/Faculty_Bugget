@@ -58,6 +58,14 @@ export function ProjectDetailsSection({
           <div className="flex justify-between items-center">
             <Label>
               ผู้เข้าร่วม <span className="text-red-500">*</span>
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                (รวมทั้งหมด:{" "}
+                {(formData.participants || []).reduce(
+                  (sum, p) => sum + (parseInt(p.count) || 0),
+                  0,
+                )}{" "}
+                ท่าน)
+              </span>
             </Label>
             <Button
               type="button"
@@ -74,7 +82,6 @@ export function ProjectDetailsSection({
             (participant, index) => (
               <div key={participant.id} className="flex items-center gap-3">
                 <Input
-                  placeholder="รายละเอียด เช่น นักศึกษา, อาจารย์"
                   className="flex-1"
                   value={participant.details}
                   onChange={(e) =>
@@ -83,7 +90,6 @@ export function ProjectDetailsSection({
                 />
                 <Input
                   type="number"
-                  placeholder="จำนวน"
                   className="w-32"
                   value={participant.count}
                   onChange={(e) =>

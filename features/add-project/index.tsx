@@ -28,7 +28,7 @@ import {
   strategyOptions,
   targetGroupOptions,
 } from "./constants";
-import { ProjectPreviewDialog } from "./components/ProjectPreviewDialog";
+import { ProjectPreview } from "./components/ProjectPreview";
 
 const defaultFormValues: FormData = {
   receiptNumber: "",
@@ -258,90 +258,91 @@ export default function AddProjectPage() {
             แบบฟอร์มโครงการบริการวิชาการ
           </h1>
 
-          <FormProvider {...methods}>
-            <form
-              onSubmit={handleSubmit(handlePreviewOpen, onError)}
-              className="space-y-6"
-            >
-              <ReceiptInfoSection
-                formData={formData}
-                handleChange={handleInputChange}
-              />
+          {!showPreview ? (
+            <FormProvider {...methods}>
+              <form
+                onSubmit={handleSubmit(handlePreviewOpen, onError)}
+                className="space-y-6 animate-in fade-in duration-300"
+              >
+                <ReceiptInfoSection
+                  formData={formData}
+                  handleChange={handleInputChange}
+                />
 
-              <BasicInfoSection
-                formData={formData}
-                handleChange={handleInputChange}
-                setFormData={setFormData}
-                departmentOptions={departmentOptions}
-                collaborators={collaborators}
-                setCollaborators={setCollaborators}
-              />
+                <BasicInfoSection
+                  formData={formData}
+                  handleChange={handleInputChange}
+                  setFormData={setFormData}
+                  departmentOptions={departmentOptions}
+                  collaborators={collaborators}
+                  setCollaborators={setCollaborators}
+                />
 
-              <ClassificationsSection
-                formData={formData}
-                setFormData={setFormData}
-                serviceTypeOptions={serviceTypeOptions}
-                targetGroupOptions={targetGroupOptions}
-                strategyOptions={strategyOptions}
-              />
+                <ClassificationsSection
+                  formData={formData}
+                  setFormData={setFormData}
+                  serviceTypeOptions={serviceTypeOptions}
+                  targetGroupOptions={targetGroupOptions}
+                  strategyOptions={strategyOptions}
+                />
 
-              <ProjectDetailsSection
-                formData={formData}
-                handleChange={handleInputChange}
-                setFormData={setFormData}
-              />
+                <ProjectDetailsSection
+                  formData={formData}
+                  handleChange={handleInputChange}
+                  setFormData={setFormData}
+                />
 
-              <BudgetAndNotesSection
-                formData={formData}
-                handleChange={handleInputChange}
-                setFormData={setFormData}
-                notes={notes}
-                setNotes={setNotes}
-              />
+                <BudgetAndNotesSection
+                  formData={formData}
+                  handleChange={handleInputChange}
+                  setFormData={setFormData}
+                  notes={notes}
+                  setNotes={setNotes}
+                />
 
-              {/* Display validation errors */}
-              {Object.keys(errors).length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <h3 className="text-red-800 font-medium mb-2">
-                    กรุณาแก้ไขข้อผิดพลาด:
-                  </h3>
-                  <ul className="list-disc list-inside text-red-600 text-sm">
-                    {Object.entries(errors).map(([field, error]) => (
-                      <li key={field}>{error?.message as string}</li>
-                    ))}
-                  </ul>
+                {/* Display validation errors */}
+                {Object.keys(errors).length > 0 && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <h3 className="text-red-800 font-medium mb-2">
+                      กรุณาแก้ไขข้อผิดพลาด:
+                    </h3>
+                    <ul className="list-disc list-inside text-red-600 text-sm">
+                      {Object.entries(errors).map(([field, error]) => (
+                        <li key={field}>{error?.message as string}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Submit Buttons */}
+                <div className="flex justify-end gap-4 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => router.push("/projects")}
+                  >
+                    ยกเลิก
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting}>
+                    เปิดดูข้อมูลก่อนบันทึก
+                  </Button>
                 </div>
-              )}
-
-              {/* Submit Buttons */}
-              <div className="flex justify-end gap-4 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.push("/projects")}
-                >
-                  ยกเลิก
-                </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  เปิดดูข้อมูลก่อนบันทึก
-                </Button>
-              </div>
-            </form>
-          </FormProvider>
+              </form>
+            </FormProvider>
+          ) : (
+            validatedData && (
+              <ProjectPreview
+                onCancel={() => setShowPreview(false)}
+                onConfirm={onConfirmSubmit}
+                isSubmitting={isSubmitting}
+                formData={validatedData as unknown as FormData}
+                collaborators={collaborators}
+                notes={notes}
+              />
+            )
+          )}
         </div>
       </main>
-
-      {validatedData && (
-        <ProjectPreviewDialog
-          open={showPreview}
-          onOpenChange={setShowPreview}
-          onConfirm={onConfirmSubmit}
-          isSubmitting={isSubmitting}
-          formData={validatedData as unknown as FormData}
-          collaborators={collaborators}
-          notes={notes}
-        />
-      )}
     </div>
   );
 }

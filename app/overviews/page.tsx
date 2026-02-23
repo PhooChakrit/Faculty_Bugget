@@ -386,7 +386,6 @@ export default function ProjectTrackingPage() {
                                 )
                               }
                               className="h-8 text-sm"
-                              placeholder="รหัสเจ้าหนี้"
                             />
                           ) : (
                             <div className="text-sm text-slate-700 font-mono">
@@ -408,7 +407,6 @@ export default function ProjectTrackingPage() {
                                 )
                               }
                               className="h-8 text-sm"
-                              placeholder="ศูนย์ต้นทุน"
                             />
                           ) : (
                             <div className="text-sm text-slate-700 font-mono">
@@ -430,7 +428,6 @@ export default function ProjectTrackingPage() {
                                 )
                               }
                               className="h-8 text-sm text-right"
-                              placeholder="0.00"
                             />
                           ) : (
                             <div className="text-sm text-right text-slate-700 font-mono">
@@ -460,7 +457,6 @@ export default function ProjectTrackingPage() {
                                 )
                               }
                               className="h-8 text-sm text-right font-bold text-indigo-700 border-indigo-200 focus:border-indigo-500"
-                              placeholder="0.00"
                             />
                           ) : (
                             <div
