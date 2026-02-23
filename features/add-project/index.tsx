@@ -246,6 +246,21 @@ export default function AddProjectPage() {
   const onError = (errors: unknown) => {
     console.log("Validation errors:", errors);
     alert("กรุณาตรวจสอบข้อมูลที่กรอก");
+
+    if (errors && typeof errors === "object") {
+      const firstErrorKey = Object.keys(errors)[0];
+      if (firstErrorKey) {
+        // Try finding by name first, then by id
+        const element =
+          document.getElementsByName(firstErrorKey)[0] ||
+          document.getElementById(firstErrorKey);
+
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.focus();
+        }
+      }
+    }
   };
 
   return (
@@ -302,13 +317,35 @@ export default function AddProjectPage() {
 
                 {/* Display validation errors */}
                 {Object.keys(errors).length > 0 && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
                     <h3 className="text-red-800 font-medium mb-2">
                       กรุณาแก้ไขข้อผิดพลาด:
                     </h3>
-                    <ul className="list-disc list-inside text-red-600 text-sm">
-                      {Object.entries(errors).map(([field, error]) => (
-                        <li key={field}>{error?.message as string}</li>
+                    <ul className="list-disc list-inside text-red-600 text-sm space-y-1">
+                      {Array.from(
+                        new Set(
+                          (function extractMessages(errObj: any): string[] {
+                            if (!errObj) return [];
+                            if (typeof errObj === "string") return [errObj];
+                            if (
+                              errObj.message &&
+                              typeof errObj.message === "string"
+                            ) {
+                              return [errObj.message];
+                            }
+                            let msgs: string[] = [];
+                            if (typeof errObj === "object") {
+                              for (const val of Object.values(errObj)) {
+                                msgs = msgs.concat(extractMessages(val));
+                              }
+                            }
+                            return msgs;
+                          })(errors),
+                        ),
+                      ).map((msg, idx) => (
+                        <li key={idx} className="leading-relaxed">
+                          {msg}
+                        </li>
                       ))}
                     </ul>
                   </div>

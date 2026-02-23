@@ -190,33 +190,39 @@ export function BasicInfoSection({
             วันที่จัดโครงการ <span className="text-red-500">*</span>
           </Label>
           <div className="flex flex-col sm:flex-row items-center gap-3">
-            <DatePicker
-              className="flex-1 w-full"
-              placeholder="เลือกวันที่เริ่มต้น"
-              value={
-                formData.startDate ? new Date(formData.startDate) : undefined
-              }
-              onChange={(date) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  startDate: date ? format(date, "yyyy-MM-dd") : "",
-                }))
-              }
-            />
+            <div id="startDate" className="flex-1 w-full flex">
+              <DatePicker
+                className="flex-1 w-full"
+                placeholder="เลือกวันที่เริ่มต้น"
+                value={
+                  formData.startDate ? new Date(formData.startDate) : undefined
+                }
+                onChange={(date) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    startDate: date ? format(date, "yyyy-MM-dd") : "",
+                  }))
+                }
+              />
+            </div>
             <span className="text-sm whitespace-nowrap text-muted-foreground w-full sm:w-auto text-center">
               ถึง
             </span>
-            <DatePicker
-              className="flex-1 w-full"
-              placeholder="เลือกวันที่สิ้นสุด"
-              value={formData.endDate ? new Date(formData.endDate) : undefined}
-              onChange={(date) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  endDate: date ? format(date, "yyyy-MM-dd") : "",
-                }))
-              }
-            />
+            <div id="endDate" className="flex-1 w-full flex">
+              <DatePicker
+                className="flex-1 w-full"
+                placeholder="เลือกวันที่สิ้นสุด"
+                value={
+                  formData.endDate ? new Date(formData.endDate) : undefined
+                }
+                onChange={(date) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    endDate: date ? format(date, "yyyy-MM-dd") : "",
+                  }))
+                }
+              />
+            </div>
           </div>
         </div>
 
