@@ -21,39 +21,14 @@ import { BudgetAndNotesSection } from "./components/sections/BudgetAndNotesSecti
 // Infer type from schema
 type FormDataSchemaType = z.infer<typeof formDataSchema>;
 
-// Options for dropdowns
-const departmentOptions = [
-  { value: "sci", label: "ภาควิชาวิทยาศาสตร์" },
-  { value: "chem", label: "ภาควิชาเคมี" },
-  { value: "bio", label: "ภาควิชาชีววิทยา" },
-  { value: "phy", label: "ภาควิชาฟิสิกส์" },
-  { value: "math", label: "ภาควิชาคณิตศาสตร์" },
-];
-
-const serviceTypeOptions = [
-  { value: "1", label: "อภิปราย บรรยาย อบรม ประชุม สัมมนา" },
-  { value: "2", label: "ออกแบบ ประดิษฐ์ วางแผน วางระบบ เขียน แปล" },
-  { value: "3", label: "CONSULT ทางวิชาการ เทคนิค วิชาชีพ" },
-  { value: "4", label: "วิเคราะห์ ทดสอบ ตรวจสอบ" },
-  { value: "5", label: "งานบริการทางวิชาการลักษณะอื่น" },
-  { value: "6", label: "งานให้บริการทางการแพทย์และสาธารณสุข" },
-];
-
-const targetGroupOptions = [
-  { value: "1", label: "ประชาคมจุฬาฯ" },
-  { value: "2", label: "ชุมชน" },
-  { value: "3", label: "หน่วยงานภายนอกภาครัฐ" },
-  { value: "4", label: "หน่วยงานภายนอกภาคเอกชน/อุตสาหกรรม" },
-];
-
-const strategyOptions = [
-  { value: "0", label: "ไม่สอดคล้องกับยุทธศาสตร์ใด ๆ" },
-  { value: "1", label: "INTERNATIONAL GROWTH" },
-  { value: "2", label: "IMPACTFUL GROWTH" },
-  { value: "3", label: "INTERNAL GROWTH" },
-  { value: "4", label: "INTEGRATED GROWTH" },
-  { value: "5", label: "สอดคล้องกับยุทธศาสตร์ส่วนงาน" },
-];
+// Import constants instead
+import {
+  departmentOptions,
+  serviceTypeOptions,
+  strategyOptions,
+  targetGroupOptions,
+} from "./constants";
+import { ProjectPreview } from "./components/ProjectPreview";
 
 const defaultFormValues: FormData = {
   receiptNumber: "",
@@ -75,8 +50,7 @@ const defaultFormValues: FormData = {
   serviceType: "",
   targetGroups: [],
   strategies: [],
-  participantCount: "",
-  participantDetails: "",
+  participants: [{ id: 1, count: "", details: "" }],
   venue: "",
   committee: "",
   expectedBenefits: "",
@@ -87,6 +61,7 @@ const defaultFormValues: FormData = {
   budgetSourceInternal: "",
   incomeSupportItems: [{ id: 1, name: "", amount: "" }],
   incomeRegistrationItems: [{ id: 1, name: "", amount: "" }],
+  customIncomeCategories: [],
   expenseRemuneration: "",
   expenseSupplies: "",
   expenseMaterials: "",
@@ -124,6 +99,11 @@ export default function AddProjectPage() {
     note3: false,
   });
 
+  const [showPreview, setShowPreview] = useState(false);
+  const [validatedData, setValidatedData] = useState<FormDataSchemaType | null>(
+    null,
+  );
+
   // Legacy handleChange for sections not yet migrated to RHF
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -154,62 +134,84 @@ export default function AddProjectPage() {
     });
   };
 
-  const onSubmit = async (data: FormDataSchemaType) => {
+  const handlePreviewOpen = (data: FormDataSchemaType) => {
+    setValidatedData(data);
+    setShowPreview(true);
+  };
+
+  const onConfirmSubmit = async () => {
+    if (!validatedData) return;
+
     try {
       // Transform data to match API schema
       const apiData = {
-        ...data,
+        ...validatedData,
         // Convert strings to numbers
-        participantCount: data.participantCount
-          ? parseInt(data.participantCount)
+        participantCount:
+          validatedData.participants.reduce(
+            (sum, p) => sum + (parseInt(p.count) || 0),
+            0,
+          ) || undefined,
+        participantDetails:
+          validatedData.participants
+            .map((p) => p.details)
+            .filter(Boolean)
+            .join(", ") || undefined,
+        budgetSourceExtGov: validatedData.budgetSourceExtGov
+          ? parseFloat(validatedData.budgetSourceExtGov)
           : undefined,
-        budgetSourceExtGov: data.budgetSourceExtGov
-          ? parseFloat(data.budgetSourceExtGov)
+        budgetSourceExtPrivate: validatedData.budgetSourceExtPrivate
+          ? parseFloat(validatedData.budgetSourceExtPrivate)
           : undefined,
-        budgetSourceExtPrivate: data.budgetSourceExtPrivate
-          ? parseFloat(data.budgetSourceExtPrivate)
+        budgetSourceExtForeign: validatedData.budgetSourceExtForeign
+          ? parseFloat(validatedData.budgetSourceExtForeign)
           : undefined,
-        budgetSourceExtForeign: data.budgetSourceExtForeign
-          ? parseFloat(data.budgetSourceExtForeign)
+        budgetSourceInternal: validatedData.budgetSourceInternal
+          ? parseFloat(validatedData.budgetSourceInternal)
           : undefined,
-        budgetSourceInternal: data.budgetSourceInternal
-          ? parseFloat(data.budgetSourceInternal)
+        expenseRemuneration: validatedData.expenseRemuneration
+          ? parseFloat(validatedData.expenseRemuneration)
           : undefined,
-        expenseRemuneration: data.expenseRemuneration
-          ? parseFloat(data.expenseRemuneration)
+        expenseSupplies: validatedData.expenseSupplies
+          ? parseFloat(validatedData.expenseSupplies)
           : undefined,
-        expenseSupplies: data.expenseSupplies
-          ? parseFloat(data.expenseSupplies)
+        expenseMaterials: validatedData.expenseMaterials
+          ? parseFloat(validatedData.expenseMaterials)
           : undefined,
-        expenseMaterials: data.expenseMaterials
-          ? parseFloat(data.expenseMaterials)
+        expenseUtilities: validatedData.expenseUtilities
+          ? parseFloat(validatedData.expenseUtilities)
           : undefined,
-        expenseUtilities: data.expenseUtilities
-          ? parseFloat(data.expenseUtilities)
+        expenseSubsidy: validatedData.expenseSubsidy
+          ? parseFloat(validatedData.expenseSubsidy)
           : undefined,
-        expenseSubsidy: data.expenseSubsidy
-          ? parseFloat(data.expenseSubsidy)
-          : undefined,
-        expenseReserve: data.expenseReserve
-          ? parseFloat(data.expenseReserve)
+        expenseReserve: validatedData.expenseReserve
+          ? parseFloat(validatedData.expenseReserve)
           : undefined,
 
         // Map arrays and objects
-        targetGroupIds: data.targetGroups,
-        strategyIds: data.strategies,
+        targetGroupIds: validatedData.targetGroups,
+        strategyIds: validatedData.strategies,
 
         // Combine income items
         incomeItems: [
-          ...data.incomeSupportItems.map((item) => ({
+          ...validatedData.incomeSupportItems.map((item) => ({
             type: "SUPPORT" as const,
             name: item.name,
             amount: parseFloat(item.amount || "0"),
           })),
-          ...data.incomeRegistrationItems.map((item) => ({
+          ...validatedData.incomeRegistrationItems.map((item) => ({
             type: "REGISTRATION" as const,
             name: item.name,
             amount: parseFloat(item.amount || "0"),
           })),
+          ...(validatedData.customIncomeCategories || []).flatMap((category) =>
+            category.items.map((item) => ({
+              type: "OTHER" as const,
+              name: item.name,
+              amount: parseFloat(item.amount || "0"),
+              categoryName: category.categoryName,
+            })),
+          ),
         ].filter((item) => item.name && item.amount > 0),
 
         // Map collaborators
@@ -242,6 +244,7 @@ export default function AddProjectPage() {
 
       await projectService.createProject(apiData);
       alert("บันทึกข้อมูลโครงการสำเร็จ");
+      setShowPreview(false);
       router.push("/projects"); // Redirect to list
     } catch (error) {
       console.error("Error creating project:", error);
@@ -252,6 +255,21 @@ export default function AddProjectPage() {
   const onError = (errors: unknown) => {
     console.log("Validation errors:", errors);
     alert("กรุณาตรวจสอบข้อมูลที่กรอก");
+
+    if (errors && typeof errors === "object") {
+      const firstErrorKey = Object.keys(errors)[0];
+      if (firstErrorKey) {
+        // Try finding by name first, then by id
+        const element =
+          document.getElementsByName(firstErrorKey)[0] ||
+          document.getElementById(firstErrorKey);
+
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.focus();
+        }
+      }
+    }
   };
 
   return (
@@ -264,71 +282,198 @@ export default function AddProjectPage() {
             แบบฟอร์มโครงการบริการวิชาการ
           </h1>
 
-          <FormProvider {...methods}>
-            <form
-              onSubmit={handleSubmit(onSubmit, onError)}
-              className="space-y-6"
-            >
-              <ReceiptInfoSection
-                formData={formData}
-                handleChange={handleInputChange}
-              />
+          {!showPreview ? (
+            <FormProvider {...methods}>
+              <form
+                onSubmit={handleSubmit(handlePreviewOpen, onError)}
+                className="space-y-6 animate-in fade-in duration-300"
+              >
+                <ReceiptInfoSection formData={formData} />
 
-              <BasicInfoSection
-                formData={formData}
-                handleChange={handleInputChange}
-                setFormData={setFormData}
-                departmentOptions={departmentOptions}
-                collaborators={collaborators}
-                setCollaborators={setCollaborators}
-              />
+                <BasicInfoSection
+                  formData={formData}
+                  handleChange={handleInputChange}
+                  setFormData={setFormData}
+                  departmentOptions={departmentOptions}
+                  collaborators={collaborators}
+                  setCollaborators={setCollaborators}
+                />
 
-              <ClassificationsSection
-                formData={formData}
-                setFormData={setFormData}
-                serviceTypeOptions={serviceTypeOptions}
-                targetGroupOptions={targetGroupOptions}
-                strategyOptions={strategyOptions}
-              />
+                <ClassificationsSection
+                  formData={formData}
+                  setFormData={setFormData}
+                  serviceTypeOptions={serviceTypeOptions}
+                  targetGroupOptions={targetGroupOptions}
+                  strategyOptions={strategyOptions}
+                />
 
-              <ProjectDetailsSection
-                formData={formData}
-                handleChange={handleInputChange}
-              />
+                <ProjectDetailsSection
+                  formData={formData}
+                  handleChange={handleInputChange}
+                  setFormData={setFormData}
+                />
 
-              <BudgetAndNotesSection
-                formData={formData}
-                handleChange={handleInputChange}
-                setFormData={setFormData}
-                notes={notes}
-                setNotes={setNotes}
-              />
+                <BudgetAndNotesSection
+                  formData={formData}
+                  handleChange={handleInputChange}
+                  setFormData={setFormData}
+                  notes={notes}
+                  setNotes={setNotes}
+                />
 
-              {/* Display validation errors */}
-              {Object.keys(errors).length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <h3 className="text-red-800 font-medium mb-2">
-                    กรุณาแก้ไขข้อผิดพลาด:
-                  </h3>
-                  <ul className="list-disc list-inside text-red-600 text-sm">
-                    {Object.entries(errors).map(([field, error]) => (
-                      <li key={field}>{error?.message as string}</li>
-                    ))}
-                  </ul>
+                {/* Display validation errors */}
+                {Object.keys(errors).length > 0 && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                    <h3 className="text-red-800 font-medium mb-2">
+                      กรุณาแก้ไขข้อผิดพลาด:
+                    </h3>
+                    <ul className="list-disc list-inside text-red-600 text-sm space-y-1">
+                      {Array.from(
+                        new Set(
+                          (function extractMessages(errObj: unknown): string[] {
+                            if (!errObj) return [];
+                            if (typeof errObj === "string") return [errObj];
+                            const obj = errObj as Record<string, unknown>;
+                            if (
+                              obj.message &&
+                              typeof obj.message === "string"
+                            ) {
+                              return [obj.message];
+                            }
+                            let msgs: string[] = [];
+                            if (typeof errObj === "object" && errObj !== null) {
+                              for (const val of Object.values(errObj)) {
+                                msgs = msgs.concat(extractMessages(val));
+                              }
+                            }
+                            return msgs;
+                          })(errors),
+                        ),
+                      ).map((msg, idx) => (
+                        <li key={idx} className="leading-relaxed">
+                          {msg}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Submit Buttons */}
+                <div className="flex justify-end gap-4 pt-4">
+                  {process.env.NODE_ENV === "development" && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => {
+                        const dummyData: FormDataSchemaType = {
+                          receiptNumber: crypto.randomUUID(),
+                          projectNameThai: "โครงการทดสอบระบบบันทึกงบประมาณ",
+                          projectNameEng:
+                            "Budget Recording System Test Project",
+                          leaderName: "สมชาย ทดสอบ",
+                          leaderPosition: "อาจารย์ประจำภาควิชา",
+                          department: "sci",
+                          leaderEmail: "somchai.t@chula.ac.th",
+                          coLeaderName: "สมหญิง รักเรียน",
+                          coLeaderEmail: "somying.r@chula.ac.th",
+                          startDate: new Date().toISOString().split("T")[0],
+                          endDate: new Date(Date.now() + 86400000 * 7)
+                            .toISOString()
+                            .split("T")[0],
+                          background:
+                            "เพื่อทดสอบประสิทธิภาพของระบบและตรวจสอบความถูกต้องของการคำนวณงบประมาณ",
+                          projectDetails:
+                            "รายละเอียดโครงการทดสอบครอบคลุมถึงการกำหนดแผนการดำเนินงานและการประเมินผล",
+                          objectives:
+                            "1. เพื่อทดสอบระบบ\n2. เพื่อแสดงให้ลูกค้าดู",
+                          scope: "บุคลากรและนิสิตในคณะวิทยาศาสตร์",
+                          implementationPlan:
+                            "สัปดาห์ที่ 1: เตรียมการ\nสัปดาห์ที่ 2: ดำเนินงาน",
+                          serviceType: "1",
+                          targetGroups: ["1", "2"],
+                          strategies: ["2"],
+                          participants: [
+                            {
+                              id: 1,
+                              count: "50",
+                              details: "นิสิตคณะวิทยาศาสตร์",
+                            },
+                          ],
+                          venue: "ตึกแถบ นีละนิธิ คณะวิทยาศาสตร์",
+                          committee: "คณะกรรมการทดสอบระบบ",
+                          expectedBenefits: "ระบบทำงานได้อย่างถูกต้องและแม่นยำ",
+                          projectEvaluation: "แบบประเมินความพึงพอใจ",
+                          budgetSourceExtGov: "100000",
+                          budgetSourceExtPrivate: "0",
+                          budgetSourceExtForeign: "0",
+                          budgetSourceInternal: "0",
+                          incomeSupportItems: [
+                            {
+                              id: 1,
+                              name: "เงินอุดหนุนวิจัย",
+                              amount: "30000",
+                            },
+                          ],
+                          incomeRegistrationItems: [
+                            {
+                              id: 1,
+                              name: "ค่าลงทะเบียนนิสิต",
+                              amount: "20000",
+                            },
+                          ],
+                          customIncomeCategories: [
+                            {
+                              id: 1,
+                              categoryName: "รายได้จากการให้บริการอื่นๆ",
+                              items: [
+                                {
+                                  id: 1,
+                                  name: "ค่าที่ปรึกษาโครงการ",
+                                  amount: "50000",
+                                },
+                              ],
+                            },
+                          ],
+                          expenseRemuneration: "40000",
+                          expenseSupplies: "20000",
+                          expenseMaterials: "10000",
+                          expenseUtilities: "10000",
+                          expenseSubsidy: "10000",
+                          expenseReserve: "10000",
+                        };
+                        methods.reset(dummyData);
+                        setCollaborators([{ id: 1, name: "นายสมชาย ใจดี" }]);
+                        setNotes({ note2: true, note3: true });
+                      }}
+                    >
+                      Fill Dummy Data
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => router.push("/projects")}
+                  >
+                    ยกเลิก
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting}>
+                    เปิดดูข้อมูลก่อนบันทึก
+                  </Button>
                 </div>
-              )}
-
-              {/* Submit Buttons */}
-              <div className="flex justify-end gap-4 pt-4">
-                <Button type="button" variant="outline">
-                  ยกเลิก
-                </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
-                </Button>
-              </div>
-            </form>
-          </FormProvider>
+              </form>
+            </FormProvider>
+          ) : (
+            validatedData && (
+              <ProjectPreview
+                onCancel={() => setShowPreview(false)}
+                onConfirm={onConfirmSubmit}
+                isSubmitting={isSubmitting}
+                formData={validatedData as unknown as FormData}
+                collaborators={collaborators}
+                notes={notes}
+              />
+            )
+          )}
         </div>
       </main>
     </div>

@@ -127,6 +127,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
                     type: item.type,
                     name: item.name,
                     amount: item.amount,
+                    categoryName: item.categoryName,
                   })),
                 },
               }),

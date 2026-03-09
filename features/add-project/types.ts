@@ -15,6 +15,18 @@ export interface IncomeItem {
   amount: string;
 }
 
+export interface Participant {
+  id: number;
+  count: string;
+  details: string;
+}
+
+export interface CustomIncomeCategory {
+  id: number;
+  categoryName: string;
+  items: IncomeItem[];
+}
+
 export interface FormData {
   receiptNumber: string;
   projectNameThai: string;
@@ -35,8 +47,7 @@ export interface FormData {
   serviceType: string;
   targetGroups: string[];
   strategies: string[];
-  participantCount: string;
-  participantDetails: string;
+  participants: Participant[];
   venue: string;
   committee: string;
   expectedBenefits: string;
@@ -53,6 +64,7 @@ export interface FormData {
   expenseUtilities: string;
   expenseSubsidy: string;
   expenseReserve: string;
+  customIncomeCategories?: CustomIncomeCategory[];
 }
 
 export interface Notes {

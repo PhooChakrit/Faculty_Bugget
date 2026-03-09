@@ -18,14 +18,14 @@ export function DatesVenueSection({
     <Card>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="participantCount">ผู้เข้าร่วม (จำนวนคน)</Label>
-          <Input
-            id="participantCount"
-            name="participantCount"
-            type="number"
-            value={formData.participantCount}
-            onChange={handleChange}
-          />
+          <Label>ผู้เข้าร่วม (จำนวนคน)</Label>
+          <div className="font-medium">
+            {formData.participants?.reduce(
+              (sum, p) => sum + (parseInt(p.count) || 0),
+              0,
+            ) || 0}{" "}
+            คน
+          </div>
         </div>
 
         <div className="space-y-2">

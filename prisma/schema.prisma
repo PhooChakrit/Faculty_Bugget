@@ -8,93 +8,62 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  projectsAsLeader   Project[] @relation("ProjectLeader")
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  name               String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
   projectsAsCoLeader Project[] @relation("ProjectCoLeader")
+  projectsAsLeader   Project[] @relation("ProjectLeader")
 }
 
 model Project {
-  id            String        @id @default(cuid())
-  receiptNumber String?       @unique
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  status        ProjectStatus @default(DRAFT)
-
-  // Basic Info
-  projectNameThai String
-  projectNameEng  String?
-
-  // Leader Info
-  leaderId       String
-  leader         User   @relation("ProjectLeader", fields: [leaderId], references: [id])
-  leaderPosition String
-  department     String
-
-  // Co-Leader Info
-  coLeaderId String?
-  coLeader   User?   @relation("ProjectCoLeader", fields: [coLeaderId], references: [id])
-
-  // Dates
-  startDate DateTime
-  endDate   DateTime
-
-  // Project Details
-  background         String? @db.Text
-  projectDetails     String? @db.Text
-  objectives         String? @db.Text
-  scope              String? @db.Text
-  implementationPlan String? @db.Text
-  serviceType        String?
-  participantCount   Int?
-  participantDetails String?
-  venue              String?
-  committee          String?
-  expectedBenefits   String? @db.Text
-  projectEvaluation  String? @db.Text
-
-  // Budget Sources
-  budgetSourceExtGov     Decimal? @db.Decimal(15, 2)
-  budgetSourceExtPrivate Decimal? @db.Decimal(15, 2)
-  budgetSourceExtForeign Decimal? @db.Decimal(15, 2)
-  budgetSourceInternal   Decimal? @db.Decimal(15, 2)
-
-  // Expenses
-  expenseRemuneration Decimal? @db.Decimal(15, 2)
-  expenseSupplies     Decimal? @db.Decimal(15, 2)
-  expenseMaterials    Decimal? @db.Decimal(15, 2)
-  expenseUtilities    Decimal? @db.Decimal(15, 2)
-  expenseSubsidy      Decimal? @db.Decimal(15, 2)
-  expenseReserve      Decimal? @db.Decimal(15, 2)
-
-  // Notes
-  note2 Boolean @default(false)
-  note3 Boolean @default(false)
-
-  // Relations
-  targetGroups  ProjectTargetGroup[]
-  strategies    ProjectStrategy[]
-  incomeItems   IncomeItem[]
-  collaborators ProjectCollaborator[]
-  managers      ProjectManager[]
+  id                     String                @id @default(cuid())
+  receiptNumber          String?               @unique
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  status                 ProjectStatus         @default(DRAFT)
+  projectNameThai        String
+  projectNameEng         String?
+  leaderId               String
+  leaderPosition         String
+  department             String
+  coLeaderId             String?
+  startDate              DateTime
+  endDate                DateTime
+  background             String?
+  projectDetails         String?
+  objectives             String?
+  scope                  String?
+  implementationPlan     String?
+  serviceType            String?
+  participantCount       Int?
+  venue                  String?
+  committee              String?
+  expectedBenefits       String?
+  projectEvaluation      String?
+  budgetSourceExtGov     Decimal?              @db.Decimal(15, 2)
+  budgetSourceExtPrivate Decimal?              @db.Decimal(15, 2)
+  budgetSourceExtForeign Decimal?              @db.Decimal(15, 2)
+  budgetSourceInternal   Decimal?              @db.Decimal(15, 2)
+  expenseRemuneration    Decimal?              @db.Decimal(15, 2)
+  expenseSupplies        Decimal?              @db.Decimal(15, 2)
+  expenseMaterials       Decimal?              @db.Decimal(15, 2)
+  expenseUtilities       Decimal?              @db.Decimal(15, 2)
+  expenseSubsidy         Decimal?              @db.Decimal(15, 2)
+  expenseReserve         Decimal?              @db.Decimal(15, 2)
+  note2                  Boolean               @default(false)
+  note3                  Boolean               @default(false)
+  participantDetails     String?
+  incomeItems            IncomeItem[]
+  coLeader               User?                 @relation("ProjectCoLeader", fields: [coLeaderId], references: [id])
+  leader                 User                  @relation("ProjectLeader", fields: [leaderId], references: [id])
+  collaborators          ProjectCollaborator[]
+  managers               ProjectManager[]
+  strategies             ProjectStrategy[]
+  targetGroups           ProjectTargetGroup[]
 }
 
-enum ProjectStatus {
-  DRAFT
-  PENDING_APPROVAL
-  APPROVED
-  REJECTED
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-// Many-to-Many: Project <-> TargetGroup
 model TargetGroup {
   id       String               @id @default(cuid())
   name     String               @unique
@@ -110,7 +79,6 @@ model ProjectTargetGroup {
   @@id([projectId, targetGroupId])
 }
 
-// Many-to-Many: Project <-> Strategy
 model Strategy {
   id       String            @id @default(cuid())
   name     String            @unique
@@ -126,37 +94,46 @@ model ProjectStrategy {
   @@id([projectId, strategyId])
 }
 
-// Income Items (เงินสนับสนุน / ค่าลงทะเบียน)
 model IncomeItem {
-  id        String     @id @default(cuid())
-  projectId String
-  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  type      IncomeType
-  name      String
-  amount    Decimal    @db.Decimal(15, 2)
-  createdAt DateTime   @default(now())
+  id           String     @id @default(cuid())
+  projectId    String
+  type         IncomeType
+  name         String
+  amount       Decimal    @db.Decimal(15, 2)
+  categoryName String?
+  createdAt    DateTime   @default(now())
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
-enum IncomeType {
-  SUPPORT // เงินสนับสนุน
-  REGISTRATION // ค่าลงทะเบียน
-}
-
-// Project Collaborators (ผู้ร่วมโครงการ)
 model ProjectCollaborator {
   id        String   @id @default(cuid())
   projectId String
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   name      String
   createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
-// Project Managers (ผู้รับผิดชอบโครงการ)
 model ProjectManager {
   id        String   @id @default(cuid())
   projectId String
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   name      String
   position  String?
   createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+enum ProjectStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum IncomeType {
+  SUPPORT
+  REGISTRATION
+  OTHER
 }

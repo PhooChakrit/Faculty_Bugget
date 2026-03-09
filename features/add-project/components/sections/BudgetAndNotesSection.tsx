@@ -1,9 +1,9 @@
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { FormData, Notes, IncomeItem } from "../../types";
 import { InfoModal } from "@/components/InfoModal";
 
@@ -43,7 +43,16 @@ export function BudgetAndNotesSection({
       (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
       0,
     );
-    return (supportTotal + registrationTotal).toFixed(2);
+    const customTotal = (formData.customIncomeCategories || []).reduce(
+      (sum: number, cat) =>
+        sum +
+        cat.items.reduce(
+          (itemSum, item) => itemSum + Number(item.amount || 0),
+          0,
+        ),
+      0,
+    );
+    return (supportTotal + registrationTotal + customTotal).toFixed(2);
   };
 
   const calculateExpenseTotal = () => {
@@ -127,22 +136,104 @@ export function BudgetAndNotesSection({
     }));
   };
 
+  // Custom Income Categories handlers
+  const addCustomIncomeCategory = () => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: [
+        ...(prev.customIncomeCategories || []),
+        {
+          id: Date.now(),
+          categoryName: "",
+          items: [{ id: Date.now() + 1, name: "", amount: "" }],
+        },
+      ],
+    }));
+  };
+
+  const removeCustomIncomeCategory = (categoryId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).filter(
+        (cat) => cat.id !== categoryId,
+      ),
+    }));
+  };
+
+  const updateCustomIncomeCategoryName = (
+    categoryId: number,
+    value: string,
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).map((cat) =>
+        cat.id === categoryId ? { ...cat, categoryName: value } : cat,
+      ),
+    }));
+  };
+
+  const addCustomIncomeItem = (categoryId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).map((cat) =>
+        cat.id === categoryId
+          ? {
+              ...cat,
+              items: [...cat.items, { id: Date.now(), name: "", amount: "" }],
+            }
+          : cat,
+      ),
+    }));
+  };
+
+  const removeCustomIncomeItem = (categoryId: number, itemId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).map((cat) =>
+        cat.id === categoryId
+          ? { ...cat, items: cat.items.filter((item) => item.id !== itemId) }
+          : cat,
+      ),
+    }));
+  };
+
+  const updateCustomIncomeItem = (
+    categoryId: number,
+    itemId: number,
+    field: keyof IncomeItem,
+    value: string,
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).map((cat) =>
+        cat.id === categoryId
+          ? {
+              ...cat,
+              items: cat.items.map((item) =>
+                item.id === itemId ? { ...item, [field]: value } : item,
+              ),
+            }
+          : cat,
+      ),
+    }));
+  };
+
   return (
     <Card>
       <CardContent className="space-y-6">
         {/* Budget Sources Section */}
         <div>
           <h3 className="font-medium mb-3">แหล่งงบประมาณ</h3>
-          <div className="border rounded-lg overflow-hidden">
+          <div>
             <table className="w-full">
-              <thead className="bg-muted">
+              <thead className="bg-muted rounded-t-lg">
                 <tr>
                   <th className="text-left p-3">รายละเอียด</th>
                   <th className="text-left p-3 w-48">จำนวนเงิน (บาท)</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">ภายนอกภาครัฐ</td>
                   <td className="p-3">
                     <Input
@@ -154,7 +245,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">ภายนอกภาคเอกชน</td>
                   <td className="p-3">
                     <Input
@@ -166,7 +257,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">ภายนอกต่างประเทศ</td>
                   <td className="p-3">
                     <Input
@@ -178,7 +269,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">รายได้มหาวิทยาลัย</td>
                   <td className="p-3">
                     <Input
@@ -190,7 +281,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t bg-muted font-medium">
+                <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมงบประมาณ</td>
                   <td className="p-3">
                     <Input readOnly value={calculateBudgetSourceTotal()} />
@@ -200,8 +291,6 @@ export function BudgetAndNotesSection({
             </table>
           </div>
         </div>
-
-        <Separator />
 
         {/* Income Estimates Section */}
         <div>
@@ -221,25 +310,42 @@ export function BudgetAndNotesSection({
               </thead>
               <tbody>
                 {/* เงินสนับสนุน Section */}
-                <tr className="border-t bg-gray-50">
+                <tr className="bg-gray-50">
                   <td colSpan={3} className="p-3 font-medium text-gray-700">
-                    เงินสนับสนุน
+                    <div className="flex justify-between items-center">
+                      <span>เงินสนับสนุน</span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addIncomeSupportItem}
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        เพิ่มรายการ
+                      </Button>
+                    </div>
                   </td>
                 </tr>
-                {formData.incomeSupportItems.map((item) => (
-                  <tr key={item.id} className="border-t">
+                {formData.incomeSupportItems.map((item, index) => (
+                  <tr key={item.id}>
                     <td className="p-3 pl-6">
-                      <Input
-                        placeholder="ระบุรายละเอียด"
-                        value={item.name}
-                        onChange={(e) =>
-                          updateIncomeSupportItem(
-                            item.id,
-                            "name",
-                            e.target.value,
-                          )
-                        }
-                      />
+                      <div className="flex items-center gap-3">
+                        <span className="text-muted-foreground w-6">
+                          {index + 1}.
+                        </span>
+                        <Input
+                          placeholder="ระบุรายละเอียด"
+                          value={item.name}
+                          onChange={(e) =>
+                            updateIncomeSupportItem(
+                              item.id,
+                              "name",
+                              e.target.value,
+                            )
+                          }
+                          className="flex-1"
+                        />
+                      </div>
                     </td>
                     <td className="p-3">
                       <Input
@@ -256,54 +362,57 @@ export function BudgetAndNotesSection({
                       />
                     </td>
                     <td className="p-3">
-                      {formData.incomeSupportItems.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => removeIncomeSupportItem(item.id)}
-                        >
-                          <Minus className="w-4 h-4" />
-                        </Button>
-                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeIncomeSupportItem(item.id)}
+                        disabled={formData.incomeSupportItems.length <= 1}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </td>
                   </tr>
                 ))}
-                <tr className="border-t">
-                  <td colSpan={3} className="p-3 pl-6">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={addIncomeSupportItem}
-                      className="bg-green-600 text-white hover:bg-green-700"
-                    >
-                      <Plus className="w-4 h-4 mr-1" />
-                      เพิ่มรายการ
-                    </Button>
-                  </td>
-                </tr>
 
                 {/* ค่าลงทะเบียน Section */}
-                <tr className="border-t bg-gray-50">
+                <tr className="bg-gray-50">
                   <td colSpan={3} className="p-3 font-medium text-gray-700">
-                    ค่าลงทะเบียน
+                    <div className="flex justify-between items-center">
+                      <span>ค่าลงทะเบียน</span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addIncomeRegistrationItem}
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        เพิ่มรายการ
+                      </Button>
+                    </div>
                   </td>
                 </tr>
-                {formData.incomeRegistrationItems.map((item) => (
-                  <tr key={item.id} className="border-t">
+                {formData.incomeRegistrationItems.map((item, index) => (
+                  <tr key={item.id}>
                     <td className="p-3 pl-6">
-                      <Input
-                        placeholder="ระบุรายละเอียด"
-                        value={item.name}
-                        onChange={(e) =>
-                          updateIncomeRegistrationItem(
-                            item.id,
-                            "name",
-                            e.target.value,
-                          )
-                        }
-                      />
+                      <div className="flex items-center gap-3">
+                        <span className="text-muted-foreground w-6">
+                          {index + 1}.
+                        </span>
+                        <Input
+                          placeholder="ระบุรายละเอียด"
+                          value={item.name}
+                          onChange={(e) =>
+                            updateIncomeRegistrationItem(
+                              item.id,
+                              "name",
+                              e.target.value,
+                            )
+                          }
+                          className="flex-1"
+                        />
+                      </div>
                     </td>
                     <td className="p-3">
                       <Input
@@ -320,35 +429,135 @@ export function BudgetAndNotesSection({
                       />
                     </td>
                     <td className="p-3">
-                      {formData.incomeRegistrationItems.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => removeIncomeRegistrationItem(item.id)}
-                        >
-                          <Minus className="w-4 h-4" />
-                        </Button>
-                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeIncomeRegistrationItem(item.id)}
+                        disabled={formData.incomeRegistrationItems.length <= 1}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </td>
                   </tr>
                 ))}
-                <tr className="border-t">
-                  <td colSpan={3} className="p-3 pl-6">
+
+                {/* Custom Income Categories */}
+                {formData.customIncomeCategories?.map((category) => (
+                  <React.Fragment key={category.id}>
+                    <tr className="bg-gray-50 border-t">
+                      <td colSpan={3} className="p-3 font-medium text-gray-700">
+                        <div className="flex justify-between items-center gap-4">
+                          <Input
+                            placeholder="ระบุชื่อหัวข้อย่อย"
+                            value={category.categoryName}
+                            onChange={(e) =>
+                              updateCustomIncomeCategoryName(
+                                category.id,
+                                e.target.value,
+                              )
+                            }
+                            className="max-w-md bg-white border-blue-200 focus-visible:ring-blue-500"
+                          />
+                          <div className="flex gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addCustomIncomeItem(category.id)}
+                            >
+                              <Plus className="w-4 h-4 mr-2" />
+                              เพิ่มรายการ
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() =>
+                                removeCustomIncomeCategory(category.id)
+                              }
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    {category.items.map((item, index) => (
+                      <tr key={item.id}>
+                        <td className="p-3 pl-6">
+                          <div className="flex items-center gap-3">
+                            <span className="text-muted-foreground w-6">
+                              {index + 1}.
+                            </span>
+                            <Input
+                              placeholder="ระบุรายละเอียด"
+                              value={item.name}
+                              onChange={(e) =>
+                                updateCustomIncomeItem(
+                                  category.id,
+                                  item.id,
+                                  "name",
+                                  e.target.value,
+                                )
+                              }
+                              className="flex-1"
+                            />
+                          </div>
+                        </td>
+                        <td className="p-3">
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            value={item.amount}
+                            onChange={(e) =>
+                              updateCustomIncomeItem(
+                                category.id,
+                                item.id,
+                                "amount",
+                                e.target.value,
+                              )
+                            }
+                          />
+                        </td>
+                        <td className="p-3">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() =>
+                              removeCustomIncomeItem(category.id, item.id)
+                            }
+                            disabled={category.items.length <= 1}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                ))}
+
+                {/* Button to add custom category */}
+                <tr>
+                  <td colSpan={3} className="p-3 text-center border-t">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={addIncomeRegistrationItem}
-                      className="bg-green-600 text-white hover:bg-green-700"
+                      onClick={addCustomIncomeCategory}
+                      className="w-full border-dashed text-slate-600 hover:bg-slate-50"
                     >
-                      <Plus className="w-4 h-4 mr-1" />
-                      เพิ่มรายการ
+                      <Plus className="w-4 h-4 mr-2" />
+                      สร้างหัวข้อย่อยรายรับใหม่
                     </Button>
                   </td>
                 </tr>
 
-                <tr className="border-t bg-muted font-medium">
+                <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมประมาณการรายรับ</td>
                   <td className="p-3">
                     <Input readOnly value={calculateIncomeTotal()} />
@@ -359,8 +568,6 @@ export function BudgetAndNotesSection({
             </table>
           </div>
         </div>
-
-        <Separator />
 
         {/* Expense Estimates Section */}
         <div>
@@ -378,7 +585,7 @@ export function BudgetAndNotesSection({
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">หมวดค่าตอบแทน</td>
                   <td className="p-3">
                     <Input
@@ -390,7 +597,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">หมวดค่าใช้สอย</td>
                   <td className="p-3">
                     <Input
@@ -402,7 +609,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">หมวดค่าวัสดุ</td>
                   <td className="p-3">
                     <Input
@@ -414,7 +621,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">
                     <span className="flex items-center gap-1">
                       หมวดสาธารณูปโภค
@@ -434,7 +641,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">
                     <span className="flex items-center gap-1">
                       หมวดเงินอุดหนุน
@@ -454,7 +661,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t">
+                <tr>
                   <td className="p-3">
                     <span className="flex items-center gap-1">
                       หมวดเงินสำรอง
@@ -474,7 +681,7 @@ export function BudgetAndNotesSection({
                     />
                   </td>
                 </tr>
-                <tr className="border-t bg-muted font-medium">
+                <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมประมาณการรายจ่าย</td>
                   <td className="p-3">
                     <Input readOnly value={calculateExpenseTotal()} />
@@ -485,20 +692,22 @@ export function BudgetAndNotesSection({
           </div>
         </div>
 
-        <Separator />
-
         {/* Notes Section */}
         <div className="space-y-4">
           <h3 className="font-medium">หมายเหตุ</h3>
           <div className="flex items-start space-x-3">
             <label htmlFor="note1" className="text-sm leading-relaxed">
-              ขออนุมัติงบประมาณโครงการที่ไม่เป็นไปตามอัตราการเบิกจ่ายตามข้อบังคับจุฬาลงกรณ์ฯ
-              ว่าด้วยการให้บริการทางวิชาการ พ.ศ. 2564
+              1.ขออนุมัติงบประมาณโครงการที่ไม่เป็นไปตามอัตราการเบิกจ่ายตามข้อบังคับจุฬาลงกรณ์ฯ
+              ว่า ด้วยการให้บริการทางวิชาการ พ.ศ. 2564,
+              ระเบียบจุฬาลงกรณ์มหาวิทยาลัย ว่าด้วย
+              การดำเนินโครงการการให้บริการวิชาการ พ.ศ. 2564
+              ประกาศจุฬาลงกรณ์มหาวิทยาลัย เรื่องเกณฑ์และอัตราการเบิกจ่าย
+              ในการให้บริการทางวิชาการ พ.ศ. 2564
             </label>
           </div>
           <div className="flex items-start space-x-3">
             <label htmlFor="note4" className="text-sm leading-relaxed">
-              ขออนุมัติถัวเฉลี่ยทุกรายการ
+              2. ขออนุมัติถัวเฉลี่ยทุกรายการ
             </label>
           </div>
           <div className="flex items-start space-x-3">
@@ -513,7 +722,7 @@ export function BudgetAndNotesSection({
               }
             />
             <label htmlFor="note2" className="text-sm leading-relaxed">
-              ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการบริหารคณะฯ ดังนี้ (ถ้ามี)
+              3. ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการบริหารคณะฯ ดังนี้ (ถ้ามี)
             </label>
           </div>
 
@@ -529,7 +738,7 @@ export function BudgetAndNotesSection({
               }
             />
             <label htmlFor="note3" className="text-sm leading-relaxed">
-              ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการการเงิน ดังนี้ (ถ้ามี)
+              4. ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการการเงิน ดังนี้ (ถ้ามี)
             </label>
           </div>
         </div>
