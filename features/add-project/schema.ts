@@ -88,6 +88,36 @@ export const formDataSchema = z.object({
   expenseUtilities: z.string().optional(),
   expenseSubsidy: z.string().optional(),
   expenseReserve: z.string().optional(),
+}).superRefine((data, ctx) => {
+  const budgetSourceTotal =
+    (Number(data.budgetSourceExtGov) || 0) +
+    (Number(data.budgetSourceExtPrivate) || 0) +
+    (Number(data.budgetSourceExtForeign) || 0) +
+    (Number(data.budgetSourceInternal) || 0);
+
+  const incomeTotal =
+    data.incomeSupportItems.reduce((sum, item) => sum + (Number(item.amount) || 0), 0) +
+    data.incomeRegistrationItems.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+
+  const expenseTotal =
+    (Number(data.expenseRemuneration) || 0) +
+    (Number(data.expenseSupplies) || 0) +
+    (Number(data.expenseMaterials) || 0) +
+    (Number(data.expenseUtilities) || 0) +
+    (Number(data.expenseSubsidy) || 0) +
+    (Number(data.expenseReserve) || 0);
+
+  const isBudgetValid =
+    Math.abs(budgetSourceTotal - incomeTotal) < 0.01 &&
+    Math.abs(incomeTotal - expenseTotal) < 0.01;
+
+  if (!isBudgetValid) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `ยอดรวมงบประมาณไม่สมดุล: แหล่งงบประมาณ (${budgetSourceTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท), รายรับ (${incomeTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท) และรายจ่าย (${expenseTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท) ต้องเท่ากันพอดี`,
+      path: ["budgetSourceExtGov"],
+    });
+  }
 });
 
 // Infer types from schemas
