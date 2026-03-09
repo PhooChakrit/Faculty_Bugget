@@ -95,13 +95,14 @@ model ProjectStrategy {
 }
 
 model IncomeItem {
-  id        String     @id @default(cuid())
-  projectId String
-  type      IncomeType
-  name      String
-  amount    Decimal    @db.Decimal(15, 2)
-  createdAt DateTime   @default(now())
-  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id           String     @id @default(cuid())
+  projectId    String
+  type         IncomeType
+  name         String
+  amount       Decimal    @db.Decimal(15, 2)
+  categoryName String?
+  createdAt    DateTime   @default(now())
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model ProjectCollaborator {
@@ -134,4 +135,5 @@ enum ProjectStatus {
 enum IncomeType {
   SUPPORT
   REGISTRATION
+  OTHER
 }

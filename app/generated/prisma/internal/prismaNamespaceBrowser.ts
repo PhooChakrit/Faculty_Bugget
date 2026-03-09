@@ -113,7 +113,6 @@ export const ProjectScalarFieldEnum = {
   implementationPlan: "implementationPlan",
   serviceType: "serviceType",
   participantCount: "participantCount",
-  participantDetails: "participantDetails",
   venue: "venue",
   committee: "committee",
   expectedBenefits: "expectedBenefits",
@@ -130,6 +129,7 @@ export const ProjectScalarFieldEnum = {
   expenseReserve: "expenseReserve",
   note2: "note2",
   note3: "note3",
+  participantDetails: "participantDetails",
 } as const;
 
 export type ProjectScalarFieldEnum =
@@ -173,6 +173,7 @@ export const IncomeItemScalarFieldEnum = {
   type: "type",
   name: "name",
   amount: "amount",
+  categoryName: "categoryName",
   createdAt: "createdAt",
 } as const;
 

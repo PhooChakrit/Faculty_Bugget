@@ -185,8 +185,8 @@ export type UserWhereInput = {
   name?: Prisma.StringNullableFilter<"User"> | string | null;
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string;
-  projectsAsLeader?: Prisma.ProjectListRelationFilter;
   projectsAsCoLeader?: Prisma.ProjectListRelationFilter;
+  projectsAsLeader?: Prisma.ProjectListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -195,8 +195,8 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-  projectsAsLeader?: Prisma.ProjectOrderByRelationAggregateInput;
   projectsAsCoLeader?: Prisma.ProjectOrderByRelationAggregateInput;
+  projectsAsLeader?: Prisma.ProjectOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -209,8 +209,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     name?: Prisma.StringNullableFilter<"User"> | string | null;
     createdAt?: Prisma.DateTimeFilter<"User"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string;
-    projectsAsLeader?: Prisma.ProjectListRelationFilter;
     projectsAsCoLeader?: Prisma.ProjectListRelationFilter;
+    projectsAsLeader?: Prisma.ProjectListRelationFilter;
   },
   "id" | "email"
 >;
@@ -247,8 +247,8 @@ export type UserCreateInput = {
   name?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
   projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -257,8 +257,8 @@ export type UserUncheckedCreateInput = {
   name?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
   projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
 };
 
 export type UserUpdateInput = {
@@ -267,8 +267,8 @@ export type UserUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
   projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -277,8 +277,8 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
   projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -329,14 +329,14 @@ export type UserMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder;
 };
 
-export type UserScalarRelationFilter = {
-  is?: Prisma.UserWhereInput;
-  isNot?: Prisma.UserWhereInput;
-};
-
 export type UserNullableScalarRelationFilter = {
   is?: Prisma.UserWhereInput | null;
   isNot?: Prisma.UserWhereInput | null;
+};
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput;
+  isNot?: Prisma.UserWhereInput;
 };
 
 export type StringFieldUpdateOperationsInput = {
@@ -351,15 +351,6 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string;
 };
 
-export type UserCreateNestedOneWithoutProjectsAsLeaderInput = {
-  create?: Prisma.XOR<
-    Prisma.UserCreateWithoutProjectsAsLeaderInput,
-    Prisma.UserUncheckedCreateWithoutProjectsAsLeaderInput
-  >;
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProjectsAsLeaderInput;
-  connect?: Prisma.UserWhereUniqueInput;
-};
-
 export type UserCreateNestedOneWithoutProjectsAsCoLeaderInput = {
   create?: Prisma.XOR<
     Prisma.UserCreateWithoutProjectsAsCoLeaderInput,
@@ -369,21 +360,13 @@ export type UserCreateNestedOneWithoutProjectsAsCoLeaderInput = {
   connect?: Prisma.UserWhereUniqueInput;
 };
 
-export type UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput = {
+export type UserCreateNestedOneWithoutProjectsAsLeaderInput = {
   create?: Prisma.XOR<
     Prisma.UserCreateWithoutProjectsAsLeaderInput,
     Prisma.UserUncheckedCreateWithoutProjectsAsLeaderInput
   >;
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutProjectsAsLeaderInput;
-  upsert?: Prisma.UserUpsertWithoutProjectsAsLeaderInput;
   connect?: Prisma.UserWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.UserUpdateToOneWithWhereWithoutProjectsAsLeaderInput,
-      Prisma.UserUpdateWithoutProjectsAsLeaderInput
-    >,
-    Prisma.UserUncheckedUpdateWithoutProjectsAsLeaderInput
-  >;
 };
 
 export type UserUpdateOneWithoutProjectsAsCoLeaderNestedInput = {
@@ -405,29 +388,20 @@ export type UserUpdateOneWithoutProjectsAsCoLeaderNestedInput = {
   >;
 };
 
-export type UserCreateWithoutProjectsAsLeaderInput = {
-  id?: string;
-  email: string;
-  name?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
-};
-
-export type UserUncheckedCreateWithoutProjectsAsLeaderInput = {
-  id?: string;
-  email: string;
-  name?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
-};
-
-export type UserCreateOrConnectWithoutProjectsAsLeaderInput = {
-  where: Prisma.UserWhereUniqueInput;
-  create: Prisma.XOR<
+export type UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput = {
+  create?: Prisma.XOR<
     Prisma.UserCreateWithoutProjectsAsLeaderInput,
     Prisma.UserUncheckedCreateWithoutProjectsAsLeaderInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProjectsAsLeaderInput;
+  upsert?: Prisma.UserUpsertWithoutProjectsAsLeaderInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutProjectsAsLeaderInput,
+      Prisma.UserUpdateWithoutProjectsAsLeaderInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutProjectsAsLeaderInput
   >;
 };
 
@@ -457,42 +431,30 @@ export type UserCreateOrConnectWithoutProjectsAsCoLeaderInput = {
   >;
 };
 
-export type UserUpsertWithoutProjectsAsLeaderInput = {
-  update: Prisma.XOR<
-    Prisma.UserUpdateWithoutProjectsAsLeaderInput,
-    Prisma.UserUncheckedUpdateWithoutProjectsAsLeaderInput
-  >;
+export type UserCreateWithoutProjectsAsLeaderInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
+};
+
+export type UserUncheckedCreateWithoutProjectsAsLeaderInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
+};
+
+export type UserCreateOrConnectWithoutProjectsAsLeaderInput = {
+  where: Prisma.UserWhereUniqueInput;
   create: Prisma.XOR<
     Prisma.UserCreateWithoutProjectsAsLeaderInput,
     Prisma.UserUncheckedCreateWithoutProjectsAsLeaderInput
   >;
-  where?: Prisma.UserWhereInput;
-};
-
-export type UserUpdateToOneWithWhereWithoutProjectsAsLeaderInput = {
-  where?: Prisma.UserWhereInput;
-  data: Prisma.XOR<
-    Prisma.UserUpdateWithoutProjectsAsLeaderInput,
-    Prisma.UserUncheckedUpdateWithoutProjectsAsLeaderInput
-  >;
-};
-
-export type UserUpdateWithoutProjectsAsLeaderInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  email?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
-};
-
-export type UserUncheckedUpdateWithoutProjectsAsLeaderInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  email?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
 };
 
 export type UserUpsertWithoutProjectsAsCoLeaderInput = {
@@ -533,21 +495,59 @@ export type UserUncheckedUpdateWithoutProjectsAsCoLeaderInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
 };
 
+export type UserUpsertWithoutProjectsAsLeaderInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutProjectsAsLeaderInput,
+    Prisma.UserUncheckedUpdateWithoutProjectsAsLeaderInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutProjectsAsLeaderInput,
+    Prisma.UserUncheckedCreateWithoutProjectsAsLeaderInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutProjectsAsLeaderInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutProjectsAsLeaderInput,
+    Prisma.UserUncheckedUpdateWithoutProjectsAsLeaderInput
+  >;
+};
+
+export type UserUpdateWithoutProjectsAsLeaderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutProjectsAsLeaderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
+};
+
 /**
  * Count Type UserCountOutputType
  */
 
 export type UserCountOutputType = {
-  projectsAsLeader: number;
   projectsAsCoLeader: number;
+  projectsAsLeader: number;
 };
 
 export type UserCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  projectsAsLeader?: boolean | UserCountOutputTypeCountProjectsAsLeaderArgs;
   projectsAsCoLeader?: boolean | UserCountOutputTypeCountProjectsAsCoLeaderArgs;
+  projectsAsLeader?: boolean | UserCountOutputTypeCountProjectsAsLeaderArgs;
 };
 
 /**
@@ -566,7 +566,7 @@ export type UserCountOutputTypeDefaultArgs<
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountProjectsAsLeaderArgs<
+export type UserCountOutputTypeCountProjectsAsCoLeaderArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
@@ -576,7 +576,7 @@ export type UserCountOutputTypeCountProjectsAsLeaderArgs<
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountProjectsAsCoLeaderArgs<
+export type UserCountOutputTypeCountProjectsAsLeaderArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
@@ -593,8 +593,8 @@ export type UserSelect<
     name?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
-    projectsAsLeader?: boolean | Prisma.User$projectsAsLeaderArgs<ExtArgs>;
     projectsAsCoLeader?: boolean | Prisma.User$projectsAsCoLeaderArgs<ExtArgs>;
+    projectsAsLeader?: boolean | Prisma.User$projectsAsLeaderArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["user"]
@@ -647,8 +647,8 @@ export type UserInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  projectsAsLeader?: boolean | Prisma.User$projectsAsLeaderArgs<ExtArgs>;
   projectsAsCoLeader?: boolean | Prisma.User$projectsAsCoLeaderArgs<ExtArgs>;
+  projectsAsLeader?: boolean | Prisma.User$projectsAsLeaderArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<
@@ -666,8 +666,8 @@ export type $UserPayload<
 > = {
   name: "User";
   objects: {
-    projectsAsLeader: Prisma.$ProjectPayload<ExtArgs>[];
     projectsAsCoLeader: Prisma.$ProjectPayload<ExtArgs>[];
+    projectsAsLeader: Prisma.$ProjectPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1226,8 +1226,10 @@ export interface Prisma__UserClient<
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise";
-  projectsAsLeader<T extends Prisma.User$projectsAsLeaderArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.User$projectsAsLeaderArgs<ExtArgs>>,
+  projectsAsCoLeader<
+    T extends Prisma.User$projectsAsCoLeaderArgs<ExtArgs> = {},
+  >(
+    args?: Prisma.Subset<T, Prisma.User$projectsAsCoLeaderArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$ProjectPayload<ExtArgs>,
@@ -1237,10 +1239,8 @@ export interface Prisma__UserClient<
       >
     | Null
   >;
-  projectsAsCoLeader<
-    T extends Prisma.User$projectsAsCoLeaderArgs<ExtArgs> = {},
-  >(
-    args?: Prisma.Subset<T, Prisma.User$projectsAsCoLeaderArgs<ExtArgs>>,
+  projectsAsLeader<T extends Prisma.User$projectsAsLeaderArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$projectsAsLeaderArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$ProjectPayload<ExtArgs>,
@@ -1738,9 +1738,9 @@ export type UserDeleteManyArgs<
 };
 
 /**
- * User.projectsAsLeader
+ * User.projectsAsCoLeader
  */
-export type User$projectsAsLeaderArgs<
+export type User$projectsAsCoLeaderArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
@@ -1767,9 +1767,9 @@ export type User$projectsAsLeaderArgs<
 };
 
 /**
- * User.projectsAsCoLeader
+ * User.projectsAsLeader
  */
-export type User$projectsAsCoLeaderArgs<
+export type User$projectsAsLeaderArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {

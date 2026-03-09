@@ -116,6 +116,53 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
               amount: i.amount.toString(),
             })),
 
+          customIncomeCategories: Object.values(
+            project.incomeItems
+              .filter((i: { type: string }) => i.type === "OTHER")
+              .reduce(
+                (
+                  acc: Record<
+                    string,
+                    {
+                      id: number;
+                      categoryName: string;
+                      items: { id: string; name: string; amount: string }[];
+                    }
+                  >,
+                  item: {
+                    type: string;
+                    categoryName?: string;
+                    id: string;
+                    name: string;
+                    amount: number;
+                  },
+                ) => {
+                  const catName = item.categoryName || "หมวดหมู่อื่นๆ";
+                  if (!acc[catName]) {
+                    acc[catName] = {
+                      id: Date.now() + Math.random(),
+                      categoryName: catName,
+                      items: [],
+                    };
+                  }
+                  acc[catName].items.push({
+                    id: item.id,
+                    name: item.name,
+                    amount: item.amount.toString(),
+                  });
+                  return acc;
+                },
+                {} as Record<
+                  string,
+                  {
+                    id: number;
+                    categoryName: string;
+                    items: { id: string; name: string; amount: string }[];
+                  }
+                >,
+              ),
+          ),
+
           expenseRemuneration: project.expenseRemuneration?.toString() || "",
           expenseSupplies: project.expenseSupplies?.toString() || "",
           expenseMaterials: project.expenseMaterials?.toString() || "",

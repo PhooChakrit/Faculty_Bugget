@@ -176,6 +176,18 @@ export function ProjectPreview({
               />
             )}
 
+          {formData.customIncomeCategories?.map((category) =>
+            category.items.length > 0 && category.items[0].name ? (
+              <Row
+                key={category.id}
+                label={category.categoryName || "หมวดหมู่อื่นๆ"}
+                value={category.items
+                  .map((i) => `${i.name}: ${i.amount} บาท`)
+                  .join(", ")}
+              />
+            ) : null,
+          )}
+
           <div className="font-semibold mt-4 mb-2 text-slate-700">
             ประมาณการรายจ่าย
           </div>

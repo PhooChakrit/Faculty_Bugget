@@ -75,7 +75,6 @@ export type ProjectMinAggregateOutputType = {
   implementationPlan: string | null;
   serviceType: string | null;
   participantCount: number | null;
-  participantDetails: string | null;
   venue: string | null;
   committee: string | null;
   expectedBenefits: string | null;
@@ -92,6 +91,7 @@ export type ProjectMinAggregateOutputType = {
   expenseReserve: runtime.Decimal | null;
   note2: boolean | null;
   note3: boolean | null;
+  participantDetails: string | null;
 };
 
 export type ProjectMaxAggregateOutputType = {
@@ -115,7 +115,6 @@ export type ProjectMaxAggregateOutputType = {
   implementationPlan: string | null;
   serviceType: string | null;
   participantCount: number | null;
-  participantDetails: string | null;
   venue: string | null;
   committee: string | null;
   expectedBenefits: string | null;
@@ -132,6 +131,7 @@ export type ProjectMaxAggregateOutputType = {
   expenseReserve: runtime.Decimal | null;
   note2: boolean | null;
   note3: boolean | null;
+  participantDetails: string | null;
 };
 
 export type ProjectCountAggregateOutputType = {
@@ -155,7 +155,6 @@ export type ProjectCountAggregateOutputType = {
   implementationPlan: number;
   serviceType: number;
   participantCount: number;
-  participantDetails: number;
   venue: number;
   committee: number;
   expectedBenefits: number;
@@ -172,6 +171,7 @@ export type ProjectCountAggregateOutputType = {
   expenseReserve: number;
   note2: number;
   note3: number;
+  participantDetails: number;
   _all: number;
 };
 
@@ -224,7 +224,6 @@ export type ProjectMinAggregateInputType = {
   implementationPlan?: true;
   serviceType?: true;
   participantCount?: true;
-  participantDetails?: true;
   venue?: true;
   committee?: true;
   expectedBenefits?: true;
@@ -241,6 +240,7 @@ export type ProjectMinAggregateInputType = {
   expenseReserve?: true;
   note2?: true;
   note3?: true;
+  participantDetails?: true;
 };
 
 export type ProjectMaxAggregateInputType = {
@@ -264,7 +264,6 @@ export type ProjectMaxAggregateInputType = {
   implementationPlan?: true;
   serviceType?: true;
   participantCount?: true;
-  participantDetails?: true;
   venue?: true;
   committee?: true;
   expectedBenefits?: true;
@@ -281,6 +280,7 @@ export type ProjectMaxAggregateInputType = {
   expenseReserve?: true;
   note2?: true;
   note3?: true;
+  participantDetails?: true;
 };
 
 export type ProjectCountAggregateInputType = {
@@ -304,7 +304,6 @@ export type ProjectCountAggregateInputType = {
   implementationPlan?: true;
   serviceType?: true;
   participantCount?: true;
-  participantDetails?: true;
   venue?: true;
   committee?: true;
   expectedBenefits?: true;
@@ -321,6 +320,7 @@ export type ProjectCountAggregateInputType = {
   expenseReserve?: true;
   note2?: true;
   note3?: true;
+  participantDetails?: true;
   _all?: true;
 };
 
@@ -438,7 +438,6 @@ export type ProjectGroupByOutputType = {
   implementationPlan: string | null;
   serviceType: string | null;
   participantCount: number | null;
-  participantDetails: string | null;
   venue: string | null;
   committee: string | null;
   expectedBenefits: string | null;
@@ -455,6 +454,7 @@ export type ProjectGroupByOutputType = {
   expenseReserve: runtime.Decimal | null;
   note2: boolean;
   note3: boolean;
+  participantDetails: string | null;
   _count: ProjectCountAggregateOutputType | null;
   _avg: ProjectAvgAggregateOutputType | null;
   _sum: ProjectSumAggregateOutputType | null;
@@ -499,7 +499,6 @@ export type ProjectWhereInput = {
   implementationPlan?: Prisma.StringNullableFilter<"Project"> | string | null;
   serviceType?: Prisma.StringNullableFilter<"Project"> | string | null;
   participantCount?: Prisma.IntNullableFilter<"Project"> | number | null;
-  participantDetails?: Prisma.StringNullableFilter<"Project"> | string | null;
   venue?: Prisma.StringNullableFilter<"Project"> | string | null;
   committee?: Prisma.StringNullableFilter<"Project"> | string | null;
   expectedBenefits?: Prisma.StringNullableFilter<"Project"> | string | null;
@@ -576,16 +575,17 @@ export type ProjectWhereInput = {
     | null;
   note2?: Prisma.BoolFilter<"Project"> | boolean;
   note3?: Prisma.BoolFilter<"Project"> | boolean;
-  leader?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
+  participantDetails?: Prisma.StringNullableFilter<"Project"> | string | null;
+  incomeItems?: Prisma.IncomeItemListRelationFilter;
   coLeader?: Prisma.XOR<
     Prisma.UserNullableScalarRelationFilter,
     Prisma.UserWhereInput
   > | null;
-  targetGroups?: Prisma.ProjectTargetGroupListRelationFilter;
-  strategies?: Prisma.ProjectStrategyListRelationFilter;
-  incomeItems?: Prisma.IncomeItemListRelationFilter;
+  leader?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   collaborators?: Prisma.ProjectCollaboratorListRelationFilter;
   managers?: Prisma.ProjectManagerListRelationFilter;
+  strategies?: Prisma.ProjectStrategyListRelationFilter;
+  targetGroups?: Prisma.ProjectTargetGroupListRelationFilter;
 };
 
 export type ProjectOrderByWithRelationInput = {
@@ -609,7 +609,6 @@ export type ProjectOrderByWithRelationInput = {
   implementationPlan?: Prisma.SortOrderInput | Prisma.SortOrder;
   serviceType?: Prisma.SortOrderInput | Prisma.SortOrder;
   participantCount?: Prisma.SortOrderInput | Prisma.SortOrder;
-  participantDetails?: Prisma.SortOrderInput | Prisma.SortOrder;
   venue?: Prisma.SortOrderInput | Prisma.SortOrder;
   committee?: Prisma.SortOrderInput | Prisma.SortOrder;
   expectedBenefits?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -626,13 +625,14 @@ export type ProjectOrderByWithRelationInput = {
   expenseReserve?: Prisma.SortOrderInput | Prisma.SortOrder;
   note2?: Prisma.SortOrder;
   note3?: Prisma.SortOrder;
-  leader?: Prisma.UserOrderByWithRelationInput;
-  coLeader?: Prisma.UserOrderByWithRelationInput;
-  targetGroups?: Prisma.ProjectTargetGroupOrderByRelationAggregateInput;
-  strategies?: Prisma.ProjectStrategyOrderByRelationAggregateInput;
+  participantDetails?: Prisma.SortOrderInput | Prisma.SortOrder;
   incomeItems?: Prisma.IncomeItemOrderByRelationAggregateInput;
+  coLeader?: Prisma.UserOrderByWithRelationInput;
+  leader?: Prisma.UserOrderByWithRelationInput;
   collaborators?: Prisma.ProjectCollaboratorOrderByRelationAggregateInput;
   managers?: Prisma.ProjectManagerOrderByRelationAggregateInput;
+  strategies?: Prisma.ProjectStrategyOrderByRelationAggregateInput;
+  targetGroups?: Prisma.ProjectTargetGroupOrderByRelationAggregateInput;
 };
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<
@@ -660,7 +660,6 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<
     implementationPlan?: Prisma.StringNullableFilter<"Project"> | string | null;
     serviceType?: Prisma.StringNullableFilter<"Project"> | string | null;
     participantCount?: Prisma.IntNullableFilter<"Project"> | number | null;
-    participantDetails?: Prisma.StringNullableFilter<"Project"> | string | null;
     venue?: Prisma.StringNullableFilter<"Project"> | string | null;
     committee?: Prisma.StringNullableFilter<"Project"> | string | null;
     expectedBenefits?: Prisma.StringNullableFilter<"Project"> | string | null;
@@ -737,16 +736,17 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<
       | null;
     note2?: Prisma.BoolFilter<"Project"> | boolean;
     note3?: Prisma.BoolFilter<"Project"> | boolean;
-    leader?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
+    participantDetails?: Prisma.StringNullableFilter<"Project"> | string | null;
+    incomeItems?: Prisma.IncomeItemListRelationFilter;
     coLeader?: Prisma.XOR<
       Prisma.UserNullableScalarRelationFilter,
       Prisma.UserWhereInput
     > | null;
-    targetGroups?: Prisma.ProjectTargetGroupListRelationFilter;
-    strategies?: Prisma.ProjectStrategyListRelationFilter;
-    incomeItems?: Prisma.IncomeItemListRelationFilter;
+    leader?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     collaborators?: Prisma.ProjectCollaboratorListRelationFilter;
     managers?: Prisma.ProjectManagerListRelationFilter;
+    strategies?: Prisma.ProjectStrategyListRelationFilter;
+    targetGroups?: Prisma.ProjectTargetGroupListRelationFilter;
   },
   "id" | "receiptNumber"
 >;
@@ -772,7 +772,6 @@ export type ProjectOrderByWithAggregationInput = {
   implementationPlan?: Prisma.SortOrderInput | Prisma.SortOrder;
   serviceType?: Prisma.SortOrderInput | Prisma.SortOrder;
   participantCount?: Prisma.SortOrderInput | Prisma.SortOrder;
-  participantDetails?: Prisma.SortOrderInput | Prisma.SortOrder;
   venue?: Prisma.SortOrderInput | Prisma.SortOrder;
   committee?: Prisma.SortOrderInput | Prisma.SortOrder;
   expectedBenefits?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -789,6 +788,7 @@ export type ProjectOrderByWithAggregationInput = {
   expenseReserve?: Prisma.SortOrderInput | Prisma.SortOrder;
   note2?: Prisma.SortOrder;
   note3?: Prisma.SortOrder;
+  participantDetails?: Prisma.SortOrderInput | Prisma.SortOrder;
   _count?: Prisma.ProjectCountOrderByAggregateInput;
   _avg?: Prisma.ProjectAvgOrderByAggregateInput;
   _max?: Prisma.ProjectMaxOrderByAggregateInput;
@@ -852,10 +852,6 @@ export type ProjectScalarWhereWithAggregatesInput = {
   participantCount?:
     | Prisma.IntNullableWithAggregatesFilter<"Project">
     | number
-    | null;
-  participantDetails?:
-    | Prisma.StringNullableWithAggregatesFilter<"Project">
-    | string
     | null;
   venue?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null;
   committee?:
@@ -942,6 +938,10 @@ export type ProjectScalarWhereWithAggregatesInput = {
     | null;
   note2?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean;
   note3?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean;
+  participantDetails?:
+    | Prisma.StringNullableWithAggregatesFilter<"Project">
+    | string
+    | null;
 };
 
 export type ProjectCreateInput = {
@@ -963,7 +963,6 @@ export type ProjectCreateInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -1030,13 +1029,14 @@ export type ProjectCreateInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
-  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
-  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectUncheckedCreateInput = {
@@ -1060,7 +1060,6 @@ export type ProjectUncheckedCreateInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -1127,11 +1126,12 @@ export type ProjectUncheckedCreateInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectUpdateInput = {
@@ -1169,10 +1169,6 @@ export type ProjectUpdateInput = {
   participantCount?:
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
-    | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
     | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -1256,13 +1252,17 @@ export type ProjectUpdateInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
-  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
-  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectUncheckedUpdateInput = {
@@ -1303,10 +1303,6 @@ export type ProjectUncheckedUpdateInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -1389,11 +1385,15 @@ export type ProjectUncheckedUpdateInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectCreateManyInput = {
@@ -1417,7 +1417,6 @@ export type ProjectCreateManyInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -1484,6 +1483,7 @@ export type ProjectCreateManyInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
+  participantDetails?: string | null;
 };
 
 export type ProjectUpdateManyMutationInput = {
@@ -1521,10 +1521,6 @@ export type ProjectUpdateManyMutationInput = {
   participantCount?:
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
-    | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
     | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -1608,6 +1604,10 @@ export type ProjectUpdateManyMutationInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
 };
 
 export type ProjectUncheckedUpdateManyInput = {
@@ -1648,10 +1648,6 @@ export type ProjectUncheckedUpdateManyInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -1734,6 +1730,10 @@ export type ProjectUncheckedUpdateManyInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
 };
 
 export type ProjectListRelationFilter = {
@@ -1767,7 +1767,6 @@ export type ProjectCountOrderByAggregateInput = {
   implementationPlan?: Prisma.SortOrder;
   serviceType?: Prisma.SortOrder;
   participantCount?: Prisma.SortOrder;
-  participantDetails?: Prisma.SortOrder;
   venue?: Prisma.SortOrder;
   committee?: Prisma.SortOrder;
   expectedBenefits?: Prisma.SortOrder;
@@ -1784,6 +1783,7 @@ export type ProjectCountOrderByAggregateInput = {
   expenseReserve?: Prisma.SortOrder;
   note2?: Prisma.SortOrder;
   note3?: Prisma.SortOrder;
+  participantDetails?: Prisma.SortOrder;
 };
 
 export type ProjectAvgOrderByAggregateInput = {
@@ -1821,7 +1821,6 @@ export type ProjectMaxOrderByAggregateInput = {
   implementationPlan?: Prisma.SortOrder;
   serviceType?: Prisma.SortOrder;
   participantCount?: Prisma.SortOrder;
-  participantDetails?: Prisma.SortOrder;
   venue?: Prisma.SortOrder;
   committee?: Prisma.SortOrder;
   expectedBenefits?: Prisma.SortOrder;
@@ -1838,6 +1837,7 @@ export type ProjectMaxOrderByAggregateInput = {
   expenseReserve?: Prisma.SortOrder;
   note2?: Prisma.SortOrder;
   note3?: Prisma.SortOrder;
+  participantDetails?: Prisma.SortOrder;
 };
 
 export type ProjectMinOrderByAggregateInput = {
@@ -1861,7 +1861,6 @@ export type ProjectMinOrderByAggregateInput = {
   implementationPlan?: Prisma.SortOrder;
   serviceType?: Prisma.SortOrder;
   participantCount?: Prisma.SortOrder;
-  participantDetails?: Prisma.SortOrder;
   venue?: Prisma.SortOrder;
   committee?: Prisma.SortOrder;
   expectedBenefits?: Prisma.SortOrder;
@@ -1878,6 +1877,7 @@ export type ProjectMinOrderByAggregateInput = {
   expenseReserve?: Prisma.SortOrder;
   note2?: Prisma.SortOrder;
   note3?: Prisma.SortOrder;
+  participantDetails?: Prisma.SortOrder;
 };
 
 export type ProjectSumOrderByAggregateInput = {
@@ -1899,21 +1899,6 @@ export type ProjectScalarRelationFilter = {
   isNot?: Prisma.ProjectWhereInput;
 };
 
-export type ProjectCreateNestedManyWithoutLeaderInput = {
-  create?:
-    | Prisma.XOR<
-        Prisma.ProjectCreateWithoutLeaderInput,
-        Prisma.ProjectUncheckedCreateWithoutLeaderInput
-      >
-    | Prisma.ProjectCreateWithoutLeaderInput[]
-    | Prisma.ProjectUncheckedCreateWithoutLeaderInput[];
-  connectOrCreate?:
-    | Prisma.ProjectCreateOrConnectWithoutLeaderInput
-    | Prisma.ProjectCreateOrConnectWithoutLeaderInput[];
-  createMany?: Prisma.ProjectCreateManyLeaderInputEnvelope;
-  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
-};
-
 export type ProjectCreateNestedManyWithoutCoLeaderInput = {
   create?:
     | Prisma.XOR<
@@ -1929,7 +1914,7 @@ export type ProjectCreateNestedManyWithoutCoLeaderInput = {
   connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
 };
 
-export type ProjectUncheckedCreateNestedManyWithoutLeaderInput = {
+export type ProjectCreateNestedManyWithoutLeaderInput = {
   create?:
     | Prisma.XOR<
         Prisma.ProjectCreateWithoutLeaderInput,
@@ -1959,7 +1944,7 @@ export type ProjectUncheckedCreateNestedManyWithoutCoLeaderInput = {
   connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
 };
 
-export type ProjectUpdateManyWithoutLeaderNestedInput = {
+export type ProjectUncheckedCreateNestedManyWithoutLeaderInput = {
   create?:
     | Prisma.XOR<
         Prisma.ProjectCreateWithoutLeaderInput,
@@ -1970,25 +1955,8 @@ export type ProjectUpdateManyWithoutLeaderNestedInput = {
   connectOrCreate?:
     | Prisma.ProjectCreateOrConnectWithoutLeaderInput
     | Prisma.ProjectCreateOrConnectWithoutLeaderInput[];
-  upsert?:
-    | Prisma.ProjectUpsertWithWhereUniqueWithoutLeaderInput
-    | Prisma.ProjectUpsertWithWhereUniqueWithoutLeaderInput[];
   createMany?: Prisma.ProjectCreateManyLeaderInputEnvelope;
-  set?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
-  disconnect?:
-    | Prisma.ProjectWhereUniqueInput
-    | Prisma.ProjectWhereUniqueInput[];
-  delete?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
   connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
-  update?:
-    | Prisma.ProjectUpdateWithWhereUniqueWithoutLeaderInput
-    | Prisma.ProjectUpdateWithWhereUniqueWithoutLeaderInput[];
-  updateMany?:
-    | Prisma.ProjectUpdateManyWithWhereWithoutLeaderInput
-    | Prisma.ProjectUpdateManyWithWhereWithoutLeaderInput[];
-  deleteMany?:
-    | Prisma.ProjectScalarWhereInput
-    | Prisma.ProjectScalarWhereInput[];
 };
 
 export type ProjectUpdateManyWithoutCoLeaderNestedInput = {
@@ -2023,7 +1991,7 @@ export type ProjectUpdateManyWithoutCoLeaderNestedInput = {
     | Prisma.ProjectScalarWhereInput[];
 };
 
-export type ProjectUncheckedUpdateManyWithoutLeaderNestedInput = {
+export type ProjectUpdateManyWithoutLeaderNestedInput = {
   create?:
     | Prisma.XOR<
         Prisma.ProjectCreateWithoutLeaderInput,
@@ -2082,6 +2050,38 @@ export type ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput = {
   updateMany?:
     | Prisma.ProjectUpdateManyWithWhereWithoutCoLeaderInput
     | Prisma.ProjectUpdateManyWithWhereWithoutCoLeaderInput[];
+  deleteMany?:
+    | Prisma.ProjectScalarWhereInput
+    | Prisma.ProjectScalarWhereInput[];
+};
+
+export type ProjectUncheckedUpdateManyWithoutLeaderNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.ProjectCreateWithoutLeaderInput,
+        Prisma.ProjectUncheckedCreateWithoutLeaderInput
+      >
+    | Prisma.ProjectCreateWithoutLeaderInput[]
+    | Prisma.ProjectUncheckedCreateWithoutLeaderInput[];
+  connectOrCreate?:
+    | Prisma.ProjectCreateOrConnectWithoutLeaderInput
+    | Prisma.ProjectCreateOrConnectWithoutLeaderInput[];
+  upsert?:
+    | Prisma.ProjectUpsertWithWhereUniqueWithoutLeaderInput
+    | Prisma.ProjectUpsertWithWhereUniqueWithoutLeaderInput[];
+  createMany?: Prisma.ProjectCreateManyLeaderInputEnvelope;
+  set?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
+  disconnect?:
+    | Prisma.ProjectWhereUniqueInput
+    | Prisma.ProjectWhereUniqueInput[];
+  delete?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[];
+  update?:
+    | Prisma.ProjectUpdateWithWhereUniqueWithoutLeaderInput
+    | Prisma.ProjectUpdateWithWhereUniqueWithoutLeaderInput[];
+  updateMany?:
+    | Prisma.ProjectUpdateManyWithWhereWithoutLeaderInput
+    | Prisma.ProjectUpdateManyWithWhereWithoutLeaderInput[];
   deleteMany?:
     | Prisma.ProjectScalarWhereInput
     | Prisma.ProjectScalarWhereInput[];
@@ -2241,209 +2241,6 @@ export type ProjectUpdateOneRequiredWithoutManagersNestedInput = {
   >;
 };
 
-export type ProjectCreateWithoutLeaderInput = {
-  id?: string;
-  receiptNumber?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  status?: $Enums.ProjectStatus;
-  projectNameThai: string;
-  projectNameEng?: string | null;
-  leaderPosition: string;
-  department: string;
-  startDate: Date | string;
-  endDate: Date | string;
-  background?: string | null;
-  projectDetails?: string | null;
-  objectives?: string | null;
-  scope?: string | null;
-  implementationPlan?: string | null;
-  serviceType?: string | null;
-  participantCount?: number | null;
-  participantDetails?: string | null;
-  venue?: string | null;
-  committee?: string | null;
-  expectedBenefits?: string | null;
-  projectEvaluation?: string | null;
-  budgetSourceExtGov?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtPrivate?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtForeign?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceInternal?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseRemuneration?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSupplies?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseMaterials?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseUtilities?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSubsidy?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseReserve?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  note2?: boolean;
-  note3?: boolean;
-  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
-  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
-  incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
-  collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
-  managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
-};
-
-export type ProjectUncheckedCreateWithoutLeaderInput = {
-  id?: string;
-  receiptNumber?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  status?: $Enums.ProjectStatus;
-  projectNameThai: string;
-  projectNameEng?: string | null;
-  leaderPosition: string;
-  department: string;
-  coLeaderId?: string | null;
-  startDate: Date | string;
-  endDate: Date | string;
-  background?: string | null;
-  projectDetails?: string | null;
-  objectives?: string | null;
-  scope?: string | null;
-  implementationPlan?: string | null;
-  serviceType?: string | null;
-  participantCount?: number | null;
-  participantDetails?: string | null;
-  venue?: string | null;
-  committee?: string | null;
-  expectedBenefits?: string | null;
-  projectEvaluation?: string | null;
-  budgetSourceExtGov?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtPrivate?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtForeign?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceInternal?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseRemuneration?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSupplies?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseMaterials?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseUtilities?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSubsidy?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseReserve?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  note2?: boolean;
-  note3?: boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
-  incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
-  collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
-  managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
-};
-
-export type ProjectCreateOrConnectWithoutLeaderInput = {
-  where: Prisma.ProjectWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.ProjectCreateWithoutLeaderInput,
-    Prisma.ProjectUncheckedCreateWithoutLeaderInput
-  >;
-};
-
-export type ProjectCreateManyLeaderInputEnvelope = {
-  data:
-    | Prisma.ProjectCreateManyLeaderInput
-    | Prisma.ProjectCreateManyLeaderInput[];
-  skipDuplicates?: boolean;
-};
-
 export type ProjectCreateWithoutCoLeaderInput = {
   id?: string;
   receiptNumber?: string | null;
@@ -2463,7 +2260,6 @@ export type ProjectCreateWithoutCoLeaderInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -2530,12 +2326,13 @@ export type ProjectCreateWithoutCoLeaderInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
-  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectUncheckedCreateWithoutCoLeaderInput = {
@@ -2558,7 +2355,6 @@ export type ProjectUncheckedCreateWithoutCoLeaderInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -2625,11 +2421,12 @@ export type ProjectUncheckedCreateWithoutCoLeaderInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectCreateOrConnectWithoutCoLeaderInput = {
@@ -2647,31 +2444,234 @@ export type ProjectCreateManyCoLeaderInputEnvelope = {
   skipDuplicates?: boolean;
 };
 
-export type ProjectUpsertWithWhereUniqueWithoutLeaderInput = {
+export type ProjectCreateWithoutLeaderInput = {
+  id?: string;
+  receiptNumber?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  status?: $Enums.ProjectStatus;
+  projectNameThai: string;
+  projectNameEng?: string | null;
+  leaderPosition: string;
+  department: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  background?: string | null;
+  projectDetails?: string | null;
+  objectives?: string | null;
+  scope?: string | null;
+  implementationPlan?: string | null;
+  serviceType?: string | null;
+  participantCount?: number | null;
+  venue?: string | null;
+  committee?: string | null;
+  expectedBenefits?: string | null;
+  projectEvaluation?: string | null;
+  budgetSourceExtGov?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: boolean;
+  note3?: boolean;
+  participantDetails?: string | null;
+  incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
+  collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
+  managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
+};
+
+export type ProjectUncheckedCreateWithoutLeaderInput = {
+  id?: string;
+  receiptNumber?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  status?: $Enums.ProjectStatus;
+  projectNameThai: string;
+  projectNameEng?: string | null;
+  leaderPosition: string;
+  department: string;
+  coLeaderId?: string | null;
+  startDate: Date | string;
+  endDate: Date | string;
+  background?: string | null;
+  projectDetails?: string | null;
+  objectives?: string | null;
+  scope?: string | null;
+  implementationPlan?: string | null;
+  serviceType?: string | null;
+  participantCount?: number | null;
+  venue?: string | null;
+  committee?: string | null;
+  expectedBenefits?: string | null;
+  projectEvaluation?: string | null;
+  budgetSourceExtGov?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: boolean;
+  note3?: boolean;
+  participantDetails?: string | null;
+  incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
+  managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
+};
+
+export type ProjectCreateOrConnectWithoutLeaderInput = {
   where: Prisma.ProjectWhereUniqueInput;
-  update: Prisma.XOR<
-    Prisma.ProjectUpdateWithoutLeaderInput,
-    Prisma.ProjectUncheckedUpdateWithoutLeaderInput
-  >;
   create: Prisma.XOR<
     Prisma.ProjectCreateWithoutLeaderInput,
     Prisma.ProjectUncheckedCreateWithoutLeaderInput
   >;
 };
 
-export type ProjectUpdateWithWhereUniqueWithoutLeaderInput = {
+export type ProjectCreateManyLeaderInputEnvelope = {
+  data:
+    | Prisma.ProjectCreateManyLeaderInput
+    | Prisma.ProjectCreateManyLeaderInput[];
+  skipDuplicates?: boolean;
+};
+
+export type ProjectUpsertWithWhereUniqueWithoutCoLeaderInput = {
   where: Prisma.ProjectWhereUniqueInput;
-  data: Prisma.XOR<
-    Prisma.ProjectUpdateWithoutLeaderInput,
-    Prisma.ProjectUncheckedUpdateWithoutLeaderInput
+  update: Prisma.XOR<
+    Prisma.ProjectUpdateWithoutCoLeaderInput,
+    Prisma.ProjectUncheckedUpdateWithoutCoLeaderInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ProjectCreateWithoutCoLeaderInput,
+    Prisma.ProjectUncheckedCreateWithoutCoLeaderInput
   >;
 };
 
-export type ProjectUpdateManyWithWhereWithoutLeaderInput = {
+export type ProjectUpdateWithWhereUniqueWithoutCoLeaderInput = {
+  where: Prisma.ProjectWhereUniqueInput;
+  data: Prisma.XOR<
+    Prisma.ProjectUpdateWithoutCoLeaderInput,
+    Prisma.ProjectUncheckedUpdateWithoutCoLeaderInput
+  >;
+};
+
+export type ProjectUpdateManyWithWhereWithoutCoLeaderInput = {
   where: Prisma.ProjectScalarWhereInput;
   data: Prisma.XOR<
     Prisma.ProjectUpdateManyMutationInput,
-    Prisma.ProjectUncheckedUpdateManyWithoutLeaderInput
+    Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderInput
   >;
 };
 
@@ -2699,7 +2699,6 @@ export type ProjectScalarWhereInput = {
   implementationPlan?: Prisma.StringNullableFilter<"Project"> | string | null;
   serviceType?: Prisma.StringNullableFilter<"Project"> | string | null;
   participantCount?: Prisma.IntNullableFilter<"Project"> | number | null;
-  participantDetails?: Prisma.StringNullableFilter<"Project"> | string | null;
   venue?: Prisma.StringNullableFilter<"Project"> | string | null;
   committee?: Prisma.StringNullableFilter<"Project"> | string | null;
   expectedBenefits?: Prisma.StringNullableFilter<"Project"> | string | null;
@@ -2776,33 +2775,34 @@ export type ProjectScalarWhereInput = {
     | null;
   note2?: Prisma.BoolFilter<"Project"> | boolean;
   note3?: Prisma.BoolFilter<"Project"> | boolean;
+  participantDetails?: Prisma.StringNullableFilter<"Project"> | string | null;
 };
 
-export type ProjectUpsertWithWhereUniqueWithoutCoLeaderInput = {
+export type ProjectUpsertWithWhereUniqueWithoutLeaderInput = {
   where: Prisma.ProjectWhereUniqueInput;
   update: Prisma.XOR<
-    Prisma.ProjectUpdateWithoutCoLeaderInput,
-    Prisma.ProjectUncheckedUpdateWithoutCoLeaderInput
+    Prisma.ProjectUpdateWithoutLeaderInput,
+    Prisma.ProjectUncheckedUpdateWithoutLeaderInput
   >;
   create: Prisma.XOR<
-    Prisma.ProjectCreateWithoutCoLeaderInput,
-    Prisma.ProjectUncheckedCreateWithoutCoLeaderInput
+    Prisma.ProjectCreateWithoutLeaderInput,
+    Prisma.ProjectUncheckedCreateWithoutLeaderInput
   >;
 };
 
-export type ProjectUpdateWithWhereUniqueWithoutCoLeaderInput = {
+export type ProjectUpdateWithWhereUniqueWithoutLeaderInput = {
   where: Prisma.ProjectWhereUniqueInput;
   data: Prisma.XOR<
-    Prisma.ProjectUpdateWithoutCoLeaderInput,
-    Prisma.ProjectUncheckedUpdateWithoutCoLeaderInput
+    Prisma.ProjectUpdateWithoutLeaderInput,
+    Prisma.ProjectUncheckedUpdateWithoutLeaderInput
   >;
 };
 
-export type ProjectUpdateManyWithWhereWithoutCoLeaderInput = {
+export type ProjectUpdateManyWithWhereWithoutLeaderInput = {
   where: Prisma.ProjectScalarWhereInput;
   data: Prisma.XOR<
     Prisma.ProjectUpdateManyMutationInput,
-    Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderInput
+    Prisma.ProjectUncheckedUpdateManyWithoutLeaderInput
   >;
 };
 
@@ -2825,7 +2825,6 @@ export type ProjectCreateWithoutTargetGroupsInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -2892,12 +2891,13 @@ export type ProjectCreateWithoutTargetGroupsInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
-  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
-  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectUncheckedCreateWithoutTargetGroupsInput = {
@@ -2921,7 +2921,6 @@ export type ProjectUncheckedCreateWithoutTargetGroupsInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -2988,10 +2987,11 @@ export type ProjectUncheckedCreateWithoutTargetGroupsInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectCreateOrConnectWithoutTargetGroupsInput = {
@@ -3058,10 +3058,6 @@ export type ProjectUpdateWithoutTargetGroupsInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -3144,12 +3140,16 @@ export type ProjectUpdateWithoutTargetGroupsInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
-  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
-  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectUncheckedUpdateWithoutTargetGroupsInput = {
@@ -3190,10 +3190,6 @@ export type ProjectUncheckedUpdateWithoutTargetGroupsInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -3276,10 +3272,14 @@ export type ProjectUncheckedUpdateWithoutTargetGroupsInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectCreateWithoutStrategiesInput = {
@@ -3301,7 +3301,6 @@ export type ProjectCreateWithoutStrategiesInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -3368,12 +3367,13 @@ export type ProjectCreateWithoutStrategiesInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
-  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
-  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectUncheckedCreateWithoutStrategiesInput = {
@@ -3397,7 +3397,6 @@ export type ProjectUncheckedCreateWithoutStrategiesInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -3464,10 +3463,11 @@ export type ProjectUncheckedCreateWithoutStrategiesInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectCreateOrConnectWithoutStrategiesInput = {
@@ -3534,10 +3534,6 @@ export type ProjectUpdateWithoutStrategiesInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -3620,12 +3616,16 @@ export type ProjectUpdateWithoutStrategiesInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
-  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
-  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectUncheckedUpdateWithoutStrategiesInput = {
@@ -3666,10 +3666,6 @@ export type ProjectUncheckedUpdateWithoutStrategiesInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -3752,10 +3748,14 @@ export type ProjectUncheckedUpdateWithoutStrategiesInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectCreateWithoutIncomeItemsInput = {
@@ -3777,7 +3777,6 @@ export type ProjectCreateWithoutIncomeItemsInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -3844,12 +3843,13 @@ export type ProjectCreateWithoutIncomeItemsInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
+  participantDetails?: string | null;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
-  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectUncheckedCreateWithoutIncomeItemsInput = {
@@ -3873,7 +3873,6 @@ export type ProjectUncheckedCreateWithoutIncomeItemsInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -3940,10 +3939,11 @@ export type ProjectUncheckedCreateWithoutIncomeItemsInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectCreateOrConnectWithoutIncomeItemsInput = {
@@ -4010,10 +4010,6 @@ export type ProjectUpdateWithoutIncomeItemsInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -4096,12 +4092,16 @@ export type ProjectUpdateWithoutIncomeItemsInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
-  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectUncheckedUpdateWithoutIncomeItemsInput = {
@@ -4142,10 +4142,6 @@ export type ProjectUncheckedUpdateWithoutIncomeItemsInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -4228,10 +4224,14 @@ export type ProjectUncheckedUpdateWithoutIncomeItemsInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectCreateWithoutCollaboratorsInput = {
@@ -4253,7 +4253,6 @@ export type ProjectCreateWithoutCollaboratorsInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -4320,12 +4319,13 @@ export type ProjectCreateWithoutCollaboratorsInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
-  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
-  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectUncheckedCreateWithoutCollaboratorsInput = {
@@ -4349,7 +4349,6 @@ export type ProjectUncheckedCreateWithoutCollaboratorsInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -4416,10 +4415,11 @@ export type ProjectUncheckedCreateWithoutCollaboratorsInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectCreateOrConnectWithoutCollaboratorsInput = {
@@ -4486,10 +4486,6 @@ export type ProjectUpdateWithoutCollaboratorsInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -4572,12 +4568,16 @@ export type ProjectUpdateWithoutCollaboratorsInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
-  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
-  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectUncheckedUpdateWithoutCollaboratorsInput = {
@@ -4618,10 +4618,6 @@ export type ProjectUncheckedUpdateWithoutCollaboratorsInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -4704,10 +4700,14 @@ export type ProjectUncheckedUpdateWithoutCollaboratorsInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectCreateWithoutManagersInput = {
@@ -4729,7 +4729,6 @@ export type ProjectCreateWithoutManagersInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -4796,12 +4795,13 @@ export type ProjectCreateWithoutManagersInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
-  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
-  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectUncheckedCreateWithoutManagersInput = {
@@ -4825,7 +4825,6 @@ export type ProjectUncheckedCreateWithoutManagersInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -4892,10 +4891,11 @@ export type ProjectUncheckedCreateWithoutManagersInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
-  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  participantDetails?: string | null;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
 };
 
 export type ProjectCreateOrConnectWithoutManagersInput = {
@@ -4962,10 +4962,6 @@ export type ProjectUpdateWithoutManagersInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -5048,12 +5044,16 @@ export type ProjectUpdateWithoutManagersInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
-  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
-  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectUncheckedUpdateWithoutManagersInput = {
@@ -5094,10 +5094,6 @@ export type ProjectUncheckedUpdateWithoutManagersInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -5180,99 +5176,14 @@ export type ProjectUncheckedUpdateWithoutManagersInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
-};
-
-export type ProjectCreateManyLeaderInput = {
-  id?: string;
-  receiptNumber?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  status?: $Enums.ProjectStatus;
-  projectNameThai: string;
-  projectNameEng?: string | null;
-  leaderPosition: string;
-  department: string;
-  coLeaderId?: string | null;
-  startDate: Date | string;
-  endDate: Date | string;
-  background?: string | null;
-  projectDetails?: string | null;
-  objectives?: string | null;
-  scope?: string | null;
-  implementationPlan?: string | null;
-  serviceType?: string | null;
-  participantCount?: number | null;
-  participantDetails?: string | null;
-  venue?: string | null;
-  committee?: string | null;
-  expectedBenefits?: string | null;
-  projectEvaluation?: string | null;
-  budgetSourceExtGov?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtPrivate?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtForeign?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceInternal?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseRemuneration?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSupplies?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseMaterials?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseUtilities?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSubsidy?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseReserve?:
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  note2?: boolean;
-  note3?: boolean;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectCreateManyCoLeaderInput = {
@@ -5295,7 +5206,6 @@ export type ProjectCreateManyCoLeaderInput = {
   implementationPlan?: string | null;
   serviceType?: string | null;
   participantCount?: number | null;
-  participantDetails?: string | null;
   venue?: string | null;
   committee?: string | null;
   expectedBenefits?: string | null;
@@ -5362,391 +5272,96 @@ export type ProjectCreateManyCoLeaderInput = {
     | null;
   note2?: boolean;
   note3?: boolean;
+  participantDetails?: string | null;
 };
 
-export type ProjectUpdateWithoutLeaderInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  receiptNumber?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  status?:
-    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
-    | $Enums.ProjectStatus;
-  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
-  projectNameEng?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
-  department?: Prisma.StringFieldUpdateOperationsInput | string;
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  projectDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  implementationPlan?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  participantCount?:
-    | Prisma.NullableIntFieldUpdateOperationsInput
-    | number
-    | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  expectedBenefits?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  projectEvaluation?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
+export type ProjectCreateManyLeaderInput = {
+  id?: string;
+  receiptNumber?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  status?: $Enums.ProjectStatus;
+  projectNameThai: string;
+  projectNameEng?: string | null;
+  leaderPosition: string;
+  department: string;
+  coLeaderId?: string | null;
+  startDate: Date | string;
+  endDate: Date | string;
+  background?: string | null;
+  projectDetails?: string | null;
+  objectives?: string | null;
+  scope?: string | null;
+  implementationPlan?: string | null;
+  serviceType?: string | null;
+  participantCount?: number | null;
+  venue?: string | null;
+  committee?: string | null;
+  expectedBenefits?: string | null;
+  projectEvaluation?: string | null;
   budgetSourceExtGov?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   budgetSourceExtPrivate?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   budgetSourceExtForeign?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   budgetSourceInternal?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   expenseRemuneration?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   expenseSupplies?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   expenseMaterials?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   expenseUtilities?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   expenseSubsidy?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
   expenseReserve?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
     | runtime.Decimal
     | runtime.DecimalJsLike
     | number
     | string
     | null;
-  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
-  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
-  incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
-  collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
-  managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
-};
-
-export type ProjectUncheckedUpdateWithoutLeaderInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  receiptNumber?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  status?:
-    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
-    | $Enums.ProjectStatus;
-  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
-  projectNameEng?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
-  department?: Prisma.StringFieldUpdateOperationsInput | string;
-  coLeaderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  projectDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  implementationPlan?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  participantCount?:
-    | Prisma.NullableIntFieldUpdateOperationsInput
-    | number
-    | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  expectedBenefits?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  projectEvaluation?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  budgetSourceExtGov?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtPrivate?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtForeign?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceInternal?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseRemuneration?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSupplies?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseMaterials?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseUtilities?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSubsidy?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseReserve?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
-  incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
-  collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
-  managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
-};
-
-export type ProjectUncheckedUpdateManyWithoutLeaderInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  receiptNumber?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  status?:
-    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
-    | $Enums.ProjectStatus;
-  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
-  projectNameEng?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
-  department?: Prisma.StringFieldUpdateOperationsInput | string;
-  coLeaderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  projectDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  implementationPlan?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  participantCount?:
-    | Prisma.NullableIntFieldUpdateOperationsInput
-    | number
-    | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  expectedBenefits?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  projectEvaluation?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
-  budgetSourceExtGov?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtPrivate?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceExtForeign?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  budgetSourceInternal?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseRemuneration?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSupplies?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseMaterials?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseUtilities?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseSubsidy?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  expenseReserve?:
-    | Prisma.NullableDecimalFieldUpdateOperationsInput
-    | runtime.Decimal
-    | runtime.DecimalJsLike
-    | number
-    | string
-    | null;
-  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  note2?: boolean;
+  note3?: boolean;
+  participantDetails?: string | null;
 };
 
 export type ProjectUpdateWithoutCoLeaderInput = {
@@ -5785,10 +5400,6 @@ export type ProjectUpdateWithoutCoLeaderInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -5871,12 +5482,16 @@ export type ProjectUpdateWithoutCoLeaderInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
-  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectUncheckedUpdateWithoutCoLeaderInput = {
@@ -5916,10 +5531,6 @@ export type ProjectUncheckedUpdateWithoutCoLeaderInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
-  participantDetails?:
-    | Prisma.NullableStringFieldUpdateOperationsInput
-    | string
-    | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   expectedBenefits?:
@@ -6002,11 +5613,15 @@ export type ProjectUncheckedUpdateWithoutCoLeaderInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
-  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
 };
 
 export type ProjectUncheckedUpdateManyWithoutCoLeaderInput = {
@@ -6046,9 +5661,129 @@ export type ProjectUncheckedUpdateManyWithoutCoLeaderInput = {
     | Prisma.NullableIntFieldUpdateOperationsInput
     | number
     | null;
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  expectedBenefits?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectEvaluation?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  budgetSourceExtGov?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   participantDetails?:
     | Prisma.NullableStringFieldUpdateOperationsInput
     | string
+    | null;
+};
+
+export type ProjectUpdateWithoutLeaderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  receiptNumber?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  status?:
+    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
+    | $Enums.ProjectStatus;
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
+  projectNameEng?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
+  department?: Prisma.StringFieldUpdateOperationsInput | string;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  projectDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  implementationPlan?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  participantCount?:
+    | Prisma.NullableIntFieldUpdateOperationsInput
+    | number
     | null;
   venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -6132,6 +5867,271 @@ export type ProjectUncheckedUpdateManyWithoutCoLeaderInput = {
     | null;
   note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
+  collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
+  managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
+};
+
+export type ProjectUncheckedUpdateWithoutLeaderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  receiptNumber?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  status?:
+    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
+    | $Enums.ProjectStatus;
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
+  projectNameEng?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
+  department?: Prisma.StringFieldUpdateOperationsInput | string;
+  coLeaderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  projectDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  implementationPlan?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  participantCount?:
+    | Prisma.NullableIntFieldUpdateOperationsInput
+    | number
+    | null;
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  expectedBenefits?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectEvaluation?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  budgetSourceExtGov?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
+  managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
+};
+
+export type ProjectUncheckedUpdateManyWithoutLeaderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  receiptNumber?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  status?:
+    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
+    | $Enums.ProjectStatus;
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
+  projectNameEng?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
+  department?: Prisma.StringFieldUpdateOperationsInput | string;
+  coLeaderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  projectDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  implementationPlan?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  participantCount?:
+    | Prisma.NullableIntFieldUpdateOperationsInput
+    | number
+    | null;
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  expectedBenefits?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectEvaluation?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  budgetSourceExtGov?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
 };
 
 /**
@@ -6139,22 +6139,22 @@ export type ProjectUncheckedUpdateManyWithoutCoLeaderInput = {
  */
 
 export type ProjectCountOutputType = {
-  targetGroups: number;
-  strategies: number;
   incomeItems: number;
   collaborators: number;
   managers: number;
+  strategies: number;
+  targetGroups: number;
 };
 
 export type ProjectCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  targetGroups?: boolean | ProjectCountOutputTypeCountTargetGroupsArgs;
-  strategies?: boolean | ProjectCountOutputTypeCountStrategiesArgs;
   incomeItems?: boolean | ProjectCountOutputTypeCountIncomeItemsArgs;
   collaborators?: boolean | ProjectCountOutputTypeCountCollaboratorsArgs;
   managers?: boolean | ProjectCountOutputTypeCountManagersArgs;
+  strategies?: boolean | ProjectCountOutputTypeCountStrategiesArgs;
+  targetGroups?: boolean | ProjectCountOutputTypeCountTargetGroupsArgs;
 };
 
 /**
@@ -6168,26 +6168,6 @@ export type ProjectCountOutputTypeDefaultArgs<
    * Select specific fields to fetch from the ProjectCountOutputType
    */
   select?: Prisma.ProjectCountOutputTypeSelect<ExtArgs> | null;
-};
-
-/**
- * ProjectCountOutputType without action
- */
-export type ProjectCountOutputTypeCountTargetGroupsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.ProjectTargetGroupWhereInput;
-};
-
-/**
- * ProjectCountOutputType without action
- */
-export type ProjectCountOutputTypeCountStrategiesArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.ProjectStrategyWhereInput;
 };
 
 /**
@@ -6220,6 +6200,26 @@ export type ProjectCountOutputTypeCountManagersArgs<
   where?: Prisma.ProjectManagerWhereInput;
 };
 
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountStrategiesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ProjectStrategyWhereInput;
+};
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountTargetGroupsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ProjectTargetGroupWhereInput;
+};
+
 export type ProjectSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -6245,7 +6245,6 @@ export type ProjectSelect<
     implementationPlan?: boolean;
     serviceType?: boolean;
     participantCount?: boolean;
-    participantDetails?: boolean;
     venue?: boolean;
     committee?: boolean;
     expectedBenefits?: boolean;
@@ -6262,13 +6261,14 @@ export type ProjectSelect<
     expenseReserve?: boolean;
     note2?: boolean;
     note3?: boolean;
-    leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
-    coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
-    targetGroups?: boolean | Prisma.Project$targetGroupsArgs<ExtArgs>;
-    strategies?: boolean | Prisma.Project$strategiesArgs<ExtArgs>;
+    participantDetails?: boolean;
     incomeItems?: boolean | Prisma.Project$incomeItemsArgs<ExtArgs>;
+    coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
+    leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     collaborators?: boolean | Prisma.Project$collaboratorsArgs<ExtArgs>;
     managers?: boolean | Prisma.Project$managersArgs<ExtArgs>;
+    strategies?: boolean | Prisma.Project$strategiesArgs<ExtArgs>;
+    targetGroups?: boolean | Prisma.Project$targetGroupsArgs<ExtArgs>;
     _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["project"]
@@ -6299,7 +6299,6 @@ export type ProjectSelectCreateManyAndReturn<
     implementationPlan?: boolean;
     serviceType?: boolean;
     participantCount?: boolean;
-    participantDetails?: boolean;
     venue?: boolean;
     committee?: boolean;
     expectedBenefits?: boolean;
@@ -6316,8 +6315,9 @@ export type ProjectSelectCreateManyAndReturn<
     expenseReserve?: boolean;
     note2?: boolean;
     note3?: boolean;
-    leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    participantDetails?: boolean;
     coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
+    leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["project"]
 >;
@@ -6347,7 +6347,6 @@ export type ProjectSelectUpdateManyAndReturn<
     implementationPlan?: boolean;
     serviceType?: boolean;
     participantCount?: boolean;
-    participantDetails?: boolean;
     venue?: boolean;
     committee?: boolean;
     expectedBenefits?: boolean;
@@ -6364,8 +6363,9 @@ export type ProjectSelectUpdateManyAndReturn<
     expenseReserve?: boolean;
     note2?: boolean;
     note3?: boolean;
-    leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    participantDetails?: boolean;
     coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
+    leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs["result"]["project"]
 >;
@@ -6391,7 +6391,6 @@ export type ProjectSelectScalar = {
   implementationPlan?: boolean;
   serviceType?: boolean;
   participantCount?: boolean;
-  participantDetails?: boolean;
   venue?: boolean;
   committee?: boolean;
   expectedBenefits?: boolean;
@@ -6408,6 +6407,7 @@ export type ProjectSelectScalar = {
   expenseReserve?: boolean;
   note2?: boolean;
   note3?: boolean;
+  participantDetails?: boolean;
 };
 
 export type ProjectOmit<
@@ -6434,7 +6434,6 @@ export type ProjectOmit<
   | "implementationPlan"
   | "serviceType"
   | "participantCount"
-  | "participantDetails"
   | "venue"
   | "committee"
   | "expectedBenefits"
@@ -6450,35 +6449,36 @@ export type ProjectOmit<
   | "expenseSubsidy"
   | "expenseReserve"
   | "note2"
-  | "note3",
+  | "note3"
+  | "participantDetails",
   ExtArgs["result"]["project"]
 >;
 export type ProjectInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
-  coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
-  targetGroups?: boolean | Prisma.Project$targetGroupsArgs<ExtArgs>;
-  strategies?: boolean | Prisma.Project$strategiesArgs<ExtArgs>;
   incomeItems?: boolean | Prisma.Project$incomeItemsArgs<ExtArgs>;
+  coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
+  leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   collaborators?: boolean | Prisma.Project$collaboratorsArgs<ExtArgs>;
   managers?: boolean | Prisma.Project$managersArgs<ExtArgs>;
+  strategies?: boolean | Prisma.Project$strategiesArgs<ExtArgs>;
+  targetGroups?: boolean | Prisma.Project$targetGroupsArgs<ExtArgs>;
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type ProjectIncludeCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
+  leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
 export type ProjectIncludeUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
+  leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
 
 export type $ProjectPayload<
@@ -6487,13 +6487,13 @@ export type $ProjectPayload<
 > = {
   name: "Project";
   objects: {
-    leader: Prisma.$UserPayload<ExtArgs>;
-    coLeader: Prisma.$UserPayload<ExtArgs> | null;
-    targetGroups: Prisma.$ProjectTargetGroupPayload<ExtArgs>[];
-    strategies: Prisma.$ProjectStrategyPayload<ExtArgs>[];
     incomeItems: Prisma.$IncomeItemPayload<ExtArgs>[];
+    coLeader: Prisma.$UserPayload<ExtArgs> | null;
+    leader: Prisma.$UserPayload<ExtArgs>;
     collaborators: Prisma.$ProjectCollaboratorPayload<ExtArgs>[];
     managers: Prisma.$ProjectManagerPayload<ExtArgs>[];
+    strategies: Prisma.$ProjectStrategyPayload<ExtArgs>[];
+    targetGroups: Prisma.$ProjectTargetGroupPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -6517,7 +6517,6 @@ export type $ProjectPayload<
       implementationPlan: string | null;
       serviceType: string | null;
       participantCount: number | null;
-      participantDetails: string | null;
       venue: string | null;
       committee: string | null;
       expectedBenefits: string | null;
@@ -6534,6 +6533,7 @@ export type $ProjectPayload<
       expenseReserve: runtime.Decimal | null;
       note2: boolean;
       note3: boolean;
+      participantDetails: string | null;
     },
     ExtArgs["result"]["project"]
   >;
@@ -7084,19 +7084,16 @@ export interface Prisma__ProjectClient<
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise";
-  leader<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>,
-  ): Prisma.Prisma__UserClient<
+  incomeItems<T extends Prisma.Project$incomeItemsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Project$incomeItemsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
-        Prisma.$UserPayload<ExtArgs>,
+        Prisma.$IncomeItemPayload<ExtArgs>,
         T,
-        "findUniqueOrThrow",
+        "findMany",
         GlobalOmitOptions
       >
-    | Null,
-    Null,
-    ExtArgs,
-    GlobalOmitOptions
+    | Null
   >;
   coLeader<T extends Prisma.Project$coLeaderArgs<ExtArgs> = {}>(
     args?: Prisma.Subset<T, Prisma.Project$coLeaderArgs<ExtArgs>>,
@@ -7111,38 +7108,19 @@ export interface Prisma__ProjectClient<
     ExtArgs,
     GlobalOmitOptions
   >;
-  targetGroups<T extends Prisma.Project$targetGroupsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Project$targetGroupsArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
+  leader<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>,
+  ): Prisma.Prisma__UserClient<
     | runtime.Types.Result.GetResult<
-        Prisma.$ProjectTargetGroupPayload<ExtArgs>,
+        Prisma.$UserPayload<ExtArgs>,
         T,
-        "findMany",
+        "findUniqueOrThrow",
         GlobalOmitOptions
       >
-    | Null
-  >;
-  strategies<T extends Prisma.Project$strategiesArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Project$strategiesArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$ProjectStrategyPayload<ExtArgs>,
-        T,
-        "findMany",
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  incomeItems<T extends Prisma.Project$incomeItemsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Project$incomeItemsArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$IncomeItemPayload<ExtArgs>,
-        T,
-        "findMany",
-        GlobalOmitOptions
-      >
-    | Null
+    | Null,
+    Null,
+    ExtArgs,
+    GlobalOmitOptions
   >;
   collaborators<T extends Prisma.Project$collaboratorsArgs<ExtArgs> = {}>(
     args?: Prisma.Subset<T, Prisma.Project$collaboratorsArgs<ExtArgs>>,
@@ -7160,6 +7138,28 @@ export interface Prisma__ProjectClient<
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$ProjectManagerPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  strategies<T extends Prisma.Project$strategiesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Project$strategiesArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ProjectStrategyPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  targetGroups<T extends Prisma.Project$targetGroupsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Project$targetGroupsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ProjectTargetGroupPayload<ExtArgs>,
         T,
         "findMany",
         GlobalOmitOptions
@@ -7228,7 +7228,6 @@ export interface ProjectFieldRefs {
   readonly implementationPlan: Prisma.FieldRef<"Project", "String">;
   readonly serviceType: Prisma.FieldRef<"Project", "String">;
   readonly participantCount: Prisma.FieldRef<"Project", "Int">;
-  readonly participantDetails: Prisma.FieldRef<"Project", "String">;
   readonly venue: Prisma.FieldRef<"Project", "String">;
   readonly committee: Prisma.FieldRef<"Project", "String">;
   readonly expectedBenefits: Prisma.FieldRef<"Project", "String">;
@@ -7245,6 +7244,7 @@ export interface ProjectFieldRefs {
   readonly expenseReserve: Prisma.FieldRef<"Project", "Decimal">;
   readonly note2: Prisma.FieldRef<"Project", "Boolean">;
   readonly note3: Prisma.FieldRef<"Project", "Boolean">;
+  readonly participantDetails: Prisma.FieldRef<"Project", "String">;
 }
 
 // Custom InputTypes
@@ -7706,90 +7706,6 @@ export type ProjectDeleteManyArgs<
 };
 
 /**
- * Project.coLeader
- */
-export type Project$coLeaderArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null;
-  where?: Prisma.UserWhereInput;
-};
-
-/**
- * Project.targetGroups
- */
-export type Project$targetGroupsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the ProjectTargetGroup
-   */
-  select?: Prisma.ProjectTargetGroupSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the ProjectTargetGroup
-   */
-  omit?: Prisma.ProjectTargetGroupOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProjectTargetGroupInclude<ExtArgs> | null;
-  where?: Prisma.ProjectTargetGroupWhereInput;
-  orderBy?:
-    | Prisma.ProjectTargetGroupOrderByWithRelationInput
-    | Prisma.ProjectTargetGroupOrderByWithRelationInput[];
-  cursor?: Prisma.ProjectTargetGroupWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?:
-    | Prisma.ProjectTargetGroupScalarFieldEnum
-    | Prisma.ProjectTargetGroupScalarFieldEnum[];
-};
-
-/**
- * Project.strategies
- */
-export type Project$strategiesArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the ProjectStrategy
-   */
-  select?: Prisma.ProjectStrategySelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the ProjectStrategy
-   */
-  omit?: Prisma.ProjectStrategyOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProjectStrategyInclude<ExtArgs> | null;
-  where?: Prisma.ProjectStrategyWhereInput;
-  orderBy?:
-    | Prisma.ProjectStrategyOrderByWithRelationInput
-    | Prisma.ProjectStrategyOrderByWithRelationInput[];
-  cursor?: Prisma.ProjectStrategyWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?:
-    | Prisma.ProjectStrategyScalarFieldEnum
-    | Prisma.ProjectStrategyScalarFieldEnum[];
-};
-
-/**
  * Project.incomeItems
  */
 export type Project$incomeItemsArgs<
@@ -7818,6 +7734,28 @@ export type Project$incomeItemsArgs<
   distinct?:
     | Prisma.IncomeItemScalarFieldEnum
     | Prisma.IncomeItemScalarFieldEnum[];
+};
+
+/**
+ * Project.coLeader
+ */
+export type Project$coLeaderArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null;
+  where?: Prisma.UserWhereInput;
 };
 
 /**
@@ -7880,6 +7818,68 @@ export type Project$managersArgs<
   distinct?:
     | Prisma.ProjectManagerScalarFieldEnum
     | Prisma.ProjectManagerScalarFieldEnum[];
+};
+
+/**
+ * Project.strategies
+ */
+export type Project$strategiesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ProjectStrategy
+   */
+  select?: Prisma.ProjectStrategySelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the ProjectStrategy
+   */
+  omit?: Prisma.ProjectStrategyOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectStrategyInclude<ExtArgs> | null;
+  where?: Prisma.ProjectStrategyWhereInput;
+  orderBy?:
+    | Prisma.ProjectStrategyOrderByWithRelationInput
+    | Prisma.ProjectStrategyOrderByWithRelationInput[];
+  cursor?: Prisma.ProjectStrategyWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.ProjectStrategyScalarFieldEnum
+    | Prisma.ProjectStrategyScalarFieldEnum[];
+};
+
+/**
+ * Project.targetGroups
+ */
+export type Project$targetGroupsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ProjectTargetGroup
+   */
+  select?: Prisma.ProjectTargetGroupSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the ProjectTargetGroup
+   */
+  omit?: Prisma.ProjectTargetGroupOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectTargetGroupInclude<ExtArgs> | null;
+  where?: Prisma.ProjectTargetGroupWhereInput;
+  orderBy?:
+    | Prisma.ProjectTargetGroupOrderByWithRelationInput
+    | Prisma.ProjectTargetGroupOrderByWithRelationInput[];
+  cursor?: Prisma.ProjectTargetGroupWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.ProjectTargetGroupScalarFieldEnum
+    | Prisma.ProjectTargetGroupScalarFieldEnum[];
 };
 
 /**
