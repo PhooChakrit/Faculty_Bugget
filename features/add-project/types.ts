@@ -21,6 +21,12 @@ export interface Participant {
   details: string;
 }
 
+export interface CustomIncomeCategory {
+  id: number;
+  categoryName: string;
+  items: IncomeItem[];
+}
+
 export interface FormData {
   receiptNumber: string;
   projectNameThai: string;
@@ -58,6 +64,7 @@ export interface FormData {
   expenseUtilities: string;
   expenseSubsidy: string;
   expenseReserve: string;
+  customIncomeCategories?: CustomIncomeCategory[];
 }
 
 export interface Notes {

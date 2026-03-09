@@ -40,6 +40,7 @@ export type IncomeItemMinAggregateOutputType = {
   type: $Enums.IncomeType | null;
   name: string | null;
   amount: runtime.Decimal | null;
+  categoryName: string | null;
   createdAt: Date | null;
 };
 
@@ -49,6 +50,7 @@ export type IncomeItemMaxAggregateOutputType = {
   type: $Enums.IncomeType | null;
   name: string | null;
   amount: runtime.Decimal | null;
+  categoryName: string | null;
   createdAt: Date | null;
 };
 
@@ -58,6 +60,7 @@ export type IncomeItemCountAggregateOutputType = {
   type: number;
   name: number;
   amount: number;
+  categoryName: number;
   createdAt: number;
   _all: number;
 };
@@ -76,6 +79,7 @@ export type IncomeItemMinAggregateInputType = {
   type?: true;
   name?: true;
   amount?: true;
+  categoryName?: true;
   createdAt?: true;
 };
 
@@ -85,6 +89,7 @@ export type IncomeItemMaxAggregateInputType = {
   type?: true;
   name?: true;
   amount?: true;
+  categoryName?: true;
   createdAt?: true;
 };
 
@@ -94,6 +99,7 @@ export type IncomeItemCountAggregateInputType = {
   type?: true;
   name?: true;
   amount?: true;
+  categoryName?: true;
   createdAt?: true;
   _all?: true;
 };
@@ -197,6 +203,7 @@ export type IncomeItemGroupByOutputType = {
   type: $Enums.IncomeType;
   name: string;
   amount: runtime.Decimal;
+  categoryName: string | null;
   createdAt: Date;
   _count: IncomeItemCountAggregateOutputType | null;
   _avg: IncomeItemAvgAggregateOutputType | null;
@@ -232,6 +239,7 @@ export type IncomeItemWhereInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?: Prisma.StringNullableFilter<"IncomeItem"> | string | null;
   createdAt?: Prisma.DateTimeFilter<"IncomeItem"> | Date | string;
   project?: Prisma.XOR<
     Prisma.ProjectScalarRelationFilter,
@@ -245,6 +253,7 @@ export type IncomeItemOrderByWithRelationInput = {
   type?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   amount?: Prisma.SortOrder;
+  categoryName?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   project?: Prisma.ProjectOrderByWithRelationInput;
 };
@@ -264,6 +273,7 @@ export type IncomeItemWhereUniqueInput = Prisma.AtLeast<
       | runtime.DecimalJsLike
       | number
       | string;
+    categoryName?: Prisma.StringNullableFilter<"IncomeItem"> | string | null;
     createdAt?: Prisma.DateTimeFilter<"IncomeItem"> | Date | string;
     project?: Prisma.XOR<
       Prisma.ProjectScalarRelationFilter,
@@ -279,6 +289,7 @@ export type IncomeItemOrderByWithAggregationInput = {
   type?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   amount?: Prisma.SortOrder;
+  categoryName?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   _count?: Prisma.IncomeItemCountOrderByAggregateInput;
   _avg?: Prisma.IncomeItemAvgOrderByAggregateInput;
@@ -307,6 +318,10 @@ export type IncomeItemScalarWhereWithAggregatesInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?:
+    | Prisma.StringNullableWithAggregatesFilter<"IncomeItem">
+    | string
+    | null;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"IncomeItem"> | Date | string;
 };
 
@@ -315,6 +330,7 @@ export type IncomeItemCreateInput = {
   type: $Enums.IncomeType;
   name: string;
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  categoryName?: string | null;
   createdAt?: Date | string;
   project: Prisma.ProjectCreateNestedOneWithoutIncomeItemsInput;
 };
@@ -325,6 +341,7 @@ export type IncomeItemUncheckedCreateInput = {
   type: $Enums.IncomeType;
   name: string;
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  categoryName?: string | null;
   createdAt?: Date | string;
 };
 
@@ -338,6 +355,10 @@ export type IncomeItemUpdateInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   project?: Prisma.ProjectUpdateOneRequiredWithoutIncomeItemsNestedInput;
 };
@@ -353,6 +374,10 @@ export type IncomeItemUncheckedUpdateInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -362,6 +387,7 @@ export type IncomeItemCreateManyInput = {
   type: $Enums.IncomeType;
   name: string;
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  categoryName?: string | null;
   createdAt?: Date | string;
 };
 
@@ -375,6 +401,10 @@ export type IncomeItemUpdateManyMutationInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -389,6 +419,10 @@ export type IncomeItemUncheckedUpdateManyInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -408,6 +442,7 @@ export type IncomeItemCountOrderByAggregateInput = {
   type?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   amount?: Prisma.SortOrder;
+  categoryName?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
 };
 
@@ -421,6 +456,7 @@ export type IncomeItemMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   amount?: Prisma.SortOrder;
+  categoryName?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
 };
 
@@ -430,6 +466,7 @@ export type IncomeItemMinOrderByAggregateInput = {
   type?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   amount?: Prisma.SortOrder;
+  categoryName?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
 };
 
@@ -560,6 +597,7 @@ export type IncomeItemCreateWithoutProjectInput = {
   type: $Enums.IncomeType;
   name: string;
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  categoryName?: string | null;
   createdAt?: Date | string;
 };
 
@@ -568,6 +606,7 @@ export type IncomeItemUncheckedCreateWithoutProjectInput = {
   type: $Enums.IncomeType;
   name: string;
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  categoryName?: string | null;
   createdAt?: Date | string;
 };
 
@@ -628,6 +667,7 @@ export type IncomeItemScalarWhereInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?: Prisma.StringNullableFilter<"IncomeItem"> | string | null;
   createdAt?: Prisma.DateTimeFilter<"IncomeItem"> | Date | string;
 };
 
@@ -636,6 +676,7 @@ export type IncomeItemCreateManyProjectInput = {
   type: $Enums.IncomeType;
   name: string;
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  categoryName?: string | null;
   createdAt?: Date | string;
 };
 
@@ -649,6 +690,10 @@ export type IncomeItemUpdateWithoutProjectInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -662,6 +707,10 @@ export type IncomeItemUncheckedUpdateWithoutProjectInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -675,6 +724,10 @@ export type IncomeItemUncheckedUpdateManyWithoutProjectInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  categoryName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
@@ -688,6 +741,7 @@ export type IncomeItemSelect<
     type?: boolean;
     name?: boolean;
     amount?: boolean;
+    categoryName?: boolean;
     createdAt?: boolean;
     project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>;
   },
@@ -704,6 +758,7 @@ export type IncomeItemSelectCreateManyAndReturn<
     type?: boolean;
     name?: boolean;
     amount?: boolean;
+    categoryName?: boolean;
     createdAt?: boolean;
     project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>;
   },
@@ -720,6 +775,7 @@ export type IncomeItemSelectUpdateManyAndReturn<
     type?: boolean;
     name?: boolean;
     amount?: boolean;
+    categoryName?: boolean;
     createdAt?: boolean;
     project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>;
   },
@@ -732,6 +788,7 @@ export type IncomeItemSelectScalar = {
   type?: boolean;
   name?: boolean;
   amount?: boolean;
+  categoryName?: boolean;
   createdAt?: boolean;
 };
 
@@ -739,7 +796,13 @@ export type IncomeItemOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  "id" | "projectId" | "type" | "name" | "amount" | "createdAt",
+  | "id"
+  | "projectId"
+  | "type"
+  | "name"
+  | "amount"
+  | "categoryName"
+  | "createdAt",
   ExtArgs["result"]["incomeItem"]
 >;
 export type IncomeItemInclude<
@@ -776,6 +839,7 @@ export type $IncomeItemPayload<
       type: $Enums.IncomeType;
       name: string;
       amount: runtime.Decimal;
+      categoryName: string | null;
       createdAt: Date;
     },
     ExtArgs["result"]["incomeItem"]
@@ -1388,6 +1452,7 @@ export interface IncomeItemFieldRefs {
   readonly type: Prisma.FieldRef<"IncomeItem", "IncomeType">;
   readonly name: Prisma.FieldRef<"IncomeItem", "String">;
   readonly amount: Prisma.FieldRef<"IncomeItem", "Decimal">;
+  readonly categoryName: Prisma.FieldRef<"IncomeItem", "String">;
   readonly createdAt: Prisma.FieldRef<"IncomeItem", "DateTime">;
 }
 

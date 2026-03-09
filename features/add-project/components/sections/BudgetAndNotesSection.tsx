@@ -1,3 +1,4 @@
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,7 +43,16 @@ export function BudgetAndNotesSection({
       (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
       0,
     );
-    return (supportTotal + registrationTotal).toFixed(2);
+    const customTotal = (formData.customIncomeCategories || []).reduce(
+      (sum: number, cat) =>
+        sum +
+        cat.items.reduce(
+          (itemSum, item) => itemSum + Number(item.amount || 0),
+          0,
+        ),
+      0,
+    );
+    return (supportTotal + registrationTotal + customTotal).toFixed(2);
   };
 
   const calculateExpenseTotal = () => {
@@ -122,6 +132,88 @@ export function BudgetAndNotesSection({
       ...prev,
       incomeRegistrationItems: prev.incomeRegistrationItems.map((item) =>
         item.id === id ? { ...item, [field]: value } : item,
+      ),
+    }));
+  };
+
+  // Custom Income Categories handlers
+  const addCustomIncomeCategory = () => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: [
+        ...(prev.customIncomeCategories || []),
+        {
+          id: Date.now(),
+          categoryName: "",
+          items: [{ id: Date.now() + 1, name: "", amount: "" }],
+        },
+      ],
+    }));
+  };
+
+  const removeCustomIncomeCategory = (categoryId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).filter(
+        (cat) => cat.id !== categoryId,
+      ),
+    }));
+  };
+
+  const updateCustomIncomeCategoryName = (
+    categoryId: number,
+    value: string,
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).map((cat) =>
+        cat.id === categoryId ? { ...cat, categoryName: value } : cat,
+      ),
+    }));
+  };
+
+  const addCustomIncomeItem = (categoryId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).map((cat) =>
+        cat.id === categoryId
+          ? {
+              ...cat,
+              items: [...cat.items, { id: Date.now(), name: "", amount: "" }],
+            }
+          : cat,
+      ),
+    }));
+  };
+
+  const removeCustomIncomeItem = (categoryId: number, itemId: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).map((cat) =>
+        cat.id === categoryId
+          ? { ...cat, items: cat.items.filter((item) => item.id !== itemId) }
+          : cat,
+      ),
+    }));
+  };
+
+  const updateCustomIncomeItem = (
+    categoryId: number,
+    itemId: number,
+    field: keyof IncomeItem,
+    value: string,
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      customIncomeCategories: (prev.customIncomeCategories || []).map((cat) =>
+        cat.id === categoryId
+          ? {
+              ...cat,
+              items: cat.items.map((item) =>
+                item.id === itemId ? { ...item, [field]: value } : item,
+              ),
+            }
+          : cat,
       ),
     }));
   };
@@ -350,6 +442,120 @@ export function BudgetAndNotesSection({
                     </td>
                   </tr>
                 ))}
+
+                {/* Custom Income Categories */}
+                {formData.customIncomeCategories?.map((category) => (
+                  <React.Fragment key={category.id}>
+                    <tr className="bg-gray-50 border-t">
+                      <td colSpan={3} className="p-3 font-medium text-gray-700">
+                        <div className="flex justify-between items-center gap-4">
+                          <Input
+                            placeholder="ระบุชื่อหัวข้อย่อย"
+                            value={category.categoryName}
+                            onChange={(e) =>
+                              updateCustomIncomeCategoryName(
+                                category.id,
+                                e.target.value,
+                              )
+                            }
+                            className="max-w-md bg-white border-blue-200 focus-visible:ring-blue-500"
+                          />
+                          <div className="flex gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addCustomIncomeItem(category.id)}
+                            >
+                              <Plus className="w-4 h-4 mr-2" />
+                              เพิ่มรายการ
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() =>
+                                removeCustomIncomeCategory(category.id)
+                              }
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    {category.items.map((item, index) => (
+                      <tr key={item.id}>
+                        <td className="p-3 pl-6">
+                          <div className="flex items-center gap-3">
+                            <span className="text-muted-foreground w-6">
+                              {index + 1}.
+                            </span>
+                            <Input
+                              placeholder="ระบุรายละเอียด"
+                              value={item.name}
+                              onChange={(e) =>
+                                updateCustomIncomeItem(
+                                  category.id,
+                                  item.id,
+                                  "name",
+                                  e.target.value,
+                                )
+                              }
+                              className="flex-1"
+                            />
+                          </div>
+                        </td>
+                        <td className="p-3">
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            value={item.amount}
+                            onChange={(e) =>
+                              updateCustomIncomeItem(
+                                category.id,
+                                item.id,
+                                "amount",
+                                e.target.value,
+                              )
+                            }
+                          />
+                        </td>
+                        <td className="p-3">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() =>
+                              removeCustomIncomeItem(category.id, item.id)
+                            }
+                            disabled={category.items.length <= 1}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                ))}
+
+                {/* Button to add custom category */}
+                <tr>
+                  <td colSpan={3} className="p-3 text-center border-t">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addCustomIncomeCategory}
+                      className="w-full border-dashed text-slate-600 hover:bg-slate-50"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      สร้างหัวข้อย่อยรายรับใหม่
+                    </Button>
+                  </td>
+                </tr>
 
                 <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมประมาณการรายรับ</td>

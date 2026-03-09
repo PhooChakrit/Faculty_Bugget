@@ -57,9 +57,10 @@ export const createProjectSchema = z.object({
   incomeItems: z
     .array(
       z.object({
-        type: z.enum(["SUPPORT", "REGISTRATION"]),
+        type: z.enum(["SUPPORT", "REGISTRATION", "OTHER"]),
         name: z.string(),
         amount: z.number(),
+        categoryName: z.string().optional(),
       }),
     )
     .optional(),

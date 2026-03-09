@@ -23,6 +23,7 @@ export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus];
 export const IncomeType = {
   SUPPORT: "SUPPORT",
   REGISTRATION: "REGISTRATION",
+  OTHER: "OTHER",
 } as const;
 
 export type IncomeType = (typeof IncomeType)[keyof typeof IncomeType];

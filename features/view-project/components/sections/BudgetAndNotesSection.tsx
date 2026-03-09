@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Check } from "lucide-react";
@@ -39,7 +40,16 @@ export function BudgetAndNotesSection({
       (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
       0,
     );
-    return supportTotal + registrationTotal;
+    const customTotal = (formData.customIncomeCategories || []).reduce(
+      (sum: number, cat) =>
+        sum +
+        cat.items.reduce(
+          (itemSum, item) => itemSum + Number(item.amount || 0),
+          0,
+        ),
+      0,
+    );
+    return supportTotal + registrationTotal + customTotal;
   };
 
   const calculateExpenseTotal = () => {
@@ -158,6 +168,25 @@ export function BudgetAndNotesSection({
                       {formatCurrency(item.amount)}
                     </td>
                   </tr>
+                ))}
+
+                {/* Custom Income Categories */}
+                {formData.customIncomeCategories?.map((category) => (
+                  <React.Fragment key={category.id}>
+                    <tr className="border-t bg-gray-50">
+                      <td colSpan={2} className="p-3 font-medium text-gray-700">
+                        {category.categoryName || "หมวดหมู่อื่นๆ"}
+                      </td>
+                    </tr>
+                    {category.items.map((item) => (
+                      <tr key={item.id} className="border-t">
+                        <td className="p-3 pl-6">{item.name || "-"}</td>
+                        <td className="p-3 text-right">
+                          {formatCurrency(item.amount)}
+                        </td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
                 ))}
 
                 <tr className="border-t bg-muted font-medium">

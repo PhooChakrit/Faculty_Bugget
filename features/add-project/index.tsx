@@ -61,6 +61,7 @@ const defaultFormValues: FormData = {
   budgetSourceInternal: "",
   incomeSupportItems: [{ id: 1, name: "", amount: "" }],
   incomeRegistrationItems: [{ id: 1, name: "", amount: "" }],
+  customIncomeCategories: [],
   expenseRemuneration: "",
   expenseSupplies: "",
   expenseMaterials: "",
@@ -203,6 +204,14 @@ export default function AddProjectPage() {
             name: item.name,
             amount: parseFloat(item.amount || "0"),
           })),
+          ...(validatedData.customIncomeCategories || []).flatMap((category) =>
+            category.items.map((item) => ({
+              type: "OTHER" as const,
+              name: item.name,
+              amount: parseFloat(item.amount || "0"),
+              categoryName: category.categoryName,
+            })),
+          ),
         ].filter((item) => item.name && item.amount > 0),
 
         // Map collaborators
@@ -394,7 +403,7 @@ export default function AddProjectPage() {
                           committee: "คณะกรรมการทดสอบระบบ",
                           expectedBenefits: "ระบบทำงานได้อย่างถูกต้องและแม่นยำ",
                           projectEvaluation: "แบบประเมินความพึงพอใจ",
-                          budgetSourceExtGov: "50000",
+                          budgetSourceExtGov: "100000",
                           budgetSourceExtPrivate: "0",
                           budgetSourceExtForeign: "0",
                           budgetSourceInternal: "0",
@@ -402,22 +411,35 @@ export default function AddProjectPage() {
                             {
                               id: 1,
                               name: "เงินอุดหนุนวิจัย",
-                              amount: "50000",
+                              amount: "30000",
                             },
                           ],
                           incomeRegistrationItems: [
                             {
                               id: 1,
                               name: "ค่าลงทะเบียนนิสิต",
-                              amount: "10000",
+                              amount: "20000",
                             },
                           ],
-                          expenseRemuneration: "20000",
-                          expenseSupplies: "10000",
-                          expenseMaterials: "5000",
-                          expenseUtilities: "2000",
-                          expenseSubsidy: "5000",
-                          expenseReserve: "8000",
+                          customIncomeCategories: [
+                            {
+                              id: 1,
+                              categoryName: "รายได้จากการให้บริการอื่นๆ",
+                              items: [
+                                {
+                                  id: 1,
+                                  name: "ค่าที่ปรึกษาโครงการ",
+                                  amount: "50000",
+                                },
+                              ],
+                            },
+                          ],
+                          expenseRemuneration: "40000",
+                          expenseSupplies: "20000",
+                          expenseMaterials: "10000",
+                          expenseUtilities: "10000",
+                          expenseSubsidy: "10000",
+                          expenseReserve: "10000",
                         };
                         methods.reset(dummyData);
                         setCollaborators([{ id: 1, name: "นายสมชาย ใจดี" }]);
