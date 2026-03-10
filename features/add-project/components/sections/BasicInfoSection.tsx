@@ -10,10 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { FormData, Collaborator } from "../../types";
 import { Separator } from "@/components/ui/separator";
+import { format } from "date-fns";
 
 interface BasicInfoSectionProps {
   formData: FormData;
@@ -49,27 +50,23 @@ export function BasicInfoSection({
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="projectNameThai">
-            ชื่อโครงการ (ภาษาไทย) <span className="text-red-500">*</span>
+            ชื่อโครงการภาษาไทย <span className="text-red-500">*</span>
           </Label>
           <Input
             id="projectNameThai"
             name="projectNameThai"
             value={formData.projectNameThai}
             onChange={handleChange}
-            placeholder="ชื่อโครงการภาษาไทย"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="projectNameEng">
-            ชื่อโครงการภาษาอังกฤษ <span className="text-red-500">*</span>
-          </Label>
+          <Label htmlFor="projectNameEng">ชื่อโครงการภาษาอังกฤษ</Label>
           <Input
             id="projectNameEng"
             name="projectNameEng"
             value={formData.projectNameEng}
             onChange={handleChange}
-            placeholder="ชื่อโครงการภาษาอังกฤษ"
           />
         </div>
 
@@ -83,7 +80,6 @@ export function BasicInfoSection({
               name="leaderName"
               value={formData.leaderName}
               onChange={handleChange}
-              placeholder="ชื่อ นามสกุล"
             />
           </div>
           <div className="space-y-2">
@@ -93,7 +89,6 @@ export function BasicInfoSection({
               name="leaderPosition"
               value={formData.leaderPosition}
               onChange={handleChange}
-              placeholder="ตำแหน่งหน้าที่"
             />
           </div>
         </div>
@@ -107,7 +102,26 @@ export function BasicInfoSection({
             type="email"
             value={formData.leaderEmail}
             onChange={handleChange}
-            placeholder="email@example.com"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="coLeaderName">ชื่อผู้ประสานโครงการ</Label>
+          <Input
+            id="coLeaderName"
+            name="coLeaderName"
+            type="text"
+            value={formData.coLeaderName}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="coLeaderEmail">อีเมลผู้ประสานโครงการ</Label>
+          <Input
+            id="coLeaderEmail"
+            name="coLeaderEmail"
+            type="email"
+            value={formData.coLeaderEmail}
+            onChange={handleChange}
           />
         </div>
         <div className="space-y-2">
@@ -121,7 +135,7 @@ export function BasicInfoSection({
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="เลือกหน่วยงาน..." />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {departmentOptions.map((opt) => (
@@ -132,11 +146,22 @@ export function BasicInfoSection({
             </SelectContent>
           </Select>
         </div>
+        <div className="flex justify-between items-center mt-4">
+          <Label>ร่วมกับ (ถ้ามี)</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addCollaborator}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            เพิ่มผู้ร่วมงาน
+          </Button>
+        </div>
         {collaborators.map((collab, index) => (
           <div key={collab.id} className="flex items-center gap-3">
             <span className="text-muted-foreground w-6">{index + 1}.</span>
             <Input
-              placeholder="ชื่อหน่วยงาน"
               value={collab.name}
               onChange={(e) => {
                 const newData = [...collaborators];
@@ -147,56 +172,57 @@ export function BasicInfoSection({
             />
             <Button
               type="button"
-              variant="destructive"
+              variant="ghost"
               size="icon"
               onClick={() => removeCollaborator(collab.id)}
+              disabled={collaborators.length <= 1}
+              className="text-red-500 hover:text-red-700 hover:bg-red-50"
             >
-              <Minus className="w-4 h-4" />
+              <Trash2 className="w-4 h-4" />
             </Button>
           </div>
         ))}
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={addCollaborator}
-          className="bg-green-600 text-white hover:bg-green-700"
-        >
-          <Plus className="w-4 h-4" />
-        </Button>
 
         <Separator />
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="startDate">
-              วันที่เริ่มต้น <span className="text-red-500">*</span>
-            </Label>
-            <DatePicker
-              value={
-                formData.startDate ? new Date(formData.startDate) : undefined
-              }
-              onChange={(date) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  startDate: date ? date.toISOString().split("T")[0] : "",
-                }))
-              }
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="endDate">
-              วันที่สิ้นสุด <span className="text-red-500">*</span>
-            </Label>
-            <DatePicker
-              value={formData.endDate ? new Date(formData.endDate) : undefined}
-              onChange={(date) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  endDate: date ? date.toISOString().split("T")[0] : "",
-                }))
-              }
-            />
+        <div className="space-y-2">
+          <Label>
+            วันที่จัดโครงการ <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div id="startDate" className="flex-1 w-full flex">
+              <DatePicker
+                className="flex-1 w-full"
+                placeholder="เลือกวันที่เริ่มต้น"
+                value={
+                  formData.startDate ? new Date(formData.startDate) : undefined
+                }
+                onChange={(date) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    startDate: date ? format(date, "yyyy-MM-dd") : "",
+                  }))
+                }
+              />
+            </div>
+            <span className="text-sm whitespace-nowrap text-muted-foreground w-full sm:w-auto text-center">
+              ถึง
+            </span>
+            <div id="endDate" className="flex-1 w-full flex">
+              <DatePicker
+                className="flex-1 w-full"
+                placeholder="เลือกวันที่สิ้นสุด"
+                value={
+                  formData.endDate ? new Date(formData.endDate) : undefined
+                }
+                onChange={(date) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    endDate: date ? format(date, "yyyy-MM-dd") : "",
+                  }))
+                }
+              />
+            </div>
           </div>
         </div>
 
@@ -209,7 +235,6 @@ export function BasicInfoSection({
             name="background"
             value={formData.background}
             onChange={handleChange}
-            placeholder="อธิบายความเป็นมาและเหตุผลของโครงการ"
             rows={4}
           />
         </div>
@@ -223,7 +248,6 @@ export function BasicInfoSection({
             name="objectives"
             value={formData.objectives}
             onChange={handleChange}
-            placeholder="ระบุวัตถุประสงค์ของโครงการ"
             rows={3}
           />
         </div>
@@ -235,32 +259,31 @@ export function BasicInfoSection({
             name="scope"
             value={formData.scope}
             onChange={handleChange}
-            placeholder="ระบุขอบเขตการดำเนินการ"
             rows={3}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="implementationPlan">แผนการดำเนินการ</Label>
+          <Label htmlFor="implementationPlan">ขั้นตอนการดำเนินการ</Label>
           <Textarea
             id="implementationPlan"
             name="implementationPlan"
             value={formData.implementationPlan}
             onChange={handleChange}
-            placeholder="ระบุแผนการดำเนินการ"
             rows={3}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="projectDetails">รายละเอียดโครงการ</Label>
+          <Label htmlFor="projectDetails">
+            รายละเอียดโครงการ <span className="text-red-500">*</span>
+          </Label>
           <p className="text-sm text-muted-foreground">ไม่เกิน 200 ตัวอักษร</p>
           <Textarea
             id="projectDetails"
             name="projectDetails"
             value={formData.projectDetails}
             onChange={handleChange}
-            placeholder="รายละเอียดโครงการโดยย่อ"
             maxLength={200}
             rows={3}
           />

@@ -13,8 +13,6 @@ import {
   Table as TableIcon,
   X,
   Search,
-  Filter,
-  Lock,
   Unlock,
   Eye,
   FileEdit,
@@ -439,7 +437,7 @@ export default function ProjectTrackingPage() {
         );
 
         setEditingMeetings(null);
-      } catch (error) {
+      } catch {
         alert("Error saving meetings");
       }
     }

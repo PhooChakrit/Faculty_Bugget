@@ -1,19 +1,253 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
-import { Collaborator, FormData, Notes } from "../add-project/types";
+import { ArrowLeft } from "lucide-react";
+import { Collaborator, FormData, Notes, Manager } from "../add-project/types";
 
 // Import Sections
 import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
-import { BudgetSourcesSection } from "./components/sections/BudgetSourcesSection";
-import { BudgetTableSection } from "./components/sections/BudgetTableSection";
-import { NotesSection } from "./components/sections/NotesSection";
+import { ProjectDetailsSection } from "./components/sections/ProjectDetailsSection";
+import { BudgetAndNotesSection } from "./components/sections/BudgetAndNotesSection";
 
-// Options for dropdowns
+import { ManagersSection } from "./components/sections/ManagersSection";
+
+// ... options remain ...
+
+export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
+  const router = useRouter();
+  const [formData, setFormData] = useState<FormData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Lookup data / relations
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
+  const [managers, setManagers] = useState<Manager[]>([]);
+  const [notes, setNotes] = useState<Notes>({
+    note2: false,
+    note3: false,
+  });
+
+  useEffect(() => {
+    // If no projectId, we fetch the latest one. No early return needed.
+
+    const fetchProject = async () => {
+      try {
+        setLoading(true);
+        const { projectService } = await import("@/services/projectService");
+
+        let project;
+        if (projectId) {
+          project = await projectService.getProject(projectId);
+        } else {
+          project = await projectService.getLatestProject();
+        }
+
+        if (!project) {
+          setError("ไม่พบข้อมูลโครงการ");
+          setLoading(false);
+          return;
+        }
+
+        // Transform API response to FormData
+        const mappedData: FormData = {
+          // ... previous fields ...
+          receiptNumber: project.receiptNumber || "",
+          projectNameThai: project.projectNameThai,
+          projectNameEng: project.projectNameEng || "",
+          leaderName: project.leader?.name || "",
+          leaderPosition: project.leaderPosition,
+          department: project.department,
+          leaderEmail: project.leader?.email || "",
+          coLeaderName: project.coLeader?.name || "",
+          coLeaderEmail: project.coLeader?.email || "",
+          startDate: project.startDate?.split("T")[0] || "",
+          endDate: project.endDate?.split("T")[0] || "",
+          background: project.background || "",
+          projectDetails: project.projectDetails || "",
+          objectives: project.objectives || "",
+          scope: project.scope || "",
+          implementationPlan: project.implementationPlan || "",
+          serviceType: project.serviceType || "",
+          targetGroups:
+            project.targetGroups?.map(
+              (tg: { targetGroupId: string }) => tg.targetGroupId,
+            ) || [],
+          strategies:
+            project.strategies?.map(
+              (s: { strategyId: string }) => s.strategyId,
+            ) || [],
+          participants: [
+            {
+              id: 1,
+              count: project.participantCount?.toString() || "",
+              details: project.participantDetails || "",
+            },
+          ],
+          venue: project.venue || "",
+          committee: project.committee || "",
+          expectedBenefits: project.expectedBenefits || "",
+          projectEvaluation: project.projectEvaluation || "",
+
+          budgetSourceExtGov: project.budgetSourceExtGov?.toString() || "",
+          budgetSourceExtPrivate:
+            project.budgetSourceExtPrivate?.toString() || "",
+          budgetSourceExtForeign:
+            project.budgetSourceExtForeign?.toString() || "",
+          budgetSourceInternal: project.budgetSourceInternal?.toString() || "",
+
+          incomeSupportItems: project.incomeItems
+            .filter((i: { type: string }) => i.type === "SUPPORT")
+            .map((i: { id: string; name: string; amount: number }) => ({
+              id: i.id,
+              name: i.name,
+              amount: i.amount.toString(),
+            })),
+
+          incomeRegistrationItems: project.incomeItems
+            .filter((i: { type: string }) => i.type === "REGISTRATION")
+            .map((i: { id: string; name: string; amount: number }) => ({
+              id: i.id,
+              name: i.name,
+              amount: i.amount.toString(),
+            })),
+
+          customIncomeCategories: Object.values(
+            project.incomeItems
+              .filter((i: { type: string }) => i.type === "OTHER")
+              .reduce(
+                (
+                  acc: Record<
+                    string,
+                    {
+                      id: number;
+                      categoryName: string;
+                      items: { id: string; name: string; amount: string }[];
+                    }
+                  >,
+                  item: {
+                    type: string;
+                    categoryName?: string;
+                    id: string;
+                    name: string;
+                    amount: number;
+                  },
+                ) => {
+                  const catName = item.categoryName || "หมวดหมู่อื่นๆ";
+                  if (!acc[catName]) {
+                    acc[catName] = {
+                      id: Date.now() + Math.random(),
+                      categoryName: catName,
+                      items: [],
+                    };
+                  }
+                  acc[catName].items.push({
+                    id: item.id,
+                    name: item.name,
+                    amount: item.amount.toString(),
+                  });
+                  return acc;
+                },
+                {} as Record<
+                  string,
+                  {
+                    id: number;
+                    categoryName: string;
+                    items: { id: string; name: string; amount: string }[];
+                  }
+                >,
+              ),
+          ),
+
+          expenseRemuneration: project.expenseRemuneration?.toString() || "",
+          expenseSupplies: project.expenseSupplies?.toString() || "",
+          expenseMaterials: project.expenseMaterials?.toString() || "",
+          expenseUtilities: project.expenseUtilities?.toString() || "",
+          expenseSubsidy: project.expenseSubsidy?.toString() || "",
+          expenseReserve: project.expenseReserve?.toString() || "",
+        };
+
+        setFormData(mappedData);
+        setCollaborators(project.collaborators || []);
+        setManagers(project.managers || []);
+        setNotes({
+          note2: project.note2,
+          note3: project.note3,
+        });
+      } catch (err) {
+        console.error("Failed to fetch project:", err);
+        setError("ไม่สามารถโหลดข้อมูลโครงการได้");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProject();
+  }, [projectId]);
+
+  if (loading) return <div className="p-8">กำลังโหลดข้อมูล...</div>;
+  if (error) return <div className="p-8 text-red-500">{error}</div>;
+  if (!projectId && !formData)
+    return <div className="p-8">ไม่พบรหัสโครงการ (Project ID)</div>;
+  if (!formData) return <div className="p-8">ไม่พบข้อมูลโครงการ</div>;
+
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar />
+
+      <main className="flex-1 p-8 bg-slate-50 overflow-y-auto">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => router.push("/projects")}
+                className="h-10 w-10 text-slate-500 hover:text-slate-900"
+              >
+                <ArrowLeft size={18} />
+              </Button>
+              <h1 className="text-2xl font-semibold">
+                ข้อมูลโครงการบริการวิชาการ
+              </h1>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline">แก้ไข</Button>
+              <Button variant="outline">พิมพ์</Button>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <ReceiptInfoSection formData={formData} />
+
+            <BasicInfoSection
+              formData={formData}
+              departmentOptions={departmentOptions}
+              collaborators={collaborators}
+            />
+
+            <ManagersSection managers={managers} />
+
+            <ClassificationsSection
+              formData={formData}
+              serviceTypeOptions={serviceTypeOptions}
+              targetGroupOptions={targetGroupOptions}
+              strategyOptions={strategyOptions}
+            />
+
+            <ProjectDetailsSection formData={formData} />
+
+            <BudgetAndNotesSection formData={formData} notes={notes} />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
 const departmentOptions = [
   { value: "sci", label: "ภาควิชาวิทยาศาสตร์" },
   { value: "chem", label: "ภาควิชาเคมี" },
@@ -47,98 +281,6 @@ const strategyOptions = [
   { value: "5", label: "สอดคล้องกับยุทธศาสตร์ส่วนงาน" },
 ];
 
-export default function ViewProjectPage() {
-  const [formData] = useState<FormData>({
-    receiptNumber: "วจบ-2026-001",
-    projectNameThai: "โครงการอบรมเชิงปฏิบัติการด้านวิทยาศาสตร์สำหรับนิสิต",
-    projectNameEng: "Science Workshop Training Program for Students",
-    leaderName: "ผศ.ดร.สมชาย ใจดี",
-    leaderPosition: "อาจารย์ประจำภาควิชา",
-    department: "sci",
-    leaderEmail: "somchai.j@chula.ac.th",
-    startDate: "2026-02-01",
-    endDate: "2026-02-28",
-    background:
-      "เนื่องจากนิสิตต้องการความรู้เพิ่มเติมในการทำวิจัย และต้องการทักษะในการใช้เครื่องมือทางวิทยาศาสตร์",
-    projectDetails:
-      "จัดอบรมเชิงปฏิบัติการเกี่ยวกับการใช้เครื่องมือวิทยาศาสตร์ขั้นสูง พร้อมให้คำแนะนำจากผู้เชี่ยวชาญ",
-    objectives:
-      "1. เพื่อพัฒนาทักษะการทำวิจัยของนิสิต\n2. เพื่อให้นิสิตได้เรียนรู้การใช้เครื่องมือทางวิทยาศาสตร์\n3. เพื่อส่งเสริมการเรียนรู้แบบปฏิบัติ",
-    scope: "นิสิตคณะวิทยาศาสตร์ชั้นปีที่ 3-4 จำนวน 50 คน",
-    implementationPlan:
-      "สัปดาห์ที่ 1-2: เตรียมการและประชาสัมพันธ์\nสัปดาห์ที่ 3-4: ดำเนินการอบรม",
-    serviceType: "1",
-    targetGroups: ["1"],
-    strategies: ["2", "3"],
-    participantCount: "50",
-    venue: "ห้องปฏิบัติการวิทยาศาสตร์ ชั้น 5 อาคาร SC",
-    committee: "คณะกรรมการวิชาการคณะวิทยาศาสตร์",
-    expectedBenefits:
-      "นิสิตได้รับความรู้และทักษะในการใช้เครื่องมือวิทยาศาสตร์ สามารถนำไปประยุกต์ใช้ในการทำวิจัยได้",
-    budgetSourceExtGov: "50000",
-    budgetSourceExtPrivate: "30000",
-    budgetSourceExtForeign: "0",
-    budgetSourceInternal: "20000",
-    incomeSupport: "30000",
-    incomeRegistration: "70000",
-    expenseRemuneration: "20000",
-    expenseSupplies: "30000",
-    expenseMaterials: "25000",
-    expenseUtilities: "10000",
-    expenseSubsidy: "10000",
-    expenseReserve: "5000",
-  });
-
-  const [collaborators] = useState<Collaborator[]>([
-    { id: 1, name: "ภาควิชาเคมี" },
-    { id: 2, name: "ศูนย์เครื่องมือวิทยาศาสตร์" },
-  ]);
-
-  const [notes] = useState<Notes>({
-    note1: false,
-    note2: true,
-    note3: false,
-    note4: true,
-  });
-
-  return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-
-      <main className="flex-1 p-8 bg-slate-50 overflow-y-auto">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-semibold">รายละเอียดโครงการ</h1>
-            <div className="flex gap-2">
-              <Button variant="outline">แก้ไข</Button>
-              <Button variant="outline">พิมพ์</Button>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <ReceiptInfoSection formData={formData} />
-
-            <BasicInfoSection
-              formData={formData}
-              departmentOptions={departmentOptions}
-              collaborators={collaborators}
-            />
-
-            <ClassificationsSection
-              formData={formData}
-              serviceTypeOptions={serviceTypeOptions}
-              targetGroupOptions={targetGroupOptions}
-              strategyOptions={strategyOptions}
-            />
-
-            <BudgetSourcesSection formData={formData} />
-
-            <BudgetTableSection formData={formData} />
-
-            <NotesSection notes={notes} />
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+interface ViewProjectPageProps {
+  projectId?: string;
 }

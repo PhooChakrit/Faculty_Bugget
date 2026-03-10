@@ -36,7 +36,6 @@ export function BudgetSourcesSection({
                       type="number"
                       value={formData.budgetSourceExtGov}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -49,7 +48,6 @@ export function BudgetSourcesSection({
                       type="number"
                       value={formData.budgetSourceExtPrivate}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -62,7 +60,6 @@ export function BudgetSourcesSection({
                       type="number"
                       value={formData.budgetSourceExtForeign}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
@@ -75,12 +72,11 @@ export function BudgetSourcesSection({
                       type="number"
                       value={formData.budgetSourceInternal}
                       onChange={handleChange}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>
                 <tr className="border-t bg-muted font-medium">
-                  <td className="p-3">รวมแหล่งงบประมาณ</td>
+                  <td className="p-3">รวมงบประมาณ</td>
                   <td className="p-3">
                     <Input
                       readOnly
@@ -90,7 +86,6 @@ export function BudgetSourcesSection({
                         Number(formData.budgetSourceExtForeign || 0) +
                         Number(formData.budgetSourceInternal || 0)
                       ).toFixed(2)}
-                      placeholder="0.00"
                     />
                   </td>
                 </tr>

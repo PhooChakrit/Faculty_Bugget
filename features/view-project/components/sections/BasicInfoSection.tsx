@@ -58,6 +58,21 @@ export function BasicInfoSection({
           <div className="text-base">{formData.leaderEmail || "-"}</div>
         </div>
 
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label className="text-muted-foreground">
+              ชื่อผู้รับผิดชอบรอง (Co-Leader)
+            </Label>
+            <div className="text-base">{formData.coLeaderName || "-"}</div>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-muted-foreground">
+              อีเมลผู้รับผิดชอบรอง
+            </Label>
+            <div className="text-base">{formData.coLeaderEmail || "-"}</div>
+          </div>
+        </div>
+
         <div className="space-y-2">
           <Label className="text-muted-foreground">
             หน่วยงาน/ภาควิชาที่รับผิดชอบ
@@ -71,7 +86,7 @@ export function BasicInfoSection({
 
         {collaborators.length > 0 && (
           <div className="space-y-2">
-            <Label className="text-muted-foreground">ผู้ร่วมโครงการ</Label>
+            <Label className="text-muted-foreground">ร่วมกับ</Label>
             <div className="space-y-1">
               {collaborators.map((collab, index) => (
                 <div key={collab.id} className="text-base">
@@ -92,43 +107,6 @@ export function BasicInfoSection({
           <div className="space-y-2">
             <Label className="text-muted-foreground">วันที่สิ้นสุด</Label>
             <div className="text-base">{formatDate(formData.endDate)}</div>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-muted-foreground">
-            ความเป็นมา หลักการและเหตุผล
-          </Label>
-          <div className="text-base whitespace-pre-wrap">
-            {formData.background || "-"}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-muted-foreground">รายละเอียดโครงการ</Label>
-          <div className="text-base whitespace-pre-wrap">
-            {formData.projectDetails || "-"}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-muted-foreground">วัตถุประสงค์</Label>
-          <div className="text-base whitespace-pre-wrap">
-            {formData.objectives || "-"}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-muted-foreground">ขอบเขตการดำเนินการ</Label>
-          <div className="text-base whitespace-pre-wrap">
-            {formData.scope || "-"}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-muted-foreground">แผนการดำเนินการ</Label>
-          <div className="text-base whitespace-pre-wrap">
-            {formData.implementationPlan || "-"}
           </div>
         </div>
       </CardContent>

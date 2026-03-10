@@ -9,6 +9,24 @@ export interface Manager {
   position: string;
 }
 
+export interface IncomeItem {
+  id: number;
+  name: string;
+  amount: string;
+}
+
+export interface Participant {
+  id: number;
+  count: string;
+  details: string;
+}
+
+export interface CustomIncomeCategory {
+  id: number;
+  categoryName: string;
+  items: IncomeItem[];
+}
+
 export interface FormData {
   receiptNumber: string;
   projectNameThai: string;
@@ -17,6 +35,8 @@ export interface FormData {
   leaderPosition: string;
   department: string;
   leaderEmail: string;
+  coLeaderName: string;
+  coLeaderEmail: string;
   startDate: string;
   endDate: string;
   background: string;
@@ -27,27 +47,27 @@ export interface FormData {
   serviceType: string;
   targetGroups: string[];
   strategies: string[];
-  participantCount: string;
+  participants: Participant[];
   venue: string;
   committee: string;
   expectedBenefits: string;
+  projectEvaluation: string;
   budgetSourceExtGov: string;
   budgetSourceExtPrivate: string;
   budgetSourceExtForeign: string;
   budgetSourceInternal: string;
-  incomeSupport: string;
-  incomeRegistration: string;
+  incomeSupportItems: IncomeItem[];
+  incomeRegistrationItems: IncomeItem[];
   expenseRemuneration: string;
   expenseSupplies: string;
   expenseMaterials: string;
   expenseUtilities: string;
   expenseSubsidy: string;
   expenseReserve: string;
+  customIncomeCategories?: CustomIncomeCategory[];
 }
 
 export interface Notes {
-  note1: boolean;
   note2: boolean;
   note3: boolean;
-  note4: boolean;
 }

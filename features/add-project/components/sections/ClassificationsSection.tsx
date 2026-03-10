@@ -31,7 +31,9 @@ export function ClassificationsSection({
     <Card>
       <CardContent className="space-y-6">
         <div className="space-y-2">
-          <Label>ประเภทงานบริการวิชาการ</Label>
+          <Label>
+            ประเภทงานบริการวิชาการ <span className="text-red-500">*</span>
+          </Label>
           <p className="text-sm text-muted-foreground">
             สามารถเลือกอย่างใดอย่างหนึ่ง
           </p>
@@ -42,7 +44,7 @@ export function ClassificationsSection({
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="เลือกประเภท..." />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {serviceTypeOptions.map((opt) => (
@@ -58,19 +60,23 @@ export function ClassificationsSection({
 
         <MultiSelect
           label="กลุ่มเป้าหมาย"
+          required
           options={targetGroupOptions}
           value={formData.targetGroups}
           onChange={(values) =>
             setFormData((prev) => ({ ...prev, targetGroups: values }))
           }
           maxSelections={4}
-          hint="สามารถเลือกได้หลายข้อ (มากสุด 4 ข้อ)"
+          hint="สามารถเลือกได้หลายข้อ"
         />
 
         <Separator />
 
         <div className="space-y-4">
-          <Label>โครงการสอดคล้องกับยุทธศาสตร์/พันธกิจ</Label>
+          <Label>
+            โครงการสอดคล้องกับยุทธศาสตร์/พันธกิจ
+            <span className="text-red-500">*</span>
+          </Label>
           <RadioGroup
             value={
               !formData.strategies.includes("0")

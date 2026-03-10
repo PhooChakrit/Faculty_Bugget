@@ -63,7 +63,7 @@ export function BudgetSourcesSection({ formData }: BudgetSourcesSectionProps) {
                   </td>
                 </tr>
                 <tr className="border-t bg-muted font-medium">
-                  <td className="p-3">รวมแหล่งงบประมาณ</td>
+                  <td className="p-3">รวมงบประมาณ</td>
                   <td className="p-3 text-right">
                     {total > 0
                       ? total.toLocaleString("th-TH", {

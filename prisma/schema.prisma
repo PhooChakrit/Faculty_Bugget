@@ -1,243 +1,139 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../app/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
-
-// ============================================================
-// Enums
-// ============================================================
-
-enum UserRole {
-  DEPARTMENT  // ภาควิชา
-  RESEARCH    // งานวิจัย
-  PLANNING    // งานแผน
-  FINANCE     // งานคลัง
-  FACILITIES  // กายภาพ
-}
-
-enum ProjectStatus {
-  INNER_FACULTY           // inner คณะ
-  OUT_FROM_BOARD          // ออกจากบอร์ด
-  SENT_TO_ACADEMICS       // ส่งไป ศหก
-  SENT_BACK_TO_DEPT       // ส่งกลับภาค
-  APPROVED_ACADEMICS      // อนุมัติ ศหก
-  SENT_TO_FINANCE         // ส่ง การเงิน
-  OPENED_PROJECT          // เปิดโครงการ
-  IN_PROGRESS             // อยู่ระหว่างดำเนินการ
-  CLOSED_PROJECT          // ปิดโครงการ
-  CANCELLED               // ยกเลิก
-  POSTPONED               // เลื่อน
-  REVISION_REQUIRED       // ต้องแก้ไข
-  WAITING_APPROVAL        // รออนุมัติ
-  COMPLETED               // เสร็จสิ้น
-}
-
-enum ServiceType {
-  SEMINAR_TRAINING        // 01.อภิปราย บรรยาย อบรม ประชุม สัมมนา
-  DESIGN_PLANNING         // 02.ออกแบบ วางแผน
-  CONSULTING              // 03.CONSULT ทางวิชาการ
-  RESEARCH_DEVELOPMENT    // 04.วิจัยและพัฒนา
-  TESTING_ANALYSIS        // 05.วิเคราะห์ ทดสอบ ตรวจสอบ
-  OTHER_ACADEMIC          // 06.งานบริการทางวิชาการลักษณะอื่น
-}
-
-enum MeetingType {
-  BOARD  // คณะกรรมการการบริหารคณะวิทยาศาสตร์
-  DEAN   // คณบดี
-}
-
-// ============================================================
-// Models
-// ============================================================
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  role      UserRole @default(DEPARTMENT)
-  department String? // Required if role is DEPARTMENT
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relations
-  createdProjects Project[] @relation("CreatedProjects")
-  updatedProjects Project[] @relation("UpdatedProjects")
-  statusChanges   ProjectStatusHistory[] @relation("StatusChangedBy")
-  
-  @@index([role])
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  name               String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  projectsAsCoLeader Project[] @relation("ProjectCoLeader")
+  projectsAsLeader   Project[] @relation("ProjectLeader")
 }
 
 model Project {
-  id             String   @id @default(cuid())
-  receiptNumber  String?  // เลขที่รับ (e.g., "2827/2568, 3367/2568")
-  projectCode    String   @unique // รหัสโครงการ (e.g., "ACS001-69")
-  purpose        String?  // เพื่อดำเนินการ (e.g., "ขอความเห็นชอบจัดโครงการ")
-  
-  // Project Names and Descriptions
-  projectNameThai String?  // ชื่อโครงการภาษาไทย
-  projectNameEng  String?  // ชื่อโครงการภาษาอังกฤษ
-  memoTitle       String?  @db.Text // บันทึกข้อความ/memo title (full)
-  background      String?  @db.Text // ความเป็นมาและเหตุผล
-  objectives      String?  @db.Text // วัตถุประสงค์
-  scope           String?  @db.Text // ขอบเขตการดำเนินการ
-  implementationPlan String? @db.Text // แผนการดำเนินการ
-  expectedBenefits   String? @db.Text // ผลที่คาดว่าจะได้รับ
-  projectDescription String? @db.Text // คำอธิบายโครงการสั้นๆ
-  
-  // Leadership and Organization
-  projectHead    String?  // หัวหน้าโครงการ (with title)
-  leaderName     String?  // ชื่อผู้นำโครงการ
-  leaderPosition String?  // ตำแหน่ง
-  leaderEmail    String?  // อีเมล
-  department     String?  // ภาควิชา/หน่วยงาน
-  committee      String?  // คณะกรรมการที่เกี่ยวข้อง
-  
-  // Dates and Venue
-  startDate DateTime? // วันที่เริ่มต้น
-  endDate   DateTime? // วันที่สิ้นสุด
-  venue     String?   // สถานที่จัดโครงการ
-  
-  // Classifications
-  serviceType      ServiceType? // ประเภทงานบริการวิชาการ
-  targetGroup      String[]     @default([]) // กลุ่มเป้าหมาย (multi-select)
-  strategyType     String[]     @default([]) // ยุทธศาสตร์ (multi-select)
-  participantCount Int?         // จำนวนผู้เข้าร่วม
-  
-  // Budget Sources (แหล่งงบประมาณ)
-  amountGovExternal     Decimal? @db.Decimal(12, 2) // ภายนอกภาครัฐ
-  amountPrivateExternal Decimal? @db.Decimal(12, 2) // ภายนอกภาคเอกชน
-  amountForeignExternal Decimal? @db.Decimal(12, 2) // ภายนอกต่างประเทศ
-  amountUnivRevenue     Decimal? @db.Decimal(12, 2) // รายได้มหาวิทยาลัย
-  fundOwner             String?  // เจ้าของเงินทุน/แหล่งที่มา
-  
-  // Budget Income (ประมาณการรายรับ)
-  incomeSupport      Decimal? @db.Decimal(12, 2) // เงินสนับสนุน
-  incomeRegistration Decimal? @db.Decimal(12, 2) // ค่าลงทะเบียน
-  
-  // Budget Expenses (ประมาณการรายจ่าย)
-  totalBudget    Decimal? @db.Decimal(12, 2) // งบประมาณรวม
-  compensation   Decimal? @db.Decimal(12, 2) // หมวดค่าตอบแทน
-  operatingCost  Decimal? @db.Decimal(12, 2) // หมวดค่าใช้สอย
-  materialCost   Decimal? @db.Decimal(12, 2) // หมวดค่าวัสดุ
-  utilities      Decimal? @db.Decimal(12, 2) // หมวดสาธารณูปโภค
-  academicFund   Decimal? @db.Decimal(12, 2) // หมวดเงินอุดหนุน
-  generalReserve Decimal? @db.Decimal(12, 2) // หมวดเงินสำรอง
-  
-  // Facility Fees (editable by FACILITIES role only)
-  maintenanceFeeProposal Decimal? @db.Decimal(12, 2) // ค่าบำรุงสถานที่เสนอ
-  maintenanceFee         Decimal? @db.Decimal(12, 2) // ค่าบำรุงสถานที่จริง
-  electricityFeeProposal Decimal? @db.Decimal(12, 2) // ค่าไฟฟ้าเสนอ
-  electricityFee         Decimal? @db.Decimal(12, 2) // ค่าไฟฟ้าจริง
-  
-  // Financial Codes
-  vendorCode String? // รหัสเจ้าหนี้ (editable by FINANCE role)
-  costCenter String? // ศูนย์ต้นทุน (editable by PLANNING role)
-  
-  // Workflow Status
-  projectStatus ProjectStatus @default(INNER_FACULTY) // สถานะปัจจุบัน
-  responsible   String?  // ผู้รับผิดชอบ
-  
-  // Documents
-  docNumber String?   // เลขที่เอกสาร
-  docDate   DateTime? // วันที่เอกสาร
-  docLink   String?   // ลิงก์เอกสาร
-  
-  // Audit Trail
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String?
-  updatedById String?
-  
-  // Relations
-  createdBy     User?          @relation("CreatedProjects", fields: [createdById], references: [id])
-  updatedBy     User?          @relation("UpdatedProjects", fields: [updatedById], references: [id])
-  collaborators Collaborator[]
-  managers      Manager[]
-  meetings      Meeting[]
-  note          ProjectNote?
-  statusHistory ProjectStatusHistory[]
-  
-  @@index([projectCode])
-  @@index([department])
-  @@index([projectStatus])
-  @@index([startDate, endDate])
-  @@index([createdAt])
+  id                     String                @id @default(cuid())
+  receiptNumber          String?               @unique
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  status                 ProjectStatus         @default(DRAFT)
+  projectNameThai        String
+  projectNameEng         String?
+  leaderId               String
+  leaderPosition         String
+  department             String
+  coLeaderId             String?
+  startDate              DateTime
+  endDate                DateTime
+  background             String?
+  projectDetails         String?
+  objectives             String?
+  scope                  String?
+  implementationPlan     String?
+  serviceType            String?
+  participantCount       Int?
+  venue                  String?
+  committee              String?
+  expectedBenefits       String?
+  projectEvaluation      String?
+  budgetSourceExtGov     Decimal?              @db.Decimal(15, 2)
+  budgetSourceExtPrivate Decimal?              @db.Decimal(15, 2)
+  budgetSourceExtForeign Decimal?              @db.Decimal(15, 2)
+  budgetSourceInternal   Decimal?              @db.Decimal(15, 2)
+  expenseRemuneration    Decimal?              @db.Decimal(15, 2)
+  expenseSupplies        Decimal?              @db.Decimal(15, 2)
+  expenseMaterials       Decimal?              @db.Decimal(15, 2)
+  expenseUtilities       Decimal?              @db.Decimal(15, 2)
+  expenseSubsidy         Decimal?              @db.Decimal(15, 2)
+  expenseReserve         Decimal?              @db.Decimal(15, 2)
+  note2                  Boolean               @default(false)
+  note3                  Boolean               @default(false)
+  participantDetails     String?
+  incomeItems            IncomeItem[]
+  coLeader               User?                 @relation("ProjectCoLeader", fields: [coLeaderId], references: [id])
+  leader                 User                  @relation("ProjectLeader", fields: [leaderId], references: [id])
+  collaborators          ProjectCollaborator[]
+  managers               ProjectManager[]
+  strategies             ProjectStrategy[]
+  targetGroups           ProjectTargetGroup[]
 }
 
-model Collaborator {
-  id        Int     @id @default(autoincrement())
-  projectId String
-  name      String  // ชื่อหน่วยงาน/ภาควิชาที่ร่วม
-  order     Int     @default(0) // Display order
-  
-  // Relations
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
-  @@index([projectId])
+model TargetGroup {
+  id       String               @id @default(cuid())
+  name     String               @unique
+  projects ProjectTargetGroup[]
 }
 
-model Manager {
-  id        Int     @id @default(autoincrement())
-  projectId String
-  name      String  // ชื่อ นามสกุล
-  position  String? // ตำแหน่งหน้าที่
-  isSigner  Boolean @default(false) // ผู้ลงนาม flag
-  order     Int     @default(0) // Display order
-  
-  // Relations
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
-  @@index([projectId])
-}
-
-model Meeting {
-  id          String      @id @default(cuid())
-  projectId   String
-  type        MeetingType // BOARD or DEAN
-  meetingNo   String?     // ครั้งที่ (e.g., "17/2568")
-  meetingDate DateTime?   // วันที่
-  purpose     String?     // เพื่อดำเนินการ
-  
-  // Relations
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
-  @@index([projectId])
-  @@index([projectId, type])
-}
-
-model ProjectNote {
-  id        Int     @id @default(autoincrement())
-  projectId String  @unique
-  note1     Boolean @default(false) // หมายเหตุ 1: อนุมัติอัตราพิเศษ
-  note2     Boolean @default(false) // หมายเหตุ 2: อนุมัติงบประมาณคณะกรรมการคณะ
-  note3     Boolean @default(false) // หมายเหตุ 3: อนุมัติงบประมาณคณะกรรมการการเงิน
-  note4     Boolean @default(false) // หมายเหตุ 4: อนุมัติความยืดหยุ่นทุกรายการ
-  
-  // Relations
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-}
-
-model ProjectStatusHistory {
-  id            String        @id @default(cuid())
+model ProjectTargetGroup {
   projectId     String
-  status        String        // สถานะ (can be any status text)
-  statusDate    DateTime      @default(now()) // วันที่เปลี่ยนสถานะ
-  changedById   String?       // ผู้เปลี่ยนสถานะ
-  notes         String?       @db.Text // หมายเหตุเพิ่มเติม
-  
-  createdAt     DateTime      @default(now())
-  
-  // Relations
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  changedBy User?   @relation("StatusChangedBy", fields: [changedById], references: [id])
-  
-  @@index([projectId])
-  @@index([statusDate])
-  @@index([projectId, statusDate])
+  targetGroupId String
+  project       Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  targetGroup   TargetGroup @relation(fields: [targetGroupId], references: [id])
+
+  @@id([projectId, targetGroupId])
+}
+
+model Strategy {
+  id       String            @id @default(cuid())
+  name     String            @unique
+  projects ProjectStrategy[]
+}
+
+model ProjectStrategy {
+  projectId  String
+  strategyId String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  strategy   Strategy @relation(fields: [strategyId], references: [id])
+
+  @@id([projectId, strategyId])
+}
+
+model IncomeItem {
+  id           String     @id @default(cuid())
+  projectId    String
+  type         IncomeType
+  name         String
+  amount       Decimal    @db.Decimal(15, 2)
+  categoryName String?
+  createdAt    DateTime   @default(now())
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectCollaborator {
+  id        String   @id @default(cuid())
+  projectId String
+  name      String
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectManager {
+  id        String   @id @default(cuid())
+  projectId String
+  name      String
+  position  String?
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+enum ProjectStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum IncomeType {
+  SUPPORT
+  REGISTRATION
+  OTHER
 }

@@ -11,23 +11,22 @@ export function NotesSection({ notes, setNotes }: NotesSectionProps) {
   return (
     <Card>
       <CardContent className="space-y-4">
+        <h1 className="">หมายเหตุ</h1>
+        {/* Plain text notes */}
         <div className="flex items-start space-x-3">
-          <Checkbox
-            id="note1"
-            checked={notes.note1}
-            onCheckedChange={(checked) =>
-              setNotes((prev) => ({
-                ...prev,
-                note1: checked as boolean,
-              }))
-            }
-          />
-          <label htmlFor="note1" className="text-sm leading-relaxed">
+          <label className="text-sm leading-relaxed">
             ขออนุมัติงบประมาณโครงการที่ไม่เป็นไปตามอัตราการเบิกจ่ายตามข้อบังคับจุฬาลงกรณ์ฯ
             ว่าด้วยการให้บริการทางวิชาการ พ.ศ. 2564
           </label>
         </div>
 
+        <div className="flex items-start space-x-3">
+          <label className="text-sm leading-relaxed">
+            ขออนุมัติถัวเฉลี่ยทุกรายการ
+          </label>
+        </div>
+
+        {/* Checkbox notes */}
         <div className="flex items-start space-x-3">
           <Checkbox
             id="note2"
@@ -57,22 +56,6 @@ export function NotesSection({ notes, setNotes }: NotesSectionProps) {
           />
           <label htmlFor="note3" className="text-sm leading-relaxed">
             ขออนุมัติงบประมาณรายจ่ายต่อคณะกรรมการการเงิน ดังนี้ (ถ้ามี)
-          </label>
-        </div>
-
-        <div className="flex items-start space-x-3">
-          <Checkbox
-            id="note4"
-            checked={notes.note4}
-            onCheckedChange={(checked) =>
-              setNotes((prev) => ({
-                ...prev,
-                note4: checked as boolean,
-              }))
-            }
-          />
-          <label htmlFor="note4" className="text-sm leading-relaxed">
-            ขออนุมัติถัวเฉลี่ยทุกรายการ
           </label>
         </div>
       </CardContent>

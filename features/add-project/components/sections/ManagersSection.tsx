@@ -36,7 +36,6 @@ export function ManagersSection({
           >
             <span className="text-muted-foreground w-6">{index + 1}.</span>
             <Input
-              placeholder="ชื่อ นามสกุล"
               value={manager.name}
               onChange={(e) => {
                 const newData = [...managers];
@@ -46,7 +45,6 @@ export function ManagersSection({
               className="flex-1"
             />
             <Input
-              placeholder="ตำแหน่งหน้าที่ (ถ้ามี)"
               value={manager.position}
               onChange={(e) => {
                 const newData = [...managers];

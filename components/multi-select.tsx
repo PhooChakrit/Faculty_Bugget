@@ -34,6 +34,7 @@ interface MultiSelectProps {
   maxSelections?: number;
   hint?: string;
   className?: string;
+  required?: boolean;
 }
 
 export function MultiSelect({
@@ -45,6 +46,7 @@ export function MultiSelect({
   maxSelections,
   hint,
   className,
+  required = false,
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -65,7 +67,7 @@ export function MultiSelect({
     <div className={cn("space-y-2", className)}>
       {label && (
         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          {label}
+          {label} {required && <span className="text-red-500 px-1">*</span>}
         </label>
       )}
       {hint && <p className="text-sm text-muted-foreground">{hint}</p>}
@@ -116,7 +118,7 @@ export function MultiSelect({
         </PopoverTrigger>
         <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
           <Command>
-            <CommandInput placeholder="Search..." />
+            <CommandInput />
             <CommandList>
               <CommandEmpty>No option found.</CommandEmpty>
               <CommandGroup>
