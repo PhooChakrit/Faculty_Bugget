@@ -287,64 +287,31 @@ export default function ProjectTrackingPage() {
 
   // --- Load & Transform ---
   useEffect(() => {
-    const loadMockData = async () => {
+    const loadProjects = async () => {
       try {
         setIsLoading(true);
-        // Simulate loading data - in real app fetch from /api
-        const response = await fetch("/mock.json");
-        const data: ProjectData[] = await response.json();
-
-        const enhancedData: EnhancedProjectData[] = data.map((item) => {
-          // Transform Meetings
-          const meetings: MeetingRecord[] = [];
-          if (item.boardMeetingNo)
-            meetings.push({
-              id: `board-${item.id}`,
-              type: "BOARD",
-              no: item.boardMeetingNo,
-              date: item.boardMeetingDate,
-              purpose: item.purpose || "",
-            });
-          if (item.deanDecisionNo)
-            meetings.push({
-              id: `dean-${item.id}`,
-              type: "DEAN",
-              no: item.deanDecisionNo,
-              date: item.deanDecisionDate,
-              purpose: item.purpose || "",
-            });
-
-          return {
-            ...item,
-            // Ensure fields exist if JSON is partial
-            purpose: item.purpose || "-",
-            totalBudget: item.totalBudget || "0.00",
-            compensation: item.compensation || "0.00",
-            operatingCost: item.operatingCost || "0.00",
-            maintenanceFeeProposal: "1,000.00", // Mock value for proposal
-            materialCost: item.materialCost || "0.00",
-            utilities: item.utilities || "0.00",
-            electricityFeeProposal: "500.00", // Mock value for proposal
-            academicFund: item.academicFund || "0.00",
-            generalReserve: item.generalReserve || "0.00",
-
-            _projectStatus: PROJECT_STATUSES[0],
-            _meetings: meetings,
-            _costCenter: "",
-            _maintenanceFee: "",
-            _electricityFeeActual: "",
-          };
-        });
-
-        setProjects(enhancedData);
+        const response = await fetch("/api/overviews");
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch projects");
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.data.projects) {
+          setProjects(data.data.projects);
+        } else {
+          throw new Error("Invalid response format");
+        }
       } catch (error) {
         console.error("Failed to load project data:", error);
+        alert("ไม่สามารถโหลดข้อมูลโครงการได้ กรุณาลองใหม่อีกครั้ง");
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadMockData();
+    loadProjects();
   }, []);
 
   // --- Handlers ---
@@ -382,8 +349,25 @@ export default function ProjectTrackingPage() {
     setSavingCell(cellKey);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const response = await fetch(
+        `/api/overviews/${editingCell.projectId}/field`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            field: editingCell.field,
+            value: editingValue,
+          }),
+        },
+      );
 
+      if (!response.ok) {
+        throw new Error("Failed to update field");
+      }
+
+      // Update local state optimistically
       handleUpdateField(
         editingCell.projectId,
         editingCell.field as keyof EnhancedProjectData,
@@ -394,7 +378,7 @@ export default function ProjectTrackingPage() {
       setEditingValue("");
     } catch (error) {
       console.error("Error saving cell:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
     } finally {
       setSavingCell(null);
     }
@@ -426,8 +410,24 @@ export default function ProjectTrackingPage() {
       }
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await fetch(
+          `/api/overviews/${editingMeetings.projectId}/meetings`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              meetings: editingMeetings.list,
+            }),
+          },
+        );
 
+        if (!response.ok) {
+          throw new Error("Failed to update meetings");
+        }
+
+        // Update local state optimistically
         setProjects((prev) =>
           prev.map((p) =>
             p.id === editingMeetings.projectId
@@ -437,8 +437,9 @@ export default function ProjectTrackingPage() {
         );
 
         setEditingMeetings(null);
-      } catch {
-        alert("Error saving meetings");
+      } catch (error) {
+        console.error("Error saving meetings:", error);
+        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลมติที่ประชุม กรุณาลองใหม่อีกครั้ง");
       }
     }
   };

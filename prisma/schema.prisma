@@ -55,6 +55,31 @@ model Project {
   note2                  Boolean               @default(false)
   note3                  Boolean               @default(false)
   participantDetails     String?
+  // Overview-specific fields
+  projectCode            String?               @unique
+  memoTitle              String?
+  vendorCode             String?
+  costCenter             String?
+  fundOwner              String?
+  maintenanceFeeProposal Decimal?              @db.Decimal(15, 2)
+  maintenanceFeeActual   Decimal?              @db.Decimal(15, 2)
+  electricityFeeProposal Decimal?              @db.Decimal(15, 2)
+  electricityFeeActual   Decimal?              @db.Decimal(15, 2)
+  // Status tracking
+  status1                String?
+  status1Date            DateTime?
+  status2                String?
+  status2Date            DateTime?
+  status3                String?
+  status3Date            DateTime?
+  status4                String?
+  status4Date            DateTime?
+  status5                String?
+  status5Date            DateTime?
+  responsible            String?
+  docNumber              String?
+  docDate                DateTime?
+  docLink                String?
   incomeItems            IncomeItem[]
   coLeader               User?                 @relation("ProjectCoLeader", fields: [coLeaderId], references: [id])
   leader                 User                  @relation("ProjectLeader", fields: [leaderId], references: [id])
@@ -62,6 +87,7 @@ model Project {
   managers               ProjectManager[]
   strategies             ProjectStrategy[]
   targetGroups           ProjectTargetGroup[]
+  meetings               Meeting[]
 }
 
 model TargetGroup {
@@ -136,4 +162,21 @@ enum IncomeType {
   SUPPORT
   REGISTRATION
   OTHER
+}
+
+model Meeting {
+  id        String      @id @default(cuid())
+  projectId String
+  type      MeetingType
+  no        String
+  date      DateTime
+  purpose   String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+enum MeetingType {
+  BOARD
+  DEAN
 }
