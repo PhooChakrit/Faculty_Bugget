@@ -8,13 +8,15 @@ datasource db {
 }
 
 model User {
-  id                 String    @id @default(cuid())
-  email              String    @unique
+  id                 String                 @id @default(cuid())
+  email              String                 @unique
   name               String?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  projectsAsCoLeader Project[] @relation("ProjectCoLeader")
-  projectsAsLeader   Project[] @relation("ProjectLeader")
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  projectsAsCoLeader Project[]              @relation("ProjectCoLeader")
+  projectsAsLeader   Project[]              @relation("ProjectLeader")
+  statusRecords      ProjectStatusRecord[]
+  notifications      NotificationStatus[]
 }
 
 model Project {
@@ -80,6 +82,11 @@ model Project {
   docNumber              String?
   docDate                DateTime?
   docLink                String?
+  // New status system
+  currentStatusCode      String?                    @default("STATUS_1")
+  currentStatusId        String?                    @unique
+  currentStatus          ProjectStatusRecord?       @relation("CurrentStatus", fields: [currentStatusId], references: [id])
+  statusHistory          ProjectStatusRecord[]      @relation("StatusHistory")
   incomeItems            IncomeItem[]
   coLeader               User?                 @relation("ProjectCoLeader", fields: [coLeaderId], references: [id])
   leader                 User                  @relation("ProjectLeader", fields: [leaderId], references: [id])
@@ -179,4 +186,85 @@ model Meeting {
 enum MeetingType {
   BOARD
   DEAN
+}
+
+// ============================================
+// STATUS SYSTEM MODELS
+// ============================================
+
+model ProjectStatusRecord {
+  id               String                 @id @default(cuid())
+  projectId        String
+  statusCode       StatusCode
+  statusLabel      String
+  subStatus        String?                // For notification sub-types
+  enteredAt        DateTime               @default(now())
+  enteredBy        String
+  exitedAt         DateTime?
+  notes            String?
+  branchChoice     String?                // For STATUS_3 branching
+  
+  project          Project                @relation("StatusHistory", fields: [projectId], references: [id], onDelete: Cascade)
+  currentFor       Project?               @relation("CurrentStatus")
+  enteredByUser    User                   @relation(fields: [enteredBy], references: [id])
+  notifications    NotificationStatus[]
+  
+  @@index([projectId, enteredAt])
+  @@index([statusCode])
+}
+
+model NotificationStatus {
+  id                String              @id @default(cuid())
+  statusId          String
+  notificationType  NotificationType
+  isRequired        Boolean             @default(false)
+  isCompleted       Boolean             @default(false)
+  completedAt       DateTime?
+  completedBy       String?
+  recipient         String?
+  notes             String?
+  
+  status            ProjectStatusRecord @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  completer         User?               @relation(fields: [completedBy], references: [id])
+  
+  @@unique([statusId, notificationType])
+  @@index([statusId, isCompleted])
+}
+
+model StatusTransition {
+  id            String     @id @default(cuid())
+  fromStatus    StatusCode
+  toStatus      StatusCode
+  label         String?
+  condition     String?
+  order         Int        @default(0)
+  
+  @@unique([fromStatus, toStatus])
+  @@index([fromStatus])
+}
+
+enum StatusCode {
+  STATUS_1
+  STATUS_2
+  STATUS_3
+  STATUS_4
+  STATUS_5
+  STATUS_6
+  STATUS_7
+  STATUS_8
+  STATUS_9
+  STATUS_10
+  STATUS_11
+  STATUS_12
+  STATUS_13
+  STATUS_14
+  STATUS_15
+  RECALL
+}
+
+enum NotificationType {
+  DEPT_HEAD
+  FINANCE
+  PLANNING
+  PHYSICAL
 }

@@ -184,6 +184,8 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   projectsAsCoLeader?: Prisma.ProjectListRelationFilter
   projectsAsLeader?: Prisma.ProjectListRelationFilter
+  statusRecords?: Prisma.ProjectStatusRecordListRelationFilter
+  notifications?: Prisma.NotificationStatusListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -194,6 +196,8 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   projectsAsCoLeader?: Prisma.ProjectOrderByRelationAggregateInput
   projectsAsLeader?: Prisma.ProjectOrderByRelationAggregateInput
+  statusRecords?: Prisma.ProjectStatusRecordOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationStatusOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -207,6 +211,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   projectsAsCoLeader?: Prisma.ProjectListRelationFilter
   projectsAsLeader?: Prisma.ProjectListRelationFilter
+  statusRecords?: Prisma.ProjectStatusRecordListRelationFilter
+  notifications?: Prisma.NotificationStatusListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -239,6 +245,8 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -249,6 +257,8 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUpdateInput = {
@@ -259,6 +269,8 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -269,6 +281,8 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -371,6 +385,36 @@ export type UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProjectsAsLeaderInput, Prisma.UserUpdateWithoutProjectsAsLeaderInput>, Prisma.UserUncheckedUpdateWithoutProjectsAsLeaderInput>
 }
 
+export type UserCreateNestedOneWithoutStatusRecordsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStatusRecordsInput, Prisma.UserUncheckedCreateWithoutStatusRecordsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStatusRecordsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutStatusRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStatusRecordsInput, Prisma.UserUncheckedCreateWithoutStatusRecordsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStatusRecordsInput
+  upsert?: Prisma.UserUpsertWithoutStatusRecordsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStatusRecordsInput, Prisma.UserUpdateWithoutStatusRecordsInput>, Prisma.UserUncheckedUpdateWithoutStatusRecordsInput>
+}
+
+export type UserCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutNotificationsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type UserCreateWithoutProjectsAsCoLeaderInput = {
   id?: string
   email: string
@@ -378,6 +422,8 @@ export type UserCreateWithoutProjectsAsCoLeaderInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUncheckedCreateWithoutProjectsAsCoLeaderInput = {
@@ -387,6 +433,8 @@ export type UserUncheckedCreateWithoutProjectsAsCoLeaderInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
 }
 
 export type UserCreateOrConnectWithoutProjectsAsCoLeaderInput = {
@@ -401,6 +449,8 @@ export type UserCreateWithoutProjectsAsLeaderInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUncheckedCreateWithoutProjectsAsLeaderInput = {
@@ -410,6 +460,8 @@ export type UserUncheckedCreateWithoutProjectsAsLeaderInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
 }
 
 export type UserCreateOrConnectWithoutProjectsAsLeaderInput = {
@@ -435,6 +487,8 @@ export type UserUpdateWithoutProjectsAsCoLeaderInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsAsCoLeaderInput = {
@@ -444,6 +498,8 @@ export type UserUncheckedUpdateWithoutProjectsAsCoLeaderInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUpsertWithoutProjectsAsLeaderInput = {
@@ -464,6 +520,8 @@ export type UserUpdateWithoutProjectsAsLeaderInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsAsLeaderInput = {
@@ -473,6 +531,128 @@ export type UserUncheckedUpdateWithoutProjectsAsLeaderInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
+}
+
+export type UserCreateWithoutStatusRecordsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
+}
+
+export type UserUncheckedCreateWithoutStatusRecordsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
+}
+
+export type UserCreateOrConnectWithoutStatusRecordsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutStatusRecordsInput, Prisma.UserUncheckedCreateWithoutStatusRecordsInput>
+}
+
+export type UserUpsertWithoutStatusRecordsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutStatusRecordsInput, Prisma.UserUncheckedUpdateWithoutStatusRecordsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutStatusRecordsInput, Prisma.UserUncheckedCreateWithoutStatusRecordsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutStatusRecordsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutStatusRecordsInput, Prisma.UserUncheckedUpdateWithoutStatusRecordsInput>
+}
+
+export type UserUpdateWithoutStatusRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutStatusRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
+}
+
+export type UserCreateWithoutNotificationsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
+}
+
+export type UserUncheckedCreateWithoutNotificationsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
+}
+
+export type UserCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+}
+
+export type UserUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type UserUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
 }
 
 
@@ -483,11 +663,15 @@ export type UserUncheckedUpdateWithoutProjectsAsLeaderInput = {
 export type UserCountOutputType = {
   projectsAsCoLeader: number
   projectsAsLeader: number
+  statusRecords: number
+  notifications: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projectsAsCoLeader?: boolean | UserCountOutputTypeCountProjectsAsCoLeaderArgs
   projectsAsLeader?: boolean | UserCountOutputTypeCountProjectsAsLeaderArgs
+  statusRecords?: boolean | UserCountOutputTypeCountStatusRecordsArgs
+  notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -514,6 +698,20 @@ export type UserCountOutputTypeCountProjectsAsLeaderArgs<ExtArgs extends runtime
   where?: Prisma.ProjectWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountStatusRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectStatusRecordWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationStatusWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -523,6 +721,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   projectsAsCoLeader?: boolean | Prisma.User$projectsAsCoLeaderArgs<ExtArgs>
   projectsAsLeader?: boolean | Prisma.User$projectsAsLeaderArgs<ExtArgs>
+  statusRecords?: boolean | Prisma.User$statusRecordsArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -554,6 +754,8 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projectsAsCoLeader?: boolean | Prisma.User$projectsAsCoLeaderArgs<ExtArgs>
   projectsAsLeader?: boolean | Prisma.User$projectsAsLeaderArgs<ExtArgs>
+  statusRecords?: boolean | Prisma.User$statusRecordsArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -564,6 +766,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     projectsAsCoLeader: Prisma.$ProjectPayload<ExtArgs>[]
     projectsAsLeader: Prisma.$ProjectPayload<ExtArgs>[]
+    statusRecords: Prisma.$ProjectStatusRecordPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationStatusPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -967,6 +1171,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   projectsAsCoLeader<T extends Prisma.User$projectsAsCoLeaderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectsAsCoLeaderArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   projectsAsLeader<T extends Prisma.User$projectsAsLeaderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectsAsLeaderArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  statusRecords<T extends Prisma.User$statusRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$statusRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectStatusRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1434,6 +1640,54 @@ export type User$projectsAsLeaderArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
+}
+
+/**
+ * User.statusRecords
+ */
+export type User$statusRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectStatusRecord
+   */
+  select?: Prisma.ProjectStatusRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectStatusRecord
+   */
+  omit?: Prisma.ProjectStatusRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectStatusRecordInclude<ExtArgs> | null
+  where?: Prisma.ProjectStatusRecordWhereInput
+  orderBy?: Prisma.ProjectStatusRecordOrderByWithRelationInput | Prisma.ProjectStatusRecordOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectStatusRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectStatusRecordScalarFieldEnum | Prisma.ProjectStatusRecordScalarFieldEnum[]
+}
+
+/**
+ * User.notifications
+ */
+export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NotificationStatus
+   */
+  select?: Prisma.NotificationStatusSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NotificationStatus
+   */
+  omit?: Prisma.NotificationStatusOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationStatusInclude<ExtArgs> | null
+  where?: Prisma.NotificationStatusWhereInput
+  orderBy?: Prisma.NotificationStatusOrderByWithRelationInput | Prisma.NotificationStatusOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationStatusWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationStatusScalarFieldEnum | Prisma.NotificationStatusScalarFieldEnum[]
 }
 
 /**

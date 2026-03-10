@@ -60,7 +60,10 @@ export const ModelName = {
   IncomeItem: 'IncomeItem',
   ProjectCollaborator: 'ProjectCollaborator',
   ProjectManager: 'ProjectManager',
-  Meeting: 'Meeting'
+  Meeting: 'Meeting',
+  ProjectStatusRecord: 'ProjectStatusRecord',
+  NotificationStatus: 'NotificationStatus',
+  StatusTransition: 'StatusTransition'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -150,7 +153,9 @@ export const ProjectScalarFieldEnum = {
   responsible: 'responsible',
   docNumber: 'docNumber',
   docDate: 'docDate',
-  docLink: 'docLink'
+  docLink: 'docLink',
+  currentStatusCode: 'currentStatusCode',
+  currentStatusId: 'currentStatusId'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -234,6 +239,49 @@ export const MeetingScalarFieldEnum = {
 } as const
 
 export type MeetingScalarFieldEnum = (typeof MeetingScalarFieldEnum)[keyof typeof MeetingScalarFieldEnum]
+
+
+export const ProjectStatusRecordScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  statusCode: 'statusCode',
+  statusLabel: 'statusLabel',
+  subStatus: 'subStatus',
+  enteredAt: 'enteredAt',
+  enteredBy: 'enteredBy',
+  exitedAt: 'exitedAt',
+  notes: 'notes',
+  branchChoice: 'branchChoice'
+} as const
+
+export type ProjectStatusRecordScalarFieldEnum = (typeof ProjectStatusRecordScalarFieldEnum)[keyof typeof ProjectStatusRecordScalarFieldEnum]
+
+
+export const NotificationStatusScalarFieldEnum = {
+  id: 'id',
+  statusId: 'statusId',
+  notificationType: 'notificationType',
+  isRequired: 'isRequired',
+  isCompleted: 'isCompleted',
+  completedAt: 'completedAt',
+  completedBy: 'completedBy',
+  recipient: 'recipient',
+  notes: 'notes'
+} as const
+
+export type NotificationStatusScalarFieldEnum = (typeof NotificationStatusScalarFieldEnum)[keyof typeof NotificationStatusScalarFieldEnum]
+
+
+export const StatusTransitionScalarFieldEnum = {
+  id: 'id',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  label: 'label',
+  condition: 'condition',
+  order: 'order'
+} as const
+
+export type StatusTransitionScalarFieldEnum = (typeof StatusTransitionScalarFieldEnum)[keyof typeof StatusTransitionScalarFieldEnum]
 
 
 export const SortOrder = {
