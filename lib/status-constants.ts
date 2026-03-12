@@ -37,8 +37,7 @@ export const statusLabels: Record<StatusCode, string> = {
     "รองคณบดีดำเนินการแจ้ง (หัวหน้าภาควิชา และหน่วยงานที่เกี่ยวข้อง)",
   [StatusCode.STATUS_11]:
     "รอภาควิชาจัดส่งรายงานการดำเนินโครงการ (ภายใน 15 วัน)",
-  [StatusCode.STATUS_12]:
-    "ภาควิชาจัดส่งรายงานการดำเนินโครงการเรียบร้อยแล้ว",
+  [StatusCode.STATUS_12]: "ภาควิชาจัดส่งรายงานการดำเนินโครงการเรียบร้อยแล้ว",
   [StatusCode.STATUS_13]: "ปิดโครงการ",
   [StatusCode.STATUS_14]: "ระงับโครงการ",
   [StatusCode.STATUS_15]: "อื่นๆ",

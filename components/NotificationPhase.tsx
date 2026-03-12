@@ -1,12 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Clock, AlertCircle } from 'lucide-react';
-import { NotificationType } from '@/app/generated/prisma/client';
+import { useState, useEffect, useCallback } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { NotificationType } from "@/app/generated/prisma/client";
 
 interface NotificationItem {
   type: NotificationType;
@@ -26,21 +31,27 @@ interface NotificationPhaseProps {
   onAllRequiredComplete?: () => void;
 }
 
-export function NotificationPhase({ projectId, userId, onAllRequiredComplete }: NotificationPhaseProps) {
+export function NotificationPhase({
+  projectId,
+  userId,
+  onAllRequiredComplete,
+}: NotificationPhaseProps) {
   const [checklist, setChecklist] = useState<NotificationItem[]>([]);
   const [canProceed, setCanProceed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchChecklist = async () => {
+  const fetchChecklist = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/projects/${projectId}/status/notifications`);
-      
+      const response = await fetch(
+        `/api/projects/${projectId}/status/notifications`,
+      );
+
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'ไม่สามารถดึงข้อมูลได้');
+        throw new Error(data.error || "ไม่สามารถดึงข้อมูลได้");
       }
 
       const data = await response.json();
@@ -48,15 +59,15 @@ export function NotificationPhase({ projectId, userId, onAllRequiredComplete }: 
       setCanProceed(data.canProceed || false);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
+      setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId]);
 
   useEffect(() => {
     fetchChecklist();
-  }, [projectId]);
+  }, [projectId, fetchChecklist]);
 
   const handleCompleteNotification = async (type: NotificationType) => {
     try {
@@ -66,16 +77,16 @@ export function NotificationPhase({ projectId, userId, onAllRequiredComplete }: 
       const response = await fetch(
         `/api/projects/${projectId}/status/notifications/${type.toLowerCase()}/complete`,
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId })
-        }
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId }),
+        },
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'ไม่สามารถบันทึกได้');
+        throw new Error(data.error || "ไม่สามารถบันทึกได้");
       }
 
       // Refresh checklist
@@ -86,7 +97,7 @@ export function NotificationPhase({ projectId, userId, onAllRequiredComplete }: 
         onAllRequiredComplete();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
+      setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
     } finally {
       setProcessing(null);
     }
@@ -109,8 +120,8 @@ export function NotificationPhase({ projectId, userId, onAllRequiredComplete }: 
     return null; // Don't show if not in STATUS_10
   }
 
-  const requiredItems = checklist.filter(item => item.isRequired);
-  const optionalItems = checklist.filter(item => !item.isRequired);
+  const requiredItems = checklist.filter((item) => item.isRequired);
+  const optionalItems = checklist.filter((item) => !item.isRequired);
 
   return (
     <Card>
@@ -161,7 +172,9 @@ export function NotificationPhase({ projectId, userId, onAllRequiredComplete }: 
         {/* Optional Notifications */}
         {optionalItems.length > 0 && (
           <div className="space-y-3">
-            <h4 className="font-medium text-gray-700">รายการเพิ่มเติม (ถ้ามี)</h4>
+            <h4 className="font-medium text-gray-700">
+              รายการเพิ่มเติม (ถ้ามี)
+            </h4>
             <div className="space-y-3">
               {optionalItems.map((item) => (
                 <NotificationCheckItem
@@ -179,7 +192,11 @@ export function NotificationPhase({ projectId, userId, onAllRequiredComplete }: 
         <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-md">
           <p className="font-medium mb-1">หมายเหตุ:</p>
           <ul className="list-disc list-inside space-y-1">
-            <li>รายการที่มี <span className="text-red-700 font-medium">(บังคับ)</span> จะต้องทำให้เสร็จก่อนจึงจะสามารถเปลี่ยนสถานะต่อได้</li>
+            <li>
+              รายการที่มี{" "}
+              <span className="text-red-700 font-medium">(บังคับ)</span>{" "}
+              จะต้องทำให้เสร็จก่อนจึงจะสามารถเปลี่ยนสถานะต่อได้
+            </li>
             <li>รายการเพิ่มเติมสามารถเลือกทำหรือไม่ทำก็ได้</li>
           </ul>
         </div>
@@ -194,7 +211,11 @@ interface NotificationCheckItemProps {
   onComplete: () => void;
 }
 
-function NotificationCheckItem({ item, processing, onComplete }: NotificationCheckItemProps) {
+function NotificationCheckItem({
+  item,
+  processing,
+  onComplete,
+}: NotificationCheckItemProps) {
   return (
     <div className="flex items-start gap-3 p-3 border rounded-md hover:bg-gray-50 transition-colors">
       <Checkbox
@@ -205,7 +226,9 @@ function NotificationCheckItem({ item, processing, onComplete }: NotificationChe
       />
       <div className="flex-1">
         <div className="flex items-center gap-2">
-          <span className={`font-medium ${item.isCompleted ? 'text-green-700' : 'text-gray-900'}`}>
+          <span
+            className={`font-medium ${item.isCompleted ? "text-green-700" : "text-gray-900"}`}
+          >
             {item.label}
           </span>
           {item.isRequired && (
@@ -219,20 +242,19 @@ function NotificationCheckItem({ item, processing, onComplete }: NotificationChe
         </div>
         {item.isCompleted && item.completedAt && (
           <div className="text-sm text-gray-500 mt-1">
-            แจ้งเมื่อ: {new Date(item.completedAt).toLocaleDateString('th-TH', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
+            แจ้งเมื่อ:{" "}
+            {new Date(item.completedAt).toLocaleDateString("th-TH", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
             })}
             {item.completedBy && ` โดย ${item.completedBy.name}`}
           </div>
         )}
       </div>
-      {processing && (
-        <Clock className="w-5 h-5 animate-spin text-gray-400" />
-      )}
+      {processing && <Clock className="w-5 h-5 animate-spin text-gray-400" />}
     </div>
   );
 }

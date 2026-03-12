@@ -291,13 +291,13 @@ export default function ProjectTrackingPage() {
       try {
         setIsLoading(true);
         const response = await fetch("/api/overviews");
-        
+
         if (!response.ok) {
           throw new Error("Failed to fetch projects");
         }
-        
+
         const data = await response.json();
-        
+
         if (data.success && data.data.projects) {
           setProjects(data.data.projects);
         } else {
@@ -439,7 +439,9 @@ export default function ProjectTrackingPage() {
         setEditingMeetings(null);
       } catch (error) {
         console.error("Error saving meetings:", error);
-        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลมติที่ประชุม กรุณาลองใหม่อีกครั้ง");
+        alert(
+          "เกิดข้อผิดพลาดในการบันทึกข้อมูลมติที่ประชุม กรุณาลองใหม่อีกครั้ง",
+        );
       }
     }
   };

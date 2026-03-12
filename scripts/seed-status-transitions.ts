@@ -25,8 +25,8 @@ async function main() {
   for (const transition of allowedTransitions) {
     await prisma.statusTransition.create({
       data: {
-        fromStatus: transition.from as StatusCode,
-        toStatus: transition.to as StatusCode,
+        fromStatus: transition.fromStatus as StatusCode,
+        toStatus: transition.toStatus as StatusCode,
         label: transition.label,
         condition: transition.condition || null,
         order: transition.order || 0,

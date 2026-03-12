@@ -1,10 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle2, Circle, AlertCircle } from 'lucide-react';
-import { StatusCode } from '@/app/generated/prisma/client';
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Clock, CheckCircle2, Circle, AlertCircle } from "lucide-react";
+import { StatusCode } from "@/app/generated/prisma/client";
 
 interface StatusHistoryRecord {
   id: string;
@@ -35,7 +41,11 @@ interface StatusHistoryProps {
   showAll?: boolean;
 }
 
-export function StatusHistory({ projectId, maxItems = 5, showAll = false }: StatusHistoryProps) {
+export function StatusHistory({
+  projectId,
+  maxItems = 5,
+  showAll = false,
+}: StatusHistoryProps) {
   const [history, setHistory] = useState<StatusHistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,17 +55,19 @@ export function StatusHistory({ projectId, maxItems = 5, showAll = false }: Stat
     const fetchHistory = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/projects/${projectId}/status/history`);
-        
+        const response = await fetch(
+          `/api/projects/${projectId}/status/history`,
+        );
+
         if (!response.ok) {
-          throw new Error('ไม่สามารถดึงประวัติสถานะได้');
+          throw new Error("ไม่สามารถดึงประวัติสถานะได้");
         }
 
         const data = await response.json();
         setHistory(data.history || []);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
+        setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
       } finally {
         setLoading(false);
       }
@@ -151,7 +163,10 @@ export function StatusHistory({ projectId, maxItems = 5, showAll = false }: Stat
                       </Badge>
                       <span className="font-medium">{record.label}</span>
                       {isFirst && (
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+                        <Badge
+                          variant="outline"
+                          className="bg-blue-50 text-blue-700 border-blue-300"
+                        >
                           สถานะปัจจุบัน
                         </Badge>
                       )}
@@ -159,23 +174,31 @@ export function StatusHistory({ projectId, maxItems = 5, showAll = false }: Stat
 
                     <div className="text-sm text-gray-600 space-y-1">
                       <div>
-                        เข้าสู่สถานะ: {new Date(record.enteredAt).toLocaleDateString('th-TH', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
+                        เข้าสู่สถานะ:{" "}
+                        {new Date(record.enteredAt).toLocaleDateString(
+                          "th-TH",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          },
+                        )}
                       </div>
                       {record.exitedAt && (
                         <div>
-                          ออกจากสถานะ: {new Date(record.exitedAt).toLocaleDateString('th-TH', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
+                          ออกจากสถานะ:{" "}
+                          {new Date(record.exitedAt).toLocaleDateString(
+                            "th-TH",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
                         </div>
                       )}
                       {record.duration !== null && (
@@ -183,9 +206,7 @@ export function StatusHistory({ projectId, maxItems = 5, showAll = false }: Stat
                           ระยะเวลา: {record.duration} วัน
                         </div>
                       )}
-                      <div>
-                        โดย: {record.enteredBy.name}
-                      </div>
+                      <div>โดย: {record.enteredBy.name}</div>
                       {record.branchChoice && (
                         <div className="text-gray-500">
                           หมายเหตุ: {record.branchChoice}
@@ -194,36 +215,53 @@ export function StatusHistory({ projectId, maxItems = 5, showAll = false }: Stat
                     </div>
 
                     {/* Notifications for STATUS_10 */}
-                    {record.statusCode === 'STATUS_10' && record.notifications && record.notifications.length > 0 && (
-                      <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-md">
-                        <div className="text-sm font-medium mb-2">การแจ้งหน่วยงาน:</div>
-                        <div className="space-y-1 text-sm">
-                          {record.notifications.map((notif, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              {notif.isCompleted ? (
-                                <CheckCircle2 className="w-4 h-4 text-green-600" />
-                              ) : (
-                                <Circle className="w-4 h-4 text-gray-400" />
-                              )}
-                              <span className={notif.isCompleted ? 'text-green-700' : 'text-gray-600'}>
-                                {notif.type}
-                                {notif.isRequired && ' (บังคับ)'}
-                                {notif.completedAt && notif.completedBy && (
-                                  <span className="text-gray-500 ml-2">
-                                    - {new Date(notif.completedAt).toLocaleDateString('th-TH', {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      hour: '2-digit',
-                                      minute: '2-digit'
-                                    })} โดย {notif.completedBy.name}
-                                  </span>
+                    {record.statusCode === "STATUS_10" &&
+                      record.notifications &&
+                      record.notifications.length > 0 && (
+                        <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-md">
+                          <div className="text-sm font-medium mb-2">
+                            การแจ้งหน่วยงาน:
+                          </div>
+                          <div className="space-y-1 text-sm">
+                            {record.notifications.map((notif, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-center gap-2"
+                              >
+                                {notif.isCompleted ? (
+                                  <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                ) : (
+                                  <Circle className="w-4 h-4 text-gray-400" />
                                 )}
-                              </span>
-                            </div>
-                          ))}
+                                <span
+                                  className={
+                                    notif.isCompleted
+                                      ? "text-green-700"
+                                      : "text-gray-600"
+                                  }
+                                >
+                                  {notif.type}
+                                  {notif.isRequired && " (บังคับ)"}
+                                  {notif.completedAt && notif.completedBy && (
+                                    <span className="text-gray-500 ml-2">
+                                      -{" "}
+                                      {new Date(
+                                        notif.completedAt,
+                                      ).toLocaleDateString("th-TH", {
+                                        month: "short",
+                                        day: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      })}{" "}
+                                      โดย {notif.completedBy.name}
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </div>
                 </div>
               );

@@ -2,9 +2,12 @@ import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { listOverviewsQuerySchema } from "./schema";
+import { Prisma, ProjectStatus } from "@/app/generated/prisma/client";
 
 // Helper to format Decimal to string with 2 decimal places
-function formatDecimal(value: any | null | undefined): string {
+function formatDecimal(
+  value: { toFixed: (decimals: number) => string } | null | undefined,
+): string {
   if (!value) return "0.00";
   return value.toFixed(2);
 }
@@ -35,9 +38,9 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {
+    const where: Prisma.ProjectWhereInput = {
       ...(department && department !== "all" && { department }),
-      ...(status && { status }),
+      ...(status && { status: status as ProjectStatus }),
       ...(search && {
         OR: [
           { projectCode: { contains: search, mode: "insensitive" as const } },
@@ -103,9 +106,7 @@ export async function GET(request: NextRequest) {
 
         // Meeting data
         boardMeetingNo: boardMeeting?.no || "",
-        boardMeetingDate: boardMeeting
-          ? formatThaiDate(boardMeeting.date)
-          : "",
+        boardMeetingDate: boardMeeting ? formatThaiDate(boardMeeting.date) : "",
         deanDecisionNo: deanMeeting?.no || "",
         deanDecisionDate: deanMeeting ? formatThaiDate(deanMeeting.date) : "",
 
@@ -119,12 +120,8 @@ export async function GET(request: NextRequest) {
         generalReserve: formatDecimal(project.expenseReserve),
 
         // Proposal vs Actual fees
-        maintenanceFeeProposal: formatDecimal(
-          project.maintenanceFeeProposal,
-        ),
-        electricityFeeProposal: formatDecimal(
-          project.electricityFeeProposal,
-        ),
+        maintenanceFeeProposal: formatDecimal(project.maintenanceFeeProposal),
+        electricityFeeProposal: formatDecimal(project.electricityFeeProposal),
 
         // Finance fields
         vendorCode: project.vendorCode || "",
@@ -181,9 +178,7 @@ export async function GET(request: NextRequest) {
         })),
         _costCenter: project.costCenter || "",
         _maintenanceFee: formatDecimal(project.maintenanceFeeActual),
-        _electricityFeeActual: formatDecimal(
-          project.electricityFeeActual,
-        ),
+        _electricityFeeActual: formatDecimal(project.electricityFeeActual),
 
         // Additional required fields (placeholders for now)
         strategyType: "",

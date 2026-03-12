@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { StatusCode } from '@/app/generated/prisma/client';
-import { CheckCircle2, Circle, Clock, AlertCircle } from 'lucide-react';
+import { useState, useEffect, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { StatusCode } from "@/app/generated/prisma/client";
+import { CheckCircle2, Circle, Clock, AlertCircle } from "lucide-react";
 
 interface AvailableTransition {
   toStatus: StatusCode;
@@ -37,20 +43,28 @@ interface StatusTimelineProps {
   onTransitionComplete?: () => void;
 }
 
-export function StatusTimeline({ projectId, userId, onTransitionComplete }: StatusTimelineProps) {
-  const [currentStatus, setCurrentStatus] = useState<CurrentStatus | null>(null);
-  const [availableTransitions, setAvailableTransitions] = useState<AvailableTransition[]>([]);
+export function StatusTimeline({
+  projectId,
+  userId,
+  onTransitionComplete,
+}: StatusTimelineProps) {
+  const [currentStatus, setCurrentStatus] = useState<CurrentStatus | null>(
+    null,
+  );
+  const [availableTransitions, setAvailableTransitions] = useState<
+    AvailableTransition[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStatus = async () => {
+  const fetchStatus = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/projects/${projectId}/status`);
-      
+
       if (!response.ok) {
-        throw new Error('ไม่สามารถดึงข้อมูลสถานะได้');
+        throw new Error("ไม่สามารถดึงข้อมูลสถานะได้");
       }
 
       const data = await response.json();
@@ -58,18 +72,22 @@ export function StatusTimeline({ projectId, userId, onTransitionComplete }: Stat
       setAvailableTransitions(data.availableTransitions || []);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
+      setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId]);
 
   useEffect(() => {
     fetchStatus();
-  }, [projectId]);
+  }, [projectId, fetchStatus]);
 
   const handleTransition = async (toStatus: StatusCode) => {
-    if (!confirm(`ต้องการเปลี่ยนสถานะเป็น "${availableTransitions.find(t => t.toStatus === toStatus)?.label}" หรือไม่?`)) {
+    if (
+      !confirm(
+        `ต้องการเปลี่ยนสถานะเป็น "${availableTransitions.find((t) => t.toStatus === toStatus)?.label}" หรือไม่?`,
+      )
+    ) {
       return;
     }
 
@@ -77,33 +95,36 @@ export function StatusTimeline({ projectId, userId, onTransitionComplete }: Stat
       setTransitioning(true);
       setError(null);
 
-      const response = await fetch(`/api/projects/${projectId}/status/transition`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ toStatus, userId })
-      });
+      const response = await fetch(
+        `/api/projects/${projectId}/status/transition`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toStatus, userId }),
+        },
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'ไม่สามารถเปลี่ยนสถานะได้');
+        throw new Error(data.error || "ไม่สามารถเปลี่ยนสถานะได้");
       }
 
       // Refresh status
       await fetchStatus();
-      
+
       if (onTransitionComplete) {
         onTransitionComplete();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
+      setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
     } finally {
       setTransitioning(false);
     }
   };
 
   const handleRecall = async () => {
-    if (!confirm('ต้องการเรียกคืนเอกสารหรือไม่?')) {
+    if (!confirm("ต้องการเรียกคืนเอกสารหรือไม่?")) {
       return;
     }
 
@@ -112,24 +133,24 @@ export function StatusTimeline({ projectId, userId, onTransitionComplete }: Stat
       setError(null);
 
       const response = await fetch(`/api/projects/${projectId}/recall`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'ไม่สามารถเรียกคืนเอกสารได้');
+        throw new Error(data.error || "ไม่สามารถเรียกคืนเอกสารได้");
       }
 
       await fetchStatus();
-      
+
       if (onTransitionComplete) {
         onTransitionComplete();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด');
+      setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
     } finally {
       setTransitioning(false);
     }
@@ -152,7 +173,9 @@ export function StatusTimeline({ projectId, userId, onTransitionComplete }: Stat
     <Card>
       <CardHeader>
         <CardTitle>สถานะโครงการ</CardTitle>
-        <CardDescription>สถานะปัจจุบันและการเปลี่ยนแปลงที่สามารถทำได้</CardDescription>
+        <CardDescription>
+          สถานะปัจจุบันและการเปลี่ยนแปลงที่สามารถทำได้
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {error && (
@@ -175,13 +198,17 @@ export function StatusTimeline({ projectId, userId, onTransitionComplete }: Stat
                   </Badge>
                 </div>
                 <div className="text-sm text-gray-500 mt-1">
-                  เข้าสู่สถานะเมื่อ: {new Date(currentStatus.enteredAt).toLocaleDateString('th-TH', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
+                  เข้าสู่สถานะเมื่อ:{" "}
+                  {new Date(currentStatus.enteredAt).toLocaleDateString(
+                    "th-TH",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    },
+                  )}
                 </div>
                 <div className="text-sm text-gray-500">
                   โดย: {currentStatus.enteredBy.name}
@@ -190,34 +217,45 @@ export function StatusTimeline({ projectId, userId, onTransitionComplete }: Stat
             </div>
 
             {/* Show notification progress if in STATUS_10 */}
-            {currentStatus.code === 'STATUS_10' && currentStatus.notifications && (
-              <div className="ml-8 mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                <div className="text-sm font-medium mb-2">การแจ้งหน่วยงาน:</div>
-                <div className="space-y-1 text-sm">
-                  {currentStatus.notifications.map((notif, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      {notif.isCompleted ? (
-                        <CheckCircle2 className="w-4 h-4 text-green-600" />
-                      ) : (
-                        <Circle className="w-4 h-4 text-gray-400" />
-                      )}
-                      <span className={notif.isCompleted ? 'text-green-700' : 'text-gray-600'}>
-                        {notif.type} {notif.isRequired && '(บังคับ)'}
-                      </span>
-                    </div>
-                  ))}
+            {currentStatus.code === "STATUS_10" &&
+              currentStatus.notifications && (
+                <div className="ml-8 mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                  <div className="text-sm font-medium mb-2">
+                    การแจ้งหน่วยงาน:
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    {currentStatus.notifications.map((notif, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        {notif.isCompleted ? (
+                          <CheckCircle2 className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <Circle className="w-4 h-4 text-gray-400" />
+                        )}
+                        <span
+                          className={
+                            notif.isCompleted
+                              ? "text-green-700"
+                              : "text-gray-600"
+                          }
+                        >
+                          {notif.type} {notif.isRequired && "(บังคับ)"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         )}
 
         {/* Available Transitions */}
         <div className="space-y-3">
           <h4 className="font-medium">การเปลี่ยนแปลงที่สามารถทำได้:</h4>
-          
+
           {availableTransitions.length === 0 ? (
-            <p className="text-sm text-gray-500">ไม่มีการเปลี่ยนแปลงที่สามารถทำได้ในขณะนี้</p>
+            <p className="text-sm text-gray-500">
+              ไม่มีการเปลี่ยนแปลงที่สามารถทำได้ในขณะนี้
+            </p>
           ) : (
             <div className="grid gap-2">
               {availableTransitions.map((transition) => (
@@ -248,7 +286,7 @@ export function StatusTimeline({ projectId, userId, onTransitionComplete }: Stat
         </div>
 
         {/* Recall Button (only for STATUS_1) */}
-        {currentStatus?.code === 'STATUS_1' && (
+        {currentStatus?.code === "STATUS_1" && (
           <div className="pt-4 border-t">
             <Button
               onClick={handleRecall}

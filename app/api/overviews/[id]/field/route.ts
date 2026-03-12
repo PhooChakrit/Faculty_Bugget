@@ -40,7 +40,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     }
 
     // Prepare update data based on field type
-    let updateData: any = {};
+    const updateData: Record<string, string | number> = {};
 
     if (
       dbField === "maintenanceFeeActual" ||

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { statusService } from '@/lib/status-service';
-import { prisma } from '@/lib/prisma';
-import { statusLabels, statusColors } from '@/lib/status-constants';
+import { NextRequest, NextResponse } from "next/server";
+import { statusService } from "@/lib/status-service";
+import { prisma } from "@/lib/prisma";
+import { statusLabels, statusColors } from "@/lib/status-constants";
 
 /**
  * GET /api/projects/[id]/status
@@ -9,10 +9,10 @@ import { statusLabels, statusColors } from '@/lib/status-constants';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const projectId = params.id;
+    const { id: projectId } = await params;
 
     // Get project with current status
     const project = await prisma.project.findUnique({
@@ -21,29 +21,30 @@ export async function GET(
         currentStatus: {
           include: {
             enteredByUser: {
-              select: { id: true, name: true, email: true }
+              select: { id: true, name: true, email: true },
             },
             notifications: {
               include: {
                 completer: {
-                  select: { id: true, name: true }
-                }
-              }
-            }
-          }
-        }
-      }
+                  select: { id: true, name: true },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!project) {
       return NextResponse.json(
-        { error: 'โครงการไม่พบในระบบ' },
-        { status: 404 }
+        { error: "โครงการไม่พบในระบบ" },
+        { status: 404 },
       );
     }
 
     // Get available transitions
-    const availableTransitions = await statusService.getAvailableTransitions(projectId);
+    const availableTransitions =
+      await statusService.getAvailableTransitions(projectId);
 
     // Format response
     const currentStatus = project.currentStatus
@@ -58,25 +59,25 @@ export async function GET(
             isRequired: n.isRequired,
             isCompleted: n.isCompleted,
             completedAt: n.completedAt,
-            completedBy: n.completer
-          }))
+            completedBy: n.completer,
+          })),
         }
       : null;
 
     return NextResponse.json({
       currentStatus,
-      availableTransitions: availableTransitions.map(t => ({
+      availableTransitions: availableTransitions.map((t) => ({
         toStatus: t.toStatus,
         label: t.label,
         color: statusColors[t.toStatus],
-        condition: t.condition
-      }))
+        condition: t.condition,
+      })),
     });
   } catch (error) {
-    console.error('Get status error:', error);
+    console.error("Get status error:", error);
     return NextResponse.json(
-      { error: 'เกิดข้อผิดพลาดในการดึงข้อมูลสถานะ' },
-      { status: 500 }
+      { error: "เกิดข้อผิดพลาดในการดึงข้อมูลสถานะ" },
+      { status: 500 },
     );
   }
 }
