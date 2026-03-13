@@ -63,6 +63,10 @@ export const ModelName = {
   IncomeItem: "IncomeItem",
   ProjectCollaborator: "ProjectCollaborator",
   ProjectManager: "ProjectManager",
+  Meeting: "Meeting",
+  ProjectStatusRecord: "ProjectStatusRecord",
+  NotificationStatus: "NotificationStatus",
+  StatusTransition: "StatusTransition",
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -130,6 +134,31 @@ export const ProjectScalarFieldEnum = {
   note2: "note2",
   note3: "note3",
   participantDetails: "participantDetails",
+  projectCode: "projectCode",
+  memoTitle: "memoTitle",
+  vendorCode: "vendorCode",
+  costCenter: "costCenter",
+  fundOwner: "fundOwner",
+  maintenanceFeeProposal: "maintenanceFeeProposal",
+  maintenanceFeeActual: "maintenanceFeeActual",
+  electricityFeeProposal: "electricityFeeProposal",
+  electricityFeeActual: "electricityFeeActual",
+  status1: "status1",
+  status1Date: "status1Date",
+  status2: "status2",
+  status2Date: "status2Date",
+  status3: "status3",
+  status3Date: "status3Date",
+  status4: "status4",
+  status4Date: "status4Date",
+  status5: "status5",
+  status5Date: "status5Date",
+  responsible: "responsible",
+  docNumber: "docNumber",
+  docDate: "docDate",
+  docLink: "docLink",
+  currentStatusCode: "currentStatusCode",
+  currentStatusId: "currentStatusId",
 } as const;
 
 export type ProjectScalarFieldEnum =
@@ -200,6 +229,63 @@ export const ProjectManagerScalarFieldEnum = {
 
 export type ProjectManagerScalarFieldEnum =
   (typeof ProjectManagerScalarFieldEnum)[keyof typeof ProjectManagerScalarFieldEnum];
+
+export const MeetingScalarFieldEnum = {
+  id: "id",
+  projectId: "projectId",
+  type: "type",
+  no: "no",
+  date: "date",
+  purpose: "purpose",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+} as const;
+
+export type MeetingScalarFieldEnum =
+  (typeof MeetingScalarFieldEnum)[keyof typeof MeetingScalarFieldEnum];
+
+export const ProjectStatusRecordScalarFieldEnum = {
+  id: "id",
+  projectId: "projectId",
+  statusCode: "statusCode",
+  statusLabel: "statusLabel",
+  subStatus: "subStatus",
+  enteredAt: "enteredAt",
+  enteredBy: "enteredBy",
+  exitedAt: "exitedAt",
+  notes: "notes",
+  branchChoice: "branchChoice",
+} as const;
+
+export type ProjectStatusRecordScalarFieldEnum =
+  (typeof ProjectStatusRecordScalarFieldEnum)[keyof typeof ProjectStatusRecordScalarFieldEnum];
+
+export const NotificationStatusScalarFieldEnum = {
+  id: "id",
+  statusId: "statusId",
+  notificationType: "notificationType",
+  isRequired: "isRequired",
+  isCompleted: "isCompleted",
+  completedAt: "completedAt",
+  completedBy: "completedBy",
+  recipient: "recipient",
+  notes: "notes",
+} as const;
+
+export type NotificationStatusScalarFieldEnum =
+  (typeof NotificationStatusScalarFieldEnum)[keyof typeof NotificationStatusScalarFieldEnum];
+
+export const StatusTransitionScalarFieldEnum = {
+  id: "id",
+  fromStatus: "fromStatus",
+  toStatus: "toStatus",
+  label: "label",
+  condition: "condition",
+  order: "order",
+} as const;
+
+export type StatusTransitionScalarFieldEnum =
+  (typeof StatusTransitionScalarFieldEnum)[keyof typeof StatusTransitionScalarFieldEnum];
 
 export const SortOrder = {
   asc: "asc",

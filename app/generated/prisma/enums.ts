@@ -27,3 +27,41 @@ export const IncomeType = {
 } as const;
 
 export type IncomeType = (typeof IncomeType)[keyof typeof IncomeType];
+
+export const MeetingType = {
+  BOARD: "BOARD",
+  DEAN: "DEAN",
+} as const;
+
+export type MeetingType = (typeof MeetingType)[keyof typeof MeetingType];
+
+export const StatusCode = {
+  STATUS_1: "STATUS_1",
+  STATUS_2: "STATUS_2",
+  STATUS_3: "STATUS_3",
+  STATUS_4: "STATUS_4",
+  STATUS_5: "STATUS_5",
+  STATUS_6: "STATUS_6",
+  STATUS_7: "STATUS_7",
+  STATUS_8: "STATUS_8",
+  STATUS_9: "STATUS_9",
+  STATUS_10: "STATUS_10",
+  STATUS_11: "STATUS_11",
+  STATUS_12: "STATUS_12",
+  STATUS_13: "STATUS_13",
+  STATUS_14: "STATUS_14",
+  STATUS_15: "STATUS_15",
+  RECALL: "RECALL",
+} as const;
+
+export type StatusCode = (typeof StatusCode)[keyof typeof StatusCode];
+
+export const NotificationType = {
+  DEPT_HEAD: "DEPT_HEAD",
+  FINANCE: "FINANCE",
+  PLANNING: "PLANNING",
+  PHYSICAL: "PHYSICAL",
+} as const;
+
+export type NotificationType =
+  (typeof NotificationType)[keyof typeof NotificationType];
