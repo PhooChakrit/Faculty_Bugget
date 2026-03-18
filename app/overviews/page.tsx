@@ -96,11 +96,38 @@ const PROJECT_STATUSES = [
   "8. คณบดีอนุมัติโครงการ",
   "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
   "10. รองคณบดี (รองศาสตราจารย์ ดร.พิชญดา เกตุเมฆ) แจ้งต่อ หัวหน้าภาควิชาเพื่อโปรดทราบและดำเนินการต่อไป",
-  "11. รองคณบดี (รองศาสตราจารย์ ดร.พิชญดา เกตุเมฆ) แจ้งต่อ สายการเงินและบัญชี, งานนโยบายและแผน หรืองานบริหารกายภาพ (แล้วแต่กรณี) เพื่อโปรดทราบและดำเนินการต่อไป",
-  "12. รอภาควิชาจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน",
-  "13. ภาควิชาดำเนินการจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน เรียบร้อยแล้ว",
-  "14. ปิดโครงการ",
+  "11. รอภาควิชาจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน",
+  "12. ภาควิชาดำเนินการจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน เรียบร้อยแล้ว",
+  "13. ปิดโครงการ",
+  "RECALL. ดึงกลับเอกสาร",
 ] as const;
+
+const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
+  "1": ["2", "RECALL"],
+  RECALL: ["1"],
+  "2": ["1", "3"],
+  "3": ["4", "5"],
+  "4": ["6"],
+  "5": ["7"],
+  "6": ["8"],
+  "7": ["9"],
+  "8": ["10"],
+  "9": ["10"],
+  "10": ["11"],
+  "11": ["12"],
+  "12": ["13"],
+  "13": [],
+};
+
+const getStatusKey = (statusValue: string | undefined) => {
+  if (!statusValue) return "";
+  return statusValue.split(".")[0].trim();
+};
+
+const getAllowedNextStatusKeys = (currentStatusValue: string | undefined) => {
+  const currentKey = getStatusKey(currentStatusValue);
+  return STATUS_TRANSITION_FLOW[currentKey] ?? [];
+};
 
 // --- Meeting Record Interface ---
 interface MeetingRecord {
@@ -118,6 +145,7 @@ interface EnhancedProjectData extends ProjectData {
   _costCenter?: string; // 18.
   _maintenanceFee?: string; // 10.
   _electricityFeeActual?: string; // 14.
+  _canMoveTo11?: boolean;
 }
 
 type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
@@ -564,6 +592,11 @@ export default function ProjectTrackingPage() {
     // 3. Special Case: Project Status (Dropdown)
     if (col.key === "_projectStatus") {
       if (isEditing) {
+        const allowedNextKeys = getAllowedNextStatusKeys(
+          project._projectStatus,
+        );
+        const currentStatusKey = getStatusKey(project._projectStatus);
+
         return (
           <div className="flex gap-1 items-center z-50 relative">
             <select
@@ -574,7 +607,25 @@ export default function ProjectTrackingPage() {
             >
               <option value="">-- เลือกสถานะ --</option>
               {PROJECT_STATUSES.map((status) => (
-                <option key={status} value={status}>
+                <option
+                  key={status}
+                  value={status}
+                  disabled={(() => {
+                    const statusKey = getStatusKey(status);
+                    if (statusKey === currentStatusKey) return false;
+                    if (!allowedNextKeys.includes(statusKey)) return true;
+
+                    if (
+                      currentStatusKey === "10" &&
+                      statusKey === "11" &&
+                      !project._canMoveTo11
+                    ) {
+                      return true;
+                    }
+
+                    return false;
+                  })()}
+                >
                   {status}
                 </option>
               ))}

@@ -86,7 +86,9 @@ export const updateProjectSchema = createProjectSchema.partial();
 
 // Project ID param schema
 export const projectIdSchema = z.object({
-  id: z.string().cuid(),
+  id: z
+    .string()
+    .regex(/^\d{2}\d{5}$/, "Invalid project ID format (expected YYxxxxx)"),
 });
 
 // Query params for list
