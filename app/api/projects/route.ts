@@ -6,6 +6,7 @@ import {
   listProjectsQuerySchema,
   CreateProjectInput,
 } from "./schema";
+import { generateProjectId } from "@/lib/generate-project-id";
 
 // GET /api/projects - List all projects
 export async function GET(request: NextRequest) {
@@ -89,71 +90,79 @@ export async function POST(request: NextRequest) {
       ...projectData
     } = data;
 
-    const project = await prisma.project.create({
-      data: {
-        ...projectData,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-        // Create target group relations
-        ...(targetGroupIds &&
-          targetGroupIds.length > 0 && {
-            targetGroups: {
-              create: targetGroupIds.map((targetGroupId) => ({
-                targetGroup: { connect: { id: targetGroupId } },
-              })),
-            },
-          }),
-        // Create strategy relations
-        ...(strategyIds &&
-          strategyIds.length > 0 && {
-            strategies: {
-              create: strategyIds.map((strategyId) => ({
-                strategy: { connect: { id: strategyId } },
-              })),
-            },
-          }),
-        // Create income items
-        ...(incomeItems &&
-          incomeItems.length > 0 && {
-            incomeItems: {
-              create: incomeItems.map((item) => ({
-                type: item.type,
-                name: item.name,
-                amount: item.amount,
-                categoryName: item.categoryName,
-              })),
-            },
-          }),
-        // Create collaborators
-        ...(collaborators &&
-          collaborators.length > 0 && {
-            collaborators: {
-              create: collaborators.map((c) => ({
-                name: c.name,
-              })),
-            },
-          }),
-        // Create managers
-        ...(managers &&
-          managers.length > 0 && {
-            managers: {
-              create: managers.map((m) => ({
-                name: m.name,
-                position: m.position,
-              })),
-            },
-          }),
+    const project = await prisma.$transaction(
+      async (tx) => {
+        const id = await generateProjectId(tx);
+
+        return tx.project.create({
+          data: {
+            id,
+            ...projectData,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
+            // Create target group relations
+            ...(targetGroupIds &&
+              targetGroupIds.length > 0 && {
+                targetGroups: {
+                  create: targetGroupIds.map((targetGroupId) => ({
+                    targetGroup: { connect: { id: targetGroupId } },
+                  })),
+                },
+              }),
+            // Create strategy relations
+            ...(strategyIds &&
+              strategyIds.length > 0 && {
+                strategies: {
+                  create: strategyIds.map((strategyId) => ({
+                    strategy: { connect: { id: strategyId } },
+                  })),
+                },
+              }),
+            // Create income items
+            ...(incomeItems &&
+              incomeItems.length > 0 && {
+                incomeItems: {
+                  create: incomeItems.map((item) => ({
+                    type: item.type,
+                    name: item.name,
+                    amount: item.amount,
+                    categoryName: item.categoryName,
+                  })),
+                },
+              }),
+            // Create collaborators
+            ...(collaborators &&
+              collaborators.length > 0 && {
+                collaborators: {
+                  create: collaborators.map((c) => ({
+                    name: c.name,
+                  })),
+                },
+              }),
+            // Create managers
+            ...(managers &&
+              managers.length > 0 && {
+                managers: {
+                  create: managers.map((m) => ({
+                    name: m.name,
+                    position: m.position,
+                  })),
+                },
+              }),
+          },
+          include: {
+            leader: { select: { id: true, name: true, email: true } },
+            coLeader: { select: { id: true, name: true, email: true } },
+            targetGroups: { include: { targetGroup: true } },
+            strategies: { include: { strategy: true } },
+            incomeItems: true,
+            collaborators: true,
+            managers: true,
+          },
+        });
       },
-      include: {
-        leader: { select: { id: true, name: true, email: true } },
-        coLeader: { select: { id: true, name: true, email: true } },
-        targetGroups: { include: { targetGroup: true } },
-        strategies: { include: { strategy: true } },
-        incomeItems: true,
-        collaborators: true,
-        managers: true,
-      },
-    });
+      { isolationLevel: "Serializable" },
+    );
 
     return successResponse(project, 201);
   } catch (error) {

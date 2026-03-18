@@ -70,6 +70,11 @@ export async function GET(request: NextRequest) {
           coLeader: {
             select: { id: true, name: true, email: true },
           },
+          currentStatus: {
+            include: {
+              notifications: true,
+            },
+          },
         },
       }),
       prisma.project.count({ where }),
@@ -95,6 +100,11 @@ export async function GET(request: NextRequest) {
       // Find board and dean meetings
       const boardMeeting = project.meetings.find((m) => m.type === "BOARD");
       const deanMeeting = project.meetings.find((m) => m.type === "DEAN");
+      const requiredNotifications =
+        project.currentStatus?.notifications.filter((n) => n.isRequired) ?? [];
+      const canMoveTo11 =
+        requiredNotifications.length > 0 &&
+        requiredNotifications.every((n) => n.isCompleted);
 
       return {
         id: project.id,
@@ -179,6 +189,7 @@ export async function GET(request: NextRequest) {
         _costCenter: project.costCenter || "",
         _maintenanceFee: formatDecimal(project.maintenanceFeeActual),
         _electricityFeeActual: formatDecimal(project.electricityFeeActual),
+        _canMoveTo11: canMoveTo11,
 
         // Additional required fields (placeholders for now)
         strategyType: "",
