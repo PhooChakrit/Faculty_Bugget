@@ -421,6 +421,10 @@ export const ModelName = {
   IncomeItem: "IncomeItem",
   ProjectCollaborator: "ProjectCollaborator",
   ProjectManager: "ProjectManager",
+  Meeting: "Meeting",
+  ProjectStatusRecord: "ProjectStatusRecord",
+  NotificationStatus: "NotificationStatus",
+  StatusTransition: "StatusTransition",
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -451,7 +455,11 @@ export type TypeMap<
       | "projectStrategy"
       | "incomeItem"
       | "projectCollaborator"
-      | "projectManager";
+      | "projectManager"
+      | "meeting"
+      | "projectStatusRecord"
+      | "notificationStatus"
+      | "statusTransition";
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
@@ -1139,6 +1147,310 @@ export type TypeMap<
         };
       };
     };
+    Meeting: {
+      payload: Prisma.$MeetingPayload<ExtArgs>;
+      fields: Prisma.MeetingFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.MeetingFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.MeetingFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>;
+        };
+        findFirst: {
+          args: Prisma.MeetingFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.MeetingFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>;
+        };
+        findMany: {
+          args: Prisma.MeetingFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>[];
+        };
+        create: {
+          args: Prisma.MeetingCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>;
+        };
+        createMany: {
+          args: Prisma.MeetingCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.MeetingCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>[];
+        };
+        delete: {
+          args: Prisma.MeetingDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>;
+        };
+        update: {
+          args: Prisma.MeetingUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>;
+        };
+        deleteMany: {
+          args: Prisma.MeetingDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.MeetingUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.MeetingUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>[];
+        };
+        upsert: {
+          args: Prisma.MeetingUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingPayload>;
+        };
+        aggregate: {
+          args: Prisma.MeetingAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMeeting>;
+        };
+        groupBy: {
+          args: Prisma.MeetingGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.MeetingGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.MeetingCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.MeetingCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    ProjectStatusRecord: {
+      payload: Prisma.$ProjectStatusRecordPayload<ExtArgs>;
+      fields: Prisma.ProjectStatusRecordFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectStatusRecordFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.ProjectStatusRecordFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>;
+        };
+        findFirst: {
+          args: Prisma.ProjectStatusRecordFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.ProjectStatusRecordFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>;
+        };
+        findMany: {
+          args: Prisma.ProjectStatusRecordFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>[];
+        };
+        create: {
+          args: Prisma.ProjectStatusRecordCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>;
+        };
+        createMany: {
+          args: Prisma.ProjectStatusRecordCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.ProjectStatusRecordCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>[];
+        };
+        delete: {
+          args: Prisma.ProjectStatusRecordDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>;
+        };
+        update: {
+          args: Prisma.ProjectStatusRecordUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>;
+        };
+        deleteMany: {
+          args: Prisma.ProjectStatusRecordDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.ProjectStatusRecordUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.ProjectStatusRecordUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>[];
+        };
+        upsert: {
+          args: Prisma.ProjectStatusRecordUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusRecordPayload>;
+        };
+        aggregate: {
+          args: Prisma.ProjectStatusRecordAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectStatusRecord>;
+        };
+        groupBy: {
+          args: Prisma.ProjectStatusRecordGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.ProjectStatusRecordGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.ProjectStatusRecordCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.ProjectStatusRecordCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    NotificationStatus: {
+      payload: Prisma.$NotificationStatusPayload<ExtArgs>;
+      fields: Prisma.NotificationStatusFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.NotificationStatusFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.NotificationStatusFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>;
+        };
+        findFirst: {
+          args: Prisma.NotificationStatusFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.NotificationStatusFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>;
+        };
+        findMany: {
+          args: Prisma.NotificationStatusFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>[];
+        };
+        create: {
+          args: Prisma.NotificationStatusCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>;
+        };
+        createMany: {
+          args: Prisma.NotificationStatusCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.NotificationStatusCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>[];
+        };
+        delete: {
+          args: Prisma.NotificationStatusDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>;
+        };
+        update: {
+          args: Prisma.NotificationStatusUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>;
+        };
+        deleteMany: {
+          args: Prisma.NotificationStatusDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.NotificationStatusUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.NotificationStatusUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>[];
+        };
+        upsert: {
+          args: Prisma.NotificationStatusUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationStatusPayload>;
+        };
+        aggregate: {
+          args: Prisma.NotificationStatusAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNotificationStatus>;
+        };
+        groupBy: {
+          args: Prisma.NotificationStatusGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.NotificationStatusGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.NotificationStatusCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.NotificationStatusCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    StatusTransition: {
+      payload: Prisma.$StatusTransitionPayload<ExtArgs>;
+      fields: Prisma.StatusTransitionFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.StatusTransitionFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.StatusTransitionFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>;
+        };
+        findFirst: {
+          args: Prisma.StatusTransitionFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.StatusTransitionFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>;
+        };
+        findMany: {
+          args: Prisma.StatusTransitionFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>[];
+        };
+        create: {
+          args: Prisma.StatusTransitionCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>;
+        };
+        createMany: {
+          args: Prisma.StatusTransitionCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.StatusTransitionCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>[];
+        };
+        delete: {
+          args: Prisma.StatusTransitionDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>;
+        };
+        update: {
+          args: Prisma.StatusTransitionUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>;
+        };
+        deleteMany: {
+          args: Prisma.StatusTransitionDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.StatusTransitionUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.StatusTransitionUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>[];
+        };
+        upsert: {
+          args: Prisma.StatusTransitionUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatusTransitionPayload>;
+        };
+        aggregate: {
+          args: Prisma.StatusTransitionAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStatusTransition>;
+        };
+        groupBy: {
+          args: Prisma.StatusTransitionGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.StatusTransitionGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.StatusTransitionCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.StatusTransitionCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
   };
 } & {
   other: {
@@ -1227,6 +1539,31 @@ export const ProjectScalarFieldEnum = {
   note2: "note2",
   note3: "note3",
   participantDetails: "participantDetails",
+  projectCode: "projectCode",
+  memoTitle: "memoTitle",
+  vendorCode: "vendorCode",
+  costCenter: "costCenter",
+  fundOwner: "fundOwner",
+  maintenanceFeeProposal: "maintenanceFeeProposal",
+  maintenanceFeeActual: "maintenanceFeeActual",
+  electricityFeeProposal: "electricityFeeProposal",
+  electricityFeeActual: "electricityFeeActual",
+  status1: "status1",
+  status1Date: "status1Date",
+  status2: "status2",
+  status2Date: "status2Date",
+  status3: "status3",
+  status3Date: "status3Date",
+  status4: "status4",
+  status4Date: "status4Date",
+  status5: "status5",
+  status5Date: "status5Date",
+  responsible: "responsible",
+  docNumber: "docNumber",
+  docDate: "docDate",
+  docLink: "docLink",
+  currentStatusCode: "currentStatusCode",
+  currentStatusId: "currentStatusId",
 } as const;
 
 export type ProjectScalarFieldEnum =
@@ -1297,6 +1634,63 @@ export const ProjectManagerScalarFieldEnum = {
 
 export type ProjectManagerScalarFieldEnum =
   (typeof ProjectManagerScalarFieldEnum)[keyof typeof ProjectManagerScalarFieldEnum];
+
+export const MeetingScalarFieldEnum = {
+  id: "id",
+  projectId: "projectId",
+  type: "type",
+  no: "no",
+  date: "date",
+  purpose: "purpose",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+} as const;
+
+export type MeetingScalarFieldEnum =
+  (typeof MeetingScalarFieldEnum)[keyof typeof MeetingScalarFieldEnum];
+
+export const ProjectStatusRecordScalarFieldEnum = {
+  id: "id",
+  projectId: "projectId",
+  statusCode: "statusCode",
+  statusLabel: "statusLabel",
+  subStatus: "subStatus",
+  enteredAt: "enteredAt",
+  enteredBy: "enteredBy",
+  exitedAt: "exitedAt",
+  notes: "notes",
+  branchChoice: "branchChoice",
+} as const;
+
+export type ProjectStatusRecordScalarFieldEnum =
+  (typeof ProjectStatusRecordScalarFieldEnum)[keyof typeof ProjectStatusRecordScalarFieldEnum];
+
+export const NotificationStatusScalarFieldEnum = {
+  id: "id",
+  statusId: "statusId",
+  notificationType: "notificationType",
+  isRequired: "isRequired",
+  isCompleted: "isCompleted",
+  completedAt: "completedAt",
+  completedBy: "completedBy",
+  recipient: "recipient",
+  notes: "notes",
+} as const;
+
+export type NotificationStatusScalarFieldEnum =
+  (typeof NotificationStatusScalarFieldEnum)[keyof typeof NotificationStatusScalarFieldEnum];
+
+export const StatusTransitionScalarFieldEnum = {
+  id: "id",
+  fromStatus: "fromStatus",
+  toStatus: "toStatus",
+  label: "label",
+  condition: "condition",
+  order: "order",
+} as const;
+
+export type StatusTransitionScalarFieldEnum =
+  (typeof StatusTransitionScalarFieldEnum)[keyof typeof StatusTransitionScalarFieldEnum];
 
 export const SortOrder = {
   asc: "asc",
@@ -1426,6 +1820,52 @@ export type ListEnumIncomeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
 >;
 
 /**
+ * Reference to a field of type 'MeetingType'
+ */
+export type EnumMeetingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "MeetingType"
+>;
+
+/**
+ * Reference to a field of type 'MeetingType[]'
+ */
+export type ListEnumMeetingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "MeetingType[]"
+>;
+
+/**
+ * Reference to a field of type 'StatusCode'
+ */
+export type EnumStatusCodeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "StatusCode"
+>;
+
+/**
+ * Reference to a field of type 'StatusCode[]'
+ */
+export type ListEnumStatusCodeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "StatusCode[]"
+>;
+
+/**
+ * Reference to a field of type 'NotificationType'
+ */
+export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "NotificationType"
+>;
+
+/**
+ * Reference to a field of type 'NotificationType[]'
+ */
+export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, "NotificationType[]">;
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<
@@ -1553,6 +1993,10 @@ export type GlobalOmitConfig = {
   incomeItem?: Prisma.IncomeItemOmit;
   projectCollaborator?: Prisma.ProjectCollaboratorOmit;
   projectManager?: Prisma.ProjectManagerOmit;
+  meeting?: Prisma.MeetingOmit;
+  projectStatusRecord?: Prisma.ProjectStatusRecordOmit;
+  notificationStatus?: Prisma.NotificationStatusOmit;
+  statusTransition?: Prisma.StatusTransitionOmit;
 };
 
 /* Types for Logging */

@@ -96,11 +96,38 @@ const PROJECT_STATUSES = [
   "8. คณบดีอนุมัติโครงการ",
   "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
   "10. รองคณบดี (รองศาสตราจารย์ ดร.พิชญดา เกตุเมฆ) แจ้งต่อ หัวหน้าภาควิชาเพื่อโปรดทราบและดำเนินการต่อไป",
-  "11. รองคณบดี (รองศาสตราจารย์ ดร.พิชญดา เกตุเมฆ) แจ้งต่อ สายการเงินและบัญชี, งานนโยบายและแผน หรืองานบริหารกายภาพ (แล้วแต่กรณี) เพื่อโปรดทราบและดำเนินการต่อไป",
-  "12. รอภาควิชาจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน",
-  "13. ภาควิชาดำเนินการจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน เรียบร้อยแล้ว",
-  "14. ปิดโครงการ",
+  "11. รอภาควิชาจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน",
+  "12. ภาควิชาดำเนินการจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน เรียบร้อยแล้ว",
+  "13. ปิดโครงการ",
+  "RECALL. ดึงกลับเอกสาร",
 ] as const;
+
+const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
+  "1": ["2", "RECALL"],
+  RECALL: ["1"],
+  "2": ["1", "3"],
+  "3": ["4", "5"],
+  "4": ["6"],
+  "5": ["7"],
+  "6": ["8"],
+  "7": ["9"],
+  "8": ["10"],
+  "9": ["10"],
+  "10": ["11"],
+  "11": ["12"],
+  "12": ["13"],
+  "13": [],
+};
+
+const getStatusKey = (statusValue: string | undefined) => {
+  if (!statusValue) return "";
+  return statusValue.split(".")[0].trim();
+};
+
+const getAllowedNextStatusKeys = (currentStatusValue: string | undefined) => {
+  const currentKey = getStatusKey(currentStatusValue);
+  return STATUS_TRANSITION_FLOW[currentKey] ?? [];
+};
 
 // --- Meeting Record Interface ---
 interface MeetingRecord {
@@ -118,6 +145,7 @@ interface EnhancedProjectData extends ProjectData {
   _costCenter?: string; // 18.
   _maintenanceFee?: string; // 10.
   _electricityFeeActual?: string; // 14.
+  _canMoveTo11?: boolean;
 }
 
 type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
@@ -287,64 +315,31 @@ export default function ProjectTrackingPage() {
 
   // --- Load & Transform ---
   useEffect(() => {
-    const loadMockData = async () => {
+    const loadProjects = async () => {
       try {
         setIsLoading(true);
-        // Simulate loading data - in real app fetch from /api
-        const response = await fetch("/mock.json");
-        const data: ProjectData[] = await response.json();
+        const response = await fetch("/api/overviews");
 
-        const enhancedData: EnhancedProjectData[] = data.map((item) => {
-          // Transform Meetings
-          const meetings: MeetingRecord[] = [];
-          if (item.boardMeetingNo)
-            meetings.push({
-              id: `board-${item.id}`,
-              type: "BOARD",
-              no: item.boardMeetingNo,
-              date: item.boardMeetingDate,
-              purpose: item.purpose || "",
-            });
-          if (item.deanDecisionNo)
-            meetings.push({
-              id: `dean-${item.id}`,
-              type: "DEAN",
-              no: item.deanDecisionNo,
-              date: item.deanDecisionDate,
-              purpose: item.purpose || "",
-            });
+        if (!response.ok) {
+          throw new Error("Failed to fetch projects");
+        }
 
-          return {
-            ...item,
-            // Ensure fields exist if JSON is partial
-            purpose: item.purpose || "-",
-            totalBudget: item.totalBudget || "0.00",
-            compensation: item.compensation || "0.00",
-            operatingCost: item.operatingCost || "0.00",
-            maintenanceFeeProposal: "1,000.00", // Mock value for proposal
-            materialCost: item.materialCost || "0.00",
-            utilities: item.utilities || "0.00",
-            electricityFeeProposal: "500.00", // Mock value for proposal
-            academicFund: item.academicFund || "0.00",
-            generalReserve: item.generalReserve || "0.00",
+        const data = await response.json();
 
-            _projectStatus: PROJECT_STATUSES[0],
-            _meetings: meetings,
-            _costCenter: "",
-            _maintenanceFee: "",
-            _electricityFeeActual: "",
-          };
-        });
-
-        setProjects(enhancedData);
+        if (data.success && data.data.projects) {
+          setProjects(data.data.projects);
+        } else {
+          throw new Error("Invalid response format");
+        }
       } catch (error) {
         console.error("Failed to load project data:", error);
+        alert("ไม่สามารถโหลดข้อมูลโครงการได้ กรุณาลองใหม่อีกครั้ง");
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadMockData();
+    loadProjects();
   }, []);
 
   // --- Handlers ---
@@ -382,8 +377,25 @@ export default function ProjectTrackingPage() {
     setSavingCell(cellKey);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const response = await fetch(
+        `/api/overviews/${editingCell.projectId}/field`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            field: editingCell.field,
+            value: editingValue,
+          }),
+        },
+      );
 
+      if (!response.ok) {
+        throw new Error("Failed to update field");
+      }
+
+      // Update local state optimistically
       handleUpdateField(
         editingCell.projectId,
         editingCell.field as keyof EnhancedProjectData,
@@ -394,7 +406,7 @@ export default function ProjectTrackingPage() {
       setEditingValue("");
     } catch (error) {
       console.error("Error saving cell:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
     } finally {
       setSavingCell(null);
     }
@@ -426,8 +438,24 @@ export default function ProjectTrackingPage() {
       }
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await fetch(
+          `/api/overviews/${editingMeetings.projectId}/meetings`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              meetings: editingMeetings.list,
+            }),
+          },
+        );
 
+        if (!response.ok) {
+          throw new Error("Failed to update meetings");
+        }
+
+        // Update local state optimistically
         setProjects((prev) =>
           prev.map((p) =>
             p.id === editingMeetings.projectId
@@ -437,8 +465,11 @@ export default function ProjectTrackingPage() {
         );
 
         setEditingMeetings(null);
-      } catch {
-        alert("Error saving meetings");
+      } catch (error) {
+        console.error("Error saving meetings:", error);
+        alert(
+          "เกิดข้อผิดพลาดในการบันทึกข้อมูลมติที่ประชุม กรุณาลองใหม่อีกครั้ง",
+        );
       }
     }
   };
@@ -561,6 +592,11 @@ export default function ProjectTrackingPage() {
     // 3. Special Case: Project Status (Dropdown)
     if (col.key === "_projectStatus") {
       if (isEditing) {
+        const allowedNextKeys = getAllowedNextStatusKeys(
+          project._projectStatus,
+        );
+        const currentStatusKey = getStatusKey(project._projectStatus);
+
         return (
           <div className="flex gap-1 items-center z-50 relative">
             <select
@@ -571,7 +607,25 @@ export default function ProjectTrackingPage() {
             >
               <option value="">-- เลือกสถานะ --</option>
               {PROJECT_STATUSES.map((status) => (
-                <option key={status} value={status}>
+                <option
+                  key={status}
+                  value={status}
+                  disabled={(() => {
+                    const statusKey = getStatusKey(status);
+                    if (statusKey === currentStatusKey) return false;
+                    if (!allowedNextKeys.includes(statusKey)) return true;
+
+                    if (
+                      currentStatusKey === "10" &&
+                      statusKey === "11" &&
+                      !project._canMoveTo11
+                    ) {
+                      return true;
+                    }
+
+                    return false;
+                  })()}
+                >
                   {status}
                 </option>
               ))}
@@ -697,7 +751,7 @@ export default function ProjectTrackingPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans">
+    <div className="flex min-h-screen bg-slate-50 font-[family-name:var(--font-sarabun)]">
       <Sidebar />
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}

@@ -61,3 +61,23 @@ export type ProjectCollaborator = Prisma.ProjectCollaboratorModel;
  *
  */
 export type ProjectManager = Prisma.ProjectManagerModel;
+/**
+ * Model Meeting
+ *
+ */
+export type Meeting = Prisma.MeetingModel;
+/**
+ * Model ProjectStatusRecord
+ *
+ */
+export type ProjectStatusRecord = Prisma.ProjectStatusRecordModel;
+/**
+ * Model NotificationStatus
+ *
+ */
+export type NotificationStatus = Prisma.NotificationStatusModel;
+/**
+ * Model StatusTransition
+ *
+ */
+export type StatusTransition = Prisma.StatusTransitionModel;
