@@ -3,10 +3,12 @@ import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import {
   createProjectSchema,
+  createDraftProjectSchema,
   listProjectsQuerySchema,
   CreateProjectInput,
 } from "./schema";
 import { generateProjectId } from "@/lib/generate-project-id";
+import { ProjectStatus, StatusCode } from "@/app/generated/prisma/client";
 
 // GET /api/projects - List all projects
 export async function GET(request: NextRequest) {
@@ -73,10 +75,50 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/projects - Create a new project
+// POST /api/projects - Create a new project (or empty draft when body.draft is true)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+
+    if (body && typeof body === "object" && body.draft === true) {
+      const { leaderId } = createDraftProjectSchema.parse(body);
+      const startDate = new Date();
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 1);
+
+      const project = await prisma.$transaction(
+        async (tx) => {
+          const id = await generateProjectId(tx);
+          return tx.project.create({
+            data: {
+              id,
+              leaderId,
+              status: ProjectStatus.DRAFT,
+              currentStatusCode: StatusCode.STATUS_0,
+              projectNameThai: "(แบบร่าง)",
+              leaderPosition: "-",
+              department: "-",
+              startDate,
+              endDate,
+              venue: "-",
+            },
+            include: {
+              leader: { select: { id: true, name: true, email: true } },
+              coLeader: { select: { id: true, name: true, email: true } },
+              targetGroups: { include: { targetGroup: true } },
+              strategies: { include: { strategy: true } },
+              incomeItems: true,
+              collaborators: true,
+              managers: true,
+            },
+          });
+        },
+        { isolationLevel: "Serializable" },
+      );
+      return successResponse(project, 201);
+    }
+
     const data = createProjectSchema.parse(body) as CreateProjectInput;
 
     const {
@@ -98,6 +140,7 @@ export async function POST(request: NextRequest) {
           data: {
             id,
             ...projectData,
+            currentStatusCode: StatusCode.STATUS_1,
             startDate: new Date(startDate),
             endDate: new Date(endDate),
             // Create target group relations

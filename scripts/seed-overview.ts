@@ -7,6 +7,7 @@ import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { generateProjectId } from "../lib/generate-project-id";
 
 // Initialize Prisma with adapter
 const connectionString =
@@ -161,95 +162,101 @@ async function main() {
 
   for (const item of mockData) {
     try {
-      // Create project
-      const project = await prisma.project.create({
-        data: {
-          receiptNumber: item.receiptNumber || null,
-          projectCode: item.projectCode || null,
-          projectNameThai: item.memoTitle || "Untitled Project",
-          projectNameEng: null,
-          memoTitle: item.memoTitle || null,
-          department: item.department,
-          leaderId: defaultUser.id,
-          leaderPosition: "หัวหน้าโครงการ",
-          startDate: parseThaiDate(item.startDate) || new Date(),
-          endDate: parseThaiDate(item.endDate) || new Date(),
-          status: ProjectStatus.DRAFT,
+      await prisma.$transaction(
+        async (tx) => {
+          const id = await generateProjectId(tx);
 
-          // Budget sources
-          budgetSourceExtGov: parseDecimal(item.amountGovExternal),
-          budgetSourceExtPrivate: parseDecimal(item.amountPrivateExternal),
-          budgetSourceExtForeign: parseDecimal(item.amountForeignExternal),
-          budgetSourceInternal: parseDecimal(item.amountUnivRevenue),
+          const project = await tx.project.create({
+            data: {
+              id,
+              receiptNumber: item.receiptNumber || null,
+              projectCode: item.projectCode || null,
+              projectNameThai: item.memoTitle || "Untitled Project",
+              projectNameEng: null,
+              memoTitle: item.memoTitle || null,
+              department: item.department,
+              leaderId: defaultUser.id,
+              leaderPosition: "หัวหน้าโครงการ",
+              startDate: parseThaiDate(item.startDate) || new Date(),
+              endDate: parseThaiDate(item.endDate) || new Date(),
+              status: ProjectStatus.DRAFT,
 
-          // Expenses
-          expenseRemuneration: parseDecimal(item.compensation),
-          expenseSupplies: parseDecimal(item.operatingCost),
-          expenseMaterials: parseDecimal(item.materialCost),
-          expenseUtilities: parseDecimal(item.utilities),
-          expenseSubsidy: parseDecimal(item.academicFund),
-          expenseReserve: parseDecimal(item.generalReserve),
+              // Budget sources
+              budgetSourceExtGov: parseDecimal(item.amountGovExternal),
+              budgetSourceExtPrivate: parseDecimal(item.amountPrivateExternal),
+              budgetSourceExtForeign: parseDecimal(item.amountForeignExternal),
+              budgetSourceInternal: parseDecimal(item.amountUnivRevenue),
 
-          // Overview fields
-          vendorCode: item.vendorCode || null,
-          costCenter: item.costCenter || null,
-          fundOwner: item.fundOwner || null,
-          maintenanceFeeProposal: parseDecimal("1000"), // Default proposal
-          maintenanceFeeActual: parseDecimal(item.maintenanceFee),
-          electricityFeeProposal: parseDecimal("500"), // Default proposal
-          electricityFeeActual: parseDecimal(item.electricityFee),
+              // Expenses
+              expenseRemuneration: parseDecimal(item.compensation),
+              expenseSupplies: parseDecimal(item.operatingCost),
+              expenseMaterials: parseDecimal(item.materialCost),
+              expenseUtilities: parseDecimal(item.utilities),
+              expenseSubsidy: parseDecimal(item.academicFund),
+              expenseReserve: parseDecimal(item.generalReserve),
 
-          // Project details
-          serviceType: item.serviceType || null,
-          projectDetails: item.projectDescription || null,
-          participantCount: item.participantCount
-            ? parseInt(item.participantCount)
-            : null,
+              // Overview fields
+              vendorCode: item.vendorCode || null,
+              costCenter: item.costCenter || null,
+              fundOwner: item.fundOwner || null,
+              maintenanceFeeProposal: parseDecimal("1000"), // Default proposal
+              maintenanceFeeActual: parseDecimal(item.maintenanceFee),
+              electricityFeeProposal: parseDecimal("500"), // Default proposal
+              electricityFeeActual: parseDecimal(item.electricityFee),
 
-          // Status tracking
-          status1: item.status1 || null,
-          status1Date: parseThaiDate(item.status1Date),
-          status2: item.status2 || null,
-          status2Date: parseThaiDate(item.status2Date),
-          status3: item.status3 || null,
-          status3Date: parseThaiDate(item.status3Date),
-          status4: item.status4 || null,
-          status4Date: parseThaiDate(item.status4Date),
-          status5: item.status5 || null,
-          status5Date: parseThaiDate(item.status5Date),
-          responsible: item.responsible || null,
-          docNumber: item.docNumber || null,
-          docDate: parseThaiDate(item.docDate),
-          docLink: item.docLink || null,
+              // Project details
+              serviceType: item.serviceType || null,
+              projectDetails: item.projectDescription || null,
+              participantCount: item.participantCount
+                ? parseInt(item.participantCount)
+                : null,
+
+              // Status tracking
+              status1: item.status1 || null,
+              status1Date: parseThaiDate(item.status1Date),
+              status2: item.status2 || null,
+              status2Date: parseThaiDate(item.status2Date),
+              status3: item.status3 || null,
+              status3Date: parseThaiDate(item.status3Date),
+              status4: item.status4 || null,
+              status4Date: parseThaiDate(item.status4Date),
+              status5: item.status5 || null,
+              status5Date: parseThaiDate(item.status5Date),
+              responsible: item.responsible || null,
+              docNumber: item.docNumber || null,
+              docDate: parseThaiDate(item.docDate),
+              docLink: item.docLink || null,
+            },
+          });
+
+          const meetings = [];
+          if (item.boardMeetingNo) {
+            meetings.push({
+              projectId: project.id,
+              type: MeetingType.BOARD,
+              no: item.boardMeetingNo,
+              date: parseThaiDate(item.boardMeetingDate) || new Date(),
+              purpose: item.purpose || null,
+            });
+          }
+          if (item.deanDecisionNo) {
+            meetings.push({
+              projectId: project.id,
+              type: MeetingType.DEAN,
+              no: item.deanDecisionNo,
+              date: parseThaiDate(item.deanDecisionDate) || new Date(),
+              purpose: item.purpose || null,
+            });
+          }
+
+          if (meetings.length > 0) {
+            await tx.meeting.createMany({
+              data: meetings,
+            });
+          }
         },
-      });
-
-      // Create meetings
-      const meetings = [];
-      if (item.boardMeetingNo) {
-        meetings.push({
-          projectId: project.id,
-          type: MeetingType.BOARD,
-          no: item.boardMeetingNo,
-          date: parseThaiDate(item.boardMeetingDate) || new Date(),
-          purpose: item.purpose || null,
-        });
-      }
-      if (item.deanDecisionNo) {
-        meetings.push({
-          projectId: project.id,
-          type: MeetingType.DEAN,
-          no: item.deanDecisionNo,
-          date: parseThaiDate(item.deanDecisionDate) || new Date(),
-          purpose: item.purpose || null,
-        });
-      }
-
-      if (meetings.length > 0) {
-        await prisma.meeting.createMany({
-          data: meetings,
-        });
-      }
+        { isolationLevel: "Serializable" },
+      );
 
       successCount++;
       console.log(`✅ Imported: ${item.projectCode || item.id}`);

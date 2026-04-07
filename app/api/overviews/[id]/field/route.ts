@@ -4,6 +4,7 @@ import { successResponse, handleApiError } from "@/lib/api-response";
 import { updateFieldSchema } from "../../schema";
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
+  "0": ["1"],
   "1": ["2", "RECALL"],
   RECALL: ["1"],
   "2": ["1", "3"],

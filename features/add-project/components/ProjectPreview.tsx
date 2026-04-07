@@ -139,7 +139,7 @@ export function ProjectPreview({
           />
         </Section>
 
-        <Section title="แหล่งงบประมาณ">
+        <Section title="งบประมาณ">
           <Row label="ภายนอกภาครัฐ" value={formData.budgetSourceExtGov} />
           <Row label="ภายนอกภาคเอกชน" value={formData.budgetSourceExtPrivate} />
           <Row

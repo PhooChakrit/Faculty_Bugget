@@ -1,8 +1,22 @@
 import "dotenv/config";
 import prisma from "@/lib/prisma";
 
+/** Matches `leaderId` in features/add-project/index.tsx until the form uses auth / user picker */
+const DEV_LEADER_USER_ID = "cmlfoz51o0000voxek4yjqxhg";
+
 async function main() {
   console.log("Seeding static data...");
+
+  await prisma.user.upsert({
+    where: { id: DEV_LEADER_USER_ID },
+    update: {},
+    create: {
+      id: DEV_LEADER_USER_ID,
+      email: "dev-leader@faculty.local",
+      name: "หัวหน้าโครงการ (dev seed)",
+    },
+  });
+  console.log("Dev leader user seeded.");
 
   // Strategies from features/add-project/index.tsx
   const strategies = [

@@ -50,8 +50,19 @@ export function handleApiError(error: unknown): NextResponse<ApiResponse> {
         return errorResponse("A record with this value already exists", 409);
       case "P2025":
         return errorResponse("Record not found", 404);
-      case "P2003":
-        return errorResponse("Foreign key constraint failed", 400);
+      case "P2003": {
+        const meta = prismaError.meta as
+          | { field_name?: string; model_name?: string }
+          | undefined;
+        const hint = meta?.field_name
+          ? ` (${meta.field_name}${meta.model_name ? ` on ${meta.model_name}` : ""})`
+          : "";
+        return errorResponse(
+          `Foreign key constraint failed${hint}. Related row is missing — e.g. leaderId must be an existing User id; targetGroupIds / strategyIds must exist (run seed).`,
+          400,
+          meta,
+        );
+      }
       default:
         return errorResponse(`Database error: ${prismaError.code}`, 500);
     }
