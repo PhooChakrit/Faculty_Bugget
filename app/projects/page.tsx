@@ -259,7 +259,13 @@ export default function ProjectListPage() {
                     filteredProjects.map((project) => (
                       <tr
                         key={project.id}
-                        onClick={() => router.push(`/projects/${project.id}`)}
+                        onClick={() =>
+                          router.push(
+                            project.status === "DRAFT"
+                              ? `/add-project?id=${project.id}`
+                              : `/projects/${project.id}`,
+                          )
+                        }
                         className={`group cursor-pointer transition-colors ${
                           selectedProjects.has(project.id)
                             ? "bg-indigo-50/50"

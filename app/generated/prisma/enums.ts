@@ -40,6 +40,7 @@ export type MeetingType = (typeof MeetingType)[keyof typeof MeetingType]
 
 
 export const StatusCode = {
+  STATUS_0: 'STATUS_0',
   STATUS_1: 'STATUS_1',
   STATUS_2: 'STATUS_2',
   STATUS_3: 'STATUS_3',
