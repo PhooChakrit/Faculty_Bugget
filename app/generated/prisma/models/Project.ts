@@ -125,6 +125,10 @@ export type ProjectMinAggregateOutputType = {
   docLink: string | null
   currentStatusCode: string | null
   currentStatusId: string | null
+  draftState: $Enums.DraftState | null
+  draftSavedAt: Date | null
+  submittedAt: Date | null
+  submittedByRole: string | null
 }
 
 export type ProjectMaxAggregateOutputType = {
@@ -190,6 +194,10 @@ export type ProjectMaxAggregateOutputType = {
   docLink: string | null
   currentStatusCode: string | null
   currentStatusId: string | null
+  draftState: $Enums.DraftState | null
+  draftSavedAt: Date | null
+  submittedAt: Date | null
+  submittedByRole: string | null
 }
 
 export type ProjectCountAggregateOutputType = {
@@ -255,6 +263,10 @@ export type ProjectCountAggregateOutputType = {
   docLink: number
   currentStatusCode: number
   currentStatusId: number
+  draftState: number
+  draftSavedAt: number
+  submittedAt: number
+  submittedByRole: number
   _all: number
 }
 
@@ -358,6 +370,10 @@ export type ProjectMinAggregateInputType = {
   docLink?: true
   currentStatusCode?: true
   currentStatusId?: true
+  draftState?: true
+  draftSavedAt?: true
+  submittedAt?: true
+  submittedByRole?: true
 }
 
 export type ProjectMaxAggregateInputType = {
@@ -423,6 +439,10 @@ export type ProjectMaxAggregateInputType = {
   docLink?: true
   currentStatusCode?: true
   currentStatusId?: true
+  draftState?: true
+  draftSavedAt?: true
+  submittedAt?: true
+  submittedByRole?: true
 }
 
 export type ProjectCountAggregateInputType = {
@@ -488,6 +508,10 @@ export type ProjectCountAggregateInputType = {
   docLink?: true
   currentStatusCode?: true
   currentStatusId?: true
+  draftState?: true
+  draftSavedAt?: true
+  submittedAt?: true
+  submittedByRole?: true
   _all?: true
 }
 
@@ -640,6 +664,10 @@ export type ProjectGroupByOutputType = {
   docLink: string | null
   currentStatusCode: string | null
   currentStatusId: string | null
+  draftState: $Enums.DraftState
+  draftSavedAt: Date | null
+  submittedAt: Date | null
+  submittedByRole: string | null
   _count: ProjectCountAggregateOutputType | null
   _avg: ProjectAvgAggregateOutputType | null
   _sum: ProjectSumAggregateOutputType | null
@@ -728,8 +756,14 @@ export type ProjectWhereInput = {
   docLink?: Prisma.StringNullableFilter<"Project"> | string | null
   currentStatusCode?: Prisma.StringNullableFilter<"Project"> | string | null
   currentStatusId?: Prisma.StringNullableFilter<"Project"> | string | null
+  draftState?: Prisma.EnumDraftStateFilter<"Project"> | $Enums.DraftState
+  draftSavedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  submittedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  submittedByRole?: Prisma.StringNullableFilter<"Project"> | string | null
   currentStatus?: Prisma.XOR<Prisma.ProjectStatusRecordNullableScalarRelationFilter, Prisma.ProjectStatusRecordWhereInput> | null
   statusHistory?: Prisma.ProjectStatusRecordListRelationFilter
+  roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter
+  approvalEmailLogs?: Prisma.ApprovalEmailLogListRelationFilter
   incomeItems?: Prisma.IncomeItemListRelationFilter
   coLeader?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   leader?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -803,8 +837,14 @@ export type ProjectOrderByWithRelationInput = {
   docLink?: Prisma.SortOrderInput | Prisma.SortOrder
   currentStatusCode?: Prisma.SortOrderInput | Prisma.SortOrder
   currentStatusId?: Prisma.SortOrderInput | Prisma.SortOrder
+  draftState?: Prisma.SortOrder
+  draftSavedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedByRole?: Prisma.SortOrderInput | Prisma.SortOrder
   currentStatus?: Prisma.ProjectStatusRecordOrderByWithRelationInput
   statusHistory?: Prisma.ProjectStatusRecordOrderByRelationAggregateInput
+  roleCompletions?: Prisma.ProjectRoleCompletionOrderByRelationAggregateInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogOrderByRelationAggregateInput
   incomeItems?: Prisma.IncomeItemOrderByRelationAggregateInput
   coLeader?: Prisma.UserOrderByWithRelationInput
   leader?: Prisma.UserOrderByWithRelationInput
@@ -881,8 +921,14 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   docDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   docLink?: Prisma.StringNullableFilter<"Project"> | string | null
   currentStatusCode?: Prisma.StringNullableFilter<"Project"> | string | null
+  draftState?: Prisma.EnumDraftStateFilter<"Project"> | $Enums.DraftState
+  draftSavedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  submittedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  submittedByRole?: Prisma.StringNullableFilter<"Project"> | string | null
   currentStatus?: Prisma.XOR<Prisma.ProjectStatusRecordNullableScalarRelationFilter, Prisma.ProjectStatusRecordWhereInput> | null
   statusHistory?: Prisma.ProjectStatusRecordListRelationFilter
+  roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter
+  approvalEmailLogs?: Prisma.ApprovalEmailLogListRelationFilter
   incomeItems?: Prisma.IncomeItemListRelationFilter
   coLeader?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   leader?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -956,6 +1002,10 @@ export type ProjectOrderByWithAggregationInput = {
   docLink?: Prisma.SortOrderInput | Prisma.SortOrder
   currentStatusCode?: Prisma.SortOrderInput | Prisma.SortOrder
   currentStatusId?: Prisma.SortOrderInput | Prisma.SortOrder
+  draftState?: Prisma.SortOrder
+  draftSavedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedByRole?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
   _avg?: Prisma.ProjectAvgOrderByAggregateInput
   _max?: Prisma.ProjectMaxOrderByAggregateInput
@@ -1029,6 +1079,10 @@ export type ProjectScalarWhereWithAggregatesInput = {
   docLink?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   currentStatusCode?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   currentStatusId?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  draftState?: Prisma.EnumDraftStateWithAggregatesFilter<"Project"> | $Enums.DraftState
+  draftSavedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+  submittedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+  submittedByRole?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
 }
 
 export type ProjectCreateInput = {
@@ -1091,8 +1145,14 @@ export type ProjectCreateInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
@@ -1166,7 +1226,13 @@ export type ProjectUncheckedCreateInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
@@ -1235,8 +1301,14 @@ export type ProjectUpdateInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
@@ -1310,7 +1382,13 @@ export type ProjectUncheckedUpdateInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
@@ -1382,6 +1460,10 @@ export type ProjectCreateManyInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
 }
 
 export type ProjectUpdateManyMutationInput = {
@@ -1444,6 +1526,10 @@ export type ProjectUpdateManyMutationInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProjectUncheckedUpdateManyInput = {
@@ -1509,6 +1595,10 @@ export type ProjectUncheckedUpdateManyInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProjectListRelationFilter = {
@@ -1584,6 +1674,10 @@ export type ProjectCountOrderByAggregateInput = {
   docLink?: Prisma.SortOrder
   currentStatusCode?: Prisma.SortOrder
   currentStatusId?: Prisma.SortOrder
+  draftState?: Prisma.SortOrder
+  draftSavedAt?: Prisma.SortOrder
+  submittedAt?: Prisma.SortOrder
+  submittedByRole?: Prisma.SortOrder
 }
 
 export type ProjectAvgOrderByAggregateInput = {
@@ -1667,6 +1761,10 @@ export type ProjectMaxOrderByAggregateInput = {
   docLink?: Prisma.SortOrder
   currentStatusCode?: Prisma.SortOrder
   currentStatusId?: Prisma.SortOrder
+  draftState?: Prisma.SortOrder
+  draftSavedAt?: Prisma.SortOrder
+  submittedAt?: Prisma.SortOrder
+  submittedByRole?: Prisma.SortOrder
 }
 
 export type ProjectMinOrderByAggregateInput = {
@@ -1732,6 +1830,10 @@ export type ProjectMinOrderByAggregateInput = {
   docLink?: Prisma.SortOrder
   currentStatusCode?: Prisma.SortOrder
   currentStatusId?: Prisma.SortOrder
+  draftState?: Prisma.SortOrder
+  draftSavedAt?: Prisma.SortOrder
+  submittedAt?: Prisma.SortOrder
+  submittedByRole?: Prisma.SortOrder
 }
 
 export type ProjectSumOrderByAggregateInput = {
@@ -1872,6 +1974,38 @@ export type BoolFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type EnumDraftStateFieldUpdateOperationsInput = {
+  set?: $Enums.DraftState
+}
+
+export type ProjectCreateNestedOneWithoutRoleCompletionsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutRoleCompletionsInput, Prisma.ProjectUncheckedCreateWithoutRoleCompletionsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutRoleCompletionsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutRoleCompletionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutRoleCompletionsInput, Prisma.ProjectUncheckedCreateWithoutRoleCompletionsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutRoleCompletionsInput
+  upsert?: Prisma.ProjectUpsertWithoutRoleCompletionsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutRoleCompletionsInput, Prisma.ProjectUpdateWithoutRoleCompletionsInput>, Prisma.ProjectUncheckedUpdateWithoutRoleCompletionsInput>
+}
+
+export type ProjectCreateNestedOneWithoutApprovalEmailLogsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutApprovalEmailLogsInput, Prisma.ProjectUncheckedCreateWithoutApprovalEmailLogsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutApprovalEmailLogsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutApprovalEmailLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutApprovalEmailLogsInput, Prisma.ProjectUncheckedCreateWithoutApprovalEmailLogsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutApprovalEmailLogsInput
+  upsert?: Prisma.ProjectUpsertWithoutApprovalEmailLogsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutApprovalEmailLogsInput, Prisma.ProjectUpdateWithoutApprovalEmailLogsInput>, Prisma.ProjectUncheckedUpdateWithoutApprovalEmailLogsInput>
 }
 
 export type ProjectCreateNestedOneWithoutTargetGroupsInput = {
@@ -2064,8 +2198,14 @@ export type ProjectCreateWithoutCoLeaderInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput
@@ -2137,7 +2277,13 @@ export type ProjectUncheckedCreateWithoutCoLeaderInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
@@ -2216,8 +2362,14 @@ export type ProjectCreateWithoutLeaderInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput
@@ -2289,7 +2441,13 @@ export type ProjectUncheckedCreateWithoutLeaderInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
@@ -2390,6 +2548,10 @@ export type ProjectScalarWhereInput = {
   docLink?: Prisma.StringNullableFilter<"Project"> | string | null
   currentStatusCode?: Prisma.StringNullableFilter<"Project"> | string | null
   currentStatusId?: Prisma.StringNullableFilter<"Project"> | string | null
+  draftState?: Prisma.EnumDraftStateFilter<"Project"> | $Enums.DraftState
+  draftSavedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  submittedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  submittedByRole?: Prisma.StringNullableFilter<"Project"> | string | null
 }
 
 export type ProjectUpsertWithWhereUniqueWithoutLeaderInput = {
@@ -2406,6 +2568,654 @@ export type ProjectUpdateWithWhereUniqueWithoutLeaderInput = {
 export type ProjectUpdateManyWithWhereWithoutLeaderInput = {
   where: Prisma.ProjectScalarWhereInput
   data: Prisma.XOR<Prisma.ProjectUpdateManyMutationInput, Prisma.ProjectUncheckedUpdateManyWithoutLeaderInput>
+}
+
+export type ProjectCreateWithoutRoleCompletionsInput = {
+  id: string
+  receiptNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  status?: $Enums.ProjectStatus
+  projectNameThai: string
+  projectNameEng?: string | null
+  leaderPosition: string
+  department: string
+  startDate: Date | string
+  endDate: Date | string
+  background?: string | null
+  projectDetails?: string | null
+  objectives?: string | null
+  scope?: string | null
+  implementationPlan?: string | null
+  serviceType?: string | null
+  participantCount?: number | null
+  venue?: string | null
+  committee?: string | null
+  expectedBenefits?: string | null
+  projectEvaluation?: string | null
+  budgetSourceExtGov?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtPrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtForeign?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceInternal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseRemuneration?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSupplies?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseMaterials?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseUtilities?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSubsidy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseReserve?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  note2?: boolean
+  note3?: boolean
+  participantDetails?: string | null
+  projectCode?: string | null
+  memoTitle?: string | null
+  vendorCode?: string | null
+  costCenter?: string | null
+  fundOwner?: string | null
+  maintenanceFeeProposal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceFeeActual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeProposal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeActual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status1?: string | null
+  status1Date?: Date | string | null
+  status2?: string | null
+  status2Date?: Date | string | null
+  status3?: string | null
+  status3Date?: Date | string | null
+  status4?: string | null
+  status4Date?: Date | string | null
+  status5?: string | null
+  status5Date?: Date | string | null
+  responsible?: string | null
+  docNumber?: string | null
+  docDate?: Date | string | null
+  docLink?: string | null
+  currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
+  currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
+  statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
+  incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
+  collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput
+  managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutRoleCompletionsInput = {
+  id: string
+  receiptNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  status?: $Enums.ProjectStatus
+  projectNameThai: string
+  projectNameEng?: string | null
+  leaderId: string
+  leaderPosition: string
+  department: string
+  coLeaderId?: string | null
+  startDate: Date | string
+  endDate: Date | string
+  background?: string | null
+  projectDetails?: string | null
+  objectives?: string | null
+  scope?: string | null
+  implementationPlan?: string | null
+  serviceType?: string | null
+  participantCount?: number | null
+  venue?: string | null
+  committee?: string | null
+  expectedBenefits?: string | null
+  projectEvaluation?: string | null
+  budgetSourceExtGov?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtPrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtForeign?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceInternal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseRemuneration?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSupplies?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseMaterials?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseUtilities?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSubsidy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseReserve?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  note2?: boolean
+  note3?: boolean
+  participantDetails?: string | null
+  projectCode?: string | null
+  memoTitle?: string | null
+  vendorCode?: string | null
+  costCenter?: string | null
+  fundOwner?: string | null
+  maintenanceFeeProposal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceFeeActual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeProposal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeActual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status1?: string | null
+  status1Date?: Date | string | null
+  status2?: string | null
+  status2Date?: Date | string | null
+  status3?: string | null
+  status3Date?: Date | string | null
+  status4?: string | null
+  status4Date?: Date | string | null
+  status5?: string | null
+  status5Date?: Date | string | null
+  responsible?: string | null
+  docNumber?: string | null
+  docDate?: Date | string | null
+  docLink?: string | null
+  currentStatusCode?: string | null
+  currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
+  statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
+  incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
+  collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
+  managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutRoleCompletionsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutRoleCompletionsInput, Prisma.ProjectUncheckedCreateWithoutRoleCompletionsInput>
+}
+
+export type ProjectUpsertWithoutRoleCompletionsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutRoleCompletionsInput, Prisma.ProjectUncheckedUpdateWithoutRoleCompletionsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutRoleCompletionsInput, Prisma.ProjectUncheckedCreateWithoutRoleCompletionsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutRoleCompletionsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutRoleCompletionsInput, Prisma.ProjectUncheckedUpdateWithoutRoleCompletionsInput>
+}
+
+export type ProjectUpdateWithoutRoleCompletionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  receiptNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string
+  projectNameEng?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  implementationPlan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedBenefits?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectEvaluation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetSourceExtGov?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtPrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtForeign?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceInternal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseRemuneration?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSupplies?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseMaterials?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseUtilities?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSubsidy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseReserve?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  participantDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  memoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costCenter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceFeeProposal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceFeeActual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeProposal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeActual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status1Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status2Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status3Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status4Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status5?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status5Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  responsible?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
+  statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
+  incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
+  collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput
+  managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutRoleCompletionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  receiptNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string
+  projectNameEng?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leaderId?: Prisma.StringFieldUpdateOperationsInput | string
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.StringFieldUpdateOperationsInput | string
+  coLeaderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  implementationPlan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedBenefits?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectEvaluation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetSourceExtGov?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtPrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtForeign?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceInternal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseRemuneration?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSupplies?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseMaterials?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseUtilities?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSubsidy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseReserve?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  participantDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  memoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costCenter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceFeeProposal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceFeeActual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeProposal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeActual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status1Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status2Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status3Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status4Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status5?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status5Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  responsible?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
+  incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
+  collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
+  managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutApprovalEmailLogsInput = {
+  id: string
+  receiptNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  status?: $Enums.ProjectStatus
+  projectNameThai: string
+  projectNameEng?: string | null
+  leaderPosition: string
+  department: string
+  startDate: Date | string
+  endDate: Date | string
+  background?: string | null
+  projectDetails?: string | null
+  objectives?: string | null
+  scope?: string | null
+  implementationPlan?: string | null
+  serviceType?: string | null
+  participantCount?: number | null
+  venue?: string | null
+  committee?: string | null
+  expectedBenefits?: string | null
+  projectEvaluation?: string | null
+  budgetSourceExtGov?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtPrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtForeign?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceInternal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseRemuneration?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSupplies?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseMaterials?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseUtilities?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSubsidy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseReserve?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  note2?: boolean
+  note3?: boolean
+  participantDetails?: string | null
+  projectCode?: string | null
+  memoTitle?: string | null
+  vendorCode?: string | null
+  costCenter?: string | null
+  fundOwner?: string | null
+  maintenanceFeeProposal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceFeeActual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeProposal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeActual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status1?: string | null
+  status1Date?: Date | string | null
+  status2?: string | null
+  status2Date?: Date | string | null
+  status3?: string | null
+  status3Date?: Date | string | null
+  status4?: string | null
+  status4Date?: Date | string | null
+  status5?: string | null
+  status5Date?: Date | string | null
+  responsible?: string | null
+  docNumber?: string | null
+  docDate?: Date | string | null
+  docLink?: string | null
+  currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
+  currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
+  statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
+  collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput
+  managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput
+  meetings?: Prisma.MeetingCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutApprovalEmailLogsInput = {
+  id: string
+  receiptNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  status?: $Enums.ProjectStatus
+  projectNameThai: string
+  projectNameEng?: string | null
+  leaderId: string
+  leaderPosition: string
+  department: string
+  coLeaderId?: string | null
+  startDate: Date | string
+  endDate: Date | string
+  background?: string | null
+  projectDetails?: string | null
+  objectives?: string | null
+  scope?: string | null
+  implementationPlan?: string | null
+  serviceType?: string | null
+  participantCount?: number | null
+  venue?: string | null
+  committee?: string | null
+  expectedBenefits?: string | null
+  projectEvaluation?: string | null
+  budgetSourceExtGov?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtPrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtForeign?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceInternal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseRemuneration?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSupplies?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseMaterials?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseUtilities?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSubsidy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseReserve?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  note2?: boolean
+  note3?: boolean
+  participantDetails?: string | null
+  projectCode?: string | null
+  memoTitle?: string | null
+  vendorCode?: string | null
+  costCenter?: string | null
+  fundOwner?: string | null
+  maintenanceFeeProposal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceFeeActual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeProposal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeActual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status1?: string | null
+  status1Date?: Date | string | null
+  status2?: string | null
+  status2Date?: Date | string | null
+  status3?: string | null
+  status3Date?: Date | string | null
+  status4?: string | null
+  status4Date?: Date | string | null
+  status5?: string | null
+  status5Date?: Date | string | null
+  responsible?: string | null
+  docNumber?: string | null
+  docDate?: Date | string | null
+  docLink?: string | null
+  currentStatusCode?: string | null
+  currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
+  statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
+  collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
+  managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutApprovalEmailLogsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutApprovalEmailLogsInput, Prisma.ProjectUncheckedCreateWithoutApprovalEmailLogsInput>
+}
+
+export type ProjectUpsertWithoutApprovalEmailLogsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutApprovalEmailLogsInput, Prisma.ProjectUncheckedUpdateWithoutApprovalEmailLogsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutApprovalEmailLogsInput, Prisma.ProjectUncheckedCreateWithoutApprovalEmailLogsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutApprovalEmailLogsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutApprovalEmailLogsInput, Prisma.ProjectUncheckedUpdateWithoutApprovalEmailLogsInput>
+}
+
+export type ProjectUpdateWithoutApprovalEmailLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  receiptNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string
+  projectNameEng?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  implementationPlan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedBenefits?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectEvaluation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetSourceExtGov?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtPrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtForeign?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceInternal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseRemuneration?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSupplies?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseMaterials?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseUtilities?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSubsidy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseReserve?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  participantDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  memoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costCenter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceFeeProposal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceFeeActual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeProposal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeActual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status1Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status2Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status3Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status4Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status5?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status5Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  responsible?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
+  statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
+  collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput
+  managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput
+  meetings?: Prisma.MeetingUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutApprovalEmailLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  receiptNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string
+  projectNameEng?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leaderId?: Prisma.StringFieldUpdateOperationsInput | string
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.StringFieldUpdateOperationsInput | string
+  coLeaderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  implementationPlan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedBenefits?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectEvaluation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  budgetSourceExtGov?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtPrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceExtForeign?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  budgetSourceInternal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseRemuneration?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSupplies?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseMaterials?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseUtilities?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseSubsidy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expenseReserve?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  participantDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  memoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costCenter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  maintenanceFeeProposal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  maintenanceFeeActual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeProposal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  electricityFeeActual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status1Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status2Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status3Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status4Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status5?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status5Date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  responsible?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
+  collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
+  managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutTargetGroupsInput = {
@@ -2468,8 +3278,14 @@ export type ProjectCreateWithoutTargetGroupsInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
@@ -2542,7 +3358,13 @@ export type ProjectUncheckedCreateWithoutTargetGroupsInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
@@ -2626,8 +3448,14 @@ export type ProjectUpdateWithoutTargetGroupsInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
@@ -2700,7 +3528,13 @@ export type ProjectUncheckedUpdateWithoutTargetGroupsInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
@@ -2768,8 +3602,14 @@ export type ProjectCreateWithoutStrategiesInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
@@ -2842,7 +3682,13 @@ export type ProjectUncheckedCreateWithoutStrategiesInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
@@ -2926,8 +3772,14 @@ export type ProjectUpdateWithoutStrategiesInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
@@ -3000,7 +3852,13 @@ export type ProjectUncheckedUpdateWithoutStrategiesInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
@@ -3068,8 +3926,14 @@ export type ProjectCreateWithoutIncomeItemsInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput
@@ -3142,7 +4006,13 @@ export type ProjectUncheckedCreateWithoutIncomeItemsInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput
@@ -3226,8 +4096,14 @@ export type ProjectUpdateWithoutIncomeItemsInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput
@@ -3300,7 +4176,13 @@ export type ProjectUncheckedUpdateWithoutIncomeItemsInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput
@@ -3368,8 +4250,14 @@ export type ProjectCreateWithoutCollaboratorsInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
@@ -3442,7 +4330,13 @@ export type ProjectUncheckedCreateWithoutCollaboratorsInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput
@@ -3526,8 +4420,14 @@ export type ProjectUpdateWithoutCollaboratorsInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
@@ -3600,7 +4500,13 @@ export type ProjectUncheckedUpdateWithoutCollaboratorsInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput
@@ -3668,8 +4574,14 @@ export type ProjectCreateWithoutManagersInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
@@ -3742,7 +4654,13 @@ export type ProjectUncheckedCreateWithoutManagersInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput
@@ -3826,8 +4744,14 @@ export type ProjectUpdateWithoutManagersInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
@@ -3900,7 +4824,13 @@ export type ProjectUncheckedUpdateWithoutManagersInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput
@@ -3968,8 +4898,14 @@ export type ProjectCreateWithoutMeetingsInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
@@ -4042,7 +4978,13 @@ export type ProjectUncheckedCreateWithoutMeetingsInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
@@ -4126,8 +5068,14 @@ export type ProjectUpdateWithoutMeetingsInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
@@ -4200,7 +5148,13 @@ export type ProjectUncheckedUpdateWithoutMeetingsInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
@@ -4268,7 +5222,13 @@ export type ProjectCreateWithoutStatusHistoryInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
@@ -4342,6 +5302,12 @@ export type ProjectUncheckedCreateWithoutStatusHistoryInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
@@ -4415,7 +5381,13 @@ export type ProjectCreateWithoutCurrentStatusInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput
@@ -4488,7 +5460,13 @@ export type ProjectUncheckedCreateWithoutCurrentStatusInput = {
   docDate?: Date | string | null
   docLink?: string | null
   currentStatusCode?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput
@@ -4573,7 +5551,13 @@ export type ProjectUpdateWithoutStatusHistoryInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
@@ -4647,6 +5631,12 @@ export type ProjectUncheckedUpdateWithoutStatusHistoryInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
@@ -4726,7 +5716,13 @@ export type ProjectUpdateWithoutCurrentStatusInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
@@ -4799,7 +5795,13 @@ export type ProjectUncheckedUpdateWithoutCurrentStatusInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
@@ -4870,6 +5872,10 @@ export type ProjectCreateManyCoLeaderInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
 }
 
 export type ProjectCreateManyLeaderInput = {
@@ -4934,6 +5940,10 @@ export type ProjectCreateManyLeaderInput = {
   docLink?: string | null
   currentStatusCode?: string | null
   currentStatusId?: string | null
+  draftState?: $Enums.DraftState
+  draftSavedAt?: Date | string | null
+  submittedAt?: Date | string | null
+  submittedByRole?: string | null
 }
 
 export type ProjectUpdateWithoutCoLeaderInput = {
@@ -4996,8 +6006,14 @@ export type ProjectUpdateWithoutCoLeaderInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput
@@ -5069,7 +6085,13 @@ export type ProjectUncheckedUpdateWithoutCoLeaderInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
@@ -5140,6 +6162,10 @@ export type ProjectUncheckedUpdateManyWithoutCoLeaderInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProjectUpdateWithoutLeaderInput = {
@@ -5202,8 +6228,14 @@ export type ProjectUpdateWithoutLeaderInput = {
   docDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput
@@ -5275,7 +6307,13 @@ export type ProjectUncheckedUpdateWithoutLeaderInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput
@@ -5346,6 +6384,10 @@ export type ProjectUncheckedUpdateManyWithoutLeaderInput = {
   docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   currentStatusId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  draftState?: Prisma.EnumDraftStateFieldUpdateOperationsInput | $Enums.DraftState
+  draftSavedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedByRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -5355,6 +6397,8 @@ export type ProjectUncheckedUpdateManyWithoutLeaderInput = {
 
 export type ProjectCountOutputType = {
   statusHistory: number
+  roleCompletions: number
+  approvalEmailLogs: number
   incomeItems: number
   collaborators: number
   managers: number
@@ -5365,6 +6409,8 @@ export type ProjectCountOutputType = {
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   statusHistory?: boolean | ProjectCountOutputTypeCountStatusHistoryArgs
+  roleCompletions?: boolean | ProjectCountOutputTypeCountRoleCompletionsArgs
+  approvalEmailLogs?: boolean | ProjectCountOutputTypeCountApprovalEmailLogsArgs
   incomeItems?: boolean | ProjectCountOutputTypeCountIncomeItemsArgs
   collaborators?: boolean | ProjectCountOutputTypeCountCollaboratorsArgs
   managers?: boolean | ProjectCountOutputTypeCountManagersArgs
@@ -5388,6 +6434,20 @@ export type ProjectCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
  */
 export type ProjectCountOutputTypeCountStatusHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ProjectStatusRecordWhereInput
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountRoleCompletionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectRoleCompletionWhereInput
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountApprovalEmailLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApprovalEmailLogWhereInput
 }
 
 /**
@@ -5496,8 +6556,14 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   docLink?: boolean
   currentStatusCode?: boolean
   currentStatusId?: boolean
+  draftState?: boolean
+  draftSavedAt?: boolean
+  submittedAt?: boolean
+  submittedByRole?: boolean
   currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Project$statusHistoryArgs<ExtArgs>
+  roleCompletions?: boolean | Prisma.Project$roleCompletionsArgs<ExtArgs>
+  approvalEmailLogs?: boolean | Prisma.Project$approvalEmailLogsArgs<ExtArgs>
   incomeItems?: boolean | Prisma.Project$incomeItemsArgs<ExtArgs>
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>
   leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -5572,6 +6638,10 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   docLink?: boolean
   currentStatusCode?: boolean
   currentStatusId?: boolean
+  draftState?: boolean
+  draftSavedAt?: boolean
+  submittedAt?: boolean
+  submittedByRole?: boolean
   currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>
   leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -5640,6 +6710,10 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   docLink?: boolean
   currentStatusCode?: boolean
   currentStatusId?: boolean
+  draftState?: boolean
+  draftSavedAt?: boolean
+  submittedAt?: boolean
+  submittedByRole?: boolean
   currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>
   leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -5708,12 +6782,18 @@ export type ProjectSelectScalar = {
   docLink?: boolean
   currentStatusCode?: boolean
   currentStatusId?: boolean
+  draftState?: boolean
+  draftSavedAt?: boolean
+  submittedAt?: boolean
+  submittedByRole?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "receiptNumber" | "createdAt" | "updatedAt" | "status" | "projectNameThai" | "projectNameEng" | "leaderId" | "leaderPosition" | "department" | "coLeaderId" | "startDate" | "endDate" | "background" | "projectDetails" | "objectives" | "scope" | "implementationPlan" | "serviceType" | "participantCount" | "venue" | "committee" | "expectedBenefits" | "projectEvaluation" | "budgetSourceExtGov" | "budgetSourceExtPrivate" | "budgetSourceExtForeign" | "budgetSourceInternal" | "expenseRemuneration" | "expenseSupplies" | "expenseMaterials" | "expenseUtilities" | "expenseSubsidy" | "expenseReserve" | "note2" | "note3" | "participantDetails" | "projectCode" | "memoTitle" | "vendorCode" | "costCenter" | "fundOwner" | "maintenanceFeeProposal" | "maintenanceFeeActual" | "electricityFeeProposal" | "electricityFeeActual" | "status1" | "status1Date" | "status2" | "status2Date" | "status3" | "status3Date" | "status4" | "status4Date" | "status5" | "status5Date" | "responsible" | "docNumber" | "docDate" | "docLink" | "currentStatusCode" | "currentStatusId", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "receiptNumber" | "createdAt" | "updatedAt" | "status" | "projectNameThai" | "projectNameEng" | "leaderId" | "leaderPosition" | "department" | "coLeaderId" | "startDate" | "endDate" | "background" | "projectDetails" | "objectives" | "scope" | "implementationPlan" | "serviceType" | "participantCount" | "venue" | "committee" | "expectedBenefits" | "projectEvaluation" | "budgetSourceExtGov" | "budgetSourceExtPrivate" | "budgetSourceExtForeign" | "budgetSourceInternal" | "expenseRemuneration" | "expenseSupplies" | "expenseMaterials" | "expenseUtilities" | "expenseSubsidy" | "expenseReserve" | "note2" | "note3" | "participantDetails" | "projectCode" | "memoTitle" | "vendorCode" | "costCenter" | "fundOwner" | "maintenanceFeeProposal" | "maintenanceFeeActual" | "electricityFeeProposal" | "electricityFeeActual" | "status1" | "status1Date" | "status2" | "status2Date" | "status3" | "status3Date" | "status4" | "status4Date" | "status5" | "status5Date" | "responsible" | "docNumber" | "docDate" | "docLink" | "currentStatusCode" | "currentStatusId" | "draftState" | "draftSavedAt" | "submittedAt" | "submittedByRole", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Project$statusHistoryArgs<ExtArgs>
+  roleCompletions?: boolean | Prisma.Project$roleCompletionsArgs<ExtArgs>
+  approvalEmailLogs?: boolean | Prisma.Project$approvalEmailLogsArgs<ExtArgs>
   incomeItems?: boolean | Prisma.Project$incomeItemsArgs<ExtArgs>
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>
   leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -5740,6 +6820,8 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     currentStatus: Prisma.$ProjectStatusRecordPayload<ExtArgs> | null
     statusHistory: Prisma.$ProjectStatusRecordPayload<ExtArgs>[]
+    roleCompletions: Prisma.$ProjectRoleCompletionPayload<ExtArgs>[]
+    approvalEmailLogs: Prisma.$ApprovalEmailLogPayload<ExtArgs>[]
     incomeItems: Prisma.$IncomeItemPayload<ExtArgs>[]
     coLeader: Prisma.$UserPayload<ExtArgs> | null
     leader: Prisma.$UserPayload<ExtArgs>
@@ -5812,6 +6894,10 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     docLink: string | null
     currentStatusCode: string | null
     currentStatusId: string | null
+    draftState: $Enums.DraftState
+    draftSavedAt: Date | null
+    submittedAt: Date | null
+    submittedByRole: string | null
   }, ExtArgs["result"]["project"]>
   composites: {}
 }
@@ -6208,6 +7294,8 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   currentStatus<T extends Prisma.Project$currentStatusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$currentStatusArgs<ExtArgs>>): Prisma.Prisma__ProjectStatusRecordClient<runtime.Types.Result.GetResult<Prisma.$ProjectStatusRecordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   statusHistory<T extends Prisma.Project$statusHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$statusHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectStatusRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  roleCompletions<T extends Prisma.Project$roleCompletionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$roleCompletionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectRoleCompletionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approvalEmailLogs<T extends Prisma.Project$approvalEmailLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$approvalEmailLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalEmailLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   incomeItems<T extends Prisma.Project$incomeItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$incomeItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IncomeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   coLeader<T extends Prisma.Project$coLeaderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$coLeaderArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   leader<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -6307,6 +7395,10 @@ export interface ProjectFieldRefs {
   readonly docLink: Prisma.FieldRef<"Project", 'String'>
   readonly currentStatusCode: Prisma.FieldRef<"Project", 'String'>
   readonly currentStatusId: Prisma.FieldRef<"Project", 'String'>
+  readonly draftState: Prisma.FieldRef<"Project", 'DraftState'>
+  readonly draftSavedAt: Prisma.FieldRef<"Project", 'DateTime'>
+  readonly submittedAt: Prisma.FieldRef<"Project", 'DateTime'>
+  readonly submittedByRole: Prisma.FieldRef<"Project", 'String'>
 }
     
 
@@ -6743,6 +7835,54 @@ export type Project$statusHistoryArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ProjectStatusRecordScalarFieldEnum | Prisma.ProjectStatusRecordScalarFieldEnum[]
+}
+
+/**
+ * Project.roleCompletions
+ */
+export type Project$roleCompletionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectRoleCompletion
+   */
+  select?: Prisma.ProjectRoleCompletionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectRoleCompletion
+   */
+  omit?: Prisma.ProjectRoleCompletionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectRoleCompletionInclude<ExtArgs> | null
+  where?: Prisma.ProjectRoleCompletionWhereInput
+  orderBy?: Prisma.ProjectRoleCompletionOrderByWithRelationInput | Prisma.ProjectRoleCompletionOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectRoleCompletionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectRoleCompletionScalarFieldEnum | Prisma.ProjectRoleCompletionScalarFieldEnum[]
+}
+
+/**
+ * Project.approvalEmailLogs
+ */
+export type Project$approvalEmailLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ApprovalEmailLog
+   */
+  select?: Prisma.ApprovalEmailLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ApprovalEmailLog
+   */
+  omit?: Prisma.ApprovalEmailLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApprovalEmailLogInclude<ExtArgs> | null
+  where?: Prisma.ApprovalEmailLogWhereInput
+  orderBy?: Prisma.ApprovalEmailLogOrderByWithRelationInput | Prisma.ApprovalEmailLogOrderByWithRelationInput[]
+  cursor?: Prisma.ApprovalEmailLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ApprovalEmailLogScalarFieldEnum | Prisma.ApprovalEmailLogScalarFieldEnum[]
 }
 
 /**

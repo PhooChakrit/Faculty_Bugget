@@ -45,6 +45,7 @@ export async function GET(
     // Get available transitions
     const availableTransitions =
       await statusService.getAvailableTransitions(projectId);
+    const closureProgress = await statusService.getClosureProgress(projectId);
 
     // Format response
     const currentStatus = project.currentStatus
@@ -66,6 +67,7 @@ export async function GET(
 
     return NextResponse.json({
       currentStatus,
+      closureProgress,
       availableTransitions: availableTransitions.map((t) => ({
         toStatus: t.toStatus,
         label: t.label,

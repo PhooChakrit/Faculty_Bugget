@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Project: 'Project',
+  ProjectRoleCompletion: 'ProjectRoleCompletion',
+  ApprovalEmailLog: 'ApprovalEmailLog',
   TargetGroup: 'TargetGroup',
   ProjectTargetGroup: 'ProjectTargetGroup',
   Strategy: 'Strategy',
@@ -155,10 +157,45 @@ export const ProjectScalarFieldEnum = {
   docDate: 'docDate',
   docLink: 'docLink',
   currentStatusCode: 'currentStatusCode',
-  currentStatusId: 'currentStatusId'
+  currentStatusId: 'currentStatusId',
+  draftState: 'draftState',
+  draftSavedAt: 'draftSavedAt',
+  submittedAt: 'submittedAt',
+  submittedByRole: 'submittedByRole'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ProjectRoleCompletionScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  role: 'role',
+  isComplete: 'isComplete',
+  completedAt: 'completedAt',
+  completedBy: 'completedBy',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectRoleCompletionScalarFieldEnum = (typeof ProjectRoleCompletionScalarFieldEnum)[keyof typeof ProjectRoleCompletionScalarFieldEnum]
+
+
+export const ApprovalEmailLogScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  recipient: 'recipient',
+  recipientRole: 'recipientRole',
+  subject: 'subject',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApprovalEmailLogScalarFieldEnum = (typeof ApprovalEmailLogScalarFieldEnum)[keyof typeof ApprovalEmailLogScalarFieldEnum]
 
 
 export const TargetGroupScalarFieldEnum = {

@@ -155,6 +155,13 @@ export type DateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
+export type EnumDraftStateFilter<$PrismaModel = never> = {
+  equals?: $Enums.DraftState | Prisma.EnumDraftStateFieldRefInput<$PrismaModel>
+  in?: $Enums.DraftState[] | Prisma.ListEnumDraftStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DraftState[] | Prisma.ListEnumDraftStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDraftStateFilter<$PrismaModel> | $Enums.DraftState
+}
+
 export type EnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ProjectStatus | Prisma.EnumProjectStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ProjectStatus[] | Prisma.ListEnumProjectStatusFieldRefInput<$PrismaModel>
@@ -217,6 +224,50 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type EnumDraftStateWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DraftState | Prisma.EnumDraftStateFieldRefInput<$PrismaModel>
+  in?: $Enums.DraftState[] | Prisma.ListEnumDraftStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DraftState[] | Prisma.ListEnumDraftStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDraftStateWithAggregatesFilter<$PrismaModel> | $Enums.DraftState
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDraftStateFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDraftStateFilter<$PrismaModel>
+}
+
+export type EnumClosureRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClosureRole | Prisma.EnumClosureRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ClosureRole[] | Prisma.ListEnumClosureRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClosureRole[] | Prisma.ListEnumClosureRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClosureRoleFilter<$PrismaModel> | $Enums.ClosureRole
+}
+
+export type EnumClosureRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClosureRole | Prisma.EnumClosureRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ClosureRole[] | Prisma.ListEnumClosureRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClosureRole[] | Prisma.ListEnumClosureRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClosureRoleWithAggregatesFilter<$PrismaModel> | $Enums.ClosureRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClosureRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClosureRoleFilter<$PrismaModel>
+}
+
+export type EnumEmailDeliveryStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmailDeliveryStatus | Prisma.EnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel> | $Enums.EmailDeliveryStatus
+}
+
+export type EnumEmailDeliveryStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmailDeliveryStatus | Prisma.EnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmailDeliveryStatusWithAggregatesFilter<$PrismaModel> | $Enums.EmailDeliveryStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel>
 }
 
 export type EnumIncomeTypeFilter<$PrismaModel = never> = {
@@ -484,6 +535,13 @@ export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
+export type NestedEnumDraftStateFilter<$PrismaModel = never> = {
+  equals?: $Enums.DraftState | Prisma.EnumDraftStateFieldRefInput<$PrismaModel>
+  in?: $Enums.DraftState[] | Prisma.ListEnumDraftStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DraftState[] | Prisma.ListEnumDraftStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDraftStateFilter<$PrismaModel> | $Enums.DraftState
+}
+
 export type NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ProjectStatus | Prisma.EnumProjectStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ProjectStatus[] | Prisma.ListEnumProjectStatusFieldRefInput<$PrismaModel>
@@ -557,6 +615,50 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumDraftStateWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DraftState | Prisma.EnumDraftStateFieldRefInput<$PrismaModel>
+  in?: $Enums.DraftState[] | Prisma.ListEnumDraftStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DraftState[] | Prisma.ListEnumDraftStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDraftStateWithAggregatesFilter<$PrismaModel> | $Enums.DraftState
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDraftStateFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDraftStateFilter<$PrismaModel>
+}
+
+export type NestedEnumClosureRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClosureRole | Prisma.EnumClosureRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ClosureRole[] | Prisma.ListEnumClosureRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClosureRole[] | Prisma.ListEnumClosureRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClosureRoleFilter<$PrismaModel> | $Enums.ClosureRole
+}
+
+export type NestedEnumClosureRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClosureRole | Prisma.EnumClosureRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ClosureRole[] | Prisma.ListEnumClosureRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClosureRole[] | Prisma.ListEnumClosureRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClosureRoleWithAggregatesFilter<$PrismaModel> | $Enums.ClosureRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClosureRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClosureRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumEmailDeliveryStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmailDeliveryStatus | Prisma.EnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel> | $Enums.EmailDeliveryStatus
+}
+
+export type NestedEnumEmailDeliveryStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmailDeliveryStatus | Prisma.EnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmailDeliveryStatus[] | Prisma.ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmailDeliveryStatusWithAggregatesFilter<$PrismaModel> | $Enums.EmailDeliveryStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEmailDeliveryStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumIncomeTypeFilter<$PrismaModel = never> = {

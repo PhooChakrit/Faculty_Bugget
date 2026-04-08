@@ -1,7 +1,7 @@
 import { PrismaClient } from "@/app/generated/prisma/client";
 
 /**
- * Generates the next project ID in the format YYxxxxx
+ * Generates the next official project ID in the format YYxxxxx
  *   YY    = last 2 digits of the Buddhist Era year (CE + 543)
  *           e.g. 2026 CE → 2569 BE → "69"
  *   xxxxx = 5-digit zero-padded sequential number within the year (00001–99999)
@@ -20,16 +20,20 @@ export async function generateProjectId(
   const yy = String(beYear).slice(-2); // e.g. "69"
   const prefix = yy;
 
-  // Find the highest existing ID for this year
+  // Find the highest existing projectCode for this year
   const latest = await tx.project.findFirst({
-    where: { id: { startsWith: prefix } },
-    orderBy: { id: "desc" },
-    select: { id: true },
+    where: {
+      projectCode: {
+        startsWith: prefix,
+      },
+    },
+    orderBy: { projectCode: "desc" },
+    select: { projectCode: true },
   });
 
   let nextNum = 1;
-  if (latest) {
-    const currentNum = parseInt(latest.id.slice(2), 10);
+  if (latest?.projectCode) {
+    const currentNum = parseInt(latest.projectCode.slice(2), 10);
     if (!isNaN(currentNum)) {
       nextNum = currentNum + 1;
     }

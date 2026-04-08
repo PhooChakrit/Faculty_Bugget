@@ -186,6 +186,7 @@ export type UserWhereInput = {
   projectsAsLeader?: Prisma.ProjectListRelationFilter
   statusRecords?: Prisma.ProjectStatusRecordListRelationFilter
   notifications?: Prisma.NotificationStatusListRelationFilter
+  roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -198,6 +199,7 @@ export type UserOrderByWithRelationInput = {
   projectsAsLeader?: Prisma.ProjectOrderByRelationAggregateInput
   statusRecords?: Prisma.ProjectStatusRecordOrderByRelationAggregateInput
   notifications?: Prisma.NotificationStatusOrderByRelationAggregateInput
+  roleCompletions?: Prisma.ProjectRoleCompletionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -213,6 +215,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   projectsAsLeader?: Prisma.ProjectListRelationFilter
   statusRecords?: Prisma.ProjectStatusRecordListRelationFilter
   notifications?: Prisma.NotificationStatusListRelationFilter
+  roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -247,6 +250,7 @@ export type UserCreateInput = {
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -259,6 +263,7 @@ export type UserUncheckedCreateInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUpdateInput = {
@@ -271,6 +276,7 @@ export type UserUpdateInput = {
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -283,6 +289,7 @@ export type UserUncheckedUpdateInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -385,6 +392,22 @@ export type UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProjectsAsLeaderInput, Prisma.UserUpdateWithoutProjectsAsLeaderInput>, Prisma.UserUncheckedUpdateWithoutProjectsAsLeaderInput>
 }
 
+export type UserCreateNestedOneWithoutRoleCompletionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRoleCompletionsInput, Prisma.UserUncheckedCreateWithoutRoleCompletionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRoleCompletionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutRoleCompletionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRoleCompletionsInput, Prisma.UserUncheckedCreateWithoutRoleCompletionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRoleCompletionsInput
+  upsert?: Prisma.UserUpsertWithoutRoleCompletionsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRoleCompletionsInput, Prisma.UserUpdateWithoutRoleCompletionsInput>, Prisma.UserUncheckedUpdateWithoutRoleCompletionsInput>
+}
+
 export type UserCreateNestedOneWithoutStatusRecordsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutStatusRecordsInput, Prisma.UserUncheckedCreateWithoutStatusRecordsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutStatusRecordsInput
@@ -424,6 +447,7 @@ export type UserCreateWithoutProjectsAsCoLeaderInput = {
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUncheckedCreateWithoutProjectsAsCoLeaderInput = {
@@ -435,6 +459,7 @@ export type UserUncheckedCreateWithoutProjectsAsCoLeaderInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput
 }
 
 export type UserCreateOrConnectWithoutProjectsAsCoLeaderInput = {
@@ -451,6 +476,7 @@ export type UserCreateWithoutProjectsAsLeaderInput = {
   projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUncheckedCreateWithoutProjectsAsLeaderInput = {
@@ -462,6 +488,7 @@ export type UserUncheckedCreateWithoutProjectsAsLeaderInput = {
   projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput
 }
 
 export type UserCreateOrConnectWithoutProjectsAsLeaderInput = {
@@ -489,6 +516,7 @@ export type UserUpdateWithoutProjectsAsCoLeaderInput = {
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsAsCoLeaderInput = {
@@ -500,6 +528,7 @@ export type UserUncheckedUpdateWithoutProjectsAsCoLeaderInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUpsertWithoutProjectsAsLeaderInput = {
@@ -522,6 +551,7 @@ export type UserUpdateWithoutProjectsAsLeaderInput = {
   projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsAsLeaderInput = {
@@ -531,6 +561,71 @@ export type UserUncheckedUpdateWithoutProjectsAsLeaderInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput
+}
+
+export type UserCreateWithoutRoleCompletionsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
+}
+
+export type UserUncheckedCreateWithoutRoleCompletionsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
+}
+
+export type UserCreateOrConnectWithoutRoleCompletionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRoleCompletionsInput, Prisma.UserUncheckedCreateWithoutRoleCompletionsInput>
+}
+
+export type UserUpsertWithoutRoleCompletionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRoleCompletionsInput, Prisma.UserUncheckedUpdateWithoutRoleCompletionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRoleCompletionsInput, Prisma.UserUncheckedCreateWithoutRoleCompletionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRoleCompletionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRoleCompletionsInput, Prisma.UserUncheckedUpdateWithoutRoleCompletionsInput>
+}
+
+export type UserUpdateWithoutRoleCompletionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRoleCompletionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
 }
@@ -544,6 +639,7 @@ export type UserCreateWithoutStatusRecordsInput = {
   projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUncheckedCreateWithoutStatusRecordsInput = {
@@ -555,6 +651,7 @@ export type UserUncheckedCreateWithoutStatusRecordsInput = {
   projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput
 }
 
 export type UserCreateOrConnectWithoutStatusRecordsInput = {
@@ -582,6 +679,7 @@ export type UserUpdateWithoutStatusRecordsInput = {
   projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStatusRecordsInput = {
@@ -593,6 +691,7 @@ export type UserUncheckedUpdateWithoutStatusRecordsInput = {
   projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -604,6 +703,7 @@ export type UserCreateWithoutNotificationsInput = {
   projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -615,6 +715,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -642,6 +743,7 @@ export type UserUpdateWithoutNotificationsInput = {
   projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -653,6 +755,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput
 }
 
 
@@ -665,6 +768,7 @@ export type UserCountOutputType = {
   projectsAsLeader: number
   statusRecords: number
   notifications: number
+  roleCompletions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -672,6 +776,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   projectsAsLeader?: boolean | UserCountOutputTypeCountProjectsAsLeaderArgs
   statusRecords?: boolean | UserCountOutputTypeCountStatusRecordsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+  roleCompletions?: boolean | UserCountOutputTypeCountRoleCompletionsArgs
 }
 
 /**
@@ -712,6 +817,13 @@ export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.NotificationStatusWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRoleCompletionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectRoleCompletionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -723,6 +835,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   projectsAsLeader?: boolean | Prisma.User$projectsAsLeaderArgs<ExtArgs>
   statusRecords?: boolean | Prisma.User$statusRecordsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  roleCompletions?: boolean | Prisma.User$roleCompletionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -756,6 +869,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   projectsAsLeader?: boolean | Prisma.User$projectsAsLeaderArgs<ExtArgs>
   statusRecords?: boolean | Prisma.User$statusRecordsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  roleCompletions?: boolean | Prisma.User$roleCompletionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -768,6 +882,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     projectsAsLeader: Prisma.$ProjectPayload<ExtArgs>[]
     statusRecords: Prisma.$ProjectStatusRecordPayload<ExtArgs>[]
     notifications: Prisma.$NotificationStatusPayload<ExtArgs>[]
+    roleCompletions: Prisma.$ProjectRoleCompletionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1173,6 +1288,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   projectsAsLeader<T extends Prisma.User$projectsAsLeaderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectsAsLeaderArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   statusRecords<T extends Prisma.User$statusRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$statusRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectStatusRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  roleCompletions<T extends Prisma.User$roleCompletionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$roleCompletionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectRoleCompletionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1688,6 +1804,30 @@ export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.NotificationStatusScalarFieldEnum | Prisma.NotificationStatusScalarFieldEnum[]
+}
+
+/**
+ * User.roleCompletions
+ */
+export type User$roleCompletionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectRoleCompletion
+   */
+  select?: Prisma.ProjectRoleCompletionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectRoleCompletion
+   */
+  omit?: Prisma.ProjectRoleCompletionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectRoleCompletionInclude<ExtArgs> | null
+  where?: Prisma.ProjectRoleCompletionWhereInput
+  orderBy?: Prisma.ProjectRoleCompletionOrderByWithRelationInput | Prisma.ProjectRoleCompletionOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectRoleCompletionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectRoleCompletionScalarFieldEnum | Prisma.ProjectRoleCompletionScalarFieldEnum[]
 }
 
 /**

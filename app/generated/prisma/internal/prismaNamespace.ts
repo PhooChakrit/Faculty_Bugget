@@ -386,6 +386,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Project: 'Project',
+  ProjectRoleCompletion: 'ProjectRoleCompletion',
+  ApprovalEmailLog: 'ApprovalEmailLog',
   TargetGroup: 'TargetGroup',
   ProjectTargetGroup: 'ProjectTargetGroup',
   Strategy: 'Strategy',
@@ -412,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "project" | "targetGroup" | "projectTargetGroup" | "strategy" | "projectStrategy" | "incomeItem" | "projectCollaborator" | "projectManager" | "meeting" | "projectStatusRecord" | "notificationStatus" | "statusTransition"
+    modelProps: "user" | "project" | "projectRoleCompletion" | "approvalEmailLog" | "targetGroup" | "projectTargetGroup" | "strategy" | "projectStrategy" | "incomeItem" | "projectCollaborator" | "projectManager" | "meeting" | "projectStatusRecord" | "notificationStatus" | "statusTransition"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -561,6 +563,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProjectCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProjectCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProjectRoleCompletion: {
+      payload: Prisma.$ProjectRoleCompletionPayload<ExtArgs>
+      fields: Prisma.ProjectRoleCompletionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectRoleCompletionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProjectRoleCompletionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>
+        }
+        findFirst: {
+          args: Prisma.ProjectRoleCompletionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProjectRoleCompletionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>
+        }
+        findMany: {
+          args: Prisma.ProjectRoleCompletionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>[]
+        }
+        create: {
+          args: Prisma.ProjectRoleCompletionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>
+        }
+        createMany: {
+          args: Prisma.ProjectRoleCompletionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProjectRoleCompletionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>[]
+        }
+        delete: {
+          args: Prisma.ProjectRoleCompletionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>
+        }
+        update: {
+          args: Prisma.ProjectRoleCompletionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProjectRoleCompletionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProjectRoleCompletionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProjectRoleCompletionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProjectRoleCompletionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectRoleCompletionPayload>
+        }
+        aggregate: {
+          args: Prisma.ProjectRoleCompletionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectRoleCompletion>
+        }
+        groupBy: {
+          args: Prisma.ProjectRoleCompletionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectRoleCompletionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProjectRoleCompletionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProjectRoleCompletionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ApprovalEmailLog: {
+      payload: Prisma.$ApprovalEmailLogPayload<ExtArgs>
+      fields: Prisma.ApprovalEmailLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ApprovalEmailLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ApprovalEmailLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>
+        }
+        findFirst: {
+          args: Prisma.ApprovalEmailLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ApprovalEmailLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>
+        }
+        findMany: {
+          args: Prisma.ApprovalEmailLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>[]
+        }
+        create: {
+          args: Prisma.ApprovalEmailLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>
+        }
+        createMany: {
+          args: Prisma.ApprovalEmailLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ApprovalEmailLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>[]
+        }
+        delete: {
+          args: Prisma.ApprovalEmailLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>
+        }
+        update: {
+          args: Prisma.ApprovalEmailLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.ApprovalEmailLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ApprovalEmailLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ApprovalEmailLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.ApprovalEmailLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalEmailLogPayload>
+        }
+        aggregate: {
+          args: Prisma.ApprovalEmailLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateApprovalEmailLog>
+        }
+        groupBy: {
+          args: Prisma.ApprovalEmailLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApprovalEmailLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ApprovalEmailLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApprovalEmailLogCountAggregateOutputType> | number
         }
       }
     }
@@ -1490,10 +1640,45 @@ export const ProjectScalarFieldEnum = {
   docDate: 'docDate',
   docLink: 'docLink',
   currentStatusCode: 'currentStatusCode',
-  currentStatusId: 'currentStatusId'
+  currentStatusId: 'currentStatusId',
+  draftState: 'draftState',
+  draftSavedAt: 'draftSavedAt',
+  submittedAt: 'submittedAt',
+  submittedByRole: 'submittedByRole'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ProjectRoleCompletionScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  role: 'role',
+  isComplete: 'isComplete',
+  completedAt: 'completedAt',
+  completedBy: 'completedBy',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectRoleCompletionScalarFieldEnum = (typeof ProjectRoleCompletionScalarFieldEnum)[keyof typeof ProjectRoleCompletionScalarFieldEnum]
+
+
+export const ApprovalEmailLogScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  recipient: 'recipient',
+  recipientRole: 'recipientRole',
+  subject: 'subject',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApprovalEmailLogScalarFieldEnum = (typeof ApprovalEmailLogScalarFieldEnum)[keyof typeof ApprovalEmailLogScalarFieldEnum]
 
 
 export const TargetGroupScalarFieldEnum = {
@@ -1727,6 +1912,48 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'DraftState'
+ */
+export type EnumDraftStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DraftState'>
+    
+
+
+/**
+ * Reference to a field of type 'DraftState[]'
+ */
+export type ListEnumDraftStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DraftState[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClosureRole'
+ */
+export type EnumClosureRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClosureRole'>
+    
+
+
+/**
+ * Reference to a field of type 'ClosureRole[]'
+ */
+export type ListEnumClosureRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClosureRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmailDeliveryStatus'
+ */
+export type EnumEmailDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailDeliveryStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'EmailDeliveryStatus[]'
+ */
+export type ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailDeliveryStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'IncomeType'
  */
 export type EnumIncomeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IncomeType'>
@@ -1892,6 +2119,8 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   project?: Prisma.ProjectOmit
+  projectRoleCompletion?: Prisma.ProjectRoleCompletionOmit
+  approvalEmailLog?: Prisma.ApprovalEmailLogOmit
   targetGroup?: Prisma.TargetGroupOmit
   projectTargetGroup?: Prisma.ProjectTargetGroupOmit
   strategy?: Prisma.StrategyOmit

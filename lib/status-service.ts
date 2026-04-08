@@ -1,5 +1,7 @@
 import { prisma } from "./prisma";
 import type {
+  ClosureRole,
+  EmailDeliveryStatus,
   StatusCode,
   NotificationType,
 } from "../app/generated/prisma/client";
@@ -22,6 +24,12 @@ export interface NotificationChecklistItem {
   isCompleted: boolean;
   completedAt?: Date;
   completedBy?: { id: string; name: string | null };
+}
+
+export interface ClosureProgress {
+  researchComplete: boolean;
+  physicalComplete: boolean;
+  bothComplete: boolean;
 }
 
 export class StatusTransitionService {
@@ -112,15 +120,12 @@ export class StatusTransitionService {
       };
     }
 
-    // Special validation for STATUS_10 -> STATUS_11 transition
-    // Must complete all required notifications first
-    if (currentStatus === "STATUS_10" && toStatus === "STATUS_11") {
-      const requiredComplete =
-        await this.areAllRequiredNotificationsComplete(projectId);
-      if (!requiredComplete) {
+    if (currentStatus === "STATUS_10" && toStatus === "STATUS_13") {
+      const closureProgress = await this.getClosureProgress(projectId);
+      if (!closureProgress.bothComplete) {
         return {
           isValid: false,
-          reason: "ต้องแจ้งหัวหน้าภาควิชาก่อน (10.1 บังคับ)",
+          reason: "ต้องให้ งานวิจัย และ กายภาพ ยืนยันข้อมูลครบก่อนปิดโครงการ",
         };
       }
     }
@@ -180,9 +185,10 @@ export class StatusTransitionService {
           },
         });
 
-        // 3. Create notifications if entering STATUS_10
+        // 3. Create workflow records when entering STATUS_10
         if (toStatus === "STATUS_10") {
           await this.createNotifications(tx, newStatusRecord.id);
+          await this.ensureRoleCompletionRows(tx, projectId);
         }
 
         // 4. Update project's current status
@@ -191,11 +197,17 @@ export class StatusTransitionService {
           data: {
             currentStatusCode: toStatus,
             currentStatusId: newStatusRecord.id,
+            draftState: toStatus === "DRAFT" ? "DRAFT" : "SUBMITTED",
+            submittedAt: toStatus === "DRAFT" ? null : new Date(),
           },
         });
 
         return newStatusRecord;
       });
+
+      if (toStatus === "STATUS_10") {
+        await this.sendApprovalEmails(projectId);
+      }
 
       return {
         success: true,
@@ -256,6 +268,268 @@ export class StatusTransitionService {
     await tx.notificationStatus.createMany({
       data: notifications,
     });
+  }
+
+  private async ensureRoleCompletionRows(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tx: any,
+    projectId: string,
+  ): Promise<void> {
+    await tx.projectRoleCompletion.upsert({
+      where: {
+        projectId_role: {
+          projectId,
+          role: "RESEARCH",
+        },
+      },
+      update: {
+        isComplete: false,
+        completedAt: null,
+        completedBy: null,
+        notes: null,
+      },
+      create: {
+        projectId,
+        role: "RESEARCH",
+      },
+    });
+
+    await tx.projectRoleCompletion.upsert({
+      where: {
+        projectId_role: {
+          projectId,
+          role: "PHYSICAL",
+        },
+      },
+      update: {
+        isComplete: false,
+        completedAt: null,
+        completedBy: null,
+        notes: null,
+      },
+      create: {
+        projectId,
+        role: "PHYSICAL",
+      },
+    });
+  }
+
+  async getClosureProgress(projectId: string): Promise<ClosureProgress> {
+    const rows = await prisma.projectRoleCompletion.findMany({
+      where: { projectId },
+      select: {
+        role: true,
+        isComplete: true,
+      },
+    });
+
+    const researchComplete =
+      rows.find((row) => row.role === "RESEARCH")?.isComplete ?? false;
+    const physicalComplete =
+      rows.find((row) => row.role === "PHYSICAL")?.isComplete ?? false;
+
+    return {
+      researchComplete,
+      physicalComplete,
+      bothComplete: researchComplete && physicalComplete,
+    };
+  }
+
+  async setRoleCompletion(
+    projectId: string,
+    role: ClosureRole,
+    isComplete: boolean,
+    userId: string,
+    notes?: string,
+  ): Promise<{ success: boolean; error?: string; progress?: ClosureProgress }> {
+    try {
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        select: { currentStatusCode: true },
+      });
+
+      if (!project) {
+        return { success: false, error: "โครงการไม่พบในระบบ" };
+      }
+
+      if (project.currentStatusCode !== "STATUS_10") {
+        return {
+          success: false,
+          error: "โครงการต้องอยู่ในสถานะ 10 (อนุมัติโครงการ)",
+        };
+      }
+
+      await prisma.projectRoleCompletion.upsert({
+        where: {
+          projectId_role: {
+            projectId,
+            role,
+          },
+        },
+        create: {
+          projectId,
+          role,
+          isComplete,
+          completedAt: isComplete ? new Date() : null,
+          completedBy: isComplete ? userId : null,
+          notes,
+        },
+        update: {
+          isComplete,
+          completedAt: isComplete ? new Date() : null,
+          completedBy: isComplete ? userId : null,
+          notes,
+        },
+      });
+
+      const progress = await this.getClosureProgress(projectId);
+
+      return {
+        success: true,
+        progress,
+      };
+    } catch (error) {
+      console.error("Set role completion error:", error);
+      return {
+        success: false,
+        error: "เกิดข้อผิดพลาดในการบันทึกสถานะความครบถ้วน",
+      };
+    }
+  }
+
+  private async sendApprovalEmails(projectId: string): Promise<void> {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        leader: {
+          select: { email: true, name: true },
+        },
+      },
+    });
+
+    if (!project) return;
+
+    const recipients: Array<{ email: string; recipientRole: string }> = [];
+
+    if (project.leader.email) {
+      recipients.push({
+        email: project.leader.email,
+        recipientRole: "PROJECT_OWNER",
+      });
+    }
+
+    const physicalList = (process.env.PHYSICAL_ROLE_EMAILS ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    for (const email of physicalList) {
+      recipients.push({
+        email,
+        recipientRole: "PHYSICAL",
+      });
+    }
+
+    if (recipients.length === 0) {
+      return;
+    }
+
+    const subject = `อนุมัติโครงการ ${project.projectCode ?? project.id}`;
+
+    for (const recipient of recipients) {
+      const exists = await prisma.approvalEmailLog.findFirst({
+        where: {
+          projectId,
+          recipient: recipient.email,
+          status: {
+            in: ["SENT", "PENDING"] as EmailDeliveryStatus[],
+          },
+        },
+      });
+
+      if (exists) {
+        continue;
+      }
+
+      const log = await prisma.approvalEmailLog.create({
+        data: {
+          projectId,
+          recipient: recipient.email,
+          recipientRole: recipient.recipientRole,
+          subject,
+          status: "PENDING",
+        },
+      });
+
+      await this.dispatchEmail(log.id, recipient.email, subject, project.id);
+    }
+  }
+
+  private async dispatchEmail(
+    logId: string,
+    to: string,
+    subject: string,
+    projectId: string,
+  ): Promise<void> {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromAddress = process.env.APPROVAL_EMAIL_FROM;
+
+    if (!resendApiKey || !fromAddress) {
+      await prisma.approvalEmailLog.update({
+        where: { id: logId },
+        data: {
+          status: "SKIPPED",
+          errorMessage:
+            "Missing RESEND_API_KEY or APPROVAL_EMAIL_FROM configuration",
+        },
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: fromAddress,
+          to: [to],
+          subject,
+          html: `<p>โครงการ ${projectId} ได้รับอนุมัติและเข้าสู่สถานะ 10 (อนุมัติโครงการ)</p>`,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        await prisma.approvalEmailLog.update({
+          where: { id: logId },
+          data: {
+            status: "FAILED",
+            errorMessage: errorBody.slice(0, 500),
+          },
+        });
+        return;
+      }
+
+      await prisma.approvalEmailLog.update({
+        where: { id: logId },
+        data: {
+          status: "SENT",
+          sentAt: new Date(),
+          errorMessage: null,
+        },
+      });
+    } catch (error) {
+      await prisma.approvalEmailLog.update({
+        where: { id: logId },
+        data: {
+          status: "FAILED",
+          errorMessage: error instanceof Error ? error.message : "Unknown error",
+        },
+      });
+    }
   }
 
   /**

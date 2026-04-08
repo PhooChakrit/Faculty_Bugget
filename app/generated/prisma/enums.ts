@@ -40,7 +40,7 @@ export type MeetingType = (typeof MeetingType)[keyof typeof MeetingType]
 
 
 export const StatusCode = {
-  STATUS_0: 'STATUS_0',
+  DRAFT: 'DRAFT',
   STATUS_1: 'STATUS_1',
   STATUS_2: 'STATUS_2',
   STATUS_3: 'STATUS_3',
@@ -60,6 +60,32 @@ export const StatusCode = {
 } as const
 
 export type StatusCode = (typeof StatusCode)[keyof typeof StatusCode]
+
+
+export const DraftState = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED'
+} as const
+
+export type DraftState = (typeof DraftState)[keyof typeof DraftState]
+
+
+export const ClosureRole = {
+  RESEARCH: 'RESEARCH',
+  PHYSICAL: 'PHYSICAL'
+} as const
+
+export type ClosureRole = (typeof ClosureRole)[keyof typeof ClosureRole]
+
+
+export const EmailDeliveryStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  SKIPPED: 'SKIPPED'
+} as const
+
+export type EmailDeliveryStatus = (typeof EmailDeliveryStatus)[keyof typeof EmailDeliveryStatus]
 
 
 export const NotificationType = {

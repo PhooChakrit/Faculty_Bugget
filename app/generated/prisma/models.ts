@@ -10,6 +10,8 @@
  */
 export type * from './models/User'
 export type * from './models/Project'
+export type * from './models/ProjectRoleCompletion'
+export type * from './models/ApprovalEmailLog'
 export type * from './models/TargetGroup'
 export type * from './models/ProjectTargetGroup'
 export type * from './models/Strategy'

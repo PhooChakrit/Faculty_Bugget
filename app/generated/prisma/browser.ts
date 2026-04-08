@@ -28,6 +28,16 @@ export type User = Prisma.UserModel
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model ProjectRoleCompletion
+ * 
+ */
+export type ProjectRoleCompletion = Prisma.ProjectRoleCompletionModel
+/**
+ * Model ApprovalEmailLog
+ * 
+ */
+export type ApprovalEmailLog = Prisma.ApprovalEmailLogModel
+/**
  * Model TargetGroup
  * 
  */
