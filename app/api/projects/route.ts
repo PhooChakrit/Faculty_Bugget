@@ -6,7 +6,6 @@ import {
   listProjectsQuerySchema,
   CreateProjectInput,
 } from "./schema";
-import { generateProjectId } from "@/lib/generate-project-id";
 
 // GET /api/projects - List all projects
 export async function GET(request: NextRequest) {
@@ -92,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     const project = await prisma.$transaction(
       async (tx) => {
-        const id = await generateProjectId(tx);
+        const id = crypto.randomUUID();
 
         return tx.project.create({
           data: {
@@ -100,6 +99,10 @@ export async function POST(request: NextRequest) {
             ...projectData,
             startDate: new Date(startDate),
             endDate: new Date(endDate),
+            currentStatusCode: "DRAFT",
+            status1: "DRAFT. แบบร่างโครงการ",
+            draftState: "DRAFT",
+            draftSavedAt: new Date(),
             // Create target group relations
             ...(targetGroupIds &&
               targetGroupIds.length > 0 && {

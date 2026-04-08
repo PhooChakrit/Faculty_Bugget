@@ -22,6 +22,34 @@ function formatThaiDate(date: Date | null | undefined): string {
   }).format(date);
 }
 
+function toDisplayStatus(statusCode: string | null | undefined): string {
+  if (!statusCode) return "";
+  if (statusCode === "DRAFT") return "DRAFT. แบบร่างโครงการ";
+  if (statusCode === "RECALL") return "RECALL. ดึงกลับเอกสาร";
+
+  const statusMap: Record<string, string> = {
+    STATUS_1:
+      "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
+    STATUS_2:
+      "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
+    STATUS_3:
+      "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
+    STATUS_4:
+      "4. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์อนุมัติ และให้เสนองานบริหารวิจัยและบริการวิชาการเพื่อดำเนินการต่อไป",
+    STATUS_5:
+      "5. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์เห็นชอบ และให้เสนอกลุ่มภารกิจการประชุม ศูนย์บริหารกลางเพื่อดำเนินการต่อไป",
+    STATUS_6: "6. เสนอคณบดี เพื่อพิจารณาอนุมัติโครงการ",
+    STATUS_7:
+      "7. เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
+    STATUS_8: "8. คณบดีอนุมัติโครงการ",
+    STATUS_9: "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
+    STATUS_10: "10. อนุมัติโครงการ",
+    STATUS_13: "13. ปิดโครงการ",
+  };
+
+  return statusMap[statusCode] ?? "";
+}
+
 // GET /api/overviews - List all projects in overview format
 export async function GET(request: NextRequest) {
   try {
@@ -75,6 +103,7 @@ export async function GET(request: NextRequest) {
               notifications: true,
             },
           },
+          roleCompletions: true,
         },
       }),
       prisma.project.count({ where }),
@@ -105,6 +134,14 @@ export async function GET(request: NextRequest) {
       const canMoveTo11 =
         requiredNotifications.length > 0 &&
         requiredNotifications.every((n) => n.isCompleted);
+      const researchCompletion = project.roleCompletions.find(
+        (row) => row.role === "RESEARCH",
+      );
+      const physicalCompletion = project.roleCompletions.find(
+        (row) => row.role === "PHYSICAL",
+      );
+      const canCloseProject =
+        !!researchCompletion?.isComplete && !!physicalCompletion?.isComplete;
 
       return {
         id: project.id,
@@ -178,7 +215,8 @@ export async function GET(request: NextRequest) {
         docLink: project.docLink || "",
 
         // Enhanced fields for overview table
-        _projectStatus: project.status1 || "",
+        _projectStatus:
+          project.status1 || toDisplayStatus(project.currentStatusCode),
         _meetings: project.meetings.map((m) => ({
           id: m.id,
           type: m.type,
@@ -190,6 +228,10 @@ export async function GET(request: NextRequest) {
         _maintenanceFee: formatDecimal(project.maintenanceFeeActual),
         _electricityFeeActual: formatDecimal(project.electricityFeeActual),
         _canMoveTo11: canMoveTo11,
+        _canCloseProject: canCloseProject,
+        _researchComplete: !!researchCompletion?.isComplete,
+        _physicalComplete: !!physicalCompletion?.isComplete,
+        _draftState: project.draftState,
 
         // Additional required fields (placeholders for now)
         strategyType: "",
