@@ -144,7 +144,7 @@ export const formDataSchema = z
     if (!isBudgetValid) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: `ยอดรวมงบประมาณไม่สมดุล: แหล่งงบประมาณ (${budgetSourceTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท), รายรับ (${incomeTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท) และรายจ่าย (${expenseTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท) ต้องเท่ากันพอดี`,
+        message: `ยอดรวมงบประมาณไม่สมดุล: งบประมาณ (${budgetSourceTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท), รายรับ (${incomeTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท) และรายจ่าย (${expenseTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท) ต้องเท่ากันพอดี`,
         path: ["budgetSourceExtGov"],
       });
     }

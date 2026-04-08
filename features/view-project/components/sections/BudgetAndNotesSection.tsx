@@ -79,7 +79,7 @@ export function BudgetAndNotesSection({
       <CardContent className="space-y-6 pt-6">
         {/* Budget Sources Section */}
         <div>
-          <h3 className="font-medium mb-3">แหล่งงบประมาณ</h3>
+          <h3 className="font-medium mb-3">งบประมาณ</h3>
           <div className="border rounded-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-muted">
