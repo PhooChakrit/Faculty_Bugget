@@ -6,8 +6,9 @@ import { generateProjectId } from "@/lib/generate-project-id";
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   DRAFT: ["1"],
+  "0": ["1"],
   "1": ["2", "RECALL"],
-  RECALL: ["1"],
+  RECALL: ["DRAFT"],
   "2": ["1", "3"],
   "3": ["4", "5"],
   "4": ["6"],
@@ -100,9 +101,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       if (currentStatusKey !== nextStatusKey) {
         const isCloseFromApproved =
           currentStatusKey === "10" && nextStatusKey === "13";
+        const isApproveRecall =
+          currentStatusKey === "RECALL" && nextStatusKey === "DRAFT";
         const canEditStatus =
           actorRole === "งานวิจัย" ||
-          (isCloseFromApproved && actorRole === "กายภาพ");
+          (isCloseFromApproved && actorRole === "กายภาพ") ||
+          isApproveRecall;
 
         if (!canEditStatus) {
           return Response.json(
@@ -184,7 +188,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
           const isSubmittingDraft =
             currentStatusKey === "DRAFT" && nextStatusKey === "1";
           if (isSubmittingDraft && !project.projectCode) {
-            updateData.projectCode = await generateProjectId(prisma);
+            updateData.projectCode = id;
           }
         }
       }

@@ -1,7 +1,6 @@
 export enum StatusCode {
   DRAFT = "DRAFT",
   STATUS_0 = "STATUS_0",
-  STATUS_0 = "STATUS_0",
   STATUS_1 = "STATUS_1",
   STATUS_2 = "STATUS_2",
   STATUS_3 = "STATUS_3",

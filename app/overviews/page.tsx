@@ -87,6 +87,7 @@ interface ProjectData {
 // --- Project Status Constants ---
 const PROJECT_STATUSES = [
   "DRAFT. แบบร่างโครงการ",
+  "0. แบบร่างโครงการ (รอดำเนินการ)",
   "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
   "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
   "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
@@ -103,8 +104,9 @@ const PROJECT_STATUSES = [
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   DRAFT: ["1"],
+  "0": ["1"],
   "1": ["2", "RECALL"],
-  RECALL: ["1"],
+  RECALL: ["DRAFT"],
   "2": ["1", "3"],
   "3": ["4", "5"],
   "4": ["6"],
@@ -314,6 +316,9 @@ export default function ProjectTrackingPage() {
   const [savingCompletionProjectId, setSavingCompletionProjectId] = useState<
     string | null
   >(null);
+  const [approvingRecallId, setApprovingRecallId] = useState<string | null>(
+    null,
+  );
 
   // Modal for meetings management
   const [editingMeetings, setEditingMeetings] = useState<{
@@ -467,6 +472,44 @@ export default function ProjectTrackingPage() {
       alert("เกิดข้อผิดพลาดในการบันทึกความครบถ้วนข้อมูล");
     } finally {
       setSavingCompletionProjectId(null);
+    }
+  };
+
+  const handleApproveRecall = async (projectId: string) => {
+    setApprovingRecallId(projectId);
+    try {
+      const res = await fetch(`/api/overviews/${projectId}/field`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          field: "_projectStatus",
+          value: "DRAFT. แบบร่างโครงการ",
+          actorRole: "งานวิจัย",
+          actorUserId: "mock-งานวิจัย",
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(
+          typeof err?.error === "string" ? err.error : "อัปเดตสถานะไม่สำเร็จ",
+        );
+      }
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === projectId
+            ? {
+                ...p,
+                _projectStatus: "DRAFT. แบบร่างโครงการ",
+                _draftState: "DRAFT",
+              }
+            : p,
+        ),
+      );
+    } catch (e) {
+      console.error(e);
+      alert(e instanceof Error ? e.message : "เกิดข้อผิดพลาดในการอนุมัติคำขอ");
+    } finally {
+      setApprovingRecallId(null);
     }
   };
 
@@ -793,6 +836,22 @@ export default function ProjectTrackingPage() {
                     {project._physicalComplete ? "ยกเลิกครบ" : "ยืนยันครบ"}
                   </Button>
                 )}
+              </div>
+            )}
+
+            {statusNumber === "RECALL" && (
+              <div className="mt-2">
+                <Button
+                  size="sm"
+                  className="h-7 text-[11px] bg-amber-600 hover:bg-amber-700 text-white"
+                  onClick={() => handleApproveRecall(project.id)}
+                  disabled={approvingRecallId === project.id}
+                >
+                  {approvingRecallId === project.id ? (
+                    <Loader2 size={12} className="animate-spin inline mr-1" />
+                  ) : null}
+                  อนุมัติคำขอแก้ไข
+                </Button>
               </div>
             )}
           </div>
