@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
               id,
               leaderId,
               status: ProjectStatus.DRAFT,
-              currentStatusCode: StatusCode.STATUS_0,
+              currentStatusCode: StatusCode.DRAFT,
               projectNameThai: "(แบบร่าง)",
               leaderPosition: "-",
               department: "-",

@@ -12,6 +12,7 @@ export const projectStatusEnumSchema = z.enum([
 
 /** Workflow step codes (matches Prisma `StatusCode` — overview / timeline) */
 export const workflowStatusCodeSchema = z.enum([
+  "DRAFT",
   "STATUS_0",
   "STATUS_1",
   "STATUS_2",
