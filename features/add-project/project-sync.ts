@@ -186,24 +186,36 @@ export function projectApiToFormState(project: ProjectApiShape): {
       ? ""
       : project.projectNameThai,
     projectNameEng: project.projectNameEng ?? "",
-    leaderName: project.leader?.name ?? "",
+    leaderName: isPlaceholderDash(project.leaderPosition)
+      ? ""
+      : (project.leader?.name ?? ""),
     leaderPosition: isPlaceholderDash(project.leaderPosition)
       ? ""
       : project.leaderPosition,
     department: isPlaceholderDash(project.department) ? "" : project.department,
-    leaderEmail: project.leader?.email ?? "",
+    leaderEmail: isPlaceholderDash(project.leaderPosition)
+      ? ""
+      : (project.leader?.email ?? ""),
     coLeaderName: project.coLeader?.name ?? "",
     coLeaderEmail: project.coLeader?.email ?? "",
-    startDate: formatDateInput(project.startDate),
-    endDate: formatDateInput(project.endDate),
+    startDate: isPlaceholderDash(project.leaderPosition)
+      ? ""
+      : formatDateInput(project.startDate),
+    endDate: isPlaceholderDash(project.leaderPosition)
+      ? ""
+      : formatDateInput(project.endDate),
     background: project.background ?? "",
     projectDetails: project.projectDetails ?? "",
     objectives: project.objectives ?? "",
     scope: project.scope ?? "",
     implementationPlan: project.implementationPlan ?? "",
     serviceType: project.serviceType ?? "",
-    targetGroups: (project.targetGroups ?? []).map((t) => t.targetGroup.id),
-    strategies: (project.strategies ?? []).map((s) => s.strategy.id),
+    targetGroups: isPlaceholderProjectName(project.projectNameThai)
+      ? []
+      : (project.targetGroups ?? []).map((t) => t.targetGroup.id),
+    strategies: isPlaceholderProjectName(project.projectNameThai)
+      ? []
+      : (project.strategies ?? []).map((s) => s.strategy.id),
     participants: [
       {
         id: 1,
