@@ -201,28 +201,22 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
 
       <main className="flex-1 p-8 bg-slate-50 overflow-y-auto">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => router.push("/projects")}
-                className="h-10 w-10 text-slate-500 hover:text-slate-900"
-              >
-                <ArrowLeft size={18} />
-              </Button>
-              <h1 className="text-2xl font-semibold">
-                ข้อมูลโครงการบริการวิชาการ
-              </h1>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline">แก้ไข</Button>
-              <Button variant="outline">พิมพ์</Button>
-            </div>
+          <div className="flex items-center gap-3 mb-8">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => router.push("/projects")}
+              className="h-10 w-10 text-slate-500 hover:text-slate-900"
+            >
+              <ArrowLeft size={18} />
+            </Button>
+            <h1 className="text-2xl font-semibold">
+              ข้อมูลโครงการบริการวิชาการ
+            </h1>
           </div>
 
           <div className="space-y-6">
-            <ReceiptInfoSection formData={formData} projectId={projectId} />
+            <ReceiptInfoSection projectId={projectId} />
 
             <BasicInfoSection
               formData={formData}

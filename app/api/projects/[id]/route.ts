@@ -11,6 +11,7 @@ import {
   updateProjectSchema,
   UpdateProjectInput,
 } from "../schema";
+import { generateProjectId } from "@/lib/generate-project-id";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -98,11 +99,33 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
           await tx.projectManager.deleteMany({ where: { projectId: id } });
         }
 
+        // Sync status1 display string when currentStatusCode is explicitly set
+        const statusCodeToStatus1: Record<string, string> = {
+          DRAFT: "DRAFT. แบบร่างโครงการ",
+          STATUS_0: "0. แบบร่างโครงการ (รอดำเนินการ)",
+          STATUS_1:
+            "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
+          STATUS_2:
+            "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
+          RECALL: "RECALL. ดึงกลับเอกสาร",
+        };
+        const derivedStatus1 = projectData.currentStatusCode
+          ? (statusCodeToStatus1[projectData.currentStatusCode] ?? null)
+          : null;
+
+        // Assign projectCode = id when first transitioning to STATUS_1
+        const needsProjectCode =
+          projectData.currentStatusCode === "STATUS_1" &&
+          !existingProject.projectCode;
+        const newProjectCode = needsProjectCode ? id : null;
+
         // Update project
         return tx.project.update({
           where: { id },
           data: {
             ...projectData,
+            ...(derivedStatus1 && { status1: derivedStatus1 }),
+            ...(newProjectCode && { projectCode: newProjectCode }),
             ...(startDate && { startDate: new Date(startDate) }),
             ...(endDate && { endDate: new Date(endDate) }),
             // Recreate target group relations

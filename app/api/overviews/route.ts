@@ -25,6 +25,7 @@ function formatThaiDate(date: Date | null | undefined): string {
 function toDisplayStatus(statusCode: string | null | undefined): string {
   if (!statusCode) return "";
   if (statusCode === "DRAFT") return "DRAFT. แบบร่างโครงการ";
+  if (statusCode === "STATUS_0") return "0. แบบร่างโครงการ (รอดำเนินการ)";
   if (statusCode === "RECALL") return "RECALL. ดึงกลับเอกสาร";
 
   const statusMap: Record<string, string> = {
@@ -143,7 +144,7 @@ export async function GET(request: NextRequest) {
       return {
         id: project.id,
         receiptNumber: project.receiptNumber || "",
-        projectCode: project.projectCode || "",
+        projectCode: project.projectCode || project.id,
         memoTitle: project.memoTitle || project.projectNameThai,
         department: project.department,
         purpose: latestMeeting?.purpose || "-",
