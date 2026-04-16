@@ -279,7 +279,11 @@ export function BudgetAndNotesSection({
                 <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมงบประมาณ</td>
                   <td className="p-3">
-                    <Input readOnly value={calculateBudgetSourceTotal()} className="text-right" />
+                    <Input
+                      readOnly
+                      value={calculateBudgetSourceTotal()}
+                      className="text-right"
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -552,7 +556,11 @@ export function BudgetAndNotesSection({
                 <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมประมาณการรายรับ</td>
                   <td className="p-3">
-                    <Input readOnly value={calculateIncomeTotal()} className="text-right" />
+                    <Input
+                      readOnly
+                      value={calculateIncomeTotal()}
+                      className="text-right"
+                    />
                   </td>
                   <td></td>
                 </tr>
@@ -670,7 +678,11 @@ export function BudgetAndNotesSection({
                 <tr className="bg-muted font-medium rounded-b-lg">
                   <td className="p-3">รวมประมาณการรายจ่าย</td>
                   <td className="p-3">
-                    <Input readOnly value={calculateExpenseTotal()} className="text-right" />
+                    <Input
+                      readOnly
+                      value={calculateExpenseTotal()}
+                      className="text-right"
+                    />
                   </td>
                 </tr>
               </tbody>
