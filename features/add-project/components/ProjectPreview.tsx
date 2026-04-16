@@ -54,10 +54,6 @@ export function ProjectPreview({
       </div>
 
       <div className="space-y-6 text-sm">
-        <Section title="ข้อมูลรายรับ">
-          <Row label="เลขที่รับ วจบ" value={formData.receiptNumber || "-"} />
-        </Section>
-
         <Section title="ข้อมูลพื้นฐาน">
           <Row label="ชื่อโครงการภาษาไทย" value={formData.projectNameThai} />
           <Row label="ชื่อโครงการภาษาอังกฤษ" value={formData.projectNameEng} />

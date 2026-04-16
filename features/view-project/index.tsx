@@ -222,7 +222,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
           </div>
 
           <div className="space-y-6">
-            <ReceiptInfoSection formData={formData} />
+            <ReceiptInfoSection formData={formData} projectId={projectId} />
 
             <BasicInfoSection
               formData={formData}

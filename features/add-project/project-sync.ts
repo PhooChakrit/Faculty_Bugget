@@ -11,24 +11,44 @@ export const DEFAULT_LEADER_ID = "cmlfoz51o0000voxek4yjqxhg";
 export const ADD_PROJECT_STORAGE_PREFIX = "faculty-budget-add-project-backup:";
 
 const PENDING_DRAFT_SESSION_KEY = "faculty-budget-pending-draft-id";
+let pendingDraftPromise: Promise<string> | null = null;
 
-/** Dedupe draft POST across React Strict Mode using sessionStorage. */
+/**
+ * Returns the draft project id for the given leader.
+ * Priority: sessionStorage cache → existing DRAFT on server → create new draft.
+ * Dedupes concurrent calls (React Strict Mode) via in-flight promise.
+ */
 export async function ensureDraftProjectId(leaderId: string): Promise<string> {
   try {
-    const existing = sessionStorage.getItem(PENDING_DRAFT_SESSION_KEY);
-    if (existing) return existing;
+    const cached = sessionStorage.getItem(PENDING_DRAFT_SESSION_KEY);
+    if (cached) return cached;
   } catch {
     /* ignore */
   }
-  const res = await projectService.createDraft(leaderId);
-  const id = res?.data?.id;
-  if (!id) throw new Error("สร้างแบบร่างไม่สำเร็จ");
+
+  if (pendingDraftPromise) return pendingDraftPromise;
+
+  pendingDraftPromise = (async () => {
+    // Reuse an existing DRAFT for this leader instead of creating a new one
+    const existing = await projectService.findExistingDraft(leaderId);
+    const id =
+      existing?.id ??
+      (await projectService.createDraft(leaderId).then((r) => r?.data?.id));
+
+    if (!id) throw new Error("สร้างแบบร่างไม่สำเร็จ");
+    try {
+      sessionStorage.setItem(PENDING_DRAFT_SESSION_KEY, id);
+    } catch {
+      /* ignore */
+    }
+    return id;
+  })();
+
   try {
-    sessionStorage.setItem(PENDING_DRAFT_SESSION_KEY, id);
-  } catch {
-    /* ignore */
+    return await pendingDraftPromise;
+  } finally {
+    pendingDraftPromise = null;
   }
-  return id;
 }
 
 export function clearPendingDraftSession() {

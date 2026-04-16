@@ -10,6 +10,10 @@ import {
   CreateProjectInput,
 } from "./schema";
 
+const DEV_LEADER_USER_ID = "cmlfoz51o0000voxek4yjqxhg";
+const DEV_LEADER_EMAIL = "dev-leader@faculty.local";
+const DEV_LEADER_NAME = "หัวหน้าโครงการ (dev seed)";
+
 // GET /api/projects - List all projects
 export async function GET(request: NextRequest) {
   try {
@@ -19,14 +23,16 @@ export async function GET(request: NextRequest) {
       limit: searchParams.get("limit") || 10,
       status: searchParams.get("status") || undefined,
       search: searchParams.get("search") || undefined,
+      leaderId: searchParams.get("leaderId") || undefined,
     });
 
-    const { page, limit, status, search } = query;
+    const { page, limit, status, search, leaderId } = query;
     const skip = (page - 1) * limit;
 
     // Build where clause
     const where = {
       ...(status && { status }),
+      ...(leaderId && { leaderId }),
       ...(search && {
         OR: [
           {
@@ -89,11 +95,33 @@ export async function POST(request: NextRequest) {
 
       const project = await prisma.$transaction(
         async (tx) => {
+          const requestedLeader = await tx.user.findUnique({
+            where: { id: leaderId },
+            select: { id: true },
+          });
+
+          const fallbackLeader =
+            requestedLeader ??
+            (await tx.user.findFirst({
+              orderBy: { createdAt: "asc" },
+              select: { id: true },
+            })) ??
+            (await tx.user.upsert({
+              where: { id: DEV_LEADER_USER_ID },
+              update: {},
+              create: {
+                id: DEV_LEADER_USER_ID,
+                email: DEV_LEADER_EMAIL,
+                name: DEV_LEADER_NAME,
+              },
+              select: { id: true },
+            }));
+
           const id = await generateProjectId(tx);
           return tx.project.create({
             data: {
               id,
-              leaderId,
+              leaderId: fallbackLeader.id,
               status: ProjectStatus.DRAFT,
               currentStatusCode: StatusCode.DRAFT,
               projectNameThai: "(แบบร่าง)",

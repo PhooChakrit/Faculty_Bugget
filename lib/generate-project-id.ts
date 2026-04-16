@@ -20,20 +20,21 @@ export async function generateProjectId(
   const yy = String(beYear).slice(-2); // e.g. "69"
   const prefix = yy;
 
-  // Find the highest existing projectCode for this year
+  // Find the highest existing id for this year (covers both draft rows and
+  // approved projects; projectCode is only set post-approval and would miss drafts)
   const latest = await tx.project.findFirst({
     where: {
-      projectCode: {
+      id: {
         startsWith: prefix,
       },
     },
-    orderBy: { projectCode: "desc" },
-    select: { projectCode: true },
+    orderBy: { id: "desc" },
+    select: { id: true },
   });
 
   let nextNum = 1;
-  if (latest?.projectCode) {
-    const currentNum = parseInt(latest.projectCode.slice(2), 10);
+  if (latest?.id) {
+    const currentNum = parseInt(latest.id.slice(2), 10);
     if (!isNaN(currentNum)) {
       nextNum = currentNum + 1;
     }

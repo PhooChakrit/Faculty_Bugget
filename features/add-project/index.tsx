@@ -424,7 +424,7 @@ function AddProjectContent() {
                       variant="secondary"
                       onClick={() => {
                         const dummyData: FormDataSchemaType = {
-                          receiptNumber: `TEST-${Date.now()}`,
+                          receiptNumber: "",
                           projectNameThai: "โครงการทดสอบระบบบันทึกงบประมาณ",
                           projectNameEng:
                             "Budget Recording System Test Project",
