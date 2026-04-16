@@ -264,22 +264,24 @@ export function buildApiPayloadFromForm(
   notes: Notes,
   leaderId: string,
 ): Record<string, unknown> {
+  const stripCommas = (s: string) => s.replace(/,/g, "");
+
   const incomeItems = [
     ...validatedData.incomeSupportItems.map((item) => ({
       type: "SUPPORT" as const,
       name: item.name,
-      amount: parseFloat(item.amount || "0"),
+      amount: parseFloat(stripCommas(item.amount || "0")),
     })),
     ...validatedData.incomeRegistrationItems.map((item) => ({
       type: "REGISTRATION" as const,
       name: item.name,
-      amount: parseFloat(item.amount || "0"),
+      amount: parseFloat(stripCommas(item.amount || "0")),
     })),
     ...(validatedData.customIncomeCategories || []).flatMap((category) =>
       category.items.map((item) => ({
         type: "OTHER" as const,
         name: item.name,
-        amount: parseFloat(item.amount || "0"),
+        amount: parseFloat(stripCommas(item.amount || "0")),
         categoryName: category.categoryName,
       })),
     ),
@@ -297,7 +299,8 @@ export function buildApiPayloadFromForm(
       .filter(Boolean)
       .join(", ") || undefined;
 
-  const num = (s: string | undefined) => (s ? parseFloat(s) : undefined);
+  const num = (s: string | undefined) =>
+    s ? parseFloat(s.replace(/,/g, "")) : undefined;
 
   const payload: Record<string, unknown> = {
     receiptNumber: validatedData.receiptNumber || undefined,

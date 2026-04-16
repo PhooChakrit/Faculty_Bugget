@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { FormData, Notes, IncomeItem } from "../../types";
 import { InfoModal } from "@/components/InfoModal";
+import { MoneyInput } from "../MoneyInput";
 
 interface BudgetAndNotesSectionProps {
   formData: FormData;
@@ -24,47 +25,45 @@ export function BudgetAndNotesSection({
   notes,
   setNotes,
 }: BudgetAndNotesSectionProps) {
-  // Helpers to calculate totals safely
-  const calculateBudgetSourceTotal = () => {
-    return (
-      Number(formData.budgetSourceExtGov || 0) +
-      Number(formData.budgetSourceExtPrivate || 0) +
-      Number(formData.budgetSourceExtForeign || 0) +
-      Number(formData.budgetSourceInternal || 0)
-    ).toFixed(2);
-  };
+  const toNum = (v: string | undefined) =>
+    Number((v ?? "").replace(/,/g, "") || 0);
+
+  const fmtTotal = (n: number) => n.toLocaleString("en-US");
+
+  const calculateBudgetSourceTotal = () =>
+    fmtTotal(
+      toNum(formData.budgetSourceExtGov) +
+        toNum(formData.budgetSourceExtPrivate) +
+        toNum(formData.budgetSourceExtForeign) +
+        toNum(formData.budgetSourceInternal),
+    );
 
   const calculateIncomeTotal = () => {
     const supportTotal = formData.incomeSupportItems.reduce(
-      (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
+      (sum: number, item: IncomeItem) => sum + toNum(item.amount),
       0,
     );
     const registrationTotal = formData.incomeRegistrationItems.reduce(
-      (sum: number, item: IncomeItem) => sum + Number(item.amount || 0),
+      (sum: number, item: IncomeItem) => sum + toNum(item.amount),
       0,
     );
     const customTotal = (formData.customIncomeCategories || []).reduce(
       (sum: number, cat) =>
-        sum +
-        cat.items.reduce(
-          (itemSum, item) => itemSum + Number(item.amount || 0),
-          0,
-        ),
+        sum + cat.items.reduce((s, item) => s + toNum(item.amount), 0),
       0,
     );
-    return (supportTotal + registrationTotal + customTotal).toFixed(2);
+    return fmtTotal(supportTotal + registrationTotal + customTotal);
   };
 
-  const calculateExpenseTotal = () => {
-    return (
-      Number(formData.expenseRemuneration || 0) +
-      Number(formData.expenseSupplies || 0) +
-      Number(formData.expenseMaterials || 0) +
-      Number(formData.expenseUtilities || 0) +
-      Number(formData.expenseSubsidy || 0) +
-      Number(formData.expenseReserve || 0)
-    ).toFixed(2);
-  };
+  const calculateExpenseTotal = () =>
+    fmtTotal(
+      toNum(formData.expenseRemuneration) +
+        toNum(formData.expenseSupplies) +
+        toNum(formData.expenseMaterials) +
+        toNum(formData.expenseUtilities) +
+        toNum(formData.expenseSubsidy) +
+        toNum(formData.expenseReserve),
+    );
 
   // Income Support items handlers
   const addIncomeSupportItem = () => {
@@ -236,10 +235,9 @@ export function BudgetAndNotesSection({
                 <tr>
                   <td className="p-3">ภายนอกภาครัฐ</td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="budgetSourceExtGov"
                       name="budgetSourceExtGov"
-                      type="number"
                       value={formData.budgetSourceExtGov}
                       onChange={handleChange}
                     />
@@ -248,10 +246,9 @@ export function BudgetAndNotesSection({
                 <tr>
                   <td className="p-3">ภายนอกภาคเอกชน</td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="budgetSourceExtPrivate"
                       name="budgetSourceExtPrivate"
-                      type="number"
                       value={formData.budgetSourceExtPrivate}
                       onChange={handleChange}
                     />
@@ -260,10 +257,9 @@ export function BudgetAndNotesSection({
                 <tr>
                   <td className="p-3">ภายนอกต่างประเทศ</td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="budgetSourceExtForeign"
                       name="budgetSourceExtForeign"
-                      type="number"
                       value={formData.budgetSourceExtForeign}
                       onChange={handleChange}
                     />
@@ -272,10 +268,9 @@ export function BudgetAndNotesSection({
                 <tr>
                   <td className="p-3">รายได้มหาวิทยาลัย</td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="budgetSourceInternal"
                       name="budgetSourceInternal"
-                      type="number"
                       value={formData.budgetSourceInternal}
                       onChange={handleChange}
                     />
@@ -348,8 +343,7 @@ export function BudgetAndNotesSection({
                       </div>
                     </td>
                     <td className="p-3">
-                      <Input
-                        type="number"
+                      <MoneyInput
                         placeholder="0"
                         value={item.amount}
                         onChange={(e) =>
@@ -415,8 +409,7 @@ export function BudgetAndNotesSection({
                       </div>
                     </td>
                     <td className="p-3">
-                      <Input
-                        type="number"
+                      <MoneyInput
                         placeholder="0"
                         value={item.amount}
                         onChange={(e) =>
@@ -508,8 +501,7 @@ export function BudgetAndNotesSection({
                           </div>
                         </td>
                         <td className="p-3">
-                          <Input
-                            type="number"
+                          <MoneyInput
                             placeholder="0"
                             value={item.amount}
                             onChange={(e) =>
@@ -588,10 +580,9 @@ export function BudgetAndNotesSection({
                 <tr>
                   <td className="p-3">หมวดค่าตอบแทน</td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="expenseRemuneration"
                       name="expenseRemuneration"
-                      type="number"
                       value={formData.expenseRemuneration}
                       onChange={handleChange}
                     />
@@ -600,10 +591,9 @@ export function BudgetAndNotesSection({
                 <tr>
                   <td className="p-3">หมวดค่าใช้สอย</td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="expenseSupplies"
                       name="expenseSupplies"
-                      type="number"
                       value={formData.expenseSupplies}
                       onChange={handleChange}
                     />
@@ -612,10 +602,9 @@ export function BudgetAndNotesSection({
                 <tr>
                   <td className="p-3">หมวดค่าวัสดุ</td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="expenseMaterials"
                       name="expenseMaterials"
-                      type="number"
                       value={formData.expenseMaterials}
                       onChange={handleChange}
                     />
@@ -632,10 +621,9 @@ export function BudgetAndNotesSection({
                     </span>
                   </td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="expenseUtilities"
                       name="expenseUtilities"
-                      type="number"
                       value={formData.expenseUtilities}
                       onChange={handleChange}
                     />
@@ -652,10 +640,9 @@ export function BudgetAndNotesSection({
                     </span>
                   </td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="expenseSubsidy"
                       name="expenseSubsidy"
-                      type="number"
                       value={formData.expenseSubsidy}
                       onChange={handleChange}
                     />
@@ -672,10 +659,9 @@ export function BudgetAndNotesSection({
                     </span>
                   </td>
                   <td className="p-3">
-                    <Input
+                    <MoneyInput
                       id="expenseReserve"
                       name="expenseReserve"
-                      type="number"
                       value={formData.expenseReserve}
                       onChange={handleChange}
                     />
