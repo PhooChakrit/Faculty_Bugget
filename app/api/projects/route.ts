@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { ProjectStatus, StatusCode } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
-import { ProjectStatus, StatusCode } from "@/app/generated/prisma/client";
+import { generateProjectId } from "@/lib/generate-project-id";
 import {
   createProjectSchema,
   createDraftProjectSchema,
@@ -123,7 +123,6 @@ export async function POST(request: NextRequest) {
               id,
               leaderId: fallbackLeader.id,
               status: ProjectStatus.DRAFT,
-              currentStatusCode: StatusCode.DRAFT,
               currentStatusCode: StatusCode.DRAFT,
               projectNameThai: "(แบบร่าง)",
               leaderPosition: "-",
