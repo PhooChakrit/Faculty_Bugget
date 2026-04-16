@@ -39,6 +39,13 @@ export function ProjectPreview({
     return values.map((val) => getLabel(val, options)).join(", ");
   };
 
+  const formatAmount = (value: string | undefined) => {
+    if (!value) return "";
+    const num = Number(value);
+    if (isNaN(num)) return value;
+    return `${num.toLocaleString("th-TH")} บาท`;
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex justify-between items-center mb-8">
@@ -54,10 +61,6 @@ export function ProjectPreview({
       </div>
 
       <div className="space-y-6 text-sm">
-        <Section title="ข้อมูลรายรับ">
-          <Row label="เลขที่รับ วจบ" value={formData.receiptNumber || "-"} />
-        </Section>
-
         <Section title="ข้อมูลพื้นฐาน">
           <Row label="ชื่อโครงการภาษาไทย" value={formData.projectNameThai} />
           <Row label="ชื่อโครงการภาษาอังกฤษ" value={formData.projectNameEng} />
@@ -140,15 +143,21 @@ export function ProjectPreview({
         </Section>
 
         <Section title="งบประมาณ">
-          <Row label="ภายนอกภาครัฐ" value={formData.budgetSourceExtGov} />
-          <Row label="ภายนอกภาคเอกชน" value={formData.budgetSourceExtPrivate} />
+          <Row
+            label="ภายนอกภาครัฐ"
+            value={formatAmount(formData.budgetSourceExtGov)}
+          />
+          <Row
+            label="ภายนอกภาคเอกชน"
+            value={formatAmount(formData.budgetSourceExtPrivate)}
+          />
           <Row
             label="ภายนอกต่างประเทศ"
-            value={formData.budgetSourceExtForeign}
+            value={formatAmount(formData.budgetSourceExtForeign)}
           />
           <Row
             label="รายได้มหาวิทยาลัย"
-            value={formData.budgetSourceInternal}
+            value={formatAmount(formData.budgetSourceInternal)}
           />
 
           <div className="font-semibold mt-4 mb-2 text-slate-700">
@@ -159,9 +168,15 @@ export function ProjectPreview({
             formData.incomeSupportItems[0].name && (
               <Row
                 label="เงินสนับสนุน"
-                value={formData.incomeSupportItems
-                  .map((i) => `${i.name}: ${i.amount} บาท`)
-                  .join(", ")}
+                value={
+                  <div className="space-y-1">
+                    {formData.incomeSupportItems.map((i, idx) => (
+                      <div key={idx}>
+                        {i.name}: {Number(i.amount).toLocaleString("th-TH")} บาท
+                      </div>
+                    ))}
+                  </div>
+                }
               />
             )}
 
@@ -170,9 +185,15 @@ export function ProjectPreview({
             formData.incomeRegistrationItems[0].name && (
               <Row
                 label="ค่าลงทะเบียน"
-                value={formData.incomeRegistrationItems
-                  .map((i) => `${i.name}: ${i.amount} บาท`)
-                  .join(", ")}
+                value={
+                  <div className="space-y-1">
+                    {formData.incomeRegistrationItems.map((i, idx) => (
+                      <div key={idx}>
+                        {i.name}: {Number(i.amount).toLocaleString("th-TH")} บาท
+                      </div>
+                    ))}
+                  </div>
+                }
               />
             )}
 
@@ -181,9 +202,15 @@ export function ProjectPreview({
               <Row
                 key={category.id}
                 label={category.categoryName || "หมวดหมู่อื่นๆ"}
-                value={category.items
-                  .map((i) => `${i.name}: ${i.amount} บาท`)
-                  .join(", ")}
+                value={
+                  <div className="space-y-1">
+                    {category.items.map((i, idx) => (
+                      <div key={idx}>
+                        {i.name}: {Number(i.amount).toLocaleString("th-TH")} บาท
+                      </div>
+                    ))}
+                  </div>
+                }
               />
             ) : null,
           )}
@@ -191,12 +218,30 @@ export function ProjectPreview({
           <div className="font-semibold mt-4 mb-2 text-slate-700">
             ประมาณการรายจ่าย
           </div>
-          <Row label="หมวดค่าตอบแทน" value={formData.expenseRemuneration} />
-          <Row label="หมวดค่าใช้สอย" value={formData.expenseSupplies} />
-          <Row label="หมวดค่าวัสดุ" value={formData.expenseMaterials} />
-          <Row label="หมวดสาธารณูปโภค" value={formData.expenseUtilities} />
-          <Row label="หมวดเงินอุดหนุน" value={formData.expenseSubsidy} />
-          <Row label="หมวดเงินสำรอง" value={formData.expenseReserve} />
+          <Row
+            label="หมวดค่าตอบแทน"
+            value={formatAmount(formData.expenseRemuneration)}
+          />
+          <Row
+            label="หมวดค่าใช้สอย"
+            value={formatAmount(formData.expenseSupplies)}
+          />
+          <Row
+            label="หมวดค่าวัสดุ"
+            value={formatAmount(formData.expenseMaterials)}
+          />
+          <Row
+            label="หมวดสาธารณูปโภค"
+            value={formatAmount(formData.expenseUtilities)}
+          />
+          <Row
+            label="หมวดเงินอุดหนุน"
+            value={formatAmount(formData.expenseSubsidy)}
+          />
+          <Row
+            label="หมวดเงินสำรอง"
+            value={formatAmount(formData.expenseReserve)}
+          />
 
           {(notes.note2 || notes.note3) && (
             <div className="font-semibold mt-4 mb-2 text-slate-700">

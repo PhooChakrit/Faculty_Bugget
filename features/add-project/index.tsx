@@ -114,39 +114,31 @@ function AddProjectContent() {
   );
 
   const [hydrated, setHydrated] = useState(false);
-  const [bootstrapError, setBootstrapError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const lastSyncedRef = useRef<Record<string, unknown> | null>(null);
   const leaderIdRef = useRef(DEFAULT_LEADER_ID);
-
-  /** Create server draft and put id in URL */
-  useEffect(() => {
-    if (projectId) {
-      clearPendingDraftSession();
-      return;
-    }
-    let cancelled = false;
-    (async () => {
-      try {
-        const id = await ensureDraftProjectId(DEFAULT_LEADER_ID);
-        if (cancelled) return;
-        router.replace(`/add-project?id=${id}`);
-      } catch {
-        if (!cancelled) {
-          setBootstrapError("ไม่สามารถสร้างแบบร่างได้ กรุณาลองใหม่");
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [projectId, router]);
+  const draftJustCreatedRef = useRef(false);
 
   /** Load project when id in URL */
   useEffect(() => {
     if (!projectId) {
-      setHydrated(false);
+      // Fresh blank session — set a diff baseline so autosave only fires on
+      // real user input, not on the initial blank-form render.
+      lastSyncedRef.current = buildApiPayloadFromForm(
+        defaultFormValues as FormDataSchemaType,
+        [{ id: 1, name: "" }],
+        { note2: false, note3: false },
+        DEFAULT_LEADER_ID,
+      );
+      setHydrated(true);
+      return;
+    }
+    if (draftJustCreatedRef.current) {
+      // Draft was just created lazily by the autosave path. The form already
+      // has the correct user data — skip fetching from the server.
+      draftJustCreatedRef.current = false;
+      clearPendingDraftSession();
       return;
     }
     let cancelled = false;
@@ -183,9 +175,9 @@ function AddProjectContent() {
     };
   }, [projectId, methods]);
 
-  /** Debounced autosave (delta PUT) */
+  /** Debounced autosave (delta PUT) — creates draft lazily on first real change */
   useEffect(() => {
-    if (!projectId || !hydrated) return;
+    if (!hydrated) return;
     const timer = window.setTimeout(async () => {
       try {
         const values = getValues() as FormDataSchemaType;
@@ -198,15 +190,21 @@ function AddProjectContent() {
         const diff = diffApiPayload(lastSyncedRef.current, payload);
         const cleaned = stripEmptyStringValues(diff);
         if (Object.keys(cleaned).length === 0) return;
-        await projectService.updateProject(
-          projectId,
-          cleaned as UpdateProjectInput,
-        );
+
+        let pid = projectId;
+        if (!pid) {
+          // First meaningful input — create the draft now.
+          pid = await ensureDraftProjectId(DEFAULT_LEADER_ID);
+          draftJustCreatedRef.current = true;
+          router.replace(`/add-project?id=${pid}`);
+        }
+
+        await projectService.updateProject(pid, cleaned as UpdateProjectInput);
         lastSyncedRef.current = mergeSyncedPayload(
           lastSyncedRef.current,
           cleaned,
         );
-        backupFormToLocalStorage(projectId, {
+        backupFormToLocalStorage(pid, {
           form: values,
           collaborators,
           notes,
@@ -216,7 +214,15 @@ function AddProjectContent() {
       }
     }, 1200);
     return () => window.clearTimeout(timer);
-  }, [watchedData, collaborators, notes, projectId, hydrated, getValues]);
+  }, [
+    watchedData,
+    collaborators,
+    notes,
+    projectId,
+    hydrated,
+    getValues,
+    router,
+  ]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -299,31 +305,25 @@ function AddProjectContent() {
     }
   };
 
-  const showBootstrapWait = !projectId && !bootstrapError;
-  const showLoadWait = projectId && !hydrated && !loadError;
-  const showErrorScreen = bootstrapError || loadError;
+  const showLoadWait = !!projectId && !hydrated && !loadError;
 
-  if (showBootstrapWait || showLoadWait) {
+  if (showLoadWait) {
     return (
       <div className="flex min-h-screen">
         <Sidebar />
         <main className="flex-1 p-8 bg-slate-50 flex items-center justify-center">
-          <p className="text-slate-600">
-            {showBootstrapWait
-              ? "กำลังเตรียมแบบร่าง…"
-              : "กำลังโหลดข้อมูลโครงการ…"}
-          </p>
+          <p className="text-slate-600">กำลังโหลดข้อมูลโครงการ…</p>
         </main>
       </div>
     );
   }
 
-  if (showErrorScreen) {
+  if (loadError) {
     return (
       <div className="flex min-h-screen">
         <Sidebar />
         <main className="flex-1 p-8 bg-slate-50 flex flex-col items-center justify-center gap-4">
-          <p className="text-red-600">{bootstrapError || loadError}</p>
+          <p className="text-red-600">{loadError}</p>
           <Button type="button" onClick={() => router.push("/projects")}>
             กลับไปรายการโครงการ
           </Button>
@@ -424,7 +424,7 @@ function AddProjectContent() {
                       variant="secondary"
                       onClick={() => {
                         const dummyData: FormDataSchemaType = {
-                          receiptNumber: `TEST-${Date.now()}`,
+                          receiptNumber: "",
                           projectNameThai: "โครงการทดสอบระบบบันทึกงบประมาณ",
                           projectNameEng:
                             "Budget Recording System Test Project",

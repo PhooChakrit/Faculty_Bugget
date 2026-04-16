@@ -12,6 +12,7 @@ export const projectStatusEnumSchema = z.enum([
 
 /** Workflow step codes (matches Prisma `StatusCode` — overview / timeline) */
 export const workflowStatusCodeSchema = z.enum([
+  "DRAFT",
   "STATUS_0",
   "STATUS_1",
   "STATUS_2",
@@ -137,6 +138,7 @@ export const listProjectsQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(10),
   status: projectStatusEnumSchema.optional(),
   search: z.string().optional(),
+  leaderId: z.string().optional(),
 });
 
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;

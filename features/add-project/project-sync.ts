@@ -11,24 +11,44 @@ export const DEFAULT_LEADER_ID = "cmlfoz51o0000voxek4yjqxhg";
 export const ADD_PROJECT_STORAGE_PREFIX = "faculty-budget-add-project-backup:";
 
 const PENDING_DRAFT_SESSION_KEY = "faculty-budget-pending-draft-id";
+let pendingDraftPromise: Promise<string> | null = null;
 
-/** Dedupe draft POST across React Strict Mode using sessionStorage. */
+/**
+ * Returns the draft project id for the given leader.
+ * Priority: sessionStorage cache → existing DRAFT on server → create new draft.
+ * Dedupes concurrent calls (React Strict Mode) via in-flight promise.
+ */
 export async function ensureDraftProjectId(leaderId: string): Promise<string> {
   try {
-    const existing = sessionStorage.getItem(PENDING_DRAFT_SESSION_KEY);
-    if (existing) return existing;
+    const cached = sessionStorage.getItem(PENDING_DRAFT_SESSION_KEY);
+    if (cached) return cached;
   } catch {
     /* ignore */
   }
-  const res = await projectService.createDraft(leaderId);
-  const id = res?.data?.id;
-  if (!id) throw new Error("สร้างแบบร่างไม่สำเร็จ");
+
+  if (pendingDraftPromise) return pendingDraftPromise;
+
+  pendingDraftPromise = (async () => {
+    // Reuse an existing DRAFT for this leader instead of creating a new one
+    const existing = await projectService.findExistingDraft(leaderId);
+    const id =
+      existing?.id ??
+      (await projectService.createDraft(leaderId).then((r) => r?.data?.id));
+
+    if (!id) throw new Error("สร้างแบบร่างไม่สำเร็จ");
+    try {
+      sessionStorage.setItem(PENDING_DRAFT_SESSION_KEY, id);
+    } catch {
+      /* ignore */
+    }
+    return id;
+  })();
+
   try {
-    sessionStorage.setItem(PENDING_DRAFT_SESSION_KEY, id);
-  } catch {
-    /* ignore */
+    return await pendingDraftPromise;
+  } finally {
+    pendingDraftPromise = null;
   }
-  return id;
 }
 
 export function clearPendingDraftSession() {
@@ -166,24 +186,36 @@ export function projectApiToFormState(project: ProjectApiShape): {
       ? ""
       : project.projectNameThai,
     projectNameEng: project.projectNameEng ?? "",
-    leaderName: project.leader?.name ?? "",
+    leaderName: isPlaceholderDash(project.leaderPosition)
+      ? ""
+      : (project.leader?.name ?? ""),
     leaderPosition: isPlaceholderDash(project.leaderPosition)
       ? ""
       : project.leaderPosition,
     department: isPlaceholderDash(project.department) ? "" : project.department,
-    leaderEmail: project.leader?.email ?? "",
+    leaderEmail: isPlaceholderDash(project.leaderPosition)
+      ? ""
+      : (project.leader?.email ?? ""),
     coLeaderName: project.coLeader?.name ?? "",
     coLeaderEmail: project.coLeader?.email ?? "",
-    startDate: formatDateInput(project.startDate),
-    endDate: formatDateInput(project.endDate),
+    startDate: isPlaceholderDash(project.leaderPosition)
+      ? ""
+      : formatDateInput(project.startDate),
+    endDate: isPlaceholderDash(project.leaderPosition)
+      ? ""
+      : formatDateInput(project.endDate),
     background: project.background ?? "",
     projectDetails: project.projectDetails ?? "",
     objectives: project.objectives ?? "",
     scope: project.scope ?? "",
     implementationPlan: project.implementationPlan ?? "",
     serviceType: project.serviceType ?? "",
-    targetGroups: (project.targetGroups ?? []).map((t) => t.targetGroup.id),
-    strategies: (project.strategies ?? []).map((s) => s.strategy.id),
+    targetGroups: isPlaceholderProjectName(project.projectNameThai)
+      ? []
+      : (project.targetGroups ?? []).map((t) => t.targetGroup.id),
+    strategies: isPlaceholderProjectName(project.projectNameThai)
+      ? []
+      : (project.strategies ?? []).map((s) => s.strategy.id),
     participants: [
       {
         id: 1,
@@ -232,22 +264,24 @@ export function buildApiPayloadFromForm(
   notes: Notes,
   leaderId: string,
 ): Record<string, unknown> {
+  const stripCommas = (s: string) => s.replace(/,/g, "");
+
   const incomeItems = [
     ...validatedData.incomeSupportItems.map((item) => ({
       type: "SUPPORT" as const,
       name: item.name,
-      amount: parseFloat(item.amount || "0"),
+      amount: parseFloat(stripCommas(item.amount || "0")),
     })),
     ...validatedData.incomeRegistrationItems.map((item) => ({
       type: "REGISTRATION" as const,
       name: item.name,
-      amount: parseFloat(item.amount || "0"),
+      amount: parseFloat(stripCommas(item.amount || "0")),
     })),
     ...(validatedData.customIncomeCategories || []).flatMap((category) =>
       category.items.map((item) => ({
         type: "OTHER" as const,
         name: item.name,
-        amount: parseFloat(item.amount || "0"),
+        amount: parseFloat(stripCommas(item.amount || "0")),
         categoryName: category.categoryName,
       })),
     ),
@@ -265,7 +299,8 @@ export function buildApiPayloadFromForm(
       .filter(Boolean)
       .join(", ") || undefined;
 
-  const num = (s: string | undefined) => (s ? parseFloat(s) : undefined);
+  const num = (s: string | undefined) =>
+    s ? parseFloat(s.replace(/,/g, "")) : undefined;
 
   const payload: Record<string, unknown> = {
     receiptNumber: validatedData.receiptNumber || undefined,
