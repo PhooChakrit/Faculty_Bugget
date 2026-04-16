@@ -17,6 +17,7 @@ model User {
   projectsAsLeader   Project[]              @relation("ProjectLeader")
   statusRecords      ProjectStatusRecord[]
   notifications      NotificationStatus[]
+  roleCompletions    ProjectRoleCompletion[]
 }
 
 model Project {
@@ -87,6 +88,12 @@ model Project {
   currentStatusId        String?                    @unique
   currentStatus          ProjectStatusRecord?       @relation("CurrentStatus", fields: [currentStatusId], references: [id])
   statusHistory          ProjectStatusRecord[]      @relation("StatusHistory")
+  draftState             DraftState                 @default(SUBMITTED)
+  draftSavedAt           DateTime?
+  submittedAt            DateTime?
+  submittedByRole        String?
+  roleCompletions        ProjectRoleCompletion[]
+  approvalEmailLogs      ApprovalEmailLog[]
   incomeItems            IncomeItem[]
   coLeader               User?                 @relation("ProjectCoLeader", fields: [coLeaderId], references: [id])
   leader                 User                  @relation("ProjectLeader", fields: [leaderId], references: [id])
@@ -95,6 +102,40 @@ model Project {
   strategies             ProjectStrategy[]
   targetGroups           ProjectTargetGroup[]
   meetings               Meeting[]
+}
+
+model ProjectRoleCompletion {
+  id           String            @id @default(cuid())
+  projectId    String
+  role         ClosureRole
+  isComplete   Boolean           @default(false)
+  completedAt  DateTime?
+  completedBy  String?
+  notes        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  project      Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  completer    User?             @relation(fields: [completedBy], references: [id])
+
+  @@unique([projectId, role])
+  @@index([projectId, isComplete])
+}
+
+model ApprovalEmailLog {
+  id           String              @id @default(cuid())
+  projectId     String
+  recipient     String
+  recipientRole String
+  subject       String
+  status        EmailDeliveryStatus @default(PENDING)
+  errorMessage  String?
+  sentAt        DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  project       Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+  @@index([status])
 }
 
 model TargetGroup {
@@ -244,7 +285,7 @@ model StatusTransition {
 }
 
 enum StatusCode {
-  STATUS_0
+  DRAFT
   STATUS_1
   STATUS_2
   STATUS_3
@@ -261,6 +302,23 @@ enum StatusCode {
   STATUS_14
   STATUS_15
   RECALL
+}
+
+enum DraftState {
+  DRAFT
+  SUBMITTED
+}
+
+enum ClosureRole {
+  RESEARCH
+  PHYSICAL
+}
+
+enum EmailDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
 }
 
 enum NotificationType {

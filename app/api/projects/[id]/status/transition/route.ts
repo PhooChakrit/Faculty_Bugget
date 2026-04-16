@@ -9,6 +9,7 @@ import type { StatusCode } from "@/app/generated/prisma/client";
  * Body: {
  *   toStatus: StatusCode;
  *   userId: string;
+ *   actorRole: "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
  *   branchChoice?: string;
  * }
  */
@@ -20,12 +21,24 @@ export async function POST(
     const { id: projectId } = await params;
     const body = await request.json();
 
-    const { toStatus, userId, branchChoice } = body;
+    const { toStatus, userId, actorRole, branchChoice } = body;
 
-    if (!toStatus || !userId) {
+    if (!toStatus || !userId || !actorRole) {
       return NextResponse.json(
-        { error: "ข้อมูลไม่ครบถ้วน: ต้องระบุ toStatus และ userId" },
+        { error: "ข้อมูลไม่ครบถ้วน: ต้องระบุ toStatus, userId และ actorRole" },
         { status: 400 },
+      );
+    }
+
+    const isClose = toStatus === "STATUS_13";
+    const isAuthorized = isClose
+      ? actorRole === "งานวิจัย" || actorRole === "กายภาพ"
+      : actorRole === "งานวิจัย";
+
+    if (!isAuthorized) {
+      return NextResponse.json(
+        { error: "ไม่มีสิทธิ์เปลี่ยนสถานะ" },
+        { status: 403 },
       );
     }
 

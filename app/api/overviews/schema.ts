@@ -19,6 +19,10 @@ export const updateFieldSchema = z.object({
     "_electricityFeeActual",
   ]),
   value: z.string(),
+  actorRole: z
+    .enum(["ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"])
+    .optional(),
+  actorUserId: z.string().optional(),
 });
 
 // Meeting record schema

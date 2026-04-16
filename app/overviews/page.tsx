@@ -86,7 +86,8 @@ interface ProjectData {
 
 // --- Project Status Constants ---
 const PROJECT_STATUSES = [
-  "1. งานบริหารวิจัยและบริการวิชาการ ดำเนินการตรวจสอบ/แก้ไข",
+  "DRAFT. แบบร่างโครงการ",
+  "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
   "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
   "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
   "4. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์อนุมัติ และให้เสนองานบริหารวิจัยและบริการวิชาการเพื่อดำเนินการต่อไป",
@@ -95,14 +96,13 @@ const PROJECT_STATUSES = [
   "7. เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
   "8. คณบดีอนุมัติโครงการ",
   "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
-  "10. รองคณบดี (รองศาสตราจารย์ ดร.พิชญดา เกตุเมฆ) แจ้งต่อ หัวหน้าภาควิชาเพื่อโปรดทราบและดำเนินการต่อไป",
-  "11. รอภาควิชาจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน",
-  "12. ภาควิชาดำเนินการจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน เรียบร้อยแล้ว",
+  "10. อนุมัติโครงการ",
   "13. ปิดโครงการ",
   "RECALL. ดึงกลับเอกสาร",
 ] as const;
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
+  DRAFT: ["1"],
   "1": ["2", "RECALL"],
   RECALL: ["1"],
   "2": ["1", "3"],
@@ -113,14 +113,15 @@ const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   "7": ["9"],
   "8": ["10"],
   "9": ["10"],
-  "10": ["11"],
-  "11": ["12"],
-  "12": ["13"],
+  "10": ["13"],
   "13": [],
 };
 
 const getStatusKey = (statusValue: string | undefined) => {
   if (!statusValue) return "";
+  if (statusValue === "DRAFT" || statusValue.startsWith("DRAFT")) {
+    return "DRAFT";
+  }
   return statusValue.split(".")[0].trim();
 };
 
@@ -146,13 +147,17 @@ interface EnhancedProjectData extends ProjectData {
   _maintenanceFee?: string; // 10.
   _electricityFeeActual?: string; // 14.
   _canMoveTo11?: boolean;
+  _canCloseProject?: boolean;
+  _researchComplete?: boolean;
+  _physicalComplete?: boolean;
+  _draftState?: "DRAFT" | "SUBMITTED";
 }
 
 type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
 
 // --- Permissions Configuration ---
 const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
-  _projectStatus: ["งานวิจัย"],
+  _projectStatus: ["งานวิจัย", "กายภาพ"],
   _meetings: ["งานวิจัย", "งานแผน"],
   vendorCode: ["งานคลัง"],
   _costCenter: ["งานแผน"],
@@ -306,6 +311,9 @@ export default function ProjectTrackingPage() {
   } | null>(null);
   const [editingValue, setEditingValue] = useState<string>("");
   const [savingCell, setSavingCell] = useState<string | null>(null);
+  const [savingCompletionProjectId, setSavingCompletionProjectId] = useState<
+    string | null
+  >(null);
 
   // Modal for meetings management
   const [editingMeetings, setEditingMeetings] = useState<{
@@ -387,6 +395,8 @@ export default function ProjectTrackingPage() {
           body: JSON.stringify({
             field: editingCell.field,
             value: editingValue,
+            actorRole: userRole,
+            actorUserId: `mock-${userRole}`,
           }),
         },
       );
@@ -409,6 +419,54 @@ export default function ProjectTrackingPage() {
       alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
     } finally {
       setSavingCell(null);
+    }
+  };
+
+  const handleToggleCompletion = async (
+    project: EnhancedProjectData,
+    role: "RESEARCH" | "PHYSICAL",
+    isComplete: boolean,
+  ) => {
+    setSavingCompletionProjectId(project.id);
+    try {
+      const response = await fetch(`/api/overviews/${project.id}/completion`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          role,
+          isComplete,
+          actorRole: userRole,
+          actorUserId: `mock-${userRole}`,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error ?? "Failed to update completion");
+      }
+
+      setProjects((prev) =>
+        prev.map((item) => {
+          if (item.id !== project.id) return item;
+          const nextResearch =
+            role === "RESEARCH" ? isComplete : !!item._researchComplete;
+          const nextPhysical =
+            role === "PHYSICAL" ? isComplete : !!item._physicalComplete;
+          return {
+            ...item,
+            _researchComplete: nextResearch,
+            _physicalComplete: nextPhysical,
+            _canCloseProject: nextResearch && nextPhysical,
+          };
+        }),
+      );
+    } catch (error) {
+      console.error("Error saving completion:", error);
+      alert("เกิดข้อผิดพลาดในการบันทึกความครบถ้วนข้อมูล");
+    } finally {
+      setSavingCompletionProjectId(null);
     }
   };
 
@@ -615,10 +673,27 @@ export default function ProjectTrackingPage() {
                     if (statusKey === currentStatusKey) return false;
                     if (!allowedNextKeys.includes(statusKey)) return true;
 
+                    const isClosingTransition =
+                      currentStatusKey === "10" && statusKey === "13";
+                    if (
+                      isClosingTransition &&
+                      userRole !== "งานวิจัย" &&
+                      userRole !== "กายภาพ"
+                    ) {
+                      return true;
+                    }
+
+                    if (
+                      !isClosingTransition &&
+                      userRole !== "งานวิจัย"
+                    ) {
+                      return true;
+                    }
+
                     if (
                       currentStatusKey === "10" &&
-                      statusKey === "11" &&
-                      !project._canMoveTo11
+                      statusKey === "13" &&
+                      !project._canCloseProject
                     ) {
                       return true;
                     }
@@ -656,17 +731,73 @@ export default function ProjectTrackingPage() {
       }
 
       // Display mode for status
-      const statusNumber = (value as string)?.split(".")[0];
+      const statusNumber = getStatusKey(value as string);
       const statusColor =
-        statusNumber === "14" ? "text-green-700" : "text-slate-700";
+        statusNumber === "13" ? "text-green-700" : "text-slate-700";
+      const isStatus10 = statusNumber === "10";
+      const canManageResearch = userRole === "งานวิจัย";
+      const canManagePhysical = userRole === "กายภาพ";
 
       return (
         <div className={`flex items-start justify-between group ${alignClass}`}>
-          <div
-            className={`text-sm ${statusColor} flex-1 leading-relaxed`}
-            title={value as string}
-          >
-            {(value as string) || "-"}
+          <div className="flex-1">
+            <div
+              className={`text-sm ${statusColor} leading-relaxed`}
+              title={value as string}
+            >
+              {(value as string) || "-"}
+            </div>
+
+            {isStatus10 && (
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <span
+                  className={`text-[11px] px-2 py-0.5 rounded-full ${project._researchComplete ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}
+                >
+                  งานวิจัย {project._researchComplete ? "ครบ" : "ยังไม่ครบ"}
+                </span>
+                <span
+                  className={`text-[11px] px-2 py-0.5 rounded-full ${project._physicalComplete ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}
+                >
+                  กายภาพ {project._physicalComplete ? "ครบ" : "ยังไม่ครบ"}
+                </span>
+
+                {canManageResearch && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-6 text-[11px]"
+                    onClick={() =>
+                      handleToggleCompletion(
+                        project,
+                        "RESEARCH",
+                        !project._researchComplete,
+                      )
+                    }
+                    disabled={savingCompletionProjectId === project.id}
+                  >
+                    {project._researchComplete ? "ยกเลิกครบ" : "ยืนยันครบ"}
+                  </Button>
+                )}
+
+                {canManagePhysical && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-6 text-[11px]"
+                    onClick={() =>
+                      handleToggleCompletion(
+                        project,
+                        "PHYSICAL",
+                        !project._physicalComplete,
+                      )
+                    }
+                    disabled={savingCompletionProjectId === project.id}
+                  >
+                    {project._physicalComplete ? "ยกเลิกครบ" : "ยืนยันครบ"}
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
           {isEditable && (
             <Button
