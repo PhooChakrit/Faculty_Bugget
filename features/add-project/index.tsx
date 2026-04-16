@@ -114,41 +114,54 @@ function AddProjectContent() {
   );
 
   const [hydrated, setHydrated] = useState(false);
-  const [bootstrapError, setBootstrapError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const lastSyncedRef = useRef<Record<string, unknown> | null>(null);
   const leaderIdRef = useRef(DEFAULT_LEADER_ID);
+  /** Set when a draft is created lazily so the load effect skips form reset */
+  const justCreatedDraftRef = useRef<string | null>(null);
 
-  /** Create server draft and put id in URL */
-  useEffect(() => {
-    if (projectId) {
-      clearPendingDraftSession();
-      return;
-    }
-    let cancelled = false;
-    (async () => {
-      try {
-        const id = await ensureDraftProjectId(DEFAULT_LEADER_ID);
-        if (cancelled) return;
-        router.replace(`/add-project?id=${id}`);
-      } catch {
-        if (!cancelled) {
-          setBootstrapError("ไม่สามารถสร้างแบบร่างได้ กรุณาลองใหม่");
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [projectId, router]);
-
-  /** Load project when id in URL */
+  /**
+   * Unified effect:
+   * - No projectId → check if user has an existing draft with real data.
+   *   If yes → redirect to it. If no → show blank form immediately.
+   * - Has projectId → load project data into form.
+   *   If the id was just created by lazy autosave → skip form reset (keep what user typed).
+   */
   useEffect(() => {
     if (!projectId) {
       setHydrated(false);
+      setLoadError(null);
+      let cancelled = false;
+      (async () => {
+        try {
+          const existing = await projectService.findExistingDraft(
+            DEFAULT_LEADER_ID,
+          );
+          if (cancelled) return;
+          if (existing?.id) {
+            router.replace(`/add-project?id=${existing.id}`);
+          } else {
+            setHydrated(true);
+          }
+        } catch {
+          if (!cancelled) setHydrated(true);
+        }
+      })();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    clearPendingDraftSession();
+
+    // Draft was just created by lazy autosave — form already has user's input
+    if (justCreatedDraftRef.current === projectId) {
+      justCreatedDraftRef.current = null;
+      setHydrated(true);
       return;
     }
+
     let cancelled = false;
     setHydrated(false);
     setLoadError(null);
@@ -156,7 +169,6 @@ function AddProjectContent() {
       try {
         const p = await projectService.getProject(projectId);
         if (cancelled) return;
-        clearPendingDraftSession();
         const { form, collaborators: col, notes: n } = projectApiToFormState(p);
         leaderIdRef.current = p.leaderId || DEFAULT_LEADER_ID;
         methods.reset(form);
@@ -181,11 +193,11 @@ function AddProjectContent() {
     return () => {
       cancelled = true;
     };
-  }, [projectId, methods]);
+  }, [projectId, router, methods]);
 
-  /** Debounced autosave (delta PUT) */
+  /** Debounced autosave (delta PUT). Creates a draft lazily on first save. */
   useEffect(() => {
-    if (!projectId || !hydrated) return;
+    if (!hydrated) return;
     const timer = window.setTimeout(async () => {
       try {
         const values = getValues() as FormDataSchemaType;
@@ -198,15 +210,24 @@ function AddProjectContent() {
         const diff = diffApiPayload(lastSyncedRef.current, payload);
         const cleaned = stripEmptyStringValues(diff);
         if (Object.keys(cleaned).length === 0) return;
+
+        let currentId = projectId;
+        if (!currentId) {
+          // First meaningful input — create the draft now
+          currentId = await ensureDraftProjectId(leaderIdRef.current);
+          justCreatedDraftRef.current = currentId;
+          router.replace(`/add-project?id=${currentId}`);
+        }
+
         await projectService.updateProject(
-          projectId,
+          currentId,
           cleaned as UpdateProjectInput,
         );
         lastSyncedRef.current = mergeSyncedPayload(
           lastSyncedRef.current,
           cleaned,
         );
-        backupFormToLocalStorage(projectId, {
+        backupFormToLocalStorage(currentId, {
           form: values,
           collaborators,
           notes,
@@ -216,7 +237,7 @@ function AddProjectContent() {
       }
     }, 1200);
     return () => window.clearTimeout(timer);
-  }, [watchedData, collaborators, notes, projectId, hydrated, getValues]);
+  }, [watchedData, collaborators, notes, projectId, hydrated, getValues, router]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -299,31 +320,28 @@ function AddProjectContent() {
     }
   };
 
-  const showBootstrapWait = !projectId && !bootstrapError;
-  const showLoadWait = projectId && !hydrated && !loadError;
-  const showErrorScreen = bootstrapError || loadError;
+  const showWait = !hydrated && !loadError;
+  const waitMessage = projectId
+    ? "กำลังโหลดข้อมูลโครงการ…"
+    : "กำลังตรวจสอบแบบร่าง…";
 
-  if (showBootstrapWait || showLoadWait) {
+  if (showWait) {
     return (
       <div className="flex min-h-screen">
         <Sidebar />
         <main className="flex-1 p-8 bg-slate-50 flex items-center justify-center">
-          <p className="text-slate-600">
-            {showBootstrapWait
-              ? "กำลังเตรียมแบบร่าง…"
-              : "กำลังโหลดข้อมูลโครงการ…"}
-          </p>
+          <p className="text-slate-600">{waitMessage}</p>
         </main>
       </div>
     );
   }
 
-  if (showErrorScreen) {
+  if (loadError) {
     return (
       <div className="flex min-h-screen">
         <Sidebar />
         <main className="flex-1 p-8 bg-slate-50 flex flex-col items-center justify-center gap-4">
-          <p className="text-red-600">{bootstrapError || loadError}</p>
+          <p className="text-red-600">{loadError}</p>
           <Button type="button" onClick={() => router.push("/projects")}>
             กลับไปรายการโครงการ
           </Button>

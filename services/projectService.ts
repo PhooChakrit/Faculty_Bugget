@@ -19,12 +19,14 @@ export const projectService = {
 
   findExistingDraft: async (leaderId: string) => {
     const response = await axios.get(
-      `${API_URL}?status=DRAFT&leaderId=${encodeURIComponent(leaderId)}&limit=1`,
+      `${API_URL}?status=DRAFT&leaderId=${encodeURIComponent(leaderId)}&limit=10`,
     );
     const projects = response.data.data?.projects as
-      | { id: string }[]
+      | { id: string; projectNameThai: string }[]
       | undefined;
-    return projects && projects.length > 0 ? projects[0] : null;
+    if (!projects) return null;
+    // Only resume a draft that has been meaningfully started (not the blank placeholder)
+    return projects.find((p) => p.projectNameThai !== "(แบบร่าง)") ?? null;
   },
 
   getProject: async (id: string) => {
