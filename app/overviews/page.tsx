@@ -683,10 +683,7 @@ export default function ProjectTrackingPage() {
                       return true;
                     }
 
-                    if (
-                      !isClosingTransition &&
-                      userRole !== "งานวิจัย"
-                    ) {
+                    if (!isClosingTransition && userRole !== "งานวิจัย") {
                       return true;
                     }
 

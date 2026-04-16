@@ -526,7 +526,8 @@ export class StatusTransitionService {
         where: { id: logId },
         data: {
           status: "FAILED",
-          errorMessage: error instanceof Error ? error.message : "Unknown error",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
         },
       });
     }

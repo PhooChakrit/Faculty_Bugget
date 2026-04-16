@@ -286,6 +286,7 @@ model StatusTransition {
 
 enum StatusCode {
   DRAFT
+  STATUS_0
   STATUS_1
   STATUS_2
   STATUS_3

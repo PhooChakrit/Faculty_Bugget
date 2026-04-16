@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
+import { ProjectStatus, StatusCode } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
+import { generateProjectId } from "@/lib/generate-project-id";
 import {
   createProjectSchema,
   createDraftProjectSchema,
@@ -141,7 +143,6 @@ export async function POST(request: NextRequest) {
             currentStatusCode: StatusCode.STATUS_1,
             startDate: new Date(startDate),
             endDate: new Date(endDate),
-            currentStatusCode: "DRAFT",
             status1: "DRAFT. แบบร่างโครงการ",
             draftState: "DRAFT",
             draftSavedAt: new Date(),

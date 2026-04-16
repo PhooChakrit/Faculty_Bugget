@@ -26,7 +26,6 @@ import {
 
 // Import Sections
 import { BasicInfoSection } from "./components/sections/BasicInfoSection";
-import { ReceiptInfoSection } from "./components/sections/ReceiptInfoSection";
 import { ClassificationsSection } from "./components/sections/ClassificationsSection";
 import { ProjectDetailsSection } from "./components/sections/ProjectDetailsSection";
 import { BudgetAndNotesSection } from "./components/sections/BudgetAndNotesSection";
@@ -217,7 +216,7 @@ function AddProjectContent() {
       }
     }, 1200);
     return () => window.clearTimeout(timer);
-  }, [watchedData, collaborators, notes, projectId, hydrated]);
+  }, [watchedData, collaborators, notes, projectId, hydrated, getValues]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
