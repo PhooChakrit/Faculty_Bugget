@@ -14,9 +14,9 @@ const PENDING_DRAFT_SESSION_KEY = "faculty-budget-pending-draft-id";
 let pendingDraftPromise: Promise<string> | null = null;
 
 /**
- * Creates a new draft project and returns its id.
- * Called lazily from the autosave when the user first starts filling data.
- * Dedupes concurrent calls (React Strict Mode) via in-flight promise + sessionStorage cache.
+ * Returns the draft project id for the given leader.
+ * Priority: sessionStorage cache → existing DRAFT on server → create new draft.
+ * Dedupes concurrent calls (React Strict Mode) via in-flight promise.
  */
 export async function ensureDraftProjectId(leaderId: string): Promise<string> {
   try {
@@ -29,8 +29,12 @@ export async function ensureDraftProjectId(leaderId: string): Promise<string> {
   if (pendingDraftPromise) return pendingDraftPromise;
 
   pendingDraftPromise = (async () => {
-    const r = await projectService.createDraft(leaderId);
-    const id = r?.data?.id;
+    // Reuse an existing DRAFT for this leader instead of creating a new one
+    const existing = await projectService.findExistingDraft(leaderId);
+    const id =
+      existing?.id ??
+      (await projectService.createDraft(leaderId).then((r) => r?.data?.id));
+
     if (!id) throw new Error("สร้างแบบร่างไม่สำเร็จ");
     try {
       sessionStorage.setItem(PENDING_DRAFT_SESSION_KEY, id);
