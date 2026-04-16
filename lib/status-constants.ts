@@ -1,5 +1,6 @@
 export enum StatusCode {
   DRAFT = "DRAFT",
+  STATUS_0 = "STATUS_0",
   STATUS_1 = "STATUS_1",
   STATUS_2 = "STATUS_2",
   STATUS_3 = "STATUS_3",
@@ -20,6 +21,7 @@ export enum StatusCode {
 
 export const statusLabels: Record<StatusCode, string> = {
   [StatusCode.DRAFT]: "แบบร่างโครงการ",
+  [StatusCode.STATUS_0]: "แบบร่างโครงการ",
   [StatusCode.STATUS_1]:
     "งานบริหารวิจัยและบริการวิชาการ ดำเนินการตรวจสอบ/แก้ไข",
   [StatusCode.STATUS_2]:
@@ -37,7 +39,8 @@ export const statusLabels: Record<StatusCode, string> = {
   [StatusCode.STATUS_9]: "มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
   [StatusCode.STATUS_10]: "อนุมัติโครงการ",
   [StatusCode.STATUS_11]: "(Legacy) รอภาควิชาจัดส่งรายงานการดำเนินโครงการ",
-  [StatusCode.STATUS_12]: "(Legacy) ภาควิชาจัดส่งรายงานการดำเนินโครงการเรียบร้อยแล้ว",
+  [StatusCode.STATUS_12]:
+    "(Legacy) ภาควิชาจัดส่งรายงานการดำเนินโครงการเรียบร้อยแล้ว",
   [StatusCode.STATUS_13]: "ปิดโครงการ",
   [StatusCode.STATUS_14]: "ระงับโครงการ",
   [StatusCode.STATUS_15]: "อื่นๆ",
@@ -46,6 +49,7 @@ export const statusLabels: Record<StatusCode, string> = {
 
 export const statusColors: Record<StatusCode, string> = {
   [StatusCode.DRAFT]: "bg-slate-100 text-slate-800 border-slate-300",
+  [StatusCode.STATUS_0]: "bg-slate-100 text-slate-800 border-slate-300",
   [StatusCode.STATUS_1]: "bg-yellow-100 text-yellow-800 border-yellow-300",
   [StatusCode.STATUS_2]: "bg-blue-100 text-blue-800 border-blue-300",
   [StatusCode.STATUS_3]: "bg-indigo-100 text-indigo-800 border-indigo-300",
