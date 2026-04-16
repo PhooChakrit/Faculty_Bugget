@@ -31,7 +31,7 @@ Environment:
 | UC-22 Post-close immutability                  | 409 semantics | API returned success:false with error message (closed cannot edit) | PASS   |
 | FIX-01 Draft create ID collision               | no duplicate  | new draft created with UUID id                                     | PASS   |
 | FIX-02 PUT supports docLink                    | update works  | docLink persisted via PUT /api/projects/{id}                       | PASS   |
-| FIX-03 Direct RECALL without certification     | blocked       | error ต้องผ่านการรับรองคำขอเรียกคืนจากหัวหน้าภาคก่อน            | PASS   |
+| FIX-03 Direct RECALL without certification     | blocked       | error ต้องผ่านการรับรองคำขอเรียกคืนจากหัวหน้าภาคก่อน               | PASS   |
 | FIX-04 Recall request step                     | pending       | /recall returned success + requestId                               | PASS   |
 | FIX-05 Department review approve               | transition    | /recall/review APPROVE moved STATUS_1 -> RECALL                    | PASS   |
 | RC resume RECALL -> STATUS_1 by งานวิจัย       | 200           | success true, statusCode STATUS_1                                  | PASS   |
