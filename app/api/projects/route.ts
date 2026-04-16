@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { ProjectStatus, StatusCode } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { ProjectStatus, StatusCode } from "@/app/generated/prisma/client";
