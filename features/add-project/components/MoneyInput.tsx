@@ -80,6 +80,7 @@ export function MoneyInput({
         setIsFocused(false);
         onBlur?.(e);
       }}
+      className={`text-right ${props.className ?? ""}`}
     />
   );
 }
