@@ -130,7 +130,7 @@ export default function ProjectListPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans">
+    <div className="flex min-h-screen bg-slate-50 font-[family-name:var(--font-sarabun)]">
       <Sidebar />
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
@@ -211,8 +211,8 @@ export default function ProjectListPage() {
                         }}
                       />
                     </th>
-                    <th className="p-3 font-semibold border-r border-slate-700/50 w-[120px]">
-                      เลขที่รับ
+                    <th className="p-3 font-semibold border-r border-slate-700/50 w-[140px]">
+                      รหัส / เลขที่รับ
                     </th>
                     <th className="p-3 font-semibold border-r border-slate-700/50">
                       ชื่อโครงการ
@@ -291,8 +291,15 @@ export default function ProjectListPage() {
                             }}
                           />
                         </td>
-                        <td className="p-3 align-top font-mono text-sm text-indigo-900 font-semibold border-r border-slate-100">
-                          {project.receiptNumber || "-"}
+                        <td className="p-3 align-top border-r border-slate-100">
+                          <div className="font-mono text-sm text-indigo-900 font-semibold">
+                            {project.id}
+                          </div>
+                          {project.receiptNumber && (
+                            <div className="text-[10px] text-slate-400 mt-0.5">
+                              วจบ {project.receiptNumber}
+                            </div>
+                          )}
                         </td>
                         <td className="p-3 align-top border-r border-slate-100">
                           <div className="text-sm font-medium text-slate-700 line-clamp-2">
