@@ -74,6 +74,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse("Project not found", 404);
     }
 
+    if (existingProject.currentStatusCode === "STATUS_13") {
+      return errorResponse("Project is closed and cannot be edited", 409);
+    }
+
     // Update project with transaction for relations
     const project = await prisma.$transaction(
       async (tx: Prisma.TransactionClient) => {

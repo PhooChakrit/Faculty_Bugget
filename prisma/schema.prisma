@@ -84,7 +84,7 @@ model Project {
   docDate                DateTime?
   docLink                String?
   // New status system
-  currentStatusCode      String?                    @default("STATUS_0")
+  currentStatusCode      String?                    @default("DRAFT")
   currentStatusId        String?                    @unique
   currentStatus          ProjectStatusRecord?       @relation("CurrentStatus", fields: [currentStatusId], references: [id])
   statusHistory          ProjectStatusRecord[]      @relation("StatusHistory")
@@ -286,6 +286,7 @@ model StatusTransition {
 
 enum StatusCode {
   DRAFT
+  STATUS_0
   STATUS_1
   STATUS_2
   STATUS_3

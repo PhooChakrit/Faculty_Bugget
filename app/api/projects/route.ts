@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
+import { ProjectStatus, StatusCode } from "@/app/generated/prisma/client";
 import {
   createProjectSchema,
   createDraftProjectSchema,
@@ -87,13 +88,13 @@ export async function POST(request: NextRequest) {
 
       const project = await prisma.$transaction(
         async (tx) => {
-          const id = await generateProjectId(tx);
+          const id = crypto.randomUUID();
           return tx.project.create({
             data: {
               id,
               leaderId,
               status: ProjectStatus.DRAFT,
-              currentStatusCode: StatusCode.STATUS_0,
+              currentStatusCode: StatusCode.DRAFT,
               projectNameThai: "(แบบร่าง)",
               leaderPosition: "-",
               department: "-",
@@ -138,10 +139,9 @@ export async function POST(request: NextRequest) {
           data: {
             id,
             ...projectData,
-            currentStatusCode: StatusCode.STATUS_1,
             startDate: new Date(startDate),
             endDate: new Date(endDate),
-            currentStatusCode: "DRAFT",
+            currentStatusCode: StatusCode.DRAFT,
             status1: "DRAFT. แบบร่างโครงการ",
             draftState: "DRAFT",
             draftSavedAt: new Date(),

@@ -30,10 +30,29 @@ export async function POST(
       );
     }
 
+    const project = await statusService.getCurrentStatus(projectId);
+    if (!project?.currentStatusCode) {
+      return NextResponse.json(
+        { error: "โครงการยังไม่มีสถานะปัจจุบัน" },
+        { status: 400 },
+      );
+    }
+
+    const fromStatus = project.currentStatusCode;
+
+    const isDeptGateForward =
+      fromStatus === "STATUS_0" && toStatus === "STATUS_1";
+    const isDraftSubmit = fromStatus === "DRAFT" && toStatus === "STATUS_0";
     const isClose = toStatus === "STATUS_13";
-    const isAuthorized = isClose
-      ? actorRole === "งานวิจัย" || actorRole === "กายภาพ"
-      : actorRole === "งานวิจัย";
+
+    let isAuthorized = false;
+    if (isDeptGateForward || isDraftSubmit) {
+      isAuthorized = actorRole === "ภาควิชา";
+    } else if (isClose) {
+      isAuthorized = actorRole === "งานวิจัย" || actorRole === "กายภาพ";
+    } else {
+      isAuthorized = actorRole === "งานวิจัย";
+    }
 
     if (!isAuthorized) {
       return NextResponse.json(

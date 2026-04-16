@@ -236,7 +236,7 @@ const COLUMNS = [
   },
   {
     key: "_maintenanceFee",
-    label: "ค่าบำรุงสถานที่ (กายภาพ) = ใช้จริง",
+    label: "ค่าบำรุงสถานที่ใช้จริงจากทีมกายภาพ",
     width: "min-w-[140px]",
     align: "right",
     editable: true,
@@ -264,7 +264,7 @@ const COLUMNS = [
   },
   {
     key: "_electricityFeeActual",
-    label: "ค่าไฟฟ้า (กายภาพ) = ใช้จริง",
+    label: "ค่าไฟฟ้าใช้จริงจากทีมกายภาพ",
     width: "min-w-[140px]",
     align: "right",
     editable: true,
@@ -683,10 +683,7 @@ export default function ProjectTrackingPage() {
                       return true;
                     }
 
-                    if (
-                      !isClosingTransition &&
-                      userRole !== "งานวิจัย"
-                    ) {
+                    if (!isClosingTransition && userRole !== "งานวิจัย") {
                       return true;
                     }
 
