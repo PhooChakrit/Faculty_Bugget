@@ -64,6 +64,7 @@ export const createProjectSchema = z.object({
   committee: z.string().optional(),
   expectedBenefits: z.string().optional(),
   projectEvaluation: z.string().optional(),
+  docLink: z.string().optional(),
 
   // Budget Sources
   budgetSourceExtGov: z.number().optional(),
@@ -127,9 +128,7 @@ export const updateProjectSchema = createProjectSchema.partial();
 
 // Project ID param schema
 export const projectIdSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d{2}\d{5}$/, "Invalid project ID format (expected YYxxxxx)"),
+  id: z.string().min(1, "Invalid project ID"),
 });
 
 // Query params for list

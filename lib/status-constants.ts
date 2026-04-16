@@ -1,6 +1,7 @@
 export enum StatusCode {
   DRAFT = "DRAFT",
   STATUS_0 = "STATUS_0",
+  STATUS_0 = "STATUS_0",
   STATUS_1 = "STATUS_1",
   STATUS_2 = "STATUS_2",
   STATUS_3 = "STATUS_3",
@@ -21,7 +22,7 @@ export enum StatusCode {
 
 export const statusLabels: Record<StatusCode, string> = {
   [StatusCode.DRAFT]: "แบบร่างโครงการ",
-  [StatusCode.STATUS_0]: "แบบร่างโครงการ",
+  [StatusCode.STATUS_0]: "รอหัวหน้าภาคอนุมัติส่งงานวิจัย",
   [StatusCode.STATUS_1]:
     "งานบริหารวิจัยและบริการวิชาการ ดำเนินการตรวจสอบ/แก้ไข",
   [StatusCode.STATUS_2]:
@@ -35,10 +36,11 @@ export const statusLabels: Record<StatusCode, string> = {
   [StatusCode.STATUS_6]: "เสนอคณบดี เพื่อพิจารณาอนุมัติโครงการ",
   [StatusCode.STATUS_7]:
     "เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
-  [StatusCode.STATUS_8]: "คณบดีอนุมัติโครงการ",
-  [StatusCode.STATUS_9]: "มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
-  [StatusCode.STATUS_10]: "อนุมัติโครงการ",
-  [StatusCode.STATUS_11]: "(Legacy) รอภาควิชาจัดส่งรายงานการดำเนินโครงการ",
+  [StatusCode.STATUS_8]: "คณบดีอนุมัติโครงการ (ระหว่างดำเนินโครงการ)",
+  [StatusCode.STATUS_9]:
+    "มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์ (ระหว่างดำเนินโครงการ)",
+  [StatusCode.STATUS_10]: "จัดส่งรายงานผลการดำเนินโครงการแล้ว",
+  [StatusCode.STATUS_11]: "(Deprecated) ยกเลิกสถานะนี้ตามมติที่ประชุม",
   [StatusCode.STATUS_12]:
     "(Legacy) ภาควิชาจัดส่งรายงานการดำเนินโครงการเรียบร้อยแล้ว",
   [StatusCode.STATUS_13]: "ปิดโครงการ",
@@ -49,7 +51,7 @@ export const statusLabels: Record<StatusCode, string> = {
 
 export const statusColors: Record<StatusCode, string> = {
   [StatusCode.DRAFT]: "bg-slate-100 text-slate-800 border-slate-300",
-  [StatusCode.STATUS_0]: "bg-slate-100 text-slate-800 border-slate-300",
+  [StatusCode.STATUS_0]: "bg-amber-100 text-amber-800 border-amber-300",
   [StatusCode.STATUS_1]: "bg-yellow-100 text-yellow-800 border-yellow-300",
   [StatusCode.STATUS_2]: "bg-blue-100 text-blue-800 border-blue-300",
   [StatusCode.STATUS_3]: "bg-indigo-100 text-indigo-800 border-indigo-300",
@@ -80,8 +82,17 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   // Draft
   {
     fromStatus: StatusCode.DRAFT,
+    toStatus: StatusCode.STATUS_0,
+    label: "ส่งหัวหน้าภาคพิจารณา",
+    condition: "DEPT_HEAD_APPROVAL_REQUIRED",
+    order: 1,
+  },
+
+  // From STATUS_0
+  {
+    fromStatus: StatusCode.STATUS_0,
     toStatus: StatusCode.STATUS_1,
-    label: "ส่งเข้าสถานะตรวจสอบ",
+    label: "หัวหน้าภาคอนุมัติส่งงานวิจัย",
     order: 1,
   },
 
@@ -153,7 +164,8 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   {
     fromStatus: StatusCode.STATUS_8,
     toStatus: StatusCode.STATUS_10,
-    label: "รองคณบดีดำเนินการแจ้ง",
+    label: "อัปโหลดรายงานผลการดำเนินโครงการ",
+    condition: "REPORT_UPLOADED",
     order: 1,
   },
 
@@ -173,11 +185,12 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   {
     fromStatus: StatusCode.STATUS_9,
     toStatus: StatusCode.STATUS_10,
-    label: "รองคณบดีดำเนินการแจ้ง",
+    label: "อัปโหลดรายงานผลการดำเนินโครงการ",
+    condition: "REPORT_UPLOADED",
     order: 1,
   },
 
-  // From STATUS_10 (Approved)
+  // From STATUS_10 (Report submitted)
   {
     fromStatus: StatusCode.STATUS_10,
     toStatus: StatusCode.STATUS_13,
