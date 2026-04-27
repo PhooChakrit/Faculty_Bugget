@@ -37,7 +37,7 @@ yarn-error.log*
 .vercel
 
 # prisma (generated — run `npx prisma generate` after install)
-/app/generated/prisma
+# /app/generated/prisma
 
 # typescript
 *.tsbuildinfo
