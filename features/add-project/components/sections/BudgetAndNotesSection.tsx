@@ -28,7 +28,11 @@ export function BudgetAndNotesSection({
   const toNum = (v: string | undefined) =>
     Number((v ?? "").replace(/,/g, "") || 0);
 
-  const fmtTotal = (n: number) => n.toLocaleString("en-US");
+  const fmtTotal = (n: number) =>
+    n.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
   const calculateBudgetSourceTotal = () =>
     fmtTotal(

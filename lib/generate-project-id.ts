@@ -4,9 +4,9 @@ import { PrismaClient } from "@/app/generated/prisma/client";
  * Generates the next official project ID in the format YYxxxxx
  *   YY    = last 2 digits of the Buddhist Era year (CE + 543)
  *           e.g. 2026 CE → 2569 BE → "69"
- *   xxxxx = 5-digit zero-padded sequential number within the year (00001–99999)
+ *   xxx = 3-digit zero-padded sequential number within the year (001–999)
  *
- * Example: 6900001, 6900002, …, 6999999, 7000001 (next year)
+ * Example: 69001, 69002, …, 69999, 70001 (next year)
  *
  * Must be called inside a serializable transaction to avoid race conditions.
  */
@@ -40,11 +40,11 @@ export async function generateProjectId(
     }
   }
 
-  if (nextNum > 99999) {
+  if (nextNum > 999) {
     throw new Error(
-      `Project ID sequential limit (99999) reached for year ${prefix}`,
+      `Project ID sequential limit (999) reached for year ${prefix}`,
     );
   }
 
-  return `${prefix}${String(nextNum).padStart(5, "0")}`;
+  return `${prefix}${String(nextNum).padStart(3, "0")}`;
 }

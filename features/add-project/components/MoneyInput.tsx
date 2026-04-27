@@ -5,15 +5,12 @@ import { Input } from "@/components/ui/input";
 
 function formatWithCommas(raw: string): string {
   const stripped = raw.replace(/,/g, "");
-  if (stripped === "") return "";
-  const num = Number(stripped);
+  const num = Number(stripped || "0");
   if (isNaN(num)) return raw;
-  // Format integer part with commas, preserve decimal
-  const [integer, decimal] = stripped.split(".");
-  const formattedInteger = Number(integer).toLocaleString("en-US");
-  return decimal !== undefined
-    ? `${formattedInteger}.${decimal}`
-    : formattedInteger;
+  return num.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 interface MoneyInputProps extends Omit<
@@ -46,7 +43,12 @@ export function MoneyInput({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!onChange || readOnly) return;
-    const raw = e.target.value.replace(/,/g, "").replace(/[^0-9.]/g, "");
+    let raw = e.target.value.replace(/,/g, "").replace(/[^0-9.]/g, "");
+    const parts = raw.split(".");
+    if (parts.length > 2) return;
+    if (parts.length === 2 && parts[1].length > 2) {
+      raw = `${parts[0]}.${parts[1].slice(0, 2)}`;
+    }
     // Fire a synthetic event carrying the stripped value
     const syntheticEvent = {
       ...e,

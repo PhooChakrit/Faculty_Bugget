@@ -43,7 +43,7 @@ export function ProjectPreview({
     if (!value) return "";
     const num = Number(value);
     if (isNaN(num)) return value;
-    return `${num.toLocaleString("th-TH")} บาท`;
+    return `${num.toLocaleString("th-TH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} บาท`;
   };
 
   return (
@@ -172,7 +172,12 @@ export function ProjectPreview({
                   <div className="space-y-1">
                     {formData.incomeSupportItems.map((i, idx) => (
                       <div key={idx}>
-                        {i.name}: {Number(i.amount).toLocaleString("th-TH")} บาท
+                        {i.name}:{" "}
+                        {Number(i.amount).toLocaleString("th-TH", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        บาท
                       </div>
                     ))}
                   </div>
@@ -189,7 +194,12 @@ export function ProjectPreview({
                   <div className="space-y-1">
                     {formData.incomeRegistrationItems.map((i, idx) => (
                       <div key={idx}>
-                        {i.name}: {Number(i.amount).toLocaleString("th-TH")} บาท
+                        {i.name}:{" "}
+                        {Number(i.amount).toLocaleString("th-TH", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        บาท
                       </div>
                     ))}
                   </div>
@@ -206,7 +216,12 @@ export function ProjectPreview({
                   <div className="space-y-1">
                     {category.items.map((i, idx) => (
                       <div key={idx}>
-                        {i.name}: {Number(i.amount).toLocaleString("th-TH")} บาท
+                        {i.name}:{" "}
+                        {Number(i.amount).toLocaleString("th-TH", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        บาท
                       </div>
                     ))}
                   </div>
