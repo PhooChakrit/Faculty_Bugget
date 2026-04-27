@@ -1,5 +1,32 @@
 import { z } from "zod";
 
+export const projectStatusEnumSchema = z.enum([
+  "DRAFT",
+  "PENDING_APPROVAL",
+  "APPROVED",
+  "REJECTED",
+  "IN_PROGRESS",
+  "COMPLETED",
+  "CANCELLED",
+]);
+
+/** Workflow step codes (matches Prisma `StatusCode` — overview / timeline) */
+export const workflowStatusCodeSchema = z.enum([
+  "DRAFT",
+  "STATUS_0",
+  "STATUS_1",
+  "STATUS_2",
+  "STATUS_3",
+  "STATUS_4",
+  "STATUS_5",
+  "STATUS_6",
+  "STATUS_7",
+  "STATUS_8",
+  "STATUS_9",
+  "STATUS_10",
+  "RECALL",
+]);
+
 // Create Project Request Schema
 export const createProjectSchema = z.object({
   // Basic Info
@@ -32,6 +59,7 @@ export const createProjectSchema = z.object({
   committee: z.string().optional(),
   expectedBenefits: z.string().optional(),
   projectEvaluation: z.string().optional(),
+  docLink: z.string().optional(),
 
   // Budget Sources
   budgetSourceExtGov: z.number().optional(),
@@ -79,36 +107,38 @@ export const createProjectSchema = z.object({
       }),
     )
     .optional(),
+
+  status: projectStatusEnumSchema.optional(),
+  currentStatusCode: workflowStatusCodeSchema.optional(),
 });
 
-// Update Project Request Schema (all fields optional)
+/** Minimal body to create an empty row with status DRAFT (placeholders on server). */
+export const createDraftProjectSchema = z.object({
+  draft: z.literal(true),
+  leaderId: z.string().min(1, "กรุณาระบุหัวหน้าโครงการ"),
+});
+
+// Update Project Request Schema (all fields optional, including status)
 export const updateProjectSchema = createProjectSchema.partial();
 
 // Project ID param schema
 export const projectIdSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d{2}\d{5}$/, "Invalid project ID format (expected YYxxxxx)"),
+  id: z.string().min(1, "Invalid project ID"),
 });
 
 // Query params for list
 export const listProjectsQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
-  status: z
-    .enum([
-      "DRAFT",
-      "PENDING_APPROVAL",
-      "APPROVED",
-      "REJECTED",
-      "IN_PROGRESS",
-      "COMPLETED",
-      "CANCELLED",
-    ])
-    .optional(),
+  status: projectStatusEnumSchema.optional(),
   search: z.string().optional(),
+  leaderId: z.string().optional(),
+  actorRole: z
+    .enum(["USER", "ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"])
+    .default("USER"),
 });
 
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>;
+export type CreateDraftProjectInput = z.infer<typeof createDraftProjectSchema>;
 export type ListProjectsQuery = z.infer<typeof listProjectsQuerySchema>;

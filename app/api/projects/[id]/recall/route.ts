@@ -3,8 +3,8 @@ import { statusService } from "@/lib/status-service";
 
 /**
  * POST /api/projects/[id]/recall
- * Request document recall (transition to RECALL status)
- * Can only be done from STATUS_1
+ * Request document recall (pending department-head certification)
+ * Can only be requested from STATUS_1
  *
  * Body: {
  *   userId: string;
@@ -37,7 +37,8 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      message: "เรียกคืนเอกสารเรียบร้อย",
+      requestId: result.requestId,
+      message: "ส่งคำขอเรียกคืนเอกสารแล้ว รอหัวหน้าภาครับรอง",
     });
   } catch (error) {
     console.error("Recall document error:", error);

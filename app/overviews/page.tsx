@@ -19,6 +19,7 @@ import {
   FileText,
   Plus,
 } from "lucide-react";
+import { statusLabels, StatusCode } from "@/lib/status-constants";
 
 // --- 1. Data Interface ---
 interface ProjectData {
@@ -85,26 +86,31 @@ interface ProjectData {
 }
 
 // --- Project Status Constants ---
-const PROJECT_STATUSES = [
-  "1. งานบริหารวิจัยและบริการวิชาการ ดำเนินการตรวจสอบ/แก้ไข",
-  "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
-  "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
-  "4. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์อนุมัติ และให้เสนองานบริหารวิจัยและบริการวิชาการเพื่อดำเนินการต่อไป",
-  "5. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์เห็นชอบ และให้เสนอกลุ่มภารกิจการประชุม ศูนย์บริหารกลางเพื่อดำเนินการต่อไป",
-  "6. เสนอคณบดี เพื่อพิจารณาอนุมัติโครงการ",
-  "7. เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
-  "8. คณบดีอนุมัติโครงการ",
-  "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
-  "10. รองคณบดี (รองศาสตราจารย์ ดร.พิชญดา เกตุเมฆ) แจ้งต่อ หัวหน้าภาควิชาเพื่อโปรดทราบและดำเนินการต่อไป",
-  "11. รอภาควิชาจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน",
-  "12. ภาควิชาดำเนินการจัดส่งรายงานการดำเนินโครงการมายังงานบริหารวิจัยและบริการวิชาการ หลังจากสิ้นสุดโครงการภายใน 15 วัน เรียบร้อยแล้ว",
-  "13. ปิดโครงการ",
-  "RECALL. ดึงกลับเอกสาร",
-] as const;
+// Derived from shared statusLabels — keys map to the legacy "N. label" format stored in status1
+const STATUS_CODE_TO_KEY: [StatusCode, string][] = [
+  [StatusCode.DRAFT, "DRAFT"],
+  [StatusCode.STATUS_0, "0"],
+  [StatusCode.STATUS_1, "1"],
+  [StatusCode.STATUS_2, "2"],
+  [StatusCode.STATUS_3, "3"],
+  [StatusCode.STATUS_4, "4"],
+  [StatusCode.STATUS_5, "5"],
+  [StatusCode.STATUS_6, "6"],
+  [StatusCode.STATUS_7, "7"],
+  [StatusCode.STATUS_8, "8"],
+  [StatusCode.STATUS_9, "9"],
+  [StatusCode.STATUS_10, "10"],
+  [StatusCode.RECALL, "RECALL"],
+];
+const PROJECT_STATUSES = STATUS_CODE_TO_KEY.map(
+  ([code, key]) => `${key}. ${statusLabels[code]}`,
+);
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
+  DRAFT: ["0"],
+  "0": ["1"],
   "1": ["2", "RECALL"],
-  RECALL: ["1"],
+  RECALL: ["DRAFT"],
   "2": ["1", "3"],
   "3": ["4", "5"],
   "4": ["6"],
@@ -113,14 +119,14 @@ const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   "7": ["9"],
   "8": ["10"],
   "9": ["10"],
-  "10": ["11"],
-  "11": ["12"],
-  "12": ["13"],
-  "13": [],
+  "10": [],
 };
 
 const getStatusKey = (statusValue: string | undefined) => {
   if (!statusValue) return "";
+  if (statusValue === "DRAFT" || statusValue.startsWith("DRAFT")) {
+    return "DRAFT";
+  }
   return statusValue.split(".")[0].trim();
 };
 
@@ -145,14 +151,22 @@ interface EnhancedProjectData extends ProjectData {
   _costCenter?: string; // 18.
   _maintenanceFee?: string; // 10.
   _electricityFeeActual?: string; // 14.
-  _canMoveTo11?: boolean;
+  _researchComplete?: boolean;
+  _physicalComplete?: boolean;
+  _draftState?: "DRAFT" | "SUBMITTED";
 }
 
-type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
+type UserRole =
+  | "USER"
+  | "ภาควิชา"
+  | "งานวิจัย"
+  | "งานแผน"
+  | "งานคลัง"
+  | "กายภาพ";
 
 // --- Permissions Configuration ---
 const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
-  _projectStatus: ["งานวิจัย"],
+  _projectStatus: ["USER", "ภาควิชา", "งานวิจัย"],
   _meetings: ["งานวิจัย", "งานแผน"],
   vendorCode: ["งานคลัง"],
   _costCenter: ["งานแผน"],
@@ -231,7 +245,7 @@ const COLUMNS = [
   },
   {
     key: "_maintenanceFee",
-    label: "ค่าบำรุงสถานที่ (กายภาพ) = ใช้จริง",
+    label: "ค่าบำรุงสถานที่ใช้จริงจากทีมกายภาพ",
     width: "min-w-[140px]",
     align: "right",
     editable: true,
@@ -259,7 +273,7 @@ const COLUMNS = [
   },
   {
     key: "_electricityFeeActual",
-    label: "ค่าไฟฟ้า (กายภาพ) = ใช้จริง",
+    label: "ค่าไฟฟ้าใช้จริงจากทีมกายภาพ",
     width: "min-w-[140px]",
     align: "right",
     editable: true,
@@ -292,7 +306,7 @@ const COLUMNS = [
 ];
 
 export default function ProjectTrackingPage() {
-  const [userRole, setUserRole] = useState<UserRole>("งานวิจัย");
+  const [userRole, setUserRole] = useState<UserRole>("USER");
   const [projects, setProjects] = useState<EnhancedProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -306,6 +320,12 @@ export default function ProjectTrackingPage() {
   } | null>(null);
   const [editingValue, setEditingValue] = useState<string>("");
   const [savingCell, setSavingCell] = useState<string | null>(null);
+  const [savingCompletionProjectId, setSavingCompletionProjectId] = useState<
+    string | null
+  >(null);
+  const [approvingRecallId, setApprovingRecallId] = useState<string | null>(
+    null,
+  );
 
   // Modal for meetings management
   const [editingMeetings, setEditingMeetings] = useState<{
@@ -387,6 +407,8 @@ export default function ProjectTrackingPage() {
           body: JSON.stringify({
             field: editingCell.field,
             value: editingValue,
+            actorRole: userRole,
+            actorUserId: `mock-${userRole}`,
           }),
         },
       );
@@ -409,6 +431,92 @@ export default function ProjectTrackingPage() {
       alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
     } finally {
       setSavingCell(null);
+    }
+  };
+
+  const handleToggleCompletion = async (
+    project: EnhancedProjectData,
+    role: "RESEARCH" | "PHYSICAL",
+    isComplete: boolean,
+  ) => {
+    setSavingCompletionProjectId(project.id);
+    try {
+      const response = await fetch(`/api/overviews/${project.id}/completion`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          role,
+          isComplete,
+          actorRole: userRole,
+          actorUserId: `mock-${userRole}`,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error ?? "Failed to update completion");
+      }
+
+      setProjects((prev) =>
+        prev.map((item) => {
+          if (item.id !== project.id) return item;
+          const nextResearch =
+            role === "RESEARCH" ? isComplete : !!item._researchComplete;
+          const nextPhysical =
+            role === "PHYSICAL" ? isComplete : !!item._physicalComplete;
+          return {
+            ...item,
+            _researchComplete: nextResearch,
+            _physicalComplete: nextPhysical,
+            _canCloseProject: nextResearch && nextPhysical,
+          };
+        }),
+      );
+    } catch (error) {
+      console.error("Error saving completion:", error);
+      alert("เกิดข้อผิดพลาดในการบันทึกความครบถ้วนข้อมูล");
+    } finally {
+      setSavingCompletionProjectId(null);
+    }
+  };
+
+  const handleApproveRecall = async (projectId: string) => {
+    setApprovingRecallId(projectId);
+    try {
+      const res = await fetch(`/api/overviews/${projectId}/field`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          field: "_projectStatus",
+          value: "DRAFT. แบบร่างโครงการ",
+          actorRole: "งานวิจัย",
+          actorUserId: "mock-งานวิจัย",
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(
+          typeof err?.error === "string" ? err.error : "อัปเดตสถานะไม่สำเร็จ",
+        );
+      }
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === projectId
+            ? {
+                ...p,
+                _projectStatus: "DRAFT. แบบร่างโครงการ",
+                _draftState: "DRAFT",
+              }
+            : p,
+        ),
+      );
+    } catch (e) {
+      console.error(e);
+      alert(e instanceof Error ? e.message : "เกิดข้อผิดพลาดในการอนุมัติคำขอ");
+    } finally {
+      setApprovingRecallId(null);
     }
   };
 
@@ -615,11 +723,19 @@ export default function ProjectTrackingPage() {
                     if (statusKey === currentStatusKey) return false;
                     if (!allowedNextKeys.includes(statusKey)) return true;
 
-                    if (
-                      currentStatusKey === "10" &&
-                      statusKey === "11" &&
-                      !project._canMoveTo11
-                    ) {
+                    const isDraftSubmission =
+                      currentStatusKey === "DRAFT" && statusKey === "0";
+                    if (isDraftSubmission) {
+                      return userRole !== "USER";
+                    }
+
+                    const isDeptApproval =
+                      currentStatusKey === "0" && statusKey === "1";
+                    if (isDeptApproval) {
+                      return userRole !== "ภาควิชา";
+                    }
+
+                    if (userRole !== "งานวิจัย") {
                       return true;
                     }
 
@@ -656,17 +772,89 @@ export default function ProjectTrackingPage() {
       }
 
       // Display mode for status
-      const statusNumber = (value as string)?.split(".")[0];
+      const statusNumber = getStatusKey(value as string);
+      const isStatus10 = statusNumber === "10";
+      const canManageResearch = userRole === "งานวิจัย";
+      const canManagePhysical = userRole === "กายภาพ";
       const statusColor =
-        statusNumber === "14" ? "text-green-700" : "text-slate-700";
+        statusNumber === "10" ? "text-green-700" : "text-slate-700";
 
       return (
         <div className={`flex items-start justify-between group ${alignClass}`}>
-          <div
-            className={`text-sm ${statusColor} flex-1 leading-relaxed`}
-            title={value as string}
-          >
-            {(value as string) || "-"}
+          <div className="flex-1">
+            <div
+              className={`text-sm ${statusColor} leading-relaxed`}
+              title={value as string}
+            >
+              {(value as string) || "-"}
+            </div>
+
+            {isStatus10 && (
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <span
+                  className={`text-[11px] px-2 py-0.5 rounded-full ${project._researchComplete ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}
+                >
+                  งานวิจัย {project._researchComplete ? "ครบ" : "ยังไม่ครบ"}
+                </span>
+                <span
+                  className={`text-[11px] px-2 py-0.5 rounded-full ${project._physicalComplete ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}
+                >
+                  กายภาพ {project._physicalComplete ? "ครบ" : "ยังไม่ครบ"}
+                </span>
+
+                {canManageResearch && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-6 text-[11px]"
+                    onClick={() =>
+                      handleToggleCompletion(
+                        project,
+                        "RESEARCH",
+                        !project._researchComplete,
+                      )
+                    }
+                    disabled={savingCompletionProjectId === project.id}
+                  >
+                    {project._researchComplete ? "ยกเลิกครบ" : "ยืนยันครบ"}
+                  </Button>
+                )}
+
+                {canManagePhysical && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-6 text-[11px]"
+                    onClick={() =>
+                      handleToggleCompletion(
+                        project,
+                        "PHYSICAL",
+                        !project._physicalComplete,
+                      )
+                    }
+                    disabled={savingCompletionProjectId === project.id}
+                  >
+                    {project._physicalComplete ? "ยกเลิกครบ" : "ยืนยันครบ"}
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {statusNumber === "RECALL" && (
+              <div className="mt-2">
+                <Button
+                  size="sm"
+                  className="h-7 text-[11px] bg-amber-600 hover:bg-amber-700 text-white"
+                  onClick={() => handleApproveRecall(project.id)}
+                  disabled={approvingRecallId === project.id}
+                >
+                  {approvingRecallId === project.id ? (
+                    <Loader2 size={12} className="animate-spin inline mr-1" />
+                  ) : null}
+                  อนุมัติคำขอแก้ไข
+                </Button>
+              </div>
+            )}
           </div>
           {isEditable && (
             <Button
@@ -802,6 +990,7 @@ export default function ProjectTrackingPage() {
               onChange={(e) => setUserRole(e.target.value as UserRole)}
               className="text-sm bg-slate-100 border-slate-200 rounded px-3 py-1.5 focus:ring-indigo-500"
             >
+              <option value="USER">USER (Submit Draft/Summary)</option>
               <option value="ภาควิชา">ภาควิชา (View)</option>
               <option value="งานวิจัย">งานวิจัย (Edit Proj)</option>
               <option value="งานแผน">งานแผน (Cost)</option>

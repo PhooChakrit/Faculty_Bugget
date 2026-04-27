@@ -1,9 +1,12 @@
 import { prisma } from "./prisma";
 import type {
+  ClosureRole,
+  EmailDeliveryStatus,
   StatusCode,
   NotificationType,
 } from "../app/generated/prisma/client";
 import { allowedTransitions, statusLabels } from "./status-constants";
+import { generateProjectId } from "./generate-project-id";
 
 export interface TransitionValidationResult {
   isValid: boolean;
@@ -24,7 +27,74 @@ export interface NotificationChecklistItem {
   completedBy?: { id: string; name: string | null };
 }
 
+export interface ClosureProgress {
+  researchComplete: boolean;
+  physicalComplete: boolean;
+  bothComplete: boolean;
+}
+
+type RecallReviewDecision = "APPROVE" | "REJECT";
+
+const RECALL_REQUEST_TAG = "RECALL_REQUEST";
+const RECALL_APPROVED_PREFIX = "RECALL_APPROVED";
+const RECALL_REJECTED_PREFIX = "RECALL_REJECTED";
+
 export class StatusTransitionService {
+  async getDepartmentHeadAssignment(projectId: string): Promise<{
+    department: string;
+    headUserId: string;
+  } | null> {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { department: true },
+    });
+
+    if (!project) {
+      return null;
+    }
+
+    const department = project.department?.trim();
+    if (!department || department === "-") {
+      return null;
+    }
+
+    const assignment = await prisma.departmentHeadAssignment.findUnique({
+      where: { department },
+      select: { headUserId: true },
+    });
+
+    if (!assignment) {
+      return null;
+    }
+
+    return {
+      department,
+      headUserId: assignment.headUserId,
+    };
+  }
+
+  async hasDepartmentHeadAssignment(projectId: string): Promise<boolean> {
+    const assignment = await this.getDepartmentHeadAssignment(projectId);
+    return Boolean(assignment);
+  }
+
+  async isAssignedDepartmentHead(
+    projectId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const assignment = await this.getDepartmentHeadAssignment(projectId);
+    return assignment?.headUserId === userId;
+  }
+
+  async getCurrentStatus(
+    projectId: string,
+  ): Promise<{ currentStatusCode: StatusCode | null } | null> {
+    return prisma.project.findUnique({
+      where: { id: projectId },
+      select: { currentStatusCode: true },
+    }) as Promise<{ currentStatusCode: StatusCode | null } | null>;
+  }
+
   /**
    * Get all available transitions from the current status
    */
@@ -112,15 +182,35 @@ export class StatusTransitionService {
       };
     }
 
-    // Special validation for STATUS_10 -> STATUS_11 transition
-    // Must complete all required notifications first
-    if (currentStatus === "STATUS_10" && toStatus === "STATUS_11") {
-      const requiredComplete =
-        await this.areAllRequiredNotificationsComplete(projectId);
-      if (!requiredComplete) {
+    if (
+      (currentStatus === "STATUS_8" || currentStatus === "STATUS_9") &&
+      toStatus === "STATUS_10"
+    ) {
+      const hasReportLink = Boolean(project.docLink?.trim());
+      if (!hasReportLink) {
         return {
           isValid: false,
-          reason: "ต้องแจ้งหัวหน้าภาควิชาก่อน (10.1 บังคับ)",
+          reason:
+            "ต้องแนบลิงก์รายงานผลการดำเนินโครงการ (docLink) ก่อนเปลี่ยนเป็นสถานะ 10",
+        };
+      }
+    }
+
+    if (currentStatus === "STATUS_1" && toStatus === "RECALL") {
+      const recallRequest = project.currentStatus?.notifications.find(
+        (n) =>
+          n.notificationType === "DEPT_HEAD" &&
+          n.recipient === RECALL_REQUEST_TAG,
+      );
+
+      const isApproved =
+        recallRequest?.isCompleted &&
+        Boolean(recallRequest.notes?.startsWith(RECALL_APPROVED_PREFIX));
+
+      if (!isApproved) {
+        return {
+          isValid: false,
+          reason: "ต้องผ่านการรับรองคำขอเรียกคืนจากหัวหน้าภาคก่อน",
         };
       }
     }
@@ -158,8 +248,22 @@ export class StatusTransitionService {
         // 1. Close current status record (set exitedAt)
         const project = await tx.project.findUnique({
           where: { id: projectId },
-          select: { currentStatusId: true, currentStatusCode: true },
+          select: {
+            currentStatusId: true,
+            currentStatusCode: true,
+            projectCode: true,
+            submittedAt: true,
+          },
         });
+
+        const shouldGenerateProjectCode =
+          (project?.currentStatusCode === "STATUS_0" ||
+            project?.currentStatusCode === "DRAFT") &&
+          toStatus === "STATUS_1" &&
+          !project.projectCode;
+        const generatedProjectCode = shouldGenerateProjectCode
+          ? projectId
+          : null;
 
         if (project?.currentStatusId) {
           await tx.projectStatusRecord.update({
@@ -180,22 +284,27 @@ export class StatusTransitionService {
           },
         });
 
-        // 3. Create notifications if entering STATUS_10
-        if (toStatus === "STATUS_10") {
-          await this.createNotifications(tx, newStatusRecord.id);
-        }
-
-        // 4. Update project's current status
+        // 3. Update project's current status
         await tx.project.update({
           where: { id: projectId },
           data: {
             currentStatusCode: toStatus,
             currentStatusId: newStatusRecord.id,
+            ...(generatedProjectCode && { projectCode: generatedProjectCode }),
+            draftState: toStatus === "DRAFT" ? "DRAFT" : "SUBMITTED",
+            submittedAt:
+              toStatus === "DRAFT"
+                ? null
+                : (project?.submittedAt ?? new Date()),
           },
         });
 
         return newStatusRecord;
       });
+
+      if (toStatus === "STATUS_8" || toStatus === "STATUS_9") {
+        await this.sendApprovalEmails(projectId);
+      }
 
       return {
         success: true,
@@ -215,6 +324,7 @@ export class StatusTransitionService {
 
   /**
    * Create notification tasks when entering STATUS_10
+   * Deprecated for new workflow; retained only for compatibility.
    */
   private async createNotifications(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -227,12 +337,6 @@ export class StatusTransitionService {
       isRequired: boolean;
       isCompleted: boolean;
     }> = [
-      {
-        statusId: statusRecordId,
-        notificationType: "DEPT_HEAD",
-        isRequired: true,
-        isCompleted: false,
-      },
       {
         statusId: statusRecordId,
         notificationType: "FINANCE",
@@ -256,6 +360,269 @@ export class StatusTransitionService {
     await tx.notificationStatus.createMany({
       data: notifications,
     });
+  }
+
+  private async ensureRoleCompletionRows(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tx: any,
+    projectId: string,
+  ): Promise<void> {
+    await tx.projectRoleCompletion.upsert({
+      where: {
+        projectId_role: {
+          projectId,
+          role: "RESEARCH",
+        },
+      },
+      update: {
+        isComplete: false,
+        completedAt: null,
+        completedBy: null,
+        notes: null,
+      },
+      create: {
+        projectId,
+        role: "RESEARCH",
+      },
+    });
+
+    await tx.projectRoleCompletion.upsert({
+      where: {
+        projectId_role: {
+          projectId,
+          role: "PHYSICAL",
+        },
+      },
+      update: {
+        isComplete: false,
+        completedAt: null,
+        completedBy: null,
+        notes: null,
+      },
+      create: {
+        projectId,
+        role: "PHYSICAL",
+      },
+    });
+  }
+
+  async getClosureProgress(projectId: string): Promise<ClosureProgress> {
+    const rows = await prisma.projectRoleCompletion.findMany({
+      where: { projectId },
+      select: {
+        role: true,
+        isComplete: true,
+      },
+    });
+
+    const researchComplete =
+      rows.find((row) => row.role === "RESEARCH")?.isComplete ?? false;
+    const physicalComplete =
+      rows.find((row) => row.role === "PHYSICAL")?.isComplete ?? false;
+
+    return {
+      researchComplete,
+      physicalComplete,
+      bothComplete: researchComplete && physicalComplete,
+    };
+  }
+
+  async setRoleCompletion(
+    projectId: string,
+    role: ClosureRole,
+    isComplete: boolean,
+    userId: string,
+    notes?: string,
+  ): Promise<{ success: boolean; error?: string; progress?: ClosureProgress }> {
+    try {
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        select: { currentStatusCode: true },
+      });
+
+      if (!project) {
+        return { success: false, error: "โครงการไม่พบในระบบ" };
+      }
+
+      if (project.currentStatusCode !== "STATUS_10") {
+        return {
+          success: false,
+          error: "โครงการต้องอยู่ในสถานะ 10 (อนุมัติโครงการ)",
+        };
+      }
+
+      await prisma.projectRoleCompletion.upsert({
+        where: {
+          projectId_role: {
+            projectId,
+            role,
+          },
+        },
+        create: {
+          projectId,
+          role,
+          isComplete,
+          completedAt: isComplete ? new Date() : null,
+          completedBy: isComplete ? userId : null,
+          notes,
+        },
+        update: {
+          isComplete,
+          completedAt: isComplete ? new Date() : null,
+          completedBy: isComplete ? userId : null,
+          notes,
+        },
+      });
+
+      const progress = await this.getClosureProgress(projectId);
+
+      return {
+        success: true,
+        progress,
+      };
+    } catch (error) {
+      console.error("Set role completion error:", error);
+      return {
+        success: false,
+        error: "เกิดข้อผิดพลาดในการบันทึกสถานะความครบถ้วน",
+      };
+    }
+  }
+
+  private async sendApprovalEmails(projectId: string): Promise<void> {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        leader: {
+          select: { email: true, name: true },
+        },
+      },
+    });
+
+    if (!project) return;
+
+    const recipients: Array<{ email: string; recipientRole: string }> = [];
+
+    if (project.leader.email) {
+      recipients.push({
+        email: project.leader.email,
+        recipientRole: "PROJECT_OWNER",
+      });
+    }
+
+    const physicalList = (process.env.PHYSICAL_ROLE_EMAILS ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    for (const email of physicalList) {
+      recipients.push({
+        email,
+        recipientRole: "PHYSICAL",
+      });
+    }
+
+    if (recipients.length === 0) {
+      return;
+    }
+
+    const subject = `อนุมัติโครงการ ${project.projectCode ?? project.id}`;
+
+    for (const recipient of recipients) {
+      const exists = await prisma.approvalEmailLog.findFirst({
+        where: {
+          projectId,
+          recipient: recipient.email,
+          status: {
+            in: ["SENT", "PENDING"] as EmailDeliveryStatus[],
+          },
+        },
+      });
+
+      if (exists) {
+        continue;
+      }
+
+      const log = await prisma.approvalEmailLog.create({
+        data: {
+          projectId,
+          recipient: recipient.email,
+          recipientRole: recipient.recipientRole,
+          subject,
+          status: "PENDING",
+        },
+      });
+
+      await this.dispatchEmail(log.id, recipient.email, subject, project.id);
+    }
+  }
+
+  private async dispatchEmail(
+    logId: string,
+    to: string,
+    subject: string,
+    projectId: string,
+  ): Promise<void> {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromAddress = process.env.APPROVAL_EMAIL_FROM;
+
+    if (!resendApiKey || !fromAddress) {
+      await prisma.approvalEmailLog.update({
+        where: { id: logId },
+        data: {
+          status: "SKIPPED",
+          errorMessage:
+            "Missing RESEND_API_KEY or APPROVAL_EMAIL_FROM configuration",
+        },
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: fromAddress,
+          to: [to],
+          subject,
+          html: `<p>โครงการ ${projectId} ได้รับอนุมัติและเข้าสู่สถานะ 10 (อนุมัติโครงการ)</p>`,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        await prisma.approvalEmailLog.update({
+          where: { id: logId },
+          data: {
+            status: "FAILED",
+            errorMessage: errorBody.slice(0, 500),
+          },
+        });
+        return;
+      }
+
+      await prisma.approvalEmailLog.update({
+        where: { id: logId },
+        data: {
+          status: "SENT",
+          sentAt: new Date(),
+          errorMessage: null,
+        },
+      });
+    } catch (error) {
+      await prisma.approvalEmailLog.update({
+        where: { id: logId },
+        data: {
+          status: "FAILED",
+          errorMessage:
+            error instanceof Error ? error.message : "Unknown error",
+        },
+      });
+    }
   }
 
   /**
@@ -401,16 +768,24 @@ export class StatusTransitionService {
   }
 
   /**
-   * Handle document recall (transition to RECALL status)
+   * Request document recall (does not transition yet)
    */
   async recallDocument(
     projectId: string,
     userId: string,
     reason?: string,
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ success: boolean; error?: string; requestId?: string }> {
     const project = await prisma.project.findUnique({
       where: { id: projectId },
-      select: { currentStatusCode: true },
+      select: {
+        currentStatusCode: true,
+        currentStatusId: true,
+        currentStatus: {
+          include: {
+            notifications: true,
+          },
+        },
+      },
     });
 
     // Can only recall from STATUS_1
@@ -421,7 +796,186 @@ export class StatusTransitionService {
       };
     }
 
-    return this.transitionStatus(projectId, "RECALL", userId, reason);
+    if (!project.currentStatusId) {
+      return {
+        success: false,
+        error: "ไม่พบสถานะปัจจุบันของโครงการ",
+      };
+    }
+
+    const existingDeptNotification = project.currentStatus?.notifications.find(
+      (n) => n.notificationType === "DEPT_HEAD",
+    );
+
+    if (
+      existingDeptNotification &&
+      existingDeptNotification.recipient !== RECALL_REQUEST_TAG
+    ) {
+      return {
+        success: false,
+        error: "ไม่สามารถสร้างคำขอเรียกคืนในสถานะนี้ได้",
+      };
+    }
+
+    if (
+      existingDeptNotification?.recipient === RECALL_REQUEST_TAG &&
+      !existingDeptNotification.isCompleted
+    ) {
+      return {
+        success: false,
+        error: "มีคำขอเรียกคืนที่รอการรับรองอยู่แล้ว",
+      };
+    }
+
+    const note = reason ? `PENDING: ${reason}` : "PENDING";
+
+    const request = existingDeptNotification
+      ? await prisma.notificationStatus.update({
+          where: { id: existingDeptNotification.id },
+          data: {
+            isRequired: true,
+            isCompleted: false,
+            completedAt: null,
+            completedBy: null,
+            recipient: RECALL_REQUEST_TAG,
+            notes: note,
+          },
+        })
+      : await prisma.notificationStatus.create({
+          data: {
+            statusId: project.currentStatusId,
+            notificationType: "DEPT_HEAD",
+            isRequired: true,
+            isCompleted: false,
+            recipient: RECALL_REQUEST_TAG,
+            notes: note,
+          },
+        });
+
+    return { success: true, requestId: request.id };
+  }
+
+  async reviewRecallRequest(
+    projectId: string,
+    reviewerId: string,
+    actorRole: string,
+    decision: RecallReviewDecision,
+    note?: string,
+  ): Promise<{
+    success: boolean;
+    error?: string;
+    transitioned?: boolean;
+    statusCode?: number;
+  }> {
+    if (actorRole !== "ภาควิชา") {
+      return {
+        success: false,
+        error: "เฉพาะหัวหน้าภาค (ภาควิชา) เท่านั้นที่รับรองคำขอเรียกคืนได้",
+        statusCode: 403,
+      };
+    }
+
+    const assignment = await this.getDepartmentHeadAssignment(projectId);
+    if (!assignment) {
+      return {
+        success: false,
+        error: "ไม่พบการกำหนดหัวหน้าภาคของภาควิชานี้ กรุณาให้งานวิจัยกำหนดก่อน",
+        statusCode: 400,
+      };
+    }
+
+    if (assignment.headUserId !== reviewerId) {
+      return {
+        success: false,
+        error: "ผู้ใช้นี้ไม่ใช่หัวหน้าภาคที่ถูกกำหนดของภาควิชานี้",
+        statusCode: 403,
+      };
+    }
+
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: {
+        currentStatusCode: true,
+        currentStatus: {
+          include: {
+            notifications: true,
+          },
+        },
+      },
+    });
+
+    if (!project || project.currentStatusCode !== "STATUS_1") {
+      return {
+        success: false,
+        error: "โครงการต้องอยู่ใน STATUS_1 เพื่อพิจารณาคำขอเรียกคืน",
+        statusCode: 400,
+      };
+    }
+
+    const request = project.currentStatus?.notifications.find(
+      (n) =>
+        n.notificationType === "DEPT_HEAD" &&
+        n.recipient === RECALL_REQUEST_TAG,
+    );
+
+    if (!request) {
+      return {
+        success: false,
+        error: "ไม่พบคำขอเรียกคืนที่รอการรับรอง",
+        statusCode: 400,
+      };
+    }
+
+    if (request.isCompleted) {
+      return {
+        success: false,
+        error: "คำขอเรียกคืนนี้ถูกพิจารณาแล้ว",
+        statusCode: 409,
+      };
+    }
+
+    const reviewNote = note?.trim();
+    const resultNote =
+      decision === "APPROVE"
+        ? `${RECALL_APPROVED_PREFIX}${reviewNote ? `: ${reviewNote}` : ""}`
+        : `${RECALL_REJECTED_PREFIX}${reviewNote ? `: ${reviewNote}` : ""}`;
+
+    await prisma.notificationStatus.update({
+      where: { id: request.id },
+      data: {
+        isCompleted: true,
+        completedAt: new Date(),
+        completedBy: reviewerId,
+        notes: resultNote,
+      },
+    });
+
+    if (decision === "REJECT") {
+      return {
+        success: true,
+        transitioned: false,
+      };
+    }
+
+    const transitionResult = await this.transitionStatus(
+      projectId,
+      "RECALL",
+      reviewerId,
+      reviewNote,
+    );
+
+    if (!transitionResult.success) {
+      return {
+        success: false,
+        error: transitionResult.error,
+        statusCode: 400,
+      };
+    }
+
+    return {
+      success: true,
+      transitioned: true,
+    };
   }
 
   /**

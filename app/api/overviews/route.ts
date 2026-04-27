@@ -4,6 +4,17 @@ import { successResponse, handleApiError } from "@/lib/api-response";
 import { listOverviewsQuerySchema } from "./schema";
 import { Prisma, ProjectStatus } from "@/app/generated/prisma/client";
 
+// Typed project payload used in this route
+type ProjectWithRelations = Prisma.ProjectGetPayload<{
+  include: {
+    meetings: true;
+    leader: { select: { id: true; name: true; email: true } };
+    coLeader: { select: { id: true; name: true; email: true } };
+    currentStatus: { include: { notifications: true } };
+    roleCompletions: true;
+  };
+}>;
+
 // Helper to format Decimal to string with 2 decimal places
 function formatDecimal(
   value: { toFixed: (decimals: number) => string } | null | undefined,
@@ -20,6 +31,32 @@ function formatThaiDate(date: Date | null | undefined): string {
     month: "long",
     day: "numeric",
   }).format(date);
+}
+
+function toDisplayStatus(statusCode: string | null | undefined): string {
+  if (!statusCode) return "";
+  if (statusCode === "DRAFT") return "DRAFT. แบบร่างโครงการ";
+  if (statusCode === "STATUS_0") return "0. แบบร่างโครงการ (รอดำเนินการ)";
+  if (statusCode === "RECALL") return "RECALL. ดึงกลับเอกสาร";
+
+  const statusMap: Record<string, string> = {
+    STATUS_0: "0. รอหัวหน้าภาคอนุมัติส่งงานวิจัย",
+    STATUS_1: "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
+    STATUS_2: "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
+    STATUS_3:
+      "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
+    STATUS_4:
+      "4. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์อนุมัติ และให้เสนองานบริหารวิจัยและบริการวิชาการเพื่อดำเนินการต่อไป",
+    STATUS_5:
+      "5. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์เห็นชอบ และให้เสนอกลุ่มภารกิจการประชุม ศูนย์บริหารกลางเพื่อดำเนินการต่อไป",
+    STATUS_6: "6. เสนอคณบดี เพื่อพิจารณาอนุมัติโครงการ",
+    STATUS_7: "7. เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
+    STATUS_8: "8. คณบดีอนุมัติโครงการ",
+    STATUS_9: "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
+    STATUS_10: "10. อนุมัติโครงการ",
+  };
+
+  return statusMap[statusCode] ?? "";
 }
 
 // GET /api/overviews - List all projects in overview format
@@ -75,13 +112,14 @@ export async function GET(request: NextRequest) {
               notifications: true,
             },
           },
+          roleCompletions: true,
         },
       }),
       prisma.project.count({ where }),
     ]);
 
     // Transform projects to overview format
-    const overviewData = projects.map((project) => {
+    const overviewData = projects.map((project: ProjectWithRelations) => {
       // Calculate total budget from expenses
       const totalBudget =
         (project.expenseRemuneration?.toNumber() || 0) +
@@ -100,16 +138,17 @@ export async function GET(request: NextRequest) {
       // Find board and dean meetings
       const boardMeeting = project.meetings.find((m) => m.type === "BOARD");
       const deanMeeting = project.meetings.find((m) => m.type === "DEAN");
-      const requiredNotifications =
-        project.currentStatus?.notifications.filter((n) => n.isRequired) ?? [];
-      const canMoveTo11 =
-        requiredNotifications.length > 0 &&
-        requiredNotifications.every((n) => n.isCompleted);
+      const researchCompletion = project.roleCompletions.find(
+        (row) => row.role === "RESEARCH",
+      );
+      const physicalCompletion = project.roleCompletions.find(
+        (row) => row.role === "PHYSICAL",
+      );
 
       return {
         id: project.id,
         receiptNumber: project.receiptNumber || "",
-        projectCode: project.projectCode || "",
+        projectCode: project.projectCode || project.id,
         memoTitle: project.memoTitle || project.projectNameThai,
         department: project.department,
         purpose: latestMeeting?.purpose || "-",
@@ -178,7 +217,8 @@ export async function GET(request: NextRequest) {
         docLink: project.docLink || "",
 
         // Enhanced fields for overview table
-        _projectStatus: project.status1 || "",
+        _projectStatus:
+          project.status1 || toDisplayStatus(project.currentStatusCode),
         _meetings: project.meetings.map((m) => ({
           id: m.id,
           type: m.type,
@@ -189,7 +229,9 @@ export async function GET(request: NextRequest) {
         _costCenter: project.costCenter || "",
         _maintenanceFee: formatDecimal(project.maintenanceFeeActual),
         _electricityFeeActual: formatDecimal(project.electricityFeeActual),
-        _canMoveTo11: canMoveTo11,
+        _researchComplete: !!researchCompletion?.isComplete,
+        _physicalComplete: !!physicalCompletion?.isComplete,
+        _draftState: project.draftState,
 
         // Additional required fields (placeholders for now)
         strategyType: "",

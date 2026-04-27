@@ -24,7 +24,8 @@
     "start": "next start",
     "lint": "eslint",
     "prettier-check": "prettier . --check",
-    "prettier-fix": "prettier . --write"
+    "prettier-fix": "prettier . --write",
+    "seed": "tsx scripts/seed-static.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

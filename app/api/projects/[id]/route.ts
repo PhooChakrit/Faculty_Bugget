@@ -11,6 +11,7 @@ import {
   updateProjectSchema,
   UpdateProjectInput,
 } from "../schema";
+import { generateProjectId } from "@/lib/generate-project-id";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -62,6 +63,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       managers,
       startDate,
       endDate,
+      leaderId,
+      coLeaderId,
       ...projectData
     } = data;
 
@@ -74,9 +77,77 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse("Project not found", 404);
     }
 
+    if (existingProject.currentStatusCode === "STATUS_10") {
+      return errorResponse("Project has ended and cannot be edited", 409);
+    }
+
     // Update project with transaction for relations
     const project = await prisma.$transaction(
       async (tx: Prisma.TransactionClient) => {
+        const updateData: Prisma.ProjectUpdateInput = {
+          ...projectData,
+          ...(startDate && { startDate: new Date(startDate) }),
+          ...(endDate && { endDate: new Date(endDate) }),
+        };
+
+        if (typeof leaderId === "string") {
+          const nextLeaderId = leaderId.trim();
+          if (!nextLeaderId) {
+            // Keep current leader when client sends empty string.
+            updateData.leader = { connect: { id: existingProject.leaderId } };
+          } else {
+            const leaderExists = await tx.user.findUnique({
+              where: { id: nextLeaderId },
+              select: { id: true },
+            });
+
+            if (!leaderExists) {
+              // Fall back to existing leader to avoid FK violation during draft autosave.
+              updateData.leader = {
+                connect: { id: existingProject.leaderId },
+              };
+            } else {
+              updateData.leader = { connect: { id: nextLeaderId } };
+            }
+          }
+        }
+
+        if (typeof coLeaderId === "string") {
+          const nextCoLeaderId = coLeaderId.trim();
+          if (!nextCoLeaderId) {
+            updateData.coLeader = { disconnect: true };
+          } else {
+            const coLeaderExists = await tx.user.findUnique({
+              where: { id: nextCoLeaderId },
+              select: { id: true },
+            });
+
+            updateData.coLeader = coLeaderExists
+              ? { connect: { id: nextCoLeaderId } }
+              : { disconnect: true };
+          }
+        }
+
+        const validTargetGroupIds =
+          targetGroupIds && targetGroupIds.length > 0
+            ? (
+                await tx.targetGroup.findMany({
+                  where: { id: { in: targetGroupIds } },
+                  select: { id: true },
+                })
+              ).map((row) => row.id)
+            : [];
+
+        const validStrategyIds =
+          strategyIds && strategyIds.length > 0
+            ? (
+                await tx.strategy.findMany({
+                  where: { id: { in: strategyIds } },
+                  select: { id: true },
+                })
+              ).map((row) => row.id)
+            : [];
+
         // Delete existing relations if new data provided
         if (targetGroupIds !== undefined) {
           await tx.projectTargetGroup.deleteMany({ where: { projectId: id } });
@@ -94,31 +165,53 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
           await tx.projectManager.deleteMany({ where: { projectId: id } });
         }
 
+        // Sync status1 display string when currentStatusCode is explicitly set
+        const statusCodeToStatus1: Record<string, string> = {
+          DRAFT: "DRAFT. แบบร่างโครงการ",
+          STATUS_0: "0. แบบร่างโครงการ (รอดำเนินการ)",
+          STATUS_1:
+            "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
+          STATUS_2:
+            "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
+          RECALL: "RECALL. ดึงกลับเอกสาร",
+        };
+        const derivedStatus1 = projectData.currentStatusCode
+          ? (statusCodeToStatus1[projectData.currentStatusCode] ?? null)
+          : null;
+
+        // Assign projectCode = id when first transitioning to STATUS_1
+        const needsProjectCode =
+          projectData.currentStatusCode === "STATUS_1" &&
+          !existingProject.projectCode;
+        const newProjectCode = needsProjectCode ? existingProject.id : null;
+        if (derivedStatus1) {
+          updateData.status1 = derivedStatus1;
+        }
+        if (newProjectCode) {
+          updateData.projectCode = newProjectCode;
+        }
+
         // Update project
         return tx.project.update({
           where: { id },
           data: {
-            ...projectData,
-            ...(startDate && { startDate: new Date(startDate) }),
-            ...(endDate && { endDate: new Date(endDate) }),
+            ...updateData,
             // Recreate target group relations
-            ...(targetGroupIds &&
-              targetGroupIds.length > 0 && {
-                targetGroups: {
-                  create: targetGroupIds.map((targetGroupId) => ({
-                    targetGroup: { connect: { id: targetGroupId } },
-                  })),
-                },
-              }),
+            ...(validTargetGroupIds.length > 0 && {
+              targetGroups: {
+                create: validTargetGroupIds.map((targetGroupId) => ({
+                  targetGroup: { connect: { id: targetGroupId } },
+                })),
+              },
+            }),
             // Recreate strategy relations
-            ...(strategyIds &&
-              strategyIds.length > 0 && {
-                strategies: {
-                  create: strategyIds.map((strategyId) => ({
-                    strategy: { connect: { id: strategyId } },
-                  })),
-                },
-              }),
+            ...(validStrategyIds.length > 0 && {
+              strategies: {
+                create: validStrategyIds.map((strategyId) => ({
+                  strategy: { connect: { id: strategyId } },
+                })),
+              },
+            }),
             // Recreate income items
             ...(incomeItems &&
               incomeItems.length > 0 && {
