@@ -245,7 +245,7 @@ export default function ProjectListPage() {
                       />
                     </th>
                     <th className="p-3 font-semibold border-r border-slate-700/50 w-[140px]">
-                      รหัส / เลขที่รับ
+                      รหัสโครงการ
                     </th>
                     <th className="p-3 font-semibold border-r border-slate-700/50">
                       ชื่อโครงการ

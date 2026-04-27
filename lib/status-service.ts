@@ -262,7 +262,7 @@ export class StatusTransitionService {
           toStatus === "STATUS_1" &&
           !project.projectCode;
         const generatedProjectCode = shouldGenerateProjectCode
-          ? await generateProjectId(tx)
+          ? projectId
           : null;
 
         if (project?.currentStatusId) {

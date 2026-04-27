@@ -183,9 +183,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const needsProjectCode =
           projectData.currentStatusCode === "STATUS_1" &&
           !existingProject.projectCode;
-        const newProjectCode = needsProjectCode
-          ? await generateProjectId(tx)
-          : null;
+        const newProjectCode = needsProjectCode ? existingProject.id : null;
         if (derivedStatus1) {
           updateData.status1 = derivedStatus1;
         }

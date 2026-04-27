@@ -170,7 +170,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
           const isDepartmentApproval =
             currentStatusKey === "0" && nextStatusKey === "1";
           if (isDepartmentApproval && !project.projectCode) {
-            updateData.projectCode = await generateProjectId(prisma);
+            updateData.projectCode = id;
           }
         }
       }
