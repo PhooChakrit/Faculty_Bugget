@@ -19,6 +19,7 @@ import {
   FileText,
   Plus,
 } from "lucide-react";
+import { statusLabels, StatusCode } from "@/lib/status-constants";
 
 // --- 1. Data Interface ---
 interface ProjectData {
@@ -85,21 +86,25 @@ interface ProjectData {
 }
 
 // --- Project Status Constants ---
-const PROJECT_STATUSES = [
-  "DRAFT. แบบร่างโครงการ",
-  "0. รอหัวหน้าภาคอนุมัติส่งงานวิจัย",
-  "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
-  "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
-  "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
-  "4. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์อนุมัติ และให้เสนองานบริหารวิจัยและบริการวิชาการเพื่อดำเนินการต่อไป",
-  "5. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์เห็นชอบ และให้เสนอกลุ่มภารกิจการประชุม ศูนย์บริหารกลางเพื่อดำเนินการต่อไป",
-  "6. เสนอคณบดี เพื่อพิจารณาอนุมัติโครงการ",
-  "7. เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
-  "8. คณบดีอนุมัติโครงการ",
-  "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
-  "10. อนุมัติโครงการ",
-  "RECALL. ดึงกลับเอกสาร",
-] as const;
+// Derived from shared statusLabels — keys map to the legacy "N. label" format stored in status1
+const STATUS_CODE_TO_KEY: [StatusCode, string][] = [
+  [StatusCode.DRAFT, "DRAFT"],
+  [StatusCode.STATUS_0, "0"],
+  [StatusCode.STATUS_1, "1"],
+  [StatusCode.STATUS_2, "2"],
+  [StatusCode.STATUS_3, "3"],
+  [StatusCode.STATUS_4, "4"],
+  [StatusCode.STATUS_5, "5"],
+  [StatusCode.STATUS_6, "6"],
+  [StatusCode.STATUS_7, "7"],
+  [StatusCode.STATUS_8, "8"],
+  [StatusCode.STATUS_9, "9"],
+  [StatusCode.STATUS_10, "10"],
+  [StatusCode.RECALL, "RECALL"],
+];
+const PROJECT_STATUSES = STATUS_CODE_TO_KEY.map(
+  ([code, key]) => `${key}. ${statusLabels[code]}`,
+);
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   DRAFT: ["0"],

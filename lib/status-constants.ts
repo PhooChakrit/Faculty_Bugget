@@ -69,6 +69,17 @@ export const statusColors: Record<StatusCode, string> = {
   [StatusCode.RECALL]: "bg-red-100 text-red-800 border-red-300",
 };
 
+export function getStatusBadge(code: string | null | undefined): {
+  label: string;
+  className: string;
+} {
+  const key = (code ?? "") as StatusCode;
+  const label = statusLabels[key] ?? code ?? "-";
+  const className =
+    statusColors[key] ?? "bg-slate-100 text-slate-700 border-slate-300";
+  return { label, className };
+}
+
 export interface AllowedStatusTransition {
   fromStatus: StatusCode;
   toStatus: StatusCode;

@@ -15,6 +15,8 @@ import {
   Search,
   Trash2,
 } from "lucide-react";
+import { getStatusBadge } from "@/lib/status-constants";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 // Matches API Response from /api/projects
 interface ProjectSummary {
@@ -41,6 +43,9 @@ export default function ProjectListPage() {
   const [requestingRevisionId, setRequestingRevisionId] = useState<
     string | null
   >(null);
+  const [revisionDialogProjectId, setRevisionDialogProjectId] = useState<
+    string | null
+  >(null);
 
   const router = useRouter();
 
@@ -63,54 +68,28 @@ export default function ProjectListPage() {
     fetchProjects();
   }, []);
 
-  /** Workflow badge from `currentStatusCode` (Prisma StatusCode) */
-  const getWorkflowStatusBadge = (code: string | null | undefined) => {
-    const map: Record<string, { label: string; className: string }> = {
-      DRAFT: { label: "ร่าง", className: "bg-slate-100 text-slate-700" },
-      STATUS_0: {
-        label: "รอดำเนินการ",
-        className: "bg-blue-100 text-blue-800",
-      },
-      STATUS_1: {
-        label: "รออนุมัติ",
-        className: "bg-yellow-100 text-yellow-800",
-      },
-      RECALL: {
-        label: "ขอแก้ไขเอกสาร",
-        className: "bg-orange-100 text-orange-800",
-      },
-      STATUS_13: {
-        label: "ปิดโครงการ",
-        className: "bg-green-100 text-green-800",
-      },
-    };
-
-    const key = code ?? "";
-    const config =
-      map[key] ??
-      (key.startsWith("STATUS_")
-        ? {
-            label: "กำลังดำเนินการ",
-            className: "bg-indigo-100 text-indigo-800",
-          }
-        : { label: code || "-", className: "bg-slate-100 text-slate-700" });
-
+  const renderStatusBadge = (code: string | null | undefined) => {
+    const { label, className } = getStatusBadge(code);
     return (
       <span
-        className={`inline-flex max-w-full items-center whitespace-nowrap rounded-full px-2 py-1 text-[11px] font-medium leading-tight ${config.className}`}
-        title={config.label}
+        className={`inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium leading-snug ${className}`}
       >
-        {config.label}
+        {label}
       </span>
     );
   };
 
-  const handleRequestRevision = async (
+  const handleRequestRevision = (
     e: MouseEvent<HTMLButtonElement>,
     projectId: string,
   ) => {
     e.stopPropagation();
-    if (!confirm("ต้องการส่งคำขอแก้ไขเอกสารใช่หรือไม่?")) return;
+    setRevisionDialogProjectId(projectId);
+  };
+
+  const handleConfirmRevision = async () => {
+    if (!revisionDialogProjectId) return;
+    const projectId = revisionDialogProjectId;
     setRequestingRevisionId(projectId);
     try {
       const res = await fetch(`/api/projects/${projectId}/request-revision`, {
@@ -130,6 +109,7 @@ export default function ProjectListPage() {
           p.id === projectId ? { ...p, currentStatusCode: "RECALL" } : p,
         ),
       );
+      setRevisionDialogProjectId(null);
     } catch (err) {
       console.error(err);
       alert("เกิดข้อผิดพลาดในการส่งคำขอ");
@@ -276,7 +256,7 @@ export default function ProjectListPage() {
                     <th className="p-3 font-semibold border-r border-slate-700/50 w-[180px]">
                       หัวหน้าโครงการ
                     </th>
-                    <th className="p-3 font-semibold border-r border-slate-700/50 w-[168px] min-w-[168px] whitespace-nowrap">
+                    <th className="p-3 font-semibold border-r border-slate-700/50 w-[220px] min-w-[220px]">
                       สถานะ
                     </th>
                     <th className="p-3 font-semibold border-r border-slate-700/50 w-[100px] text-center">
@@ -344,7 +324,7 @@ export default function ProjectListPage() {
                             }}
                           />
                         </td>
-                        <td className="p-3 align-top border-r border-slate-100">
+                        <td className="p-3 align-middle border-r border-slate-100">
                           <div className="font-mono text-sm text-indigo-900 font-semibold">
                             {project.id}
                           </div>
@@ -354,7 +334,7 @@ export default function ProjectListPage() {
                             </div>
                           )}
                         </td>
-                        <td className="p-3 align-top border-r border-slate-100">
+                        <td className="p-3 align-middle border-r border-slate-100">
                           <div className="text-sm font-medium text-slate-700 line-clamp-2">
                             {project.projectNameThai}
                           </div>
@@ -365,16 +345,16 @@ export default function ProjectListPage() {
                             )}
                           </div>
                         </td>
-                        <td className="p-3 align-top text-sm text-slate-600 border-r border-slate-100">
+                        <td className="p-3 align-middle text-sm text-slate-600 border-r border-slate-100">
                           {project.department || "-"}
                         </td>
-                        <td className="p-3 align-top text-sm text-slate-600 border-r border-slate-100">
+                        <td className="p-3 align-middle text-sm text-slate-600 border-r border-slate-100">
                           {project.leader?.name || "-"}
                         </td>
-                        <td className="p-3 align-middle border-r border-slate-100 whitespace-nowrap">
-                          {getWorkflowStatusBadge(project.currentStatusCode)}
+                        <td className="p-3 align-middle border-r border-slate-100">
+                          {renderStatusBadge(project.currentStatusCode)}
                         </td>
-                        <td className="p-3 align-top text-center border-r border-slate-100">
+                        <td className="p-3 align-middle text-center border-r border-slate-100">
                           <div
                             className="flex items-center justify-center gap-0.5"
                             onClick={(e) => e.stopPropagation()}
@@ -418,6 +398,16 @@ export default function ProjectListPage() {
           </Card>
         </div>
       </main>
+
+      <ConfirmDialog
+        open={revisionDialogProjectId !== null}
+        onOpenChange={(open) => !open && setRevisionDialogProjectId(null)}
+        title="ขอแก้ไขเอกสาร"
+        description="ต้องการส่งคำขอแก้ไขเอกสารใช่หรือไม่?"
+        confirmLabel="ส่งคำขอ"
+        loading={requestingRevisionId !== null}
+        onConfirm={handleConfirmRevision}
+      />
     </div>
   );
 }

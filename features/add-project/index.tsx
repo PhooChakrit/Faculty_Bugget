@@ -5,6 +5,7 @@ import { useForm, FormProvider, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Collaborator, FormData, Notes } from "./types";
 import { formDataSchema } from "./schema";
 import { projectService } from "@/services/projectService";
@@ -112,6 +113,8 @@ function AddProjectContent() {
   const [validatedData, setValidatedData] = useState<FormDataSchemaType | null>(
     null,
   );
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const [isSubmittingFinal, setIsSubmittingFinal] = useState(false);
 
   const [hydrated, setHydrated] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -258,7 +261,7 @@ function AddProjectContent() {
 
   const onConfirmSubmit = async () => {
     if (!validatedData || !projectId) return;
-
+    setIsSubmittingFinal(true);
     try {
       const base = buildApiPayloadFromForm(
         validatedData,
@@ -277,12 +280,13 @@ function AddProjectContent() {
         status: "PENDING_APPROVAL",
         currentStatusCode: "STATUS_1",
       } as Record<string, unknown>);
-      alert("บันทึกข้อมูลโครงการสำเร็จ");
+      setShowSubmitConfirm(false);
       setShowPreview(false);
       router.push("/projects");
     } catch (error) {
       console.error("Error saving project:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+    } finally {
+      setIsSubmittingFinal(false);
     }
   };
 
@@ -524,7 +528,7 @@ function AddProjectContent() {
             validatedData && (
               <ProjectPreview
                 onCancel={() => setShowPreview(false)}
-                onConfirm={onConfirmSubmit}
+                onConfirm={() => setShowSubmitConfirm(true)}
                 isSubmitting={isSubmitting}
                 formData={validatedData as unknown as FormData}
                 collaborators={collaborators}
@@ -534,6 +538,16 @@ function AddProjectContent() {
           )}
         </div>
       </main>
+
+      <ConfirmDialog
+        open={showSubmitConfirm}
+        onOpenChange={(open) => !open && setShowSubmitConfirm(false)}
+        title="ยืนยันการส่งข้อมูลโครงการ"
+        description="เมื่อส่งแล้วโครงการจะเข้าสู่ขั้นตอนการอนุมัติ ไม่สามารถแก้ไขได้จนกว่าจะได้รับการดึงกลับ"
+        confirmLabel="ยืนยันส่งข้อมูล"
+        loading={isSubmittingFinal}
+        onConfirm={onConfirmSubmit}
+      />
     </div>
   );
 }
