@@ -4,6 +4,17 @@ import { successResponse, handleApiError } from "@/lib/api-response";
 import { listOverviewsQuerySchema } from "./schema";
 import { Prisma, ProjectStatus } from "@/app/generated/prisma/client";
 
+// Typed project payload used in this route
+type ProjectWithRelations = Prisma.ProjectGetPayload<{
+  include: {
+    meetings: true;
+    leader: { select: { id: true; name: true; email: true } };
+    coLeader: { select: { id: true; name: true; email: true } };
+    currentStatus: { include: { notifications: true } };
+    roleCompletions: true;
+  };
+}>;
+
 // Helper to format Decimal to string with 2 decimal places
 function formatDecimal(
   value: { toFixed: (decimals: number) => string } | null | undefined,
@@ -108,7 +119,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Transform projects to overview format
-    const overviewData = projects.map((project) => {
+    const overviewData = projects.map((project: ProjectWithRelations) => {
       // Calculate total budget from expenses
       const totalBudget =
         (project.expenseRemuneration?.toNumber() || 0) +
