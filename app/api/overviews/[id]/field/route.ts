@@ -8,7 +8,7 @@ const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   DRAFT: ["0"],
   "0": ["1"],
   "1": ["2", "RECALL"],
-  RECALL: ["1"],
+  RECALL: ["DRAFT"],
   "2": ["1", "3"],
   "3": ["4", "5"],
   "4": ["6"],
@@ -106,7 +106,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         const isDeptApproval =
           currentStatusKey === "0" && nextStatusKey === "1";
         const isApproveRecall =
-          currentStatusKey === "RECALL" && nextStatusKey === "1";
+          currentStatusKey === "RECALL" && nextStatusKey === "DRAFT";
         const canEditStatus =
           actorRole === "งานวิจัย" ||
           (isDraftSubmission && actorRole === "USER") ||

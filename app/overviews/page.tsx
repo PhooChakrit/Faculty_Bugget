@@ -110,7 +110,7 @@ const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   DRAFT: ["0"],
   "0": ["1"],
   "1": ["2", "RECALL"],
-  RECALL: ["1"],
+  RECALL: ["DRAFT"],
   "2": ["1", "3"],
   "3": ["4", "5"],
   "4": ["6"],
@@ -490,7 +490,7 @@ export default function ProjectTrackingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           field: "_projectStatus",
-          value: "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
+          value: "DRAFT. แบบร่างโครงการ",
           actorRole: "งานวิจัย",
           actorUserId: "mock-งานวิจัย",
         }),
@@ -506,9 +506,8 @@ export default function ProjectTrackingPage() {
           p.id === projectId
             ? {
                 ...p,
-                _projectStatus:
-                  "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
-                _draftState: "SUBMITTED",
+                _projectStatus: "DRAFT. แบบร่างโครงการ",
+                _draftState: "DRAFT",
               }
             : p,
         ),

@@ -124,7 +124,7 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   // From RECALL
   {
     fromStatus: StatusCode.RECALL,
-    toStatus: StatusCode.STATUS_1,
+    toStatus: StatusCode.DRAFT,
     label: "อนุมัติดึงกลับ",
     condition: "STAFF_ONLY",
     order: 1,
