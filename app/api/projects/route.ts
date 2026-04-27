@@ -1,5 +1,9 @@
 import { NextRequest } from "next/server";
-import { ProjectStatus, StatusCode } from "@/app/generated/prisma/client";
+import {
+  Prisma,
+  ProjectStatus,
+  StatusCode,
+} from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { generateProjectId } from "@/lib/generate-project-id";
@@ -24,15 +28,21 @@ export async function GET(request: NextRequest) {
       status: searchParams.get("status") || undefined,
       search: searchParams.get("search") || undefined,
       leaderId: searchParams.get("leaderId") || undefined,
+      actorRole: searchParams.get("actorRole") || "USER",
     });
 
-    const { page, limit, status, search, leaderId } = query;
+    const { page, limit, status, search, leaderId, actorRole } = query;
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where = {
+    const where: Prisma.ProjectWhereInput = {
       ...(status && { status }),
       ...(leaderId && { leaderId }),
+      ...(actorRole === "งานวิจัย" && {
+        currentStatusCode: {
+          notIn: ["DRAFT", "STATUS_0"],
+        },
+      }),
       ...(search && {
         OR: [
           {

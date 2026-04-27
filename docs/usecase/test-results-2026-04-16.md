@@ -1,5 +1,7 @@
 # Test Results - 2026-04-16
 
+> Historical note: these results were captured before the workflow rewrite that made `STATUS_10` the terminal ended state. Close/suspend/legacy expectations involving `STATUS_11`, `STATUS_12`, `STATUS_13`, or `STATUS_14` are no longer current acceptance criteria.
+
 Environment:
 
 - App: Next.js dev server at http://localhost:3000

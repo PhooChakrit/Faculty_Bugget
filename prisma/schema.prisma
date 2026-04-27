@@ -18,6 +18,23 @@ model User {
   statusRecords      ProjectStatusRecord[]
   notifications      NotificationStatus[]
   roleCompletions    ProjectRoleCompletion[]
+  departmentHeadAssignments     DepartmentHeadAssignment[] @relation("DepartmentHeadUser")
+  departmentHeadAssignmentsMade DepartmentHeadAssignment[] @relation("DepartmentHeadAssignedBy")
+}
+
+model DepartmentHeadAssignment {
+  id               String   @id @default(cuid())
+  department       String   @unique
+  headUserId       String
+  assignedByUserId String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  headUser         User     @relation("DepartmentHeadUser", fields: [headUserId], references: [id])
+  assignedByUser   User     @relation("DepartmentHeadAssignedBy", fields: [assignedByUserId], references: [id])
+
+  @@index([headUserId])
+  @@index([assignedByUserId])
 }
 
 model Project {

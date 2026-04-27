@@ -40,6 +40,52 @@ const RECALL_APPROVED_PREFIX = "RECALL_APPROVED";
 const RECALL_REJECTED_PREFIX = "RECALL_REJECTED";
 
 export class StatusTransitionService {
+  async getDepartmentHeadAssignment(projectId: string): Promise<{
+    department: string;
+    headUserId: string;
+  } | null> {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { department: true },
+    });
+
+    if (!project) {
+      return null;
+    }
+
+    const department = project.department?.trim();
+    if (!department || department === "-") {
+      return null;
+    }
+
+    const assignment = await prisma.departmentHeadAssignment.findUnique({
+      where: { department },
+      select: { headUserId: true },
+    });
+
+    if (!assignment) {
+      return null;
+    }
+
+    return {
+      department,
+      headUserId: assignment.headUserId,
+    };
+  }
+
+  async hasDepartmentHeadAssignment(projectId: string): Promise<boolean> {
+    const assignment = await this.getDepartmentHeadAssignment(projectId);
+    return Boolean(assignment);
+  }
+
+  async isAssignedDepartmentHead(
+    projectId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const assignment = await this.getDepartmentHeadAssignment(projectId);
+    return assignment?.headUserId === userId;
+  }
+
   async getCurrentStatus(
     projectId: string,
   ): Promise<{ currentStatusCode: StatusCode | null } | null> {
@@ -150,16 +196,6 @@ export class StatusTransitionService {
       }
     }
 
-    if (currentStatus === "STATUS_10" && toStatus === "STATUS_13") {
-      const closureProgress = await this.getClosureProgress(projectId);
-      if (!closureProgress.bothComplete) {
-        return {
-          isValid: false,
-          reason: "ต้องให้ งานวิจัย และ กายภาพ ยืนยันข้อมูลครบก่อนปิดโครงการ",
-        };
-      }
-    }
-
     if (currentStatus === "STATUS_1" && toStatus === "RECALL") {
       const recallRequest = project.currentStatus?.notifications.find(
         (n) =>
@@ -248,12 +284,7 @@ export class StatusTransitionService {
           },
         });
 
-        // 3. Create close-checklist rows when entering STATUS_10
-        if (toStatus === "STATUS_10") {
-          await this.ensureRoleCompletionRows(tx, projectId);
-        }
-
-        // 4. Update project's current status
+        // 3. Update project's current status
         await tx.project.update({
           where: { id: projectId },
           data: {
@@ -830,11 +861,34 @@ export class StatusTransitionService {
     actorRole: string,
     decision: RecallReviewDecision,
     note?: string,
-  ): Promise<{ success: boolean; error?: string; transitioned?: boolean }> {
+  ): Promise<{
+    success: boolean;
+    error?: string;
+    transitioned?: boolean;
+    statusCode?: number;
+  }> {
     if (actorRole !== "ภาควิชา") {
       return {
         success: false,
         error: "เฉพาะหัวหน้าภาค (ภาควิชา) เท่านั้นที่รับรองคำขอเรียกคืนได้",
+        statusCode: 403,
+      };
+    }
+
+    const assignment = await this.getDepartmentHeadAssignment(projectId);
+    if (!assignment) {
+      return {
+        success: false,
+        error: "ไม่พบการกำหนดหัวหน้าภาคของภาควิชานี้ กรุณาให้งานวิจัยกำหนดก่อน",
+        statusCode: 400,
+      };
+    }
+
+    if (assignment.headUserId !== reviewerId) {
+      return {
+        success: false,
+        error: "ผู้ใช้นี้ไม่ใช่หัวหน้าภาคที่ถูกกำหนดของภาควิชานี้",
+        statusCode: 403,
       };
     }
 
@@ -854,6 +908,7 @@ export class StatusTransitionService {
       return {
         success: false,
         error: "โครงการต้องอยู่ใน STATUS_1 เพื่อพิจารณาคำขอเรียกคืน",
+        statusCode: 400,
       };
     }
 
@@ -867,6 +922,7 @@ export class StatusTransitionService {
       return {
         success: false,
         error: "ไม่พบคำขอเรียกคืนที่รอการรับรอง",
+        statusCode: 400,
       };
     }
 
@@ -874,6 +930,7 @@ export class StatusTransitionService {
       return {
         success: false,
         error: "คำขอเรียกคืนนี้ถูกพิจารณาแล้ว",
+        statusCode: 409,
       };
     }
 
@@ -911,6 +968,7 @@ export class StatusTransitionService {
       return {
         success: false,
         error: transitionResult.error,
+        statusCode: 400,
       };
     }
 

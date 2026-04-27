@@ -87,7 +87,7 @@ interface ProjectData {
 // --- Project Status Constants ---
 const PROJECT_STATUSES = [
   "DRAFT. แบบร่างโครงการ",
-  "0. แบบร่างโครงการ (รอดำเนินการ)",
+  "0. รอหัวหน้าภาคอนุมัติส่งงานวิจัย",
   "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
   "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
   "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
@@ -98,15 +98,14 @@ const PROJECT_STATUSES = [
   "8. คณบดีอนุมัติโครงการ",
   "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
   "10. อนุมัติโครงการ",
-  "13. ปิดโครงการ",
   "RECALL. ดึงกลับเอกสาร",
 ] as const;
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
-  DRAFT: ["1"],
+  DRAFT: ["0"],
   "0": ["1"],
   "1": ["2", "RECALL"],
-  RECALL: ["DRAFT"],
+  RECALL: ["1"],
   "2": ["1", "3"],
   "3": ["4", "5"],
   "4": ["6"],
@@ -115,8 +114,7 @@ const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   "7": ["9"],
   "8": ["10"],
   "9": ["10"],
-  "10": ["13"],
-  "13": [],
+  "10": [],
 };
 
 const getStatusKey = (statusValue: string | undefined) => {
@@ -148,18 +146,22 @@ interface EnhancedProjectData extends ProjectData {
   _costCenter?: string; // 18.
   _maintenanceFee?: string; // 10.
   _electricityFeeActual?: string; // 14.
-  _canMoveTo11?: boolean;
-  _canCloseProject?: boolean;
   _researchComplete?: boolean;
   _physicalComplete?: boolean;
   _draftState?: "DRAFT" | "SUBMITTED";
 }
 
-type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
+type UserRole =
+  | "USER"
+  | "ภาควิชา"
+  | "งานวิจัย"
+  | "งานแผน"
+  | "งานคลัง"
+  | "กายภาพ";
 
 // --- Permissions Configuration ---
 const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
-  _projectStatus: ["งานวิจัย", "กายภาพ"],
+  _projectStatus: ["USER", "ภาควิชา", "งานวิจัย"],
   _meetings: ["งานวิจัย", "งานแผน"],
   vendorCode: ["งานคลัง"],
   _costCenter: ["งานแผน"],
@@ -299,7 +301,7 @@ const COLUMNS = [
 ];
 
 export default function ProjectTrackingPage() {
-  const [userRole, setUserRole] = useState<UserRole>("งานวิจัย");
+  const [userRole, setUserRole] = useState<UserRole>("USER");
   const [projects, setProjects] = useState<EnhancedProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -483,7 +485,7 @@ export default function ProjectTrackingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           field: "_projectStatus",
-          value: "DRAFT. แบบร่างโครงการ",
+          value: "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
           actorRole: "งานวิจัย",
           actorUserId: "mock-งานวิจัย",
         }),
@@ -499,8 +501,9 @@ export default function ProjectTrackingPage() {
           p.id === projectId
             ? {
                 ...p,
-                _projectStatus: "DRAFT. แบบร่างโครงการ",
-                _draftState: "DRAFT",
+                _projectStatus:
+                  "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
+                _draftState: "SUBMITTED",
               }
             : p,
         ),
@@ -716,25 +719,19 @@ export default function ProjectTrackingPage() {
                     if (statusKey === currentStatusKey) return false;
                     if (!allowedNextKeys.includes(statusKey)) return true;
 
-                    const isClosingTransition =
-                      currentStatusKey === "10" && statusKey === "13";
-                    if (
-                      isClosingTransition &&
-                      userRole !== "งานวิจัย" &&
-                      userRole !== "กายภาพ"
-                    ) {
-                      return true;
+                    const isDraftSubmission =
+                      currentStatusKey === "DRAFT" && statusKey === "0";
+                    if (isDraftSubmission) {
+                      return userRole !== "USER";
                     }
 
-                    if (!isClosingTransition && userRole !== "งานวิจัย") {
-                      return true;
+                    const isDeptApproval =
+                      currentStatusKey === "0" && statusKey === "1";
+                    if (isDeptApproval) {
+                      return userRole !== "ภาควิชา";
                     }
 
-                    if (
-                      currentStatusKey === "10" &&
-                      statusKey === "13" &&
-                      !project._canCloseProject
-                    ) {
+                    if (userRole !== "งานวิจัย") {
                       return true;
                     }
 
@@ -772,11 +769,11 @@ export default function ProjectTrackingPage() {
 
       // Display mode for status
       const statusNumber = getStatusKey(value as string);
-      const statusColor =
-        statusNumber === "13" ? "text-green-700" : "text-slate-700";
       const isStatus10 = statusNumber === "10";
       const canManageResearch = userRole === "งานวิจัย";
       const canManagePhysical = userRole === "กายภาพ";
+      const statusColor =
+        statusNumber === "10" ? "text-green-700" : "text-slate-700";
 
       return (
         <div className={`flex items-start justify-between group ${alignClass}`}>
@@ -989,6 +986,7 @@ export default function ProjectTrackingPage() {
               onChange={(e) => setUserRole(e.target.value as UserRole)}
               className="text-sm bg-slate-100 border-slate-200 rounded px-3 py-1.5 focus:ring-indigo-500"
             >
+              <option value="USER">USER (Submit Draft/Summary)</option>
               <option value="ภาควิชา">ภาควิชา (View)</option>
               <option value="งานวิจัย">งานวิจัย (Edit Proj)</option>
               <option value="งานแผน">งานแผน (Cost)</option>

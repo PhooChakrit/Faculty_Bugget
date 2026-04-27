@@ -20,7 +20,7 @@ export const updateFieldSchema = z.object({
   ]),
   value: z.string(),
   actorRole: z
-    .enum(["ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"])
+    .enum(["USER", "ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"])
     .optional(),
   actorUserId: z.string().optional(),
 });

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
+import type { Prisma } from "@/app/generated/prisma/client";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { updateMeetingsSchema } from "../../schema";
 
@@ -27,37 +28,39 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     }
 
     // Use a transaction to update meetings atomically
-    const result = await prisma.$transaction(async (tx) => {
-      // Delete all existing meetings
-      await tx.meeting.deleteMany({
-        where: { projectId: id },
-      });
-
-      // Create new meetings
-      if (meetings.length > 0) {
-        await tx.meeting.createMany({
-          data: meetings.map((m) => ({
-            projectId: id,
-            type: m.type,
-            no: m.no,
-            date: new Date(m.date),
-            purpose: m.purpose || null,
-          })),
+    const result = await prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        // Delete all existing meetings
+        await tx.meeting.deleteMany({
+          where: { projectId: id },
         });
-      }
 
-      // Fetch updated project with meetings
-      const updatedProject = await tx.project.findUnique({
-        where: { id },
-        include: {
-          meetings: {
-            orderBy: { date: "asc" },
+        // Create new meetings
+        if (meetings.length > 0) {
+          await tx.meeting.createMany({
+            data: meetings.map((m) => ({
+              projectId: id,
+              type: m.type,
+              no: m.no,
+              date: new Date(m.date),
+              purpose: m.purpose || null,
+            })),
+          });
+        }
+
+        // Fetch updated project with meetings
+        const updatedProject = await tx.project.findUnique({
+          where: { id },
+          include: {
+            meetings: {
+              orderBy: { date: "asc" },
+            },
           },
-        },
-      });
+        });
 
-      return updatedProject;
-    });
+        return updatedProject;
+      },
+    );
 
     return successResponse({
       success: true,

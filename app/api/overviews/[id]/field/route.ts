@@ -5,10 +5,10 @@ import { updateFieldSchema } from "../../schema";
 import { generateProjectId } from "@/lib/generate-project-id";
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
-  DRAFT: ["1"],
+  DRAFT: ["0"],
   "0": ["1"],
   "1": ["2", "RECALL"],
-  RECALL: ["DRAFT"],
+  RECALL: ["1"],
   "2": ["1", "3"],
   "3": ["4", "5"],
   "4": ["6"],
@@ -17,8 +17,7 @@ const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   "7": ["9"],
   "8": ["10"],
   "9": ["10"],
-  "10": ["13"],
-  "13": [],
+  "10": [],
 };
 
 const getStatusKey = (statusValue: string | null | undefined) => {
@@ -85,6 +84,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       return Response.json({ error: "Invalid field" }, { status: 400 });
     }
 
+    const currentStatusKey =
+      dbField === "status1"
+        ? getStatusKey(project.status1) ||
+          getStatusKeyFromCurrentStatusCode(project.currentStatusCode)
+        : "";
+
     if (dbField === "status1") {
       if (!actorRole) {
         return Response.json(
@@ -93,26 +98,25 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         );
       }
 
-      const currentStatusKey =
-        getStatusKey(project.status1) ||
-        getStatusKeyFromCurrentStatusCode(project.currentStatusCode);
       const nextStatusKey = getStatusKey(value);
 
       if (currentStatusKey !== nextStatusKey) {
-        const isCloseFromApproved =
-          currentStatusKey === "10" && nextStatusKey === "13";
+        const isDraftSubmission =
+          currentStatusKey === "DRAFT" && nextStatusKey === "0";
+        const isDeptApproval =
+          currentStatusKey === "0" && nextStatusKey === "1";
         const isApproveRecall =
-          currentStatusKey === "RECALL" && nextStatusKey === "DRAFT";
+          currentStatusKey === "RECALL" && nextStatusKey === "1";
         const canEditStatus =
           actorRole === "งานวิจัย" ||
-          (isCloseFromApproved && actorRole === "กายภาพ") ||
+          (isDraftSubmission && actorRole === "USER") ||
+          (isDeptApproval && actorRole === "ภาควิชา") ||
           isApproveRecall;
 
         if (!canEditStatus) {
           return Response.json(
             {
-              error:
-                "ไม่มีสิทธิ์เปลี่ยนสถานะนี้ (อนุญาต งานวิจัย และกรณีปิดโครงการให้ กายภาพ)",
+              error: "ไม่มีสิทธิ์เปลี่ยนสถานะนี้",
             },
             { status: 403 },
           );
@@ -130,25 +134,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
             },
             { status: 400 },
           );
-        }
-
-        if (currentStatusKey === "10" && nextStatusKey === "13") {
-          const researchComplete =
-            project.roleCompletions.find((row) => row.role === "RESEARCH")
-              ?.isComplete ?? false;
-          const physicalComplete =
-            project.roleCompletions.find((row) => row.role === "PHYSICAL")
-              ?.isComplete ?? false;
-
-          if (!researchComplete || !physicalComplete) {
-            return Response.json(
-              {
-                error:
-                  "Cannot close project until both งานวิจัย and กายภาพ are complete",
-              },
-              { status: 400 },
-            );
-          }
         }
       }
     }
@@ -174,9 +159,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       updateData[dbField] = value;
 
       if (dbField === "status1") {
-        const currentStatusKey =
-          getStatusKey(project.status1) ||
-          getStatusKeyFromCurrentStatusCode(project.currentStatusCode);
         const nextStatusKey = getStatusKey(value);
         updateData.currentStatusCode = toCurrentStatusCode(nextStatusKey);
 
@@ -185,10 +167,10 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         } else {
           updateData.draftState = "SUBMITTED";
 
-          const isSubmittingDraft =
-            currentStatusKey === "DRAFT" && nextStatusKey === "1";
-          if (isSubmittingDraft && !project.projectCode) {
-            updateData.projectCode = id;
+          const isDepartmentApproval =
+            currentStatusKey === "0" && nextStatusKey === "1";
+          if (isDepartmentApproval && !project.projectCode) {
+            updateData.projectCode = await generateProjectId(prisma);
           }
         }
       }
