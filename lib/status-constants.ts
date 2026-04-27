@@ -189,62 +189,7 @@ export const allowedTransitions: AllowedStatusTransition[] = [
     order: 1,
   },
 
-  // From STATUS_10 (Report submitted)
-  {
-    fromStatus: StatusCode.STATUS_10,
-    toStatus: StatusCode.STATUS_13,
-    label: "ปิดโครงการ",
-    condition: "RESEARCH_AND_PHYSICAL_COMPLETE",
-    order: 1,
-  },
-
-  {
-    fromStatus: StatusCode.STATUS_10,
-    toStatus: StatusCode.STATUS_14,
-    label: "ระงับโครงการ",
-    order: 2,
-  },
-
-  // Legacy compatibility
-  {
-    fromStatus: StatusCode.STATUS_11,
-    toStatus: StatusCode.STATUS_13,
-    label: "ปิดโครงการ",
-    order: 1,
-  },
-  {
-    fromStatus: StatusCode.STATUS_12,
-    toStatus: StatusCode.STATUS_13,
-    label: "ปิดโครงการ",
-    order: 1,
-  },
-
-  {
-    fromStatus: StatusCode.STATUS_11,
-    toStatus: StatusCode.STATUS_14,
-    label: "ระงับโครงการ",
-    order: 2,
-  },
-  {
-    fromStatus: StatusCode.STATUS_12,
-    toStatus: StatusCode.STATUS_14,
-    label: "ระงับโครงการ",
-    order: 2,
-  },
-
-  // To Others status (available from early stages)
-  {
-    fromStatus: StatusCode.STATUS_1,
-    toStatus: StatusCode.STATUS_15,
-    label: "อื่นๆ",
-    order: 3,
-  },
-  {
-    fromStatus: StatusCode.STATUS_2,
-    toStatus: StatusCode.STATUS_15,
-    label: "อื่นๆ",
-    order: 3,
-  },
+  // STATUS_10 is terminal for the active workflow.
 ];
 
 export enum NotificationType {

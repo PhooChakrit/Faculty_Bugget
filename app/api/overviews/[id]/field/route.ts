@@ -2,10 +2,10 @@ import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { updateFieldSchema } from "../../schema";
-import { generateProjectId } from "@/lib/generate-project-id";
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
-  DRAFT: ["1"],
+  DRAFT: ["0"],
+  "0": ["1"],
   "1": ["2", "RECALL"],
   RECALL: ["1"],
   "2": ["1", "3"],
@@ -16,8 +16,7 @@ const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   "7": ["9"],
   "8": ["10"],
   "9": ["10"],
-  "10": ["13"],
-  "13": [],
+  "10": [],
 };
 
 const getStatusKey = (statusValue: string | null | undefined) => {
@@ -98,17 +97,20 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       const nextStatusKey = getStatusKey(value);
 
       if (currentStatusKey !== nextStatusKey) {
-        const isCloseFromApproved =
-          currentStatusKey === "10" && nextStatusKey === "13";
+        const isDraftSubmission =
+          currentStatusKey === "DRAFT" && nextStatusKey === "0";
+        const isDeptApproval =
+          currentStatusKey === "0" && nextStatusKey === "1";
         const canEditStatus =
           actorRole === "งานวิจัย" ||
-          (isCloseFromApproved && actorRole === "กายภาพ");
+          (isDraftSubmission && actorRole === "USER") ||
+          (isDeptApproval && actorRole === "ภาควิชา");
 
         if (!canEditStatus) {
           return Response.json(
             {
               error:
-                "ไม่มีสิทธิ์เปลี่ยนสถานะนี้ (อนุญาต งานวิจัย และกรณีปิดโครงการให้ กายภาพ)",
+                "ไม่มีสิทธิ์เปลี่ยนสถานะนี้",
             },
             { status: 403 },
           );
@@ -126,25 +128,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
             },
             { status: 400 },
           );
-        }
-
-        if (currentStatusKey === "10" && nextStatusKey === "13") {
-          const researchComplete =
-            project.roleCompletions.find((row) => row.role === "RESEARCH")
-              ?.isComplete ?? false;
-          const physicalComplete =
-            project.roleCompletions.find((row) => row.role === "PHYSICAL")
-              ?.isComplete ?? false;
-
-          if (!researchComplete || !physicalComplete) {
-            return Response.json(
-              {
-                error:
-                  "Cannot close project until both งานวิจัย and กายภาพ are complete",
-              },
-              { status: 400 },
-            );
-          }
         }
       }
     }
@@ -170,9 +153,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       updateData[dbField] = value;
 
       if (dbField === "status1") {
-        const currentStatusKey =
-          getStatusKey(project.status1) ||
-          getStatusKeyFromCurrentStatusCode(project.currentStatusCode);
         const nextStatusKey = getStatusKey(value);
         updateData.currentStatusCode = toCurrentStatusCode(nextStatusKey);
 
@@ -180,12 +160,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
           updateData.draftState = "DRAFT";
         } else {
           updateData.draftState = "SUBMITTED";
-
-          const isSubmittingDraft =
-            currentStatusKey === "DRAFT" && nextStatusKey === "1";
-          if (isSubmittingDraft && !project.projectCode) {
-            updateData.projectCode = await generateProjectId(prisma);
-          }
         }
       }
     }

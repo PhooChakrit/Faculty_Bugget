@@ -28,6 +28,7 @@ function toDisplayStatus(statusCode: string | null | undefined): string {
   if (statusCode === "RECALL") return "RECALL. ดึงกลับเอกสาร";
 
   const statusMap: Record<string, string> = {
+    STATUS_0: "0. รอหัวหน้าภาคอนุมัติส่งงานวิจัย",
     STATUS_1: "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
     STATUS_2: "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
     STATUS_3:
@@ -41,7 +42,6 @@ function toDisplayStatus(statusCode: string | null | undefined): string {
     STATUS_8: "8. คณบดีอนุมัติโครงการ",
     STATUS_9: "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
     STATUS_10: "10. อนุมัติโครงการ",
-    STATUS_13: "13. ปิดโครงการ",
   };
 
   return statusMap[statusCode] ?? "";
@@ -126,19 +126,12 @@ export async function GET(request: NextRequest) {
       // Find board and dean meetings
       const boardMeeting = project.meetings.find((m) => m.type === "BOARD");
       const deanMeeting = project.meetings.find((m) => m.type === "DEAN");
-      const requiredNotifications =
-        project.currentStatus?.notifications.filter((n) => n.isRequired) ?? [];
-      const canMoveTo11 =
-        requiredNotifications.length > 0 &&
-        requiredNotifications.every((n) => n.isCompleted);
       const researchCompletion = project.roleCompletions.find(
         (row) => row.role === "RESEARCH",
       );
       const physicalCompletion = project.roleCompletions.find(
         (row) => row.role === "PHYSICAL",
       );
-      const canCloseProject =
-        !!researchCompletion?.isComplete && !!physicalCompletion?.isComplete;
 
       return {
         id: project.id,
@@ -224,8 +217,6 @@ export async function GET(request: NextRequest) {
         _costCenter: project.costCenter || "",
         _maintenanceFee: formatDecimal(project.maintenanceFeeActual),
         _electricityFeeActual: formatDecimal(project.electricityFeeActual),
-        _canMoveTo11: canMoveTo11,
-        _canCloseProject: canCloseProject,
         _researchComplete: !!researchCompletion?.isComplete,
         _physicalComplete: !!physicalCompletion?.isComplete,
         _draftState: project.draftState,

@@ -43,7 +43,7 @@ curl -s -X POST "$BASE_URL/api/projects" \
 ```bash
 curl -s -X POST "$BASE_URL/api/projects/$PROJECT_ID/status/transition" \
   -H 'Content-Type: application/json' \
-  -d '{"toStatus":"STATUS_0","userId":"'$USER_DEPT'","actorRole":"ภาควิชา"}'
+  -d '{"toStatus":"STATUS_0","userId":"'$LEADER_ID'","actorRole":"USER"}'
 ```
 
 ### 3.2 STATUS_0 -> STATUS_1
@@ -71,21 +71,22 @@ curl -s -X POST "$BASE_URL/api/projects/$PROJECT_ID/status/transition" \
 
 - Move project through valid path to STATUS_8 or STATUS_9.
 - Attempt STATUS_10 without docLink: expect 400.
-- Note: current `PUT /api/projects/{id}` schema does not expose `docLink`; use available admin/data path to set `docLink` for positive test, then retry STATUS_10 and expect 200.
+- Set `docLink` via `PUT /api/projects/{id}`, then retry STATUS_10 and expect 200.
+- Expect STATUS_10 to be the final ended state.
 
-## 6. Close Gate Check
+## 6. Terminal STATUS_10 Check
 
-- Attempt STATUS_10 -> STATUS_13 before checklist complete: expect 400.
-- Complete role checks (RESEARCH + PHYSICAL), then retry: expect 200.
+- Attempt any transition out of STATUS_10.
+- Expect 400 with no available transitions.
 
-## 7. Post-Close Immutability
+## 7. Post-End Immutability
 
-- Attempt PUT /api/projects/{id} after STATUS_13.
-- Expect edit to be blocked. Current implementation may return a `success:false` payload with closed-project error message.
+- Attempt PUT /api/projects/{id} after STATUS_10.
+- Expect 409 and ended-project error message.
 
-## 8. Recall (Current vs Target)
+## 8. Recall
 
-### Current endpoint behavior (implemented)
+### 8.1 User requests recall
 
 ```bash
 curl -s -X POST "$BASE_URL/api/projects/$PROJECT_ID/recall" \
@@ -93,13 +94,13 @@ curl -s -X POST "$BASE_URL/api/projects/$PROJECT_ID/recall" \
   -d '{"userId":"'$USER_RESEARCH'","reason":"test"}'
 ```
 
-- Works directly from STATUS_1.
+- Expect pending request from STATUS_1.
 
-### Target behavior (not yet implemented)
+### 8.2 Department head reviews recall
 
-- user request -> pending
-- department-head review -> approve/reject
-- only on approve transition to RECALL
+- Approve with `POST /api/projects/{id}/recall/review`.
+- Expect transition to RECALL only after assigned HoD approval.
+- Resume with `RECALL -> STATUS_1` by งานวิจัย.
 
 ## 9. Result Table
 
@@ -109,6 +110,6 @@ curl -s -X POST "$BASE_URL/api/projects/$PROJECT_ID/recall" \
 | UC-02 STATUS_0->STATUS_1 | 200                                         |        |           |       |
 | NG-Role unauthorized     | 403                                         |        |           |       |
 | Report gate              | 400/200                                     |        |           |       |
-| Close gate               | 400/200                                     |        |           |       |
-| Post-close immutable     | blocked (status/payload per implementation) |        |           |       |
-| Recall current endpoint  | 200/400 by precondition                     |        |           |       |
+| Terminal STATUS_10       | no outgoing transitions                     |        |           |       |
+| Post-end immutable       | 409                                         |        |           |       |
+| Recall certified flow    | pending -> approved -> RECALL -> STATUS_1   |        |           |       |

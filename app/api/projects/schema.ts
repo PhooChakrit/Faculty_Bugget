@@ -24,11 +24,6 @@ export const workflowStatusCodeSchema = z.enum([
   "STATUS_8",
   "STATUS_9",
   "STATUS_10",
-  "STATUS_11",
-  "STATUS_12",
-  "STATUS_13",
-  "STATUS_14",
-  "STATUS_15",
   "RECALL",
 ]);
 
@@ -138,6 +133,9 @@ export const listProjectsQuerySchema = z.object({
   status: projectStatusEnumSchema.optional(),
   search: z.string().optional(),
   leaderId: z.string().optional(),
+  actorRole: z
+    .enum(["USER", "ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"])
+    .default("USER"),
 });
 
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;

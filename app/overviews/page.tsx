@@ -87,6 +87,7 @@ interface ProjectData {
 // --- Project Status Constants ---
 const PROJECT_STATUSES = [
   "DRAFT. แบบร่างโครงการ",
+  "0. รอหัวหน้าภาคอนุมัติส่งงานวิจัย",
   "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
   "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
   "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
@@ -97,12 +98,12 @@ const PROJECT_STATUSES = [
   "8. คณบดีอนุมัติโครงการ",
   "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
   "10. อนุมัติโครงการ",
-  "13. ปิดโครงการ",
   "RECALL. ดึงกลับเอกสาร",
 ] as const;
 
 const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
-  DRAFT: ["1"],
+  DRAFT: ["0"],
+  "0": ["1"],
   "1": ["2", "RECALL"],
   RECALL: ["1"],
   "2": ["1", "3"],
@@ -113,8 +114,7 @@ const STATUS_TRANSITION_FLOW: Record<string, string[]> = {
   "7": ["9"],
   "8": ["10"],
   "9": ["10"],
-  "10": ["13"],
-  "13": [],
+  "10": [],
 };
 
 const getStatusKey = (statusValue: string | undefined) => {
@@ -146,18 +146,22 @@ interface EnhancedProjectData extends ProjectData {
   _costCenter?: string; // 18.
   _maintenanceFee?: string; // 10.
   _electricityFeeActual?: string; // 14.
-  _canMoveTo11?: boolean;
-  _canCloseProject?: boolean;
   _researchComplete?: boolean;
   _physicalComplete?: boolean;
   _draftState?: "DRAFT" | "SUBMITTED";
 }
 
-type UserRole = "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
+type UserRole =
+  | "USER"
+  | "ภาควิชา"
+  | "งานวิจัย"
+  | "งานแผน"
+  | "งานคลัง"
+  | "กายภาพ";
 
 // --- Permissions Configuration ---
 const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
-  _projectStatus: ["งานวิจัย", "กายภาพ"],
+  _projectStatus: ["USER", "ภาควิชา", "งานวิจัย"],
   _meetings: ["งานวิจัย", "งานแผน"],
   vendorCode: ["งานคลัง"],
   _costCenter: ["งานแผน"],
@@ -297,7 +301,7 @@ const COLUMNS = [
 ];
 
 export default function ProjectTrackingPage() {
-  const [userRole, setUserRole] = useState<UserRole>("งานวิจัย");
+  const [userRole, setUserRole] = useState<UserRole>("USER");
   const [projects, setProjects] = useState<EnhancedProjectData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -311,9 +315,6 @@ export default function ProjectTrackingPage() {
   } | null>(null);
   const [editingValue, setEditingValue] = useState<string>("");
   const [savingCell, setSavingCell] = useState<string | null>(null);
-  const [savingCompletionProjectId, setSavingCompletionProjectId] = useState<
-    string | null
-  >(null);
 
   // Modal for meetings management
   const [editingMeetings, setEditingMeetings] = useState<{
@@ -419,54 +420,6 @@ export default function ProjectTrackingPage() {
       alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
     } finally {
       setSavingCell(null);
-    }
-  };
-
-  const handleToggleCompletion = async (
-    project: EnhancedProjectData,
-    role: "RESEARCH" | "PHYSICAL",
-    isComplete: boolean,
-  ) => {
-    setSavingCompletionProjectId(project.id);
-    try {
-      const response = await fetch(`/api/overviews/${project.id}/completion`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          role,
-          isComplete,
-          actorRole: userRole,
-          actorUserId: `mock-${userRole}`,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.error ?? "Failed to update completion");
-      }
-
-      setProjects((prev) =>
-        prev.map((item) => {
-          if (item.id !== project.id) return item;
-          const nextResearch =
-            role === "RESEARCH" ? isComplete : !!item._researchComplete;
-          const nextPhysical =
-            role === "PHYSICAL" ? isComplete : !!item._physicalComplete;
-          return {
-            ...item,
-            _researchComplete: nextResearch,
-            _physicalComplete: nextPhysical,
-            _canCloseProject: nextResearch && nextPhysical,
-          };
-        }),
-      );
-    } catch (error) {
-      console.error("Error saving completion:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกความครบถ้วนข้อมูล");
-    } finally {
-      setSavingCompletionProjectId(null);
     }
   };
 
@@ -673,25 +626,19 @@ export default function ProjectTrackingPage() {
                     if (statusKey === currentStatusKey) return false;
                     if (!allowedNextKeys.includes(statusKey)) return true;
 
-                    const isClosingTransition =
-                      currentStatusKey === "10" && statusKey === "13";
-                    if (
-                      isClosingTransition &&
-                      userRole !== "งานวิจัย" &&
-                      userRole !== "กายภาพ"
-                    ) {
-                      return true;
+                    const isDraftSubmission =
+                      currentStatusKey === "DRAFT" && statusKey === "0";
+                    if (isDraftSubmission) {
+                      return userRole !== "USER";
                     }
 
-                    if (!isClosingTransition && userRole !== "งานวิจัย") {
-                      return true;
+                    const isDeptApproval =
+                      currentStatusKey === "0" && statusKey === "1";
+                    if (isDeptApproval) {
+                      return userRole !== "ภาควิชา";
                     }
 
-                    if (
-                      currentStatusKey === "10" &&
-                      statusKey === "13" &&
-                      !project._canCloseProject
-                    ) {
+                    if (userRole !== "งานวิจัย") {
                       return true;
                     }
 
@@ -730,10 +677,7 @@ export default function ProjectTrackingPage() {
       // Display mode for status
       const statusNumber = getStatusKey(value as string);
       const statusColor =
-        statusNumber === "13" ? "text-green-700" : "text-slate-700";
-      const isStatus10 = statusNumber === "10";
-      const canManageResearch = userRole === "งานวิจัย";
-      const canManagePhysical = userRole === "กายภาพ";
+        statusNumber === "10" ? "text-green-700" : "text-slate-700";
 
       return (
         <div className={`flex items-start justify-between group ${alignClass}`}>
@@ -744,57 +688,6 @@ export default function ProjectTrackingPage() {
             >
               {(value as string) || "-"}
             </div>
-
-            {isStatus10 && (
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                <span
-                  className={`text-[11px] px-2 py-0.5 rounded-full ${project._researchComplete ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}
-                >
-                  งานวิจัย {project._researchComplete ? "ครบ" : "ยังไม่ครบ"}
-                </span>
-                <span
-                  className={`text-[11px] px-2 py-0.5 rounded-full ${project._physicalComplete ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}
-                >
-                  กายภาพ {project._physicalComplete ? "ครบ" : "ยังไม่ครบ"}
-                </span>
-
-                {canManageResearch && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-6 text-[11px]"
-                    onClick={() =>
-                      handleToggleCompletion(
-                        project,
-                        "RESEARCH",
-                        !project._researchComplete,
-                      )
-                    }
-                    disabled={savingCompletionProjectId === project.id}
-                  >
-                    {project._researchComplete ? "ยกเลิกครบ" : "ยืนยันครบ"}
-                  </Button>
-                )}
-
-                {canManagePhysical && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-6 text-[11px]"
-                    onClick={() =>
-                      handleToggleCompletion(
-                        project,
-                        "PHYSICAL",
-                        !project._physicalComplete,
-                      )
-                    }
-                    disabled={savingCompletionProjectId === project.id}
-                  >
-                    {project._physicalComplete ? "ยกเลิกครบ" : "ยืนยันครบ"}
-                  </Button>
-                )}
-              </div>
-            )}
           </div>
           {isEditable && (
             <Button
@@ -930,6 +823,7 @@ export default function ProjectTrackingPage() {
               onChange={(e) => setUserRole(e.target.value as UserRole)}
               className="text-sm bg-slate-100 border-slate-200 rounded px-3 py-1.5 focus:ring-indigo-500"
             >
+              <option value="USER">USER (Submit Draft/Summary)</option>
               <option value="ภาควิชา">ภาควิชา (View)</option>
               <option value="งานวิจัย">งานวิจัย (Edit Proj)</option>
               <option value="งานแผน">งานแผน (Cost)</option>
