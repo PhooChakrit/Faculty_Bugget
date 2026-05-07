@@ -119,6 +119,11 @@ model Project {
   strategies             ProjectStrategy[]
   targetGroups           ProjectTargetGroup[]
   meetings               Meeting[]
+  // Excel file attachment
+  excelFile              Bytes?
+  excelFileName          String?
+  excelFileType          String?
+  excelUploadedAt        DateTime?
 }
 
 model ProjectRoleCompletion {
