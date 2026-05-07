@@ -119,11 +119,14 @@ model Project {
   strategies             ProjectStrategy[]
   targetGroups           ProjectTargetGroup[]
   meetings               Meeting[]
+  budgetEditLogs         BudgetEditLog[]
   // Excel file attachment
   excelFile              Bytes?
   excelFileName          String?
   excelFileType          String?
   excelUploadedAt        DateTime?
+  // Budget revision mode
+  previousStatusCode     String?
 }
 
 model ProjectRoleCompletion {
@@ -251,6 +254,20 @@ enum MeetingType {
   DEAN
 }
 
+model BudgetEditLog {
+  id        String   @id @default(cuid())
+  projectId String
+  fieldName String
+  oldValue  Decimal? @db.Decimal(15, 2)
+  newValue  Decimal? @db.Decimal(15, 2)
+  editedAt  DateTime @default(now())
+  editedBy  String?
+
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, editedAt])
+}
+
 // ============================================
 // STATUS SYSTEM MODELS
 // ============================================
@@ -325,6 +342,7 @@ enum StatusCode {
   STATUS_14
   STATUS_15
   RECALL
+  STATUS_99
 }
 
 enum DraftState {

@@ -67,6 +67,7 @@ export const ModelName = {
   ProjectCollaborator: "ProjectCollaborator",
   ProjectManager: "ProjectManager",
   Meeting: "Meeting",
+  BudgetEditLog: "BudgetEditLog",
   ProjectStatusRecord: "ProjectStatusRecord",
   NotificationStatus: "NotificationStatus",
   StatusTransition: "StatusTransition",
@@ -182,6 +183,7 @@ export const ProjectScalarFieldEnum = {
   excelFileName: "excelFileName",
   excelFileType: "excelFileType",
   excelUploadedAt: "excelUploadedAt",
+  previousStatusCode: "previousStatusCode",
 } as const;
 
 export type ProjectScalarFieldEnum =
@@ -297,6 +299,19 @@ export const MeetingScalarFieldEnum = {
 
 export type MeetingScalarFieldEnum =
   (typeof MeetingScalarFieldEnum)[keyof typeof MeetingScalarFieldEnum];
+
+export const BudgetEditLogScalarFieldEnum = {
+  id: "id",
+  projectId: "projectId",
+  fieldName: "fieldName",
+  oldValue: "oldValue",
+  newValue: "newValue",
+  editedAt: "editedAt",
+  editedBy: "editedBy",
+} as const;
+
+export type BudgetEditLogScalarFieldEnum =
+  (typeof BudgetEditLogScalarFieldEnum)[keyof typeof BudgetEditLogScalarFieldEnum];
 
 export const ProjectStatusRecordScalarFieldEnum = {
   id: "id",

@@ -20,6 +20,7 @@ export type * from "./models/IncomeItem";
 export type * from "./models/ProjectCollaborator";
 export type * from "./models/ProjectManager";
 export type * from "./models/Meeting";
+export type * from "./models/BudgetEditLog";
 export type * from "./models/ProjectStatusRecord";
 export type * from "./models/NotificationStatus";
 export type * from "./models/StatusTransition";

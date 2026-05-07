@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sidebar } from "@/components/Sidebar";
 import {
+  Banknote,
   Eye,
   FileText,
   Loader2,
@@ -44,6 +45,10 @@ export default function ProjectListPage() {
     string | null
   >(null);
   const [revisionDialogProjectId, setRevisionDialogProjectId] = useState<
+    string | null
+  >(null);
+  const [budgetRevisionId, setBudgetRevisionId] = useState<string | null>(null);
+  const [requestingBudgetRevisionId, setRequestingBudgetRevisionId] = useState<
     string | null
   >(null);
 
@@ -118,6 +123,43 @@ export default function ProjectListPage() {
     }
   };
 
+  const handleRequestBudgetRevision = (
+    e: MouseEvent<HTMLButtonElement>,
+    projectId: string,
+  ) => {
+    e.stopPropagation();
+    setBudgetRevisionId(projectId);
+  };
+
+  const handleConfirmBudgetRevision = async () => {
+    if (!budgetRevisionId) return;
+    const projectId = budgetRevisionId;
+    setRequestingBudgetRevisionId(projectId);
+    try {
+      const res = await fetch(
+        `/api/projects/${projectId}/request-budget-revision`,
+        { method: "POST" },
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(
+          typeof data?.error === "string"
+            ? data.error
+            : "เกิดข้อผิดพลาดในการส่งคำขอ",
+        );
+        return;
+      }
+      // Navigate to budget edit page
+      setBudgetRevisionId(null);
+      router.push(`/projects/${projectId}/edit-budget`);
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาดในการส่งคำขอ");
+    } finally {
+      setRequestingBudgetRevisionId(null);
+    }
+  };
+
   const filteredProjects = useMemo(() => {
     if (!searchQuery.trim()) return projects;
     const lowerQuery = searchQuery.toLowerCase();
@@ -161,6 +203,11 @@ export default function ProjectListPage() {
 
   const isProjectEditable = (p: ProjectSummary) =>
     p.currentStatusCode === "DRAFT" || p.currentStatusCode === "STATUS_0";
+
+  const canRequestBudgetRevision = (p: ProjectSummary) => {
+    const blocked = ["DRAFT", "STATUS_0", "STATUS_99"];
+    return !blocked.includes(p.currentStatusCode ?? "");
+  };
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-[family-name:var(--font-sarabun)]">
@@ -296,7 +343,9 @@ export default function ProjectListPage() {
                           router.push(
                             isProjectEditable(project)
                               ? `/add-project?id=${project.id}`
-                              : `/projects/${project.id}`,
+                              : project.currentStatusCode === "STATUS_99"
+                                ? `/projects/${project.id}/edit-budget`
+                                : `/projects/${project.id}`,
                           )
                         }
                         className={`group cursor-pointer transition-colors ${
@@ -377,6 +426,41 @@ export default function ProjectListPage() {
                                 )}
                               </Button>
                             )}
+                            {canRequestBudgetRevision(project) && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                title="ขอแก้ไขการเงิน"
+                                className="h-7 w-7 text-orange-500 hover:text-orange-700 hover:bg-orange-50 rounded-full shrink-0"
+                                onClick={(e) =>
+                                  handleRequestBudgetRevision(e, project.id)
+                                }
+                                disabled={
+                                  requestingBudgetRevisionId === project.id
+                                }
+                              >
+                                {requestingBudgetRevisionId === project.id ? (
+                                  <Loader2 size={14} className="animate-spin" />
+                                ) : (
+                                  <Banknote size={14} />
+                                )}
+                              </Button>
+                            )}
+                            {project.currentStatusCode === "STATUS_99" && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                title="แก้ไขการเงิน"
+                                className="h-7 w-7 text-orange-600 hover:text-orange-800 hover:bg-orange-50 rounded-full shrink-0"
+                                onClick={() =>
+                                  router.push(
+                                    `/projects/${project.id}/edit-budget`,
+                                  )
+                                }
+                              >
+                                <Banknote size={14} />
+                              </Button>
+                            )}
                             <Button
                               variant="ghost"
                               size="icon"
@@ -407,6 +491,16 @@ export default function ProjectListPage() {
         confirmLabel="ส่งคำขอ"
         loading={requestingRevisionId !== null}
         onConfirm={handleConfirmRevision}
+      />
+
+      <ConfirmDialog
+        open={budgetRevisionId !== null}
+        onOpenChange={(open) => !open && setBudgetRevisionId(null)}
+        title="ขอแก้ไขการเงิน"
+        description="ต้องการเข้าสู่โหมดแก้ไขงบประมาณใช่หรือไม่? โครงการจะเปลี่ยนสถานะเป็น 'ขอแก้ไขการเงิน' จนกว่าจะบันทึกเสร็จ"
+        confirmLabel="ยืนยัน"
+        loading={requestingBudgetRevisionId !== null}
+        onConfirm={handleConfirmBudgetRevision}
       />
     </div>
   );

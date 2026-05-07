@@ -82,6 +82,11 @@ export type ProjectManager = Prisma.ProjectManagerModel;
  */
 export type Meeting = Prisma.MeetingModel;
 /**
+ * Model BudgetEditLog
+ *
+ */
+export type BudgetEditLog = Prisma.BudgetEditLogModel;
+/**
  * Model ProjectStatusRecord
  *
  */

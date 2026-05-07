@@ -425,6 +425,7 @@ export const ModelName = {
   ProjectCollaborator: "ProjectCollaborator",
   ProjectManager: "ProjectManager",
   Meeting: "Meeting",
+  BudgetEditLog: "BudgetEditLog",
   ProjectStatusRecord: "ProjectStatusRecord",
   NotificationStatus: "NotificationStatus",
   StatusTransition: "StatusTransition",
@@ -463,6 +464,7 @@ export type TypeMap<
       | "projectCollaborator"
       | "projectManager"
       | "meeting"
+      | "budgetEditLog"
       | "projectStatusRecord"
       | "notificationStatus"
       | "statusTransition";
@@ -1457,6 +1459,82 @@ export type TypeMap<
         };
       };
     };
+    BudgetEditLog: {
+      payload: Prisma.$BudgetEditLogPayload<ExtArgs>;
+      fields: Prisma.BudgetEditLogFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.BudgetEditLogFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.BudgetEditLogFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>;
+        };
+        findFirst: {
+          args: Prisma.BudgetEditLogFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.BudgetEditLogFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>;
+        };
+        findMany: {
+          args: Prisma.BudgetEditLogFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>[];
+        };
+        create: {
+          args: Prisma.BudgetEditLogCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>;
+        };
+        createMany: {
+          args: Prisma.BudgetEditLogCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.BudgetEditLogCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>[];
+        };
+        delete: {
+          args: Prisma.BudgetEditLogDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>;
+        };
+        update: {
+          args: Prisma.BudgetEditLogUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>;
+        };
+        deleteMany: {
+          args: Prisma.BudgetEditLogDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.BudgetEditLogUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.BudgetEditLogUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>[];
+        };
+        upsert: {
+          args: Prisma.BudgetEditLogUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetEditLogPayload>;
+        };
+        aggregate: {
+          args: Prisma.BudgetEditLogAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBudgetEditLog>;
+        };
+        groupBy: {
+          args: Prisma.BudgetEditLogGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.BudgetEditLogGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.BudgetEditLogCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.BudgetEditLogCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
     ProjectStatusRecord: {
       payload: Prisma.$ProjectStatusRecordPayload<ExtArgs>;
       fields: Prisma.ProjectStatusRecordFieldRefs;
@@ -1818,6 +1896,7 @@ export const ProjectScalarFieldEnum = {
   excelFileName: "excelFileName",
   excelFileType: "excelFileType",
   excelUploadedAt: "excelUploadedAt",
+  previousStatusCode: "previousStatusCode",
 } as const;
 
 export type ProjectScalarFieldEnum =
@@ -1933,6 +2012,19 @@ export const MeetingScalarFieldEnum = {
 
 export type MeetingScalarFieldEnum =
   (typeof MeetingScalarFieldEnum)[keyof typeof MeetingScalarFieldEnum];
+
+export const BudgetEditLogScalarFieldEnum = {
+  id: "id",
+  projectId: "projectId",
+  fieldName: "fieldName",
+  oldValue: "oldValue",
+  newValue: "newValue",
+  editedAt: "editedAt",
+  editedBy: "editedBy",
+} as const;
+
+export type BudgetEditLogScalarFieldEnum =
+  (typeof BudgetEditLogScalarFieldEnum)[keyof typeof BudgetEditLogScalarFieldEnum];
 
 export const ProjectStatusRecordScalarFieldEnum = {
   id: "id",
@@ -2342,6 +2434,7 @@ export type GlobalOmitConfig = {
   projectCollaborator?: Prisma.ProjectCollaboratorOmit;
   projectManager?: Prisma.ProjectManagerOmit;
   meeting?: Prisma.MeetingOmit;
+  budgetEditLog?: Prisma.BudgetEditLogOmit;
   projectStatusRecord?: Prisma.ProjectStatusRecordOmit;
   notificationStatus?: Prisma.NotificationStatusOmit;
   statusTransition?: Prisma.StatusTransitionOmit;

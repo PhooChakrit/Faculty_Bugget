@@ -54,6 +54,7 @@ export const StatusCode = {
   STATUS_14: "STATUS_14",
   STATUS_15: "STATUS_15",
   RECALL: "RECALL",
+  STATUS_99: "STATUS_99",
 } as const;
 
 export type StatusCode = (typeof StatusCode)[keyof typeof StatusCode];

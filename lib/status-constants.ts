@@ -17,6 +17,7 @@ export enum StatusCode {
   STATUS_14 = "STATUS_14",
   STATUS_15 = "STATUS_15",
   RECALL = "RECALL",
+  STATUS_99 = "STATUS_99",
 }
 
 export const statusLabels: Record<StatusCode, string> = {
@@ -46,6 +47,7 @@ export const statusLabels: Record<StatusCode, string> = {
   [StatusCode.STATUS_14]: "ระงับโครงการ",
   [StatusCode.STATUS_15]: "อื่นๆ",
   [StatusCode.RECALL]: "ดึงกลับเอกสาร",
+  [StatusCode.STATUS_99]: "ขอแก้ไขการเงิน",
 };
 
 export const statusColors: Record<StatusCode, string> = {
@@ -67,6 +69,7 @@ export const statusColors: Record<StatusCode, string> = {
   [StatusCode.STATUS_14]: "bg-red-100 text-red-800 border-red-300",
   [StatusCode.STATUS_15]: "bg-gray-100 text-gray-800 border-gray-300",
   [StatusCode.RECALL]: "bg-red-100 text-red-800 border-red-300",
+  [StatusCode.STATUS_99]: "bg-orange-100 text-orange-800 border-orange-300",
 };
 
 export function getStatusBadge(code: string | null | undefined): {

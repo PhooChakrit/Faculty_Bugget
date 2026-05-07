@@ -25,6 +25,7 @@ export const workflowStatusCodeSchema = z.enum([
   "STATUS_9",
   "STATUS_10",
   "RECALL",
+  "STATUS_99",
 ]);
 
 // Create Project Request Schema
