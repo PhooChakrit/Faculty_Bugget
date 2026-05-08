@@ -26,6 +26,14 @@ interface StatusHistoryRecord {
     email: string;
   };
   branchChoice?: string;
+  actionLogs?: Array<{
+    id: string;
+    actionType: string;
+    actorRole: string;
+    note: string | null;
+    createdAt: string;
+    actorUser: { id: string; name: string | null; email: string };
+  }>;
   notifications?: Array<{
     type: string;
     isRequired: boolean;
@@ -210,6 +218,30 @@ export function StatusHistory({
                       {record.branchChoice && (
                         <div className="text-gray-500">
                           หมายเหตุ: {record.branchChoice}
+                        </div>
+                      )}
+                      {record.actionLogs && record.actionLogs.length > 0 && (
+                        <div className="mt-2 space-y-1 rounded-md border border-slate-200 bg-slate-50 p-2">
+                          {record.actionLogs.map((log) => (
+                            <div key={log.id} className="text-xs text-slate-600">
+                              <span className="font-medium">
+                                {log.actionType}
+                              </span>
+                              {log.note ? `: ${log.note}` : ""} โดย{" "}
+                              {log.actorUser.name || log.actorRole} (
+                              {log.actorRole}) เมื่อ{" "}
+                              {new Date(log.createdAt).toLocaleDateString(
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>

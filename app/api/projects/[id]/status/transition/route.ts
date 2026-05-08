@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { statusService } from "@/lib/status-service";
-import type { StatusCode } from "@/app/generated/prisma/client";
+import { ProjectStatus, type StatusCode } from "@/app/generated/prisma/client";
+import { isActorRole } from "@/lib/mock-actors";
+import { ensureMockActor } from "@/lib/ensure-mock-actor";
+import prisma from "@/lib/prisma";
+import { statusLabels } from "@/lib/status-constants";
 
 const ACTIVE_WORKFLOW_STATUS_CODES = new Set([
   "DRAFT",
@@ -12,11 +16,17 @@ const ACTIVE_WORKFLOW_STATUS_CODES = new Set([
   "STATUS_5",
   "STATUS_6",
   "STATUS_7",
-  "STATUS_8",
-  "STATUS_9",
-  "STATUS_10",
+  "STATUS_13",
   "RECALL",
 ]);
+
+const toDisplayStatus = (statusCode: StatusCode) => {
+  if (statusCode === "DRAFT" || statusCode === "RECALL") {
+    return `${statusCode}. ${statusLabels[statusCode]}`;
+  }
+
+  return `${statusCode.replace("STATUS_", "")}. ${statusLabels[statusCode]}`;
+};
 
 /**
  * POST /api/projects/[id]/status/transition
@@ -25,7 +35,7 @@ const ACTIVE_WORKFLOW_STATUS_CODES = new Set([
  * Body: {
  *   toStatus: StatusCode;
  *   userId: string;
- *   actorRole?: "USER" | "ภาควิชา" | "งานวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
+ *   actorRole?: "USER" | "ภาควิชาวิทยาศาสตร์" | "งานวิจัย" | "หัวหน้าฝ่ายวิจัย" | "งานแผน" | "งานคลัง" | "กายภาพ";
  *   branchChoice?: string;
  * }
  */
@@ -53,6 +63,21 @@ export async function POST(
       );
     }
 
+    if (!isActorRole(actorRole)) {
+      return NextResponse.json(
+        { error: "actorRole ไม่อยู่ในรายการที่รองรับ" },
+        { status: 400 },
+      );
+    }
+
+    const actorUser = await ensureMockActor(userId);
+    if (!actorUser) {
+      return NextResponse.json(
+        { error: "ไม่พบผู้ใช้สำหรับบันทึกประวัติการเปลี่ยนสถานะ" },
+        { status: 400 },
+      );
+    }
+
     if (!ACTIVE_WORKFLOW_STATUS_CODES.has(toStatus)) {
       return NextResponse.json(
         { error: "สถานะนี้ไม่อยู่ใน workflow ปัจจุบัน" },
@@ -73,15 +98,17 @@ export async function POST(
     const isDeptGateForward =
       fromStatus === "STATUS_0" && toStatus === "STATUS_1";
     const isDraftSubmit = fromStatus === "DRAFT" && toStatus === "STATUS_0";
+    const isResearchHeadApproval =
+      fromStatus === "STATUS_2" && toStatus === "STATUS_3";
 
-    if (isDraftSubmit || isDeptGateForward) {
+    if (isDeptGateForward) {
       const hasAssignment =
         await statusService.hasDepartmentHeadAssignment(projectId);
       if (!hasAssignment) {
         return NextResponse.json(
           {
             error:
-              "ไม่พบการกำหนดหัวหน้าภาคของภาควิชานี้ กรุณาให้งานวิจัยกำหนดก่อนส่งหรืออนุมัติ",
+              "ไม่พบการกำหนดหัวหน้าภาคของภาควิชานี้ กรุณาให้งานวิจัยกำหนดก่อนอนุมัติ",
           },
           { status: 400 },
         );
@@ -105,9 +132,11 @@ export async function POST(
 
     let isAuthorized = false;
     if (isDeptGateForward) {
-      isAuthorized = actorRole === "ภาควิชา";
+      isAuthorized = actorRole === "ภาควิชาวิทยาศาสตร์";
     } else if (isDraftSubmit) {
       isAuthorized = actorRole === "USER";
+    } else if (isResearchHeadApproval) {
+      isAuthorized = actorRole === "หัวหน้าฝ่ายวิจัย";
     } else {
       isAuthorized = actorRole === "งานวิจัย";
     }
@@ -139,13 +168,24 @@ export async function POST(
     const result = await statusService.transitionStatus(
       projectId,
       toStatus as StatusCode,
-      userId,
+      actorUser.id,
       branchChoice,
     );
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 400 });
     }
+
+    await prisma.project.update({
+      where: { id: projectId },
+      data: {
+        status1: toDisplayStatus(toStatus as StatusCode),
+        status1Date: new Date(),
+        ...(toStatus === "STATUS_0" && {
+          status: ProjectStatus.PENDING_APPROVAL,
+        }),
+      },
+    });
 
     return NextResponse.json({
       success: true,

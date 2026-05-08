@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { actorRoles } from "@/lib/mock-actors";
 
 const upsertAssignmentSchema = z.object({
   department: z.string().min(1),
   headUserId: z.string().min(1),
-  actorRole: z.enum([
-    "USER",
-    "ภาควิชา",
-    "งานวิจัย",
-    "งานแผน",
-    "งานคลัง",
-    "กายภาพ",
-  ]),
+  actorRole: z.enum(actorRoles),
   actorUserId: z.string().min(1),
 });
 

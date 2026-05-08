@@ -8,16 +8,22 @@ datasource db {
 }
 
 model User {
-  id                 String                 @id @default(cuid())
-  email              String                 @unique
-  name               String?
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
-  projectsAsCoLeader Project[]              @relation("ProjectCoLeader")
-  projectsAsLeader   Project[]              @relation("ProjectLeader")
-  statusRecords      ProjectStatusRecord[]
-  notifications      NotificationStatus[]
-  roleCompletions    ProjectRoleCompletion[]
+  id                            String                     @id @default(cuid())
+  email                         String                     @unique
+  name                          String?
+  createdAt                     DateTime                   @default(now())
+  updatedAt                     DateTime                   @updatedAt
+  projectsAsCoLeader            Project[]                  @relation("ProjectCoLeader")
+  projectsAsLeader              Project[]                  @relation("ProjectLeader")
+  statusRecords                 ProjectStatusRecord[]
+  notifications                 NotificationStatus[]
+  roleCompletions               ProjectRoleCompletion[]
+  statusActionLogs              ProjectStatusActionLog[]
+  budgetRevisionsCreated        BudgetRevision[]           @relation("BudgetRevisionCreatedBy")
+  budgetRevisionsReviewed       BudgetRevision[]           @relation("BudgetRevisionReviewedBy")
+  budgetRevisionsApproved       BudgetRevision[]           @relation("BudgetRevisionApprovedBy")
+  budgetRevisionsApplied        BudgetRevision[]           @relation("BudgetRevisionAppliedBy")
+  budgetRevisionActionLogs      BudgetRevisionActionLog[]
   departmentHeadAssignments     DepartmentHeadAssignment[] @relation("DepartmentHeadUser")
   departmentHeadAssignmentsMade DepartmentHeadAssignment[] @relation("DepartmentHeadAssignedBy")
 }
@@ -30,19 +36,19 @@ model DepartmentHeadAssignment {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  headUser         User     @relation("DepartmentHeadUser", fields: [headUserId], references: [id])
-  assignedByUser   User     @relation("DepartmentHeadAssignedBy", fields: [assignedByUserId], references: [id])
+  headUser       User @relation("DepartmentHeadUser", fields: [headUserId], references: [id])
+  assignedByUser User @relation("DepartmentHeadAssignedBy", fields: [assignedByUserId], references: [id])
 
   @@index([headUserId])
   @@index([assignedByUserId])
 }
 
 model Project {
-  id                     String                @id
-  receiptNumber          String?               @unique
-  createdAt              DateTime              @default(now())
-  updatedAt              DateTime              @updatedAt
-  status                 ProjectStatus         @default(DRAFT)
+  id                     String                   @id
+  receiptNumber          String?                  @unique
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  status                 ProjectStatus            @default(DRAFT)
   projectNameThai        String
   projectNameEng         String?
   leaderId               String
@@ -62,29 +68,29 @@ model Project {
   committee              String?
   expectedBenefits       String?
   projectEvaluation      String?
-  budgetSourceExtGov     Decimal?              @db.Decimal(15, 2)
-  budgetSourceExtPrivate Decimal?              @db.Decimal(15, 2)
-  budgetSourceExtForeign Decimal?              @db.Decimal(15, 2)
-  budgetSourceInternal   Decimal?              @db.Decimal(15, 2)
-  expenseRemuneration    Decimal?              @db.Decimal(15, 2)
-  expenseSupplies        Decimal?              @db.Decimal(15, 2)
-  expenseMaterials       Decimal?              @db.Decimal(15, 2)
-  expenseUtilities       Decimal?              @db.Decimal(15, 2)
-  expenseSubsidy         Decimal?              @db.Decimal(15, 2)
-  expenseReserve         Decimal?              @db.Decimal(15, 2)
-  note2                  Boolean               @default(false)
-  note3                  Boolean               @default(false)
+  budgetSourceExtGov     Decimal?                 @db.Decimal(15, 2)
+  budgetSourceExtPrivate Decimal?                 @db.Decimal(15, 2)
+  budgetSourceExtForeign Decimal?                 @db.Decimal(15, 2)
+  budgetSourceInternal   Decimal?                 @db.Decimal(15, 2)
+  expenseRemuneration    Decimal?                 @db.Decimal(15, 2)
+  expenseSupplies        Decimal?                 @db.Decimal(15, 2)
+  expenseMaterials       Decimal?                 @db.Decimal(15, 2)
+  expenseUtilities       Decimal?                 @db.Decimal(15, 2)
+  expenseSubsidy         Decimal?                 @db.Decimal(15, 2)
+  expenseReserve         Decimal?                 @db.Decimal(15, 2)
+  note2                  Boolean                  @default(false)
+  note3                  Boolean                  @default(false)
   participantDetails     String?
   // Overview-specific fields
-  projectCode            String?               @unique
+  projectCode            String?                  @unique
   memoTitle              String?
   vendorCode             String?
   costCenter             String?
   fundOwner              String?
-  maintenanceFeeProposal Decimal?              @db.Decimal(15, 2)
-  maintenanceFeeActual   Decimal?              @db.Decimal(15, 2)
-  electricityFeeProposal Decimal?              @db.Decimal(15, 2)
-  electricityFeeActual   Decimal?              @db.Decimal(15, 2)
+  maintenanceFeeProposal Decimal?                 @db.Decimal(15, 2)
+  maintenanceFeeActual   Decimal?                 @db.Decimal(15, 2)
+  electricityFeeProposal Decimal?                 @db.Decimal(15, 2)
+  electricityFeeActual   Decimal?                 @db.Decimal(15, 2)
   // Status tracking
   status1                String?
   status1Date            DateTime?
@@ -101,19 +107,21 @@ model Project {
   docDate                DateTime?
   docLink                String?
   // New status system
-  currentStatusCode      String?                    @default("DRAFT")
-  currentStatusId        String?                    @unique
-  currentStatus          ProjectStatusRecord?       @relation("CurrentStatus", fields: [currentStatusId], references: [id])
-  statusHistory          ProjectStatusRecord[]      @relation("StatusHistory")
-  draftState             DraftState                 @default(SUBMITTED)
+  currentStatusCode      String?                  @default("DRAFT")
+  currentStatusId        String?                  @unique
+  currentStatus          ProjectStatusRecord?     @relation("CurrentStatus", fields: [currentStatusId], references: [id])
+  statusHistory          ProjectStatusRecord[]    @relation("StatusHistory")
+  draftState             DraftState               @default(SUBMITTED)
   draftSavedAt           DateTime?
   submittedAt            DateTime?
   submittedByRole        String?
   roleCompletions        ProjectRoleCompletion[]
   approvalEmailLogs      ApprovalEmailLog[]
+  statusActionLogs       ProjectStatusActionLog[]
   incomeItems            IncomeItem[]
-  coLeader               User?                 @relation("ProjectCoLeader", fields: [coLeaderId], references: [id])
-  leader                 User                  @relation("ProjectLeader", fields: [leaderId], references: [id])
+  budgetRevisions        BudgetRevision[]
+  coLeader               User?                    @relation("ProjectCoLeader", fields: [coLeaderId], references: [id])
+  leader                 User                     @relation("ProjectLeader", fields: [leaderId], references: [id])
   collaborators          ProjectCollaborator[]
   managers               ProjectManager[]
   strategies             ProjectStrategy[]
@@ -124,27 +132,32 @@ model Project {
   excelFileName          String?
   excelFileType          String?
   excelUploadedAt        DateTime?
+  // Cost center attachment from planning
+  costCenterFile         Bytes?
+  costCenterFileName     String?
+  costCenterFileType     String?
+  costCenterUploadedAt   DateTime?
 }
 
 model ProjectRoleCompletion {
-  id           String            @id @default(cuid())
-  projectId    String
-  role         ClosureRole
-  isComplete   Boolean           @default(false)
-  completedAt  DateTime?
-  completedBy  String?
-  notes        String?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  project      Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  completer    User?             @relation(fields: [completedBy], references: [id])
+  id          String      @id @default(cuid())
+  projectId   String
+  role        ClosureRole
+  isComplete  Boolean     @default(false)
+  completedAt DateTime?
+  completedBy String?
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  completer   User?       @relation(fields: [completedBy], references: [id])
 
   @@unique([projectId, role])
   @@index([projectId, isComplete])
 }
 
 model ApprovalEmailLog {
-  id           String              @id @default(cuid())
+  id            String              @id @default(cuid())
   projectId     String
   recipient     String
   recipientRole String
@@ -256,52 +269,131 @@ enum MeetingType {
 // ============================================
 
 model ProjectStatusRecord {
-  id               String                 @id @default(cuid())
-  projectId        String
-  statusCode       StatusCode
-  statusLabel      String
-  subStatus        String?                // For notification sub-types
-  enteredAt        DateTime               @default(now())
-  enteredBy        String
-  exitedAt         DateTime?
-  notes            String?
-  branchChoice     String?                // For STATUS_3 branching
-  
-  project          Project                @relation("StatusHistory", fields: [projectId], references: [id], onDelete: Cascade)
-  currentFor       Project?               @relation("CurrentStatus")
-  enteredByUser    User                   @relation(fields: [enteredBy], references: [id])
-  notifications    NotificationStatus[]
-  
+  id           String     @id @default(cuid())
+  projectId    String
+  statusCode   StatusCode
+  statusLabel  String
+  subStatus    String? // For notification sub-types
+  enteredAt    DateTime   @default(now())
+  enteredBy    String
+  exitedAt     DateTime?
+  notes        String?
+  branchChoice String? // For STATUS_3 branching
+
+  project       Project                  @relation("StatusHistory", fields: [projectId], references: [id], onDelete: Cascade)
+  currentFor    Project?                 @relation("CurrentStatus")
+  enteredByUser User                     @relation(fields: [enteredBy], references: [id])
+  notifications NotificationStatus[]
+  actionLogs    ProjectStatusActionLog[]
+
   @@index([projectId, enteredAt])
   @@index([statusCode])
 }
 
+model ProjectStatusActionLog {
+  id             String   @id @default(cuid())
+  projectId      String
+  statusRecordId String?
+  actionType     String
+  actorUserId    String
+  actorRole      String
+  note           String?
+  createdAt      DateTime @default(now())
+
+  project      Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  statusRecord ProjectStatusRecord? @relation(fields: [statusRecordId], references: [id], onDelete: SetNull)
+  actorUser    User                 @relation(fields: [actorUserId], references: [id])
+
+  @@index([projectId, createdAt])
+  @@index([statusRecordId])
+  @@index([actionType])
+  @@index([actorUserId])
+}
+
+model BudgetRevision {
+  id                     String               @id @default(cuid())
+  projectId              String
+  status                 BudgetRevisionStatus @default(BR_DRAFT)
+  originalBudgetSnapshot Json
+  proposedBudget         Json
+  reason                 String
+  closeAfterApproval     Boolean              @default(false)
+  meetingNo              String?
+  meetingDate            DateTime?
+  meetingNote            String?
+  approvalRoute          BudgetApprovalRoute?
+  deanApprovalFileName   String?
+  deanApprovalFileUrl    String?
+  affectsCostCenter      Boolean              @default(false)
+  affectsVendor          Boolean              @default(false)
+  createdBy              String
+  submittedAt            DateTime?
+  reviewedBy             String?
+  reviewedAt             DateTime?
+  approvedBy             String?
+  approvedAt             DateTime?
+  appliedBy              String?
+  appliedAt              DateTime?
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+
+  project    Project                   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  creator    User                      @relation("BudgetRevisionCreatedBy", fields: [createdBy], references: [id])
+  reviewer   User?                     @relation("BudgetRevisionReviewedBy", fields: [reviewedBy], references: [id])
+  approver   User?                     @relation("BudgetRevisionApprovedBy", fields: [approvedBy], references: [id])
+  applier    User?                     @relation("BudgetRevisionAppliedBy", fields: [appliedBy], references: [id])
+  actionLogs BudgetRevisionActionLog[]
+
+  @@index([projectId, status])
+  @@index([createdBy])
+}
+
+model BudgetRevisionActionLog {
+  id          String   @id @default(cuid())
+  revisionId  String
+  projectId   String
+  actionType  String
+  actorUserId String
+  actorRole   String
+  fromStatus  String?
+  toStatus    String?
+  note        String?
+  createdAt   DateTime @default(now())
+
+  revision  BudgetRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  actorUser User           @relation(fields: [actorUserId], references: [id])
+
+  @@index([revisionId, createdAt])
+  @@index([projectId, createdAt])
+  @@index([actorUserId])
+}
+
 model NotificationStatus {
-  id                String              @id @default(cuid())
-  statusId          String
-  notificationType  NotificationType
-  isRequired        Boolean             @default(false)
-  isCompleted       Boolean             @default(false)
-  completedAt       DateTime?
-  completedBy       String?
-  recipient         String?
-  notes             String?
-  
-  status            ProjectStatusRecord @relation(fields: [statusId], references: [id], onDelete: Cascade)
-  completer         User?               @relation(fields: [completedBy], references: [id])
-  
+  id               String           @id @default(cuid())
+  statusId         String
+  notificationType NotificationType
+  isRequired       Boolean          @default(false)
+  isCompleted      Boolean          @default(false)
+  completedAt      DateTime?
+  completedBy      String?
+  recipient        String?
+  notes            String?
+
+  status    ProjectStatusRecord @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  completer User?               @relation(fields: [completedBy], references: [id])
+
   @@unique([statusId, notificationType])
   @@index([statusId, isCompleted])
 }
 
 model StatusTransition {
-  id            String     @id @default(cuid())
-  fromStatus    StatusCode
-  toStatus      StatusCode
-  label         String?
-  condition     String?
-  order         Int        @default(0)
-  
+  id         String     @id @default(cuid())
+  fromStatus StatusCode
+  toStatus   StatusCode
+  label      String?
+  condition  String?
+  order      Int        @default(0)
+
   @@unique([fromStatus, toStatus])
   @@index([fromStatus])
 }
@@ -335,6 +427,24 @@ enum DraftState {
 enum ClosureRole {
   RESEARCH
   PHYSICAL
+  FINANCE
+}
+
+enum BudgetRevisionStatus {
+  BR_DRAFT
+  BR_SUBMITTED
+  BR_RESEARCH_CHECKED
+  BR_WAITING_MEETING
+  BR_BOARD_APPROVED
+  BR_DEAN_APPROVED
+  BR_APPLIED
+  BR_REJECTED
+  BR_CANCELLED
+}
+
+enum BudgetApprovalRoute {
+  BOARD
+  DEAN
 }
 
 enum EmailDeliveryStatus {

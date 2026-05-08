@@ -11,7 +11,6 @@ import {
   updateProjectSchema,
   UpdateProjectInput,
 } from "../schema";
-import { generateProjectId } from "@/lib/generate-project-id";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -79,6 +78,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     if (existingProject.currentStatusCode === "STATUS_10") {
       return errorResponse("Project has ended and cannot be edited", 409);
+    }
+
+    if (
+      projectData.currentStatusCode &&
+      projectData.currentStatusCode !== existingProject.currentStatusCode
+    ) {
+      return errorResponse(
+        "Workflow status must be changed through the status transition API",
+        400,
+      );
     }
 
     // Update project with transaction for relations
@@ -179,16 +188,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
           ? (statusCodeToStatus1[projectData.currentStatusCode] ?? null)
           : null;
 
-        // Assign projectCode = id when first transitioning to STATUS_1
-        const needsProjectCode =
-          projectData.currentStatusCode === "STATUS_1" &&
-          !existingProject.projectCode;
-        const newProjectCode = needsProjectCode ? existingProject.id : null;
         if (derivedStatus1) {
           updateData.status1 = derivedStatus1;
-        }
-        if (newProjectCode) {
-          updateData.projectCode = newProjectCode;
         }
 
         // Update project

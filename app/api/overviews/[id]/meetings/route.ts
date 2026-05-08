@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import type { Prisma } from "@/app/generated/prisma/client";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { updateMeetingsSchema } from "../../schema";
+import { ensureMockActor } from "@/lib/ensure-mock-actor";
 
 type RouteContext = {
   params: Promise<{
@@ -15,7 +16,23 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const { meetings } = updateMeetingsSchema.parse(body);
+    const { meetings, deanApprovalLink, actorRole, actorUserId } =
+      updateMeetingsSchema.parse(body);
+
+    if (actorRole !== "งานวิจัย" || !actorUserId) {
+      return Response.json(
+        { error: "ข้อมูลมติประชุมแก้ไขได้เฉพาะงานวิจัย" },
+        { status: 403 },
+      );
+    }
+
+    const actorUser = await ensureMockActor(actorUserId);
+    if (!actorUser) {
+      return Response.json(
+        { error: "ไม่พบผู้ใช้สำหรับบันทึกการแก้ไขมติประชุม" },
+        { status: 400 },
+      );
+    }
 
     // Verify project exists
     const project = await prisma.project.findUnique({
@@ -47,6 +64,23 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
             })),
           });
         }
+
+        if (typeof deanApprovalLink === "string") {
+          await tx.project.update({
+            where: { id },
+            data: { docLink: deanApprovalLink.trim() || null },
+          });
+        }
+
+        await tx.projectStatusActionLog.create({
+          data: {
+            projectId: id,
+            statusRecordId: project.currentStatusId,
+            actionType: "UPDATE_MEETINGS",
+            actorUserId: actorUser.id,
+            actorRole,
+          },
+        });
 
         // Fetch updated project with meetings
         const updatedProject = await tx.project.findUnique({

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { actorRoles } from "@/lib/mock-actors";
 
 // Query parameters for listing overviews
 export const listOverviewsQuerySchema = z.object({
@@ -17,11 +18,10 @@ export const updateFieldSchema = z.object({
     "_costCenter",
     "_maintenanceFee",
     "_electricityFeeActual",
+    "_internalReviewChecked",
   ]),
   value: z.string(),
-  actorRole: z
-    .enum(["USER", "ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"])
-    .optional(),
+  actorRole: z.enum(actorRoles).optional(),
   actorUserId: z.string().optional(),
 });
 
@@ -37,6 +37,9 @@ export const meetingRecordSchema = z.object({
 // Update meetings request schema
 export const updateMeetingsSchema = z.object({
   meetings: z.array(meetingRecordSchema).min(0),
+  deanApprovalLink: z.string().optional(),
+  actorRole: z.enum(actorRoles).optional(),
+  actorUserId: z.string().optional(),
 });
 
 export type ListOverviewsQuery = z.infer<typeof listOverviewsQuerySchema>;
