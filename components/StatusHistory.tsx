@@ -223,7 +223,10 @@ export function StatusHistory({
                       {record.actionLogs && record.actionLogs.length > 0 && (
                         <div className="mt-2 space-y-1 rounded-md border border-slate-200 bg-slate-50 p-2">
                           {record.actionLogs.map((log) => (
-                            <div key={log.id} className="text-xs text-slate-600">
+                            <div
+                              key={log.id}
+                              className="text-xs text-slate-600"
+                            >
                               <span className="font-medium">
                                 {log.actionType}
                               </span>

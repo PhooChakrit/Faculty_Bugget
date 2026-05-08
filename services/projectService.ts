@@ -46,7 +46,10 @@ export const projectService = {
       branchChoice?: string;
     },
   ) => {
-    const response = await axios.post(`${API_URL}/${id}/status/transition`, data);
+    const response = await axios.post(
+      `${API_URL}/${id}/status/transition`,
+      data,
+    );
     return response.data;
   },
 
