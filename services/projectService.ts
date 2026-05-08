@@ -37,6 +37,22 @@ export const projectService = {
     return response.data.data;
   },
 
+  transitionStatus: async (
+    id: string,
+    data: {
+      toStatus: string;
+      userId: string;
+      actorRole: string;
+      branchChoice?: string;
+    },
+  ) => {
+    const response = await axios.post(
+      `${API_URL}/${id}/status/transition`,
+      data,
+    );
+    return response.data;
+  },
+
   getLatestProject: async () => {
     const response = await axios.get(`${API_URL}?limit=1`);
     if (response.data.data.projects && response.data.data.projects.length > 0) {

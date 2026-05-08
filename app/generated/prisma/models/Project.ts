@@ -133,6 +133,10 @@ export type ProjectMinAggregateOutputType = {
   excelFileName: string | null;
   excelFileType: string | null;
   excelUploadedAt: Date | null;
+  costCenterFile: runtime.Bytes | null;
+  costCenterFileName: string | null;
+  costCenterFileType: string | null;
+  costCenterUploadedAt: Date | null;
 };
 
 export type ProjectMaxAggregateOutputType = {
@@ -206,6 +210,10 @@ export type ProjectMaxAggregateOutputType = {
   excelFileName: string | null;
   excelFileType: string | null;
   excelUploadedAt: Date | null;
+  costCenterFile: runtime.Bytes | null;
+  costCenterFileName: string | null;
+  costCenterFileType: string | null;
+  costCenterUploadedAt: Date | null;
 };
 
 export type ProjectCountAggregateOutputType = {
@@ -279,6 +287,10 @@ export type ProjectCountAggregateOutputType = {
   excelFileName: number;
   excelFileType: number;
   excelUploadedAt: number;
+  costCenterFile: number;
+  costCenterFileName: number;
+  costCenterFileType: number;
+  costCenterUploadedAt: number;
   _all: number;
 };
 
@@ -389,6 +401,10 @@ export type ProjectMinAggregateInputType = {
   excelFileName?: true;
   excelFileType?: true;
   excelUploadedAt?: true;
+  costCenterFile?: true;
+  costCenterFileName?: true;
+  costCenterFileType?: true;
+  costCenterUploadedAt?: true;
 };
 
 export type ProjectMaxAggregateInputType = {
@@ -462,6 +478,10 @@ export type ProjectMaxAggregateInputType = {
   excelFileName?: true;
   excelFileType?: true;
   excelUploadedAt?: true;
+  costCenterFile?: true;
+  costCenterFileName?: true;
+  costCenterFileType?: true;
+  costCenterUploadedAt?: true;
 };
 
 export type ProjectCountAggregateInputType = {
@@ -535,6 +555,10 @@ export type ProjectCountAggregateInputType = {
   excelFileName?: true;
   excelFileType?: true;
   excelUploadedAt?: true;
+  costCenterFile?: true;
+  costCenterFileName?: true;
+  costCenterFileType?: true;
+  costCenterUploadedAt?: true;
   _all?: true;
 };
 
@@ -702,6 +726,10 @@ export type ProjectGroupByOutputType = {
   excelFileName: string | null;
   excelFileType: string | null;
   excelUploadedAt: Date | null;
+  costCenterFile: runtime.Bytes | null;
+  costCenterFileName: string | null;
+  costCenterFileType: string | null;
+  costCenterUploadedAt: Date | null;
   _count: ProjectCountAggregateOutputType | null;
   _avg: ProjectAvgAggregateOutputType | null;
   _sum: ProjectSumAggregateOutputType | null;
@@ -888,6 +916,14 @@ export type ProjectWhereInput = {
     | Date
     | string
     | null;
+  costCenterFile?: Prisma.BytesNullableFilter<"Project"> | runtime.Bytes | null;
+  costCenterFileName?: Prisma.StringNullableFilter<"Project"> | string | null;
+  costCenterFileType?: Prisma.StringNullableFilter<"Project"> | string | null;
+  costCenterUploadedAt?:
+    | Prisma.DateTimeNullableFilter<"Project">
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.XOR<
     Prisma.ProjectStatusRecordNullableScalarRelationFilter,
     Prisma.ProjectStatusRecordWhereInput
@@ -895,7 +931,9 @@ export type ProjectWhereInput = {
   statusHistory?: Prisma.ProjectStatusRecordListRelationFilter;
   roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter;
   approvalEmailLogs?: Prisma.ApprovalEmailLogListRelationFilter;
+  statusActionLogs?: Prisma.ProjectStatusActionLogListRelationFilter;
   incomeItems?: Prisma.IncomeItemListRelationFilter;
+  budgetRevisions?: Prisma.BudgetRevisionListRelationFilter;
   coLeader?: Prisma.XOR<
     Prisma.UserNullableScalarRelationFilter,
     Prisma.UserWhereInput
@@ -979,11 +1017,17 @@ export type ProjectOrderByWithRelationInput = {
   excelFileName?: Prisma.SortOrderInput | Prisma.SortOrder;
   excelFileType?: Prisma.SortOrderInput | Prisma.SortOrder;
   excelUploadedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+  costCenterFile?: Prisma.SortOrderInput | Prisma.SortOrder;
+  costCenterFileName?: Prisma.SortOrderInput | Prisma.SortOrder;
+  costCenterFileType?: Prisma.SortOrderInput | Prisma.SortOrder;
+  costCenterUploadedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   currentStatus?: Prisma.ProjectStatusRecordOrderByWithRelationInput;
   statusHistory?: Prisma.ProjectStatusRecordOrderByRelationAggregateInput;
   roleCompletions?: Prisma.ProjectRoleCompletionOrderByRelationAggregateInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogOrderByRelationAggregateInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogOrderByRelationAggregateInput;
   incomeItems?: Prisma.IncomeItemOrderByRelationAggregateInput;
+  budgetRevisions?: Prisma.BudgetRevisionOrderByRelationAggregateInput;
   coLeader?: Prisma.UserOrderByWithRelationInput;
   leader?: Prisma.UserOrderByWithRelationInput;
   collaborators?: Prisma.ProjectCollaboratorOrderByRelationAggregateInput;
@@ -1184,6 +1228,17 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<
       | Date
       | string
       | null;
+    costCenterFile?:
+      | Prisma.BytesNullableFilter<"Project">
+      | runtime.Bytes
+      | null;
+    costCenterFileName?: Prisma.StringNullableFilter<"Project"> | string | null;
+    costCenterFileType?: Prisma.StringNullableFilter<"Project"> | string | null;
+    costCenterUploadedAt?:
+      | Prisma.DateTimeNullableFilter<"Project">
+      | Date
+      | string
+      | null;
     currentStatus?: Prisma.XOR<
       Prisma.ProjectStatusRecordNullableScalarRelationFilter,
       Prisma.ProjectStatusRecordWhereInput
@@ -1191,7 +1246,9 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<
     statusHistory?: Prisma.ProjectStatusRecordListRelationFilter;
     roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter;
     approvalEmailLogs?: Prisma.ApprovalEmailLogListRelationFilter;
+    statusActionLogs?: Prisma.ProjectStatusActionLogListRelationFilter;
     incomeItems?: Prisma.IncomeItemListRelationFilter;
+    budgetRevisions?: Prisma.BudgetRevisionListRelationFilter;
     coLeader?: Prisma.XOR<
       Prisma.UserNullableScalarRelationFilter,
       Prisma.UserWhereInput
@@ -1277,6 +1334,10 @@ export type ProjectOrderByWithAggregationInput = {
   excelFileName?: Prisma.SortOrderInput | Prisma.SortOrder;
   excelFileType?: Prisma.SortOrderInput | Prisma.SortOrder;
   excelUploadedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+  costCenterFile?: Prisma.SortOrderInput | Prisma.SortOrder;
+  costCenterFileName?: Prisma.SortOrderInput | Prisma.SortOrder;
+  costCenterFileType?: Prisma.SortOrderInput | Prisma.SortOrder;
+  costCenterUploadedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   _count?: Prisma.ProjectCountOrderByAggregateInput;
   _avg?: Prisma.ProjectAvgOrderByAggregateInput;
   _max?: Prisma.ProjectMaxOrderByAggregateInput;
@@ -1582,6 +1643,23 @@ export type ProjectScalarWhereWithAggregatesInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.BytesNullableWithAggregatesFilter<"Project">
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.StringNullableWithAggregatesFilter<"Project">
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.StringNullableWithAggregatesFilter<"Project">
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.DateTimeNullableWithAggregatesFilter<"Project">
+    | Date
+    | string
+    | null;
 };
 
 export type ProjectCreateInput = {
@@ -1722,11 +1800,17 @@ export type ProjectCreateInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -1877,10 +1961,16 @@ export type ProjectUncheckedCreateInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -2119,11 +2209,30 @@ export type ProjectUpdateInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -2370,10 +2479,29 @@ export type ProjectUncheckedUpdateInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -2522,6 +2650,10 @@ export type ProjectCreateManyInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
 };
 
 export type ProjectUpdateManyMutationInput = {
@@ -2751,6 +2883,23 @@ export type ProjectUpdateManyMutationInput = {
     | string
     | null;
   excelUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
     | Prisma.NullableDateTimeFieldUpdateOperationsInput
     | Date
     | string
@@ -2994,6 +3143,23 @@ export type ProjectUncheckedUpdateManyInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
 };
 
 export type ProjectListRelationFilter = {
@@ -3077,6 +3243,10 @@ export type ProjectCountOrderByAggregateInput = {
   excelFileName?: Prisma.SortOrder;
   excelFileType?: Prisma.SortOrder;
   excelUploadedAt?: Prisma.SortOrder;
+  costCenterFile?: Prisma.SortOrder;
+  costCenterFileName?: Prisma.SortOrder;
+  costCenterFileType?: Prisma.SortOrder;
+  costCenterUploadedAt?: Prisma.SortOrder;
 };
 
 export type ProjectAvgOrderByAggregateInput = {
@@ -3168,6 +3338,10 @@ export type ProjectMaxOrderByAggregateInput = {
   excelFileName?: Prisma.SortOrder;
   excelFileType?: Prisma.SortOrder;
   excelUploadedAt?: Prisma.SortOrder;
+  costCenterFile?: Prisma.SortOrder;
+  costCenterFileName?: Prisma.SortOrder;
+  costCenterFileType?: Prisma.SortOrder;
+  costCenterUploadedAt?: Prisma.SortOrder;
 };
 
 export type ProjectMinOrderByAggregateInput = {
@@ -3241,6 +3415,10 @@ export type ProjectMinOrderByAggregateInput = {
   excelFileName?: Prisma.SortOrder;
   excelFileType?: Prisma.SortOrder;
   excelUploadedAt?: Prisma.SortOrder;
+  costCenterFile?: Prisma.SortOrder;
+  costCenterFileName?: Prisma.SortOrder;
+  costCenterFileType?: Prisma.SortOrder;
+  costCenterUploadedAt?: Prisma.SortOrder;
 };
 
 export type ProjectSumOrderByAggregateInput = {
@@ -3785,6 +3963,58 @@ export type ProjectUncheckedUpdateOneWithoutCurrentStatusNestedInput = {
   >;
 };
 
+export type ProjectCreateNestedOneWithoutStatusActionLogsInput = {
+  create?: Prisma.XOR<
+    Prisma.ProjectCreateWithoutStatusActionLogsInput,
+    Prisma.ProjectUncheckedCreateWithoutStatusActionLogsInput
+  >;
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutStatusActionLogsInput;
+  connect?: Prisma.ProjectWhereUniqueInput;
+};
+
+export type ProjectUpdateOneRequiredWithoutStatusActionLogsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.ProjectCreateWithoutStatusActionLogsInput,
+    Prisma.ProjectUncheckedCreateWithoutStatusActionLogsInput
+  >;
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutStatusActionLogsInput;
+  upsert?: Prisma.ProjectUpsertWithoutStatusActionLogsInput;
+  connect?: Prisma.ProjectWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.ProjectUpdateToOneWithWhereWithoutStatusActionLogsInput,
+      Prisma.ProjectUpdateWithoutStatusActionLogsInput
+    >,
+    Prisma.ProjectUncheckedUpdateWithoutStatusActionLogsInput
+  >;
+};
+
+export type ProjectCreateNestedOneWithoutBudgetRevisionsInput = {
+  create?: Prisma.XOR<
+    Prisma.ProjectCreateWithoutBudgetRevisionsInput,
+    Prisma.ProjectUncheckedCreateWithoutBudgetRevisionsInput
+  >;
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutBudgetRevisionsInput;
+  connect?: Prisma.ProjectWhereUniqueInput;
+};
+
+export type ProjectUpdateOneRequiredWithoutBudgetRevisionsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.ProjectCreateWithoutBudgetRevisionsInput,
+    Prisma.ProjectUncheckedCreateWithoutBudgetRevisionsInput
+  >;
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutBudgetRevisionsInput;
+  upsert?: Prisma.ProjectUpsertWithoutBudgetRevisionsInput;
+  connect?: Prisma.ProjectWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.ProjectUpdateToOneWithWhereWithoutBudgetRevisionsInput,
+      Prisma.ProjectUpdateWithoutBudgetRevisionsInput
+    >,
+    Prisma.ProjectUncheckedUpdateWithoutBudgetRevisionsInput
+  >;
+};
+
 export type ProjectCreateWithoutCoLeaderInput = {
   id: string;
   receiptNumber?: string | null;
@@ -3923,11 +4153,17 @@ export type ProjectCreateWithoutCoLeaderInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
@@ -4076,10 +4312,16 @@ export type ProjectUncheckedCreateWithoutCoLeaderInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -4240,11 +4482,17 @@ export type ProjectCreateWithoutLeaderInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
@@ -4393,10 +4641,16 @@ export type ProjectUncheckedCreateWithoutLeaderInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -4613,6 +4867,14 @@ export type ProjectScalarWhereInput = {
     | Date
     | string
     | null;
+  costCenterFile?: Prisma.BytesNullableFilter<"Project"> | runtime.Bytes | null;
+  costCenterFileName?: Prisma.StringNullableFilter<"Project"> | string | null;
+  costCenterFileType?: Prisma.StringNullableFilter<"Project"> | string | null;
+  costCenterUploadedAt?:
+    | Prisma.DateTimeNullableFilter<"Project">
+    | Date
+    | string
+    | null;
 };
 
 export type ProjectUpsertWithWhereUniqueWithoutLeaderInput = {
@@ -4781,10 +5043,16 @@ export type ProjectCreateWithoutRoleCompletionsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -4935,9 +5203,15 @@ export type ProjectUncheckedCreateWithoutRoleCompletionsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -5204,10 +5478,29 @@ export type ProjectUpdateWithoutRoleCompletionsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -5454,9 +5747,28 @@ export type ProjectUncheckedUpdateWithoutRoleCompletionsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -5602,10 +5914,16 @@ export type ProjectCreateWithoutApprovalEmailLogsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -5756,9 +6074,15 @@ export type ProjectUncheckedCreateWithoutApprovalEmailLogsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -6025,10 +6349,29 @@ export type ProjectUpdateWithoutApprovalEmailLogsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -6275,9 +6618,28 @@ export type ProjectUncheckedUpdateWithoutApprovalEmailLogsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -6423,11 +6785,17 @@ export type ProjectCreateWithoutTargetGroupsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -6577,10 +6945,16 @@ export type ProjectUncheckedCreateWithoutTargetGroupsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -6846,11 +7220,30 @@ export type ProjectUpdateWithoutTargetGroupsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -7096,10 +7489,29 @@ export type ProjectUncheckedUpdateWithoutTargetGroupsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -7244,11 +7656,17 @@ export type ProjectCreateWithoutStrategiesInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -7398,10 +7816,16 @@ export type ProjectUncheckedCreateWithoutStrategiesInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
@@ -7667,11 +8091,30 @@ export type ProjectUpdateWithoutStrategiesInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -7917,10 +8360,29 @@ export type ProjectUncheckedUpdateWithoutStrategiesInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
@@ -8065,10 +8527,16 @@ export type ProjectCreateWithoutIncomeItemsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -8219,9 +8687,15 @@ export type ProjectUncheckedCreateWithoutIncomeItemsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -8488,10 +8962,29 @@ export type ProjectUpdateWithoutIncomeItemsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -8738,9 +9231,28 @@ export type ProjectUncheckedUpdateWithoutIncomeItemsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -8886,11 +9398,17 @@ export type ProjectCreateWithoutCollaboratorsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
@@ -9040,10 +9558,16 @@ export type ProjectUncheckedCreateWithoutCollaboratorsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
   targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
@@ -9309,11 +9833,30 @@ export type ProjectUpdateWithoutCollaboratorsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
@@ -9559,10 +10102,29 @@ export type ProjectUncheckedUpdateWithoutCollaboratorsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
   targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
@@ -9707,11 +10269,17 @@ export type ProjectCreateWithoutManagersInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -9861,10 +10429,16 @@ export type ProjectUncheckedCreateWithoutManagersInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
   targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
@@ -10130,11 +10704,30 @@ export type ProjectUpdateWithoutManagersInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -10380,10 +10973,29 @@ export type ProjectUncheckedUpdateWithoutManagersInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
   targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
@@ -10528,11 +11140,17 @@ export type ProjectCreateWithoutMeetingsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -10682,10 +11300,16 @@ export type ProjectUncheckedCreateWithoutMeetingsInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -10951,11 +11575,30 @@ export type ProjectUpdateWithoutMeetingsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -11201,10 +11844,29 @@ export type ProjectUncheckedUpdateWithoutMeetingsInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -11349,10 +12011,16 @@ export type ProjectCreateWithoutStatusHistoryInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -11503,9 +12171,15 @@ export type ProjectUncheckedCreateWithoutStatusHistoryInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -11659,10 +12333,16 @@ export type ProjectCreateWithoutCurrentStatusInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
   coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
   leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
   collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
@@ -11812,10 +12492,16 @@ export type ProjectUncheckedCreateWithoutCurrentStatusInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
   incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
   managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
   strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
@@ -12082,10 +12768,29 @@ export type ProjectUpdateWithoutStatusHistoryInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -12332,9 +13037,28 @@ export type ProjectUncheckedUpdateWithoutStatusHistoryInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -12593,10 +13317,29 @@ export type ProjectUpdateWithoutCurrentStatusInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
@@ -12839,9 +13582,1770 @@ export type ProjectUncheckedUpdateWithoutCurrentStatusInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
+  incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
+  collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
+  managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutProjectNestedInput;
+};
+
+export type ProjectCreateWithoutStatusActionLogsInput = {
+  id: string;
+  receiptNumber?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  status?: $Enums.ProjectStatus;
+  projectNameThai: string;
+  projectNameEng?: string | null;
+  leaderPosition: string;
+  department: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  background?: string | null;
+  projectDetails?: string | null;
+  objectives?: string | null;
+  scope?: string | null;
+  implementationPlan?: string | null;
+  serviceType?: string | null;
+  participantCount?: number | null;
+  venue?: string | null;
+  committee?: string | null;
+  expectedBenefits?: string | null;
+  projectEvaluation?: string | null;
+  budgetSourceExtGov?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: boolean;
+  note3?: boolean;
+  participantDetails?: string | null;
+  projectCode?: string | null;
+  memoTitle?: string | null;
+  vendorCode?: string | null;
+  costCenter?: string | null;
+  fundOwner?: string | null;
+  maintenanceFeeProposal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  maintenanceFeeActual?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeProposal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeActual?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  status1?: string | null;
+  status1Date?: Date | string | null;
+  status2?: string | null;
+  status2Date?: Date | string | null;
+  status3?: string | null;
+  status3Date?: Date | string | null;
+  status4?: string | null;
+  status4Date?: Date | string | null;
+  status5?: string | null;
+  status5Date?: Date | string | null;
+  responsible?: string | null;
+  docNumber?: string | null;
+  docDate?: Date | string | null;
+  docLink?: string | null;
+  currentStatusCode?: string | null;
+  draftState?: $Enums.DraftState;
+  draftSavedAt?: Date | string | null;
+  submittedAt?: Date | string | null;
+  submittedByRole?: string | null;
+  excelFile?: runtime.Bytes | null;
+  excelFileName?: string | null;
+  excelFileType?: string | null;
+  excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
+  currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
+  statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionCreateNestedManyWithoutProjectInput;
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
+  collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
+  managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
+  meetings?: Prisma.MeetingCreateNestedManyWithoutProjectInput;
+};
+
+export type ProjectUncheckedCreateWithoutStatusActionLogsInput = {
+  id: string;
+  receiptNumber?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  status?: $Enums.ProjectStatus;
+  projectNameThai: string;
+  projectNameEng?: string | null;
+  leaderId: string;
+  leaderPosition: string;
+  department: string;
+  coLeaderId?: string | null;
+  startDate: Date | string;
+  endDate: Date | string;
+  background?: string | null;
+  projectDetails?: string | null;
+  objectives?: string | null;
+  scope?: string | null;
+  implementationPlan?: string | null;
+  serviceType?: string | null;
+  participantCount?: number | null;
+  venue?: string | null;
+  committee?: string | null;
+  expectedBenefits?: string | null;
+  projectEvaluation?: string | null;
+  budgetSourceExtGov?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: boolean;
+  note3?: boolean;
+  participantDetails?: string | null;
+  projectCode?: string | null;
+  memoTitle?: string | null;
+  vendorCode?: string | null;
+  costCenter?: string | null;
+  fundOwner?: string | null;
+  maintenanceFeeProposal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  maintenanceFeeActual?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeProposal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeActual?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  status1?: string | null;
+  status1Date?: Date | string | null;
+  status2?: string | null;
+  status2Date?: Date | string | null;
+  status3?: string | null;
+  status3Date?: Date | string | null;
+  status4?: string | null;
+  status4Date?: Date | string | null;
+  status5?: string | null;
+  status5Date?: Date | string | null;
+  responsible?: string | null;
+  docNumber?: string | null;
+  docDate?: Date | string | null;
+  docLink?: string | null;
+  currentStatusCode?: string | null;
+  currentStatusId?: string | null;
+  draftState?: $Enums.DraftState;
+  draftSavedAt?: Date | string | null;
+  submittedAt?: Date | string | null;
+  submittedByRole?: string | null;
+  excelFile?: runtime.Bytes | null;
+  excelFileName?: string | null;
+  excelFileType?: string | null;
+  excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
+  statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutProjectInput;
+  collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
+  managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutProjectInput;
+};
+
+export type ProjectCreateOrConnectWithoutStatusActionLogsInput = {
+  where: Prisma.ProjectWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.ProjectCreateWithoutStatusActionLogsInput,
+    Prisma.ProjectUncheckedCreateWithoutStatusActionLogsInput
+  >;
+};
+
+export type ProjectUpsertWithoutStatusActionLogsInput = {
+  update: Prisma.XOR<
+    Prisma.ProjectUpdateWithoutStatusActionLogsInput,
+    Prisma.ProjectUncheckedUpdateWithoutStatusActionLogsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ProjectCreateWithoutStatusActionLogsInput,
+    Prisma.ProjectUncheckedCreateWithoutStatusActionLogsInput
+  >;
+  where?: Prisma.ProjectWhereInput;
+};
+
+export type ProjectUpdateToOneWithWhereWithoutStatusActionLogsInput = {
+  where?: Prisma.ProjectWhereInput;
+  data: Prisma.XOR<
+    Prisma.ProjectUpdateWithoutStatusActionLogsInput,
+    Prisma.ProjectUncheckedUpdateWithoutStatusActionLogsInput
+  >;
+};
+
+export type ProjectUpdateWithoutStatusActionLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  receiptNumber?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  status?:
+    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
+    | $Enums.ProjectStatus;
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
+  projectNameEng?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
+  department?: Prisma.StringFieldUpdateOperationsInput | string;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  projectDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  implementationPlan?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  participantCount?:
+    | Prisma.NullableIntFieldUpdateOperationsInput
+    | number
+    | null;
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  expectedBenefits?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectEvaluation?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  budgetSourceExtGov?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  memoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  costCenter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  fundOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  maintenanceFeeProposal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  maintenanceFeeActual?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeProposal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeActual?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  status1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status1Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status2Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status3Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status4Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status5?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status5Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  responsible?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  docNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  docDate?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currentStatusCode?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  draftState?:
+    | Prisma.EnumDraftStateFieldUpdateOperationsInput
+    | $Enums.DraftState;
+  draftSavedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  submittedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  submittedByRole?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  excelFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
+  statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
+  collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
+  managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
+  meetings?: Prisma.MeetingUpdateManyWithoutProjectNestedInput;
+};
+
+export type ProjectUncheckedUpdateWithoutStatusActionLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  receiptNumber?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  status?:
+    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
+    | $Enums.ProjectStatus;
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
+  projectNameEng?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  leaderId?: Prisma.StringFieldUpdateOperationsInput | string;
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
+  department?: Prisma.StringFieldUpdateOperationsInput | string;
+  coLeaderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  projectDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  implementationPlan?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  participantCount?:
+    | Prisma.NullableIntFieldUpdateOperationsInput
+    | number
+    | null;
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  expectedBenefits?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectEvaluation?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  budgetSourceExtGov?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  memoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  costCenter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  fundOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  maintenanceFeeProposal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  maintenanceFeeActual?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeProposal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeActual?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  status1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status1Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status2Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status3Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status4Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status5?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status5Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  responsible?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  docNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  docDate?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currentStatusCode?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  currentStatusId?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  draftState?:
+    | Prisma.EnumDraftStateFieldUpdateOperationsInput
+    | $Enums.DraftState;
+  draftSavedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  submittedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  submittedByRole?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  excelFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
+  collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
+  managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedUpdateManyWithoutProjectNestedInput;
+  meetings?: Prisma.MeetingUncheckedUpdateManyWithoutProjectNestedInput;
+};
+
+export type ProjectCreateWithoutBudgetRevisionsInput = {
+  id: string;
+  receiptNumber?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  status?: $Enums.ProjectStatus;
+  projectNameThai: string;
+  projectNameEng?: string | null;
+  leaderPosition: string;
+  department: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  background?: string | null;
+  projectDetails?: string | null;
+  objectives?: string | null;
+  scope?: string | null;
+  implementationPlan?: string | null;
+  serviceType?: string | null;
+  participantCount?: number | null;
+  venue?: string | null;
+  committee?: string | null;
+  expectedBenefits?: string | null;
+  projectEvaluation?: string | null;
+  budgetSourceExtGov?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: boolean;
+  note3?: boolean;
+  participantDetails?: string | null;
+  projectCode?: string | null;
+  memoTitle?: string | null;
+  vendorCode?: string | null;
+  costCenter?: string | null;
+  fundOwner?: string | null;
+  maintenanceFeeProposal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  maintenanceFeeActual?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeProposal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeActual?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  status1?: string | null;
+  status1Date?: Date | string | null;
+  status2?: string | null;
+  status2Date?: Date | string | null;
+  status3?: string | null;
+  status3Date?: Date | string | null;
+  status4?: string | null;
+  status4Date?: Date | string | null;
+  status5?: string | null;
+  status5Date?: Date | string | null;
+  responsible?: string | null;
+  docNumber?: string | null;
+  docDate?: Date | string | null;
+  docLink?: string | null;
+  currentStatusCode?: string | null;
+  draftState?: $Enums.DraftState;
+  draftSavedAt?: Date | string | null;
+  submittedAt?: Date | string | null;
+  submittedByRole?: string | null;
+  excelFile?: runtime.Bytes | null;
+  excelFileName?: string | null;
+  excelFileType?: string | null;
+  excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
+  currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput;
+  statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput;
+  approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutProjectInput;
+  incomeItems?: Prisma.IncomeItemCreateNestedManyWithoutProjectInput;
+  coLeader?: Prisma.UserCreateNestedOneWithoutProjectsAsCoLeaderInput;
+  leader: Prisma.UserCreateNestedOneWithoutProjectsAsLeaderInput;
+  collaborators?: Prisma.ProjectCollaboratorCreateNestedManyWithoutProjectInput;
+  managers?: Prisma.ProjectManagerCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupCreateNestedManyWithoutProjectInput;
+  meetings?: Prisma.MeetingCreateNestedManyWithoutProjectInput;
+};
+
+export type ProjectUncheckedCreateWithoutBudgetRevisionsInput = {
+  id: string;
+  receiptNumber?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  status?: $Enums.ProjectStatus;
+  projectNameThai: string;
+  projectNameEng?: string | null;
+  leaderId: string;
+  leaderPosition: string;
+  department: string;
+  coLeaderId?: string | null;
+  startDate: Date | string;
+  endDate: Date | string;
+  background?: string | null;
+  projectDetails?: string | null;
+  objectives?: string | null;
+  scope?: string | null;
+  implementationPlan?: string | null;
+  serviceType?: string | null;
+  participantCount?: number | null;
+  venue?: string | null;
+  committee?: string | null;
+  expectedBenefits?: string | null;
+  projectEvaluation?: string | null;
+  budgetSourceExtGov?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: boolean;
+  note3?: boolean;
+  participantDetails?: string | null;
+  projectCode?: string | null;
+  memoTitle?: string | null;
+  vendorCode?: string | null;
+  costCenter?: string | null;
+  fundOwner?: string | null;
+  maintenanceFeeProposal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  maintenanceFeeActual?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeProposal?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeActual?:
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  status1?: string | null;
+  status1Date?: Date | string | null;
+  status2?: string | null;
+  status2Date?: Date | string | null;
+  status3?: string | null;
+  status3Date?: Date | string | null;
+  status4?: string | null;
+  status4Date?: Date | string | null;
+  status5?: string | null;
+  status5Date?: Date | string | null;
+  responsible?: string | null;
+  docNumber?: string | null;
+  docDate?: Date | string | null;
+  docLink?: string | null;
+  currentStatusCode?: string | null;
+  currentStatusId?: string | null;
+  draftState?: $Enums.DraftState;
+  draftSavedAt?: Date | string | null;
+  submittedAt?: Date | string | null;
+  submittedByRole?: string | null;
+  excelFile?: runtime.Bytes | null;
+  excelFileName?: string | null;
+  excelFileType?: string | null;
+  excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
+  statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput;
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput;
+  incomeItems?: Prisma.IncomeItemUncheckedCreateNestedManyWithoutProjectInput;
+  collaborators?: Prisma.ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput;
+  managers?: Prisma.ProjectManagerUncheckedCreateNestedManyWithoutProjectInput;
+  strategies?: Prisma.ProjectStrategyUncheckedCreateNestedManyWithoutProjectInput;
+  targetGroups?: Prisma.ProjectTargetGroupUncheckedCreateNestedManyWithoutProjectInput;
+  meetings?: Prisma.MeetingUncheckedCreateNestedManyWithoutProjectInput;
+};
+
+export type ProjectCreateOrConnectWithoutBudgetRevisionsInput = {
+  where: Prisma.ProjectWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.ProjectCreateWithoutBudgetRevisionsInput,
+    Prisma.ProjectUncheckedCreateWithoutBudgetRevisionsInput
+  >;
+};
+
+export type ProjectUpsertWithoutBudgetRevisionsInput = {
+  update: Prisma.XOR<
+    Prisma.ProjectUpdateWithoutBudgetRevisionsInput,
+    Prisma.ProjectUncheckedUpdateWithoutBudgetRevisionsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ProjectCreateWithoutBudgetRevisionsInput,
+    Prisma.ProjectUncheckedCreateWithoutBudgetRevisionsInput
+  >;
+  where?: Prisma.ProjectWhereInput;
+};
+
+export type ProjectUpdateToOneWithWhereWithoutBudgetRevisionsInput = {
+  where?: Prisma.ProjectWhereInput;
+  data: Prisma.XOR<
+    Prisma.ProjectUpdateWithoutBudgetRevisionsInput,
+    Prisma.ProjectUncheckedUpdateWithoutBudgetRevisionsInput
+  >;
+};
+
+export type ProjectUpdateWithoutBudgetRevisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  receiptNumber?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  status?:
+    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
+    | $Enums.ProjectStatus;
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
+  projectNameEng?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
+  department?: Prisma.StringFieldUpdateOperationsInput | string;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  projectDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  implementationPlan?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  participantCount?:
+    | Prisma.NullableIntFieldUpdateOperationsInput
+    | number
+    | null;
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  expectedBenefits?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectEvaluation?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  budgetSourceExtGov?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  memoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  costCenter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  fundOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  maintenanceFeeProposal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  maintenanceFeeActual?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeProposal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeActual?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  status1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status1Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status2Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status3Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status4Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status5?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status5Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  responsible?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  docNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  docDate?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currentStatusCode?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  draftState?:
+    | Prisma.EnumDraftStateFieldUpdateOperationsInput
+    | $Enums.DraftState;
+  draftSavedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  submittedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  submittedByRole?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  excelFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
+  statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
+  incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
+  leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
+  collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
+  managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
+  strategies?: Prisma.ProjectStrategyUpdateManyWithoutProjectNestedInput;
+  targetGroups?: Prisma.ProjectTargetGroupUpdateManyWithoutProjectNestedInput;
+  meetings?: Prisma.MeetingUpdateManyWithoutProjectNestedInput;
+};
+
+export type ProjectUncheckedUpdateWithoutBudgetRevisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  receiptNumber?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  status?:
+    | Prisma.EnumProjectStatusFieldUpdateOperationsInput
+    | $Enums.ProjectStatus;
+  projectNameThai?: Prisma.StringFieldUpdateOperationsInput | string;
+  projectNameEng?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  leaderId?: Prisma.StringFieldUpdateOperationsInput | string;
+  leaderPosition?: Prisma.StringFieldUpdateOperationsInput | string;
+  department?: Prisma.StringFieldUpdateOperationsInput | string;
+  coLeaderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  background?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  projectDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  objectives?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  scope?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  implementationPlan?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  participantCount?:
+    | Prisma.NullableIntFieldUpdateOperationsInput
+    | number
+    | null;
+  venue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  committee?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  expectedBenefits?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectEvaluation?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  budgetSourceExtGov?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtPrivate?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceExtForeign?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  budgetSourceInternal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseRemuneration?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSupplies?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseMaterials?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseUtilities?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseSubsidy?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  expenseReserve?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  note2?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  note3?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  participantDetails?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  projectCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  memoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  costCenter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  fundOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  maintenanceFeeProposal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  maintenanceFeeActual?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeProposal?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  electricityFeeActual?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
+  status1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status1Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status2Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status3Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status4?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status4Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  status5?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status5Date?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  responsible?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  docNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  docDate?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  docLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currentStatusCode?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  currentStatusId?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  draftState?:
+    | Prisma.EnumDraftStateFieldUpdateOperationsInput
+    | $Enums.DraftState;
+  draftSavedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  submittedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  submittedByRole?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  excelFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  excelUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
+  approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
@@ -12990,6 +15494,10 @@ export type ProjectCreateManyCoLeaderInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
 };
 
 export type ProjectCreateManyLeaderInput = {
@@ -13132,6 +15640,10 @@ export type ProjectCreateManyLeaderInput = {
   excelFileName?: string | null;
   excelFileType?: string | null;
   excelUploadedAt?: Date | string | null;
+  costCenterFile?: runtime.Bytes | null;
+  costCenterFileName?: string | null;
+  costCenterFileType?: string | null;
+  costCenterUploadedAt?: Date | string | null;
 };
 
 export type ProjectUpdateWithoutCoLeaderInput = {
@@ -13365,11 +15877,30 @@ export type ProjectUpdateWithoutCoLeaderInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   leader?: Prisma.UserUpdateOneRequiredWithoutProjectsAsLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
@@ -13614,10 +16145,29 @@ export type ProjectUncheckedUpdateWithoutCoLeaderInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -13861,6 +16411,23 @@ export type ProjectUncheckedUpdateManyWithoutCoLeaderInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
 };
 
 export type ProjectUpdateWithoutLeaderInput = {
@@ -14094,11 +16661,30 @@ export type ProjectUpdateWithoutLeaderInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput;
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUpdateManyWithoutProjectNestedInput;
   coLeader?: Prisma.UserUpdateOneWithoutProjectsAsCoLeaderNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUpdateManyWithoutProjectNestedInput;
@@ -14343,10 +16929,29 @@ export type ProjectUncheckedUpdateWithoutLeaderInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput;
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput;
   incomeItems?: Prisma.IncomeItemUncheckedUpdateManyWithoutProjectNestedInput;
+  budgetRevisions?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutProjectNestedInput;
   collaborators?: Prisma.ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput;
   managers?: Prisma.ProjectManagerUncheckedUpdateManyWithoutProjectNestedInput;
   strategies?: Prisma.ProjectStrategyUncheckedUpdateManyWithoutProjectNestedInput;
@@ -14590,6 +17195,23 @@ export type ProjectUncheckedUpdateManyWithoutLeaderInput = {
     | Date
     | string
     | null;
+  costCenterFile?:
+    | Prisma.NullableBytesFieldUpdateOperationsInput
+    | runtime.Bytes
+    | null;
+  costCenterFileName?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterFileType?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  costCenterUploadedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
 };
 
 /**
@@ -14600,7 +17222,9 @@ export type ProjectCountOutputType = {
   statusHistory: number;
   roleCompletions: number;
   approvalEmailLogs: number;
+  statusActionLogs: number;
   incomeItems: number;
+  budgetRevisions: number;
   collaborators: number;
   managers: number;
   strategies: number;
@@ -14617,7 +17241,9 @@ export type ProjectCountOutputTypeSelect<
   approvalEmailLogs?:
     | boolean
     | ProjectCountOutputTypeCountApprovalEmailLogsArgs;
+  statusActionLogs?: boolean | ProjectCountOutputTypeCountStatusActionLogsArgs;
   incomeItems?: boolean | ProjectCountOutputTypeCountIncomeItemsArgs;
+  budgetRevisions?: boolean | ProjectCountOutputTypeCountBudgetRevisionsArgs;
   collaborators?: boolean | ProjectCountOutputTypeCountCollaboratorsArgs;
   managers?: boolean | ProjectCountOutputTypeCountManagersArgs;
   strategies?: boolean | ProjectCountOutputTypeCountStrategiesArgs;
@@ -14671,11 +17297,31 @@ export type ProjectCountOutputTypeCountApprovalEmailLogsArgs<
 /**
  * ProjectCountOutputType without action
  */
+export type ProjectCountOutputTypeCountStatusActionLogsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ProjectStatusActionLogWhereInput;
+};
+
+/**
+ * ProjectCountOutputType without action
+ */
 export type ProjectCountOutputTypeCountIncomeItemsArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   where?: Prisma.IncomeItemWhereInput;
+};
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountBudgetRevisionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.BudgetRevisionWhereInput;
 };
 
 /**
@@ -14803,11 +17449,17 @@ export type ProjectSelect<
     excelFileName?: boolean;
     excelFileType?: boolean;
     excelUploadedAt?: boolean;
+    costCenterFile?: boolean;
+    costCenterFileName?: boolean;
+    costCenterFileType?: boolean;
+    costCenterUploadedAt?: boolean;
     currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>;
     statusHistory?: boolean | Prisma.Project$statusHistoryArgs<ExtArgs>;
     roleCompletions?: boolean | Prisma.Project$roleCompletionsArgs<ExtArgs>;
     approvalEmailLogs?: boolean | Prisma.Project$approvalEmailLogsArgs<ExtArgs>;
+    statusActionLogs?: boolean | Prisma.Project$statusActionLogsArgs<ExtArgs>;
     incomeItems?: boolean | Prisma.Project$incomeItemsArgs<ExtArgs>;
+    budgetRevisions?: boolean | Prisma.Project$budgetRevisionsArgs<ExtArgs>;
     coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
     leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     collaborators?: boolean | Prisma.Project$collaboratorsArgs<ExtArgs>;
@@ -14895,6 +17547,10 @@ export type ProjectSelectCreateManyAndReturn<
     excelFileName?: boolean;
     excelFileType?: boolean;
     excelUploadedAt?: boolean;
+    costCenterFile?: boolean;
+    costCenterFileName?: boolean;
+    costCenterFileType?: boolean;
+    costCenterUploadedAt?: boolean;
     currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>;
     coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
     leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -14977,6 +17633,10 @@ export type ProjectSelectUpdateManyAndReturn<
     excelFileName?: boolean;
     excelFileType?: boolean;
     excelUploadedAt?: boolean;
+    costCenterFile?: boolean;
+    costCenterFileName?: boolean;
+    costCenterFileType?: boolean;
+    costCenterUploadedAt?: boolean;
     currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>;
     coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
     leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -15055,6 +17715,10 @@ export type ProjectSelectScalar = {
   excelFileName?: boolean;
   excelFileType?: boolean;
   excelUploadedAt?: boolean;
+  costCenterFile?: boolean;
+  costCenterFileName?: boolean;
+  costCenterFileType?: boolean;
+  costCenterUploadedAt?: boolean;
 };
 
 export type ProjectOmit<
@@ -15130,7 +17794,11 @@ export type ProjectOmit<
   | "excelFile"
   | "excelFileName"
   | "excelFileType"
-  | "excelUploadedAt",
+  | "excelUploadedAt"
+  | "costCenterFile"
+  | "costCenterFileName"
+  | "costCenterFileType"
+  | "costCenterUploadedAt",
   ExtArgs["result"]["project"]
 >;
 export type ProjectInclude<
@@ -15141,7 +17809,9 @@ export type ProjectInclude<
   statusHistory?: boolean | Prisma.Project$statusHistoryArgs<ExtArgs>;
   roleCompletions?: boolean | Prisma.Project$roleCompletionsArgs<ExtArgs>;
   approvalEmailLogs?: boolean | Prisma.Project$approvalEmailLogsArgs<ExtArgs>;
+  statusActionLogs?: boolean | Prisma.Project$statusActionLogsArgs<ExtArgs>;
   incomeItems?: boolean | Prisma.Project$incomeItemsArgs<ExtArgs>;
+  budgetRevisions?: boolean | Prisma.Project$budgetRevisionsArgs<ExtArgs>;
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>;
   leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   collaborators?: boolean | Prisma.Project$collaboratorsArgs<ExtArgs>;
@@ -15178,7 +17848,9 @@ export type $ProjectPayload<
     statusHistory: Prisma.$ProjectStatusRecordPayload<ExtArgs>[];
     roleCompletions: Prisma.$ProjectRoleCompletionPayload<ExtArgs>[];
     approvalEmailLogs: Prisma.$ApprovalEmailLogPayload<ExtArgs>[];
+    statusActionLogs: Prisma.$ProjectStatusActionLogPayload<ExtArgs>[];
     incomeItems: Prisma.$IncomeItemPayload<ExtArgs>[];
+    budgetRevisions: Prisma.$BudgetRevisionPayload<ExtArgs>[];
     coLeader: Prisma.$UserPayload<ExtArgs> | null;
     leader: Prisma.$UserPayload<ExtArgs>;
     collaborators: Prisma.$ProjectCollaboratorPayload<ExtArgs>[];
@@ -15259,6 +17931,10 @@ export type $ProjectPayload<
       excelFileName: string | null;
       excelFileType: string | null;
       excelUploadedAt: Date | null;
+      costCenterFile: runtime.Bytes | null;
+      costCenterFileName: string | null;
+      costCenterFileType: string | null;
+      costCenterUploadedAt: Date | null;
     },
     ExtArgs["result"]["project"]
   >;
@@ -15857,11 +18533,33 @@ export interface Prisma__ProjectClient<
       >
     | Null
   >;
+  statusActionLogs<T extends Prisma.Project$statusActionLogsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Project$statusActionLogsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ProjectStatusActionLogPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   incomeItems<T extends Prisma.Project$incomeItemsArgs<ExtArgs> = {}>(
     args?: Prisma.Subset<T, Prisma.Project$incomeItemsArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$IncomeItemPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  budgetRevisions<T extends Prisma.Project$budgetRevisionsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Project$budgetRevisionsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$BudgetRevisionPayload<ExtArgs>,
         T,
         "findMany",
         GlobalOmitOptions
@@ -16062,6 +18760,10 @@ export interface ProjectFieldRefs {
   readonly excelFileName: Prisma.FieldRef<"Project", "String">;
   readonly excelFileType: Prisma.FieldRef<"Project", "String">;
   readonly excelUploadedAt: Prisma.FieldRef<"Project", "DateTime">;
+  readonly costCenterFile: Prisma.FieldRef<"Project", "Bytes">;
+  readonly costCenterFileName: Prisma.FieldRef<"Project", "String">;
+  readonly costCenterFileType: Prisma.FieldRef<"Project", "String">;
+  readonly costCenterUploadedAt: Prisma.FieldRef<"Project", "DateTime">;
 }
 
 // Custom InputTypes
@@ -16638,6 +19340,37 @@ export type Project$approvalEmailLogsArgs<
 };
 
 /**
+ * Project.statusActionLogs
+ */
+export type Project$statusActionLogsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ProjectStatusActionLog
+   */
+  select?: Prisma.ProjectStatusActionLogSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the ProjectStatusActionLog
+   */
+  omit?: Prisma.ProjectStatusActionLogOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectStatusActionLogInclude<ExtArgs> | null;
+  where?: Prisma.ProjectStatusActionLogWhereInput;
+  orderBy?:
+    | Prisma.ProjectStatusActionLogOrderByWithRelationInput
+    | Prisma.ProjectStatusActionLogOrderByWithRelationInput[];
+  cursor?: Prisma.ProjectStatusActionLogWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.ProjectStatusActionLogScalarFieldEnum
+    | Prisma.ProjectStatusActionLogScalarFieldEnum[];
+};
+
+/**
  * Project.incomeItems
  */
 export type Project$incomeItemsArgs<
@@ -16666,6 +19399,37 @@ export type Project$incomeItemsArgs<
   distinct?:
     | Prisma.IncomeItemScalarFieldEnum
     | Prisma.IncomeItemScalarFieldEnum[];
+};
+
+/**
+ * Project.budgetRevisions
+ */
+export type Project$budgetRevisionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the BudgetRevision
+   */
+  select?: Prisma.BudgetRevisionSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the BudgetRevision
+   */
+  omit?: Prisma.BudgetRevisionOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BudgetRevisionInclude<ExtArgs> | null;
+  where?: Prisma.BudgetRevisionWhereInput;
+  orderBy?:
+    | Prisma.BudgetRevisionOrderByWithRelationInput
+    | Prisma.BudgetRevisionOrderByWithRelationInput[];
+  cursor?: Prisma.BudgetRevisionWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.BudgetRevisionScalarFieldEnum
+    | Prisma.BudgetRevisionScalarFieldEnum[];
 };
 
 /**

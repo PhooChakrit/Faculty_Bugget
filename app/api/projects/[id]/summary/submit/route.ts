@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 
 /**
  * POST /api/projects/[id]/summary/submit
- * Business step for STATUS_10: USER submits summary without changing status
+ * Business step for STATUS_6/7: USER submits summary without changing status
  *
  * Body: {
  *   userId: string;
@@ -45,11 +45,14 @@ export async function POST(
       );
     }
 
-    if (project.currentStatusCode !== "STATUS_10") {
+    if (
+      project.currentStatusCode !== "STATUS_6" &&
+      project.currentStatusCode !== "STATUS_7"
+    ) {
       return NextResponse.json(
         {
           error:
-            "สามารถส่งสรุปโครงการได้เฉพาะสถานะ 10 เท่านั้น และไม่ต้องรอการอนุมัติหัวหน้าภาค",
+            "สามารถส่งสรุปโครงการได้เฉพาะสถานะ 6/7 เท่านั้น และไม่ต้องรอการอนุมัติหัวหน้าภาค",
         },
         { status: 400 },
       );
@@ -93,7 +96,7 @@ export async function POST(
     return NextResponse.json({
       success: true,
       message: "บันทึกการส่งสรุปโครงการเรียบร้อยแล้ว",
-      currentStatusCode: "STATUS_10",
+      currentStatusCode: project.currentStatusCode,
     });
   } catch (error) {
     console.error("Summary submit error:", error);

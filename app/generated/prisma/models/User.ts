@@ -190,6 +190,12 @@ export type UserWhereInput = {
   statusRecords?: Prisma.ProjectStatusRecordListRelationFilter;
   notifications?: Prisma.NotificationStatusListRelationFilter;
   roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter;
+  statusActionLogs?: Prisma.ProjectStatusActionLogListRelationFilter;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionListRelationFilter;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionListRelationFilter;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionListRelationFilter;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionListRelationFilter;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogListRelationFilter;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentListRelationFilter;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentListRelationFilter;
 };
@@ -205,6 +211,12 @@ export type UserOrderByWithRelationInput = {
   statusRecords?: Prisma.ProjectStatusRecordOrderByRelationAggregateInput;
   notifications?: Prisma.NotificationStatusOrderByRelationAggregateInput;
   roleCompletions?: Prisma.ProjectRoleCompletionOrderByRelationAggregateInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogOrderByRelationAggregateInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionOrderByRelationAggregateInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionOrderByRelationAggregateInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionOrderByRelationAggregateInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionOrderByRelationAggregateInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogOrderByRelationAggregateInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentOrderByRelationAggregateInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentOrderByRelationAggregateInput;
 };
@@ -224,6 +236,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     statusRecords?: Prisma.ProjectStatusRecordListRelationFilter;
     notifications?: Prisma.NotificationStatusListRelationFilter;
     roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter;
+    statusActionLogs?: Prisma.ProjectStatusActionLogListRelationFilter;
+    budgetRevisionsCreated?: Prisma.BudgetRevisionListRelationFilter;
+    budgetRevisionsReviewed?: Prisma.BudgetRevisionListRelationFilter;
+    budgetRevisionsApproved?: Prisma.BudgetRevisionListRelationFilter;
+    budgetRevisionsApplied?: Prisma.BudgetRevisionListRelationFilter;
+    budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogListRelationFilter;
     departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentListRelationFilter;
     departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentListRelationFilter;
   },
@@ -267,6 +285,12 @@ export type UserCreateInput = {
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -282,6 +306,12 @@ export type UserUncheckedCreateInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -297,6 +327,12 @@ export type UserUpdateInput = {
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -312,6 +348,12 @@ export type UserUncheckedUpdateInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -547,6 +589,168 @@ export type UserUpdateOneRequiredWithoutStatusRecordsNestedInput = {
   >;
 };
 
+export type UserCreateNestedOneWithoutStatusActionLogsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutStatusActionLogsInput,
+    Prisma.UserUncheckedCreateWithoutStatusActionLogsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStatusActionLogsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutStatusActionLogsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutStatusActionLogsInput,
+    Prisma.UserUncheckedCreateWithoutStatusActionLogsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStatusActionLogsInput;
+  upsert?: Prisma.UserUpsertWithoutStatusActionLogsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutStatusActionLogsInput,
+      Prisma.UserUpdateWithoutStatusActionLogsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutStatusActionLogsInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutBudgetRevisionsCreatedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsCreatedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsCreatedInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionsCreatedInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserCreateNestedOneWithoutBudgetRevisionsReviewedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsReviewedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsReviewedInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionsReviewedInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserCreateNestedOneWithoutBudgetRevisionsApprovedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsApprovedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsApprovedInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionsApprovedInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserCreateNestedOneWithoutBudgetRevisionsAppliedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsAppliedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsAppliedInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionsAppliedInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutBudgetRevisionsCreatedNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsCreatedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsCreatedInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionsCreatedInput;
+  upsert?: Prisma.UserUpsertWithoutBudgetRevisionsCreatedInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutBudgetRevisionsCreatedInput,
+      Prisma.UserUpdateWithoutBudgetRevisionsCreatedInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsCreatedInput
+  >;
+};
+
+export type UserUpdateOneWithoutBudgetRevisionsReviewedNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsReviewedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsReviewedInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionsReviewedInput;
+  upsert?: Prisma.UserUpsertWithoutBudgetRevisionsReviewedInput;
+  disconnect?: Prisma.UserWhereInput | boolean;
+  delete?: Prisma.UserWhereInput | boolean;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutBudgetRevisionsReviewedInput,
+      Prisma.UserUpdateWithoutBudgetRevisionsReviewedInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsReviewedInput
+  >;
+};
+
+export type UserUpdateOneWithoutBudgetRevisionsApprovedNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsApprovedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsApprovedInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionsApprovedInput;
+  upsert?: Prisma.UserUpsertWithoutBudgetRevisionsApprovedInput;
+  disconnect?: Prisma.UserWhereInput | boolean;
+  delete?: Prisma.UserWhereInput | boolean;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutBudgetRevisionsApprovedInput,
+      Prisma.UserUpdateWithoutBudgetRevisionsApprovedInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsApprovedInput
+  >;
+};
+
+export type UserUpdateOneWithoutBudgetRevisionsAppliedNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsAppliedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsAppliedInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionsAppliedInput;
+  upsert?: Prisma.UserUpsertWithoutBudgetRevisionsAppliedInput;
+  disconnect?: Prisma.UserWhereInput | boolean;
+  delete?: Prisma.UserWhereInput | boolean;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutBudgetRevisionsAppliedInput,
+      Prisma.UserUpdateWithoutBudgetRevisionsAppliedInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsAppliedInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutBudgetRevisionActionLogsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionActionLogsInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionActionLogsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionActionLogsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutBudgetRevisionActionLogsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionActionLogsInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionActionLogsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBudgetRevisionActionLogsInput;
+  upsert?: Prisma.UserUpsertWithoutBudgetRevisionActionLogsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutBudgetRevisionActionLogsInput,
+      Prisma.UserUpdateWithoutBudgetRevisionActionLogsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionActionLogsInput
+  >;
+};
+
 export type UserCreateNestedOneWithoutNotificationsInput = {
   create?: Prisma.XOR<
     Prisma.UserCreateWithoutNotificationsInput,
@@ -586,6 +790,12 @@ export type UserCreateWithoutDepartmentHeadAssignmentsInput = {
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
 };
 
@@ -600,6 +810,12 @@ export type UserUncheckedCreateWithoutDepartmentHeadAssignmentsInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
 };
 
@@ -622,6 +838,12 @@ export type UserCreateWithoutDepartmentHeadAssignmentsMadeInput = {
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
 };
 
@@ -636,6 +858,12 @@ export type UserUncheckedCreateWithoutDepartmentHeadAssignmentsMadeInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
 };
 
@@ -678,6 +906,12 @@ export type UserUpdateWithoutDepartmentHeadAssignmentsInput = {
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
 };
 
@@ -692,6 +926,12 @@ export type UserUncheckedUpdateWithoutDepartmentHeadAssignmentsInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
 };
 
@@ -727,6 +967,12 @@ export type UserUpdateWithoutDepartmentHeadAssignmentsMadeInput = {
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
 };
 
@@ -741,6 +987,12 @@ export type UserUncheckedUpdateWithoutDepartmentHeadAssignmentsMadeInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
 };
 
@@ -754,6 +1006,12 @@ export type UserCreateWithoutProjectsAsCoLeaderInput = {
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -768,6 +1026,12 @@ export type UserUncheckedCreateWithoutProjectsAsCoLeaderInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -790,6 +1054,12 @@ export type UserCreateWithoutProjectsAsLeaderInput = {
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -804,6 +1074,12 @@ export type UserUncheckedCreateWithoutProjectsAsLeaderInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -846,6 +1122,12 @@ export type UserUpdateWithoutProjectsAsCoLeaderInput = {
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -860,6 +1142,12 @@ export type UserUncheckedUpdateWithoutProjectsAsCoLeaderInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -894,6 +1182,12 @@ export type UserUpdateWithoutProjectsAsLeaderInput = {
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -908,6 +1202,12 @@ export type UserUncheckedUpdateWithoutProjectsAsLeaderInput = {
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -922,6 +1222,12 @@ export type UserCreateWithoutRoleCompletionsInput = {
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -936,6 +1242,12 @@ export type UserUncheckedCreateWithoutRoleCompletionsInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -978,6 +1290,12 @@ export type UserUpdateWithoutRoleCompletionsInput = {
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -992,6 +1310,12 @@ export type UserUncheckedUpdateWithoutRoleCompletionsInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -1006,6 +1330,12 @@ export type UserCreateWithoutStatusRecordsInput = {
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -1020,6 +1350,12 @@ export type UserUncheckedCreateWithoutStatusRecordsInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -1062,6 +1398,12 @@ export type UserUpdateWithoutStatusRecordsInput = {
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -1076,6 +1418,660 @@ export type UserUncheckedUpdateWithoutStatusRecordsInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserCreateWithoutStatusActionLogsInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserUncheckedCreateWithoutStatusActionLogsInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserCreateOrConnectWithoutStatusActionLogsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutStatusActionLogsInput,
+    Prisma.UserUncheckedCreateWithoutStatusActionLogsInput
+  >;
+};
+
+export type UserUpsertWithoutStatusActionLogsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutStatusActionLogsInput,
+    Prisma.UserUncheckedUpdateWithoutStatusActionLogsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutStatusActionLogsInput,
+    Prisma.UserUncheckedCreateWithoutStatusActionLogsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutStatusActionLogsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutStatusActionLogsInput,
+    Prisma.UserUncheckedUpdateWithoutStatusActionLogsInput
+  >;
+};
+
+export type UserUpdateWithoutStatusActionLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutStatusActionLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserCreateWithoutBudgetRevisionsCreatedInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserUncheckedCreateWithoutBudgetRevisionsCreatedInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserCreateOrConnectWithoutBudgetRevisionsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsCreatedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsCreatedInput
+  >;
+};
+
+export type UserCreateWithoutBudgetRevisionsReviewedInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserUncheckedCreateWithoutBudgetRevisionsReviewedInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserCreateOrConnectWithoutBudgetRevisionsReviewedInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsReviewedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsReviewedInput
+  >;
+};
+
+export type UserCreateWithoutBudgetRevisionsApprovedInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserUncheckedCreateWithoutBudgetRevisionsApprovedInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserCreateOrConnectWithoutBudgetRevisionsApprovedInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsApprovedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsApprovedInput
+  >;
+};
+
+export type UserCreateWithoutBudgetRevisionsAppliedInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserUncheckedCreateWithoutBudgetRevisionsAppliedInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserCreateOrConnectWithoutBudgetRevisionsAppliedInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsAppliedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsAppliedInput
+  >;
+};
+
+export type UserUpsertWithoutBudgetRevisionsCreatedInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionsCreatedInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsCreatedInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsCreatedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsCreatedInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutBudgetRevisionsCreatedInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionsCreatedInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsCreatedInput
+  >;
+};
+
+export type UserUpdateWithoutBudgetRevisionsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutBudgetRevisionsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUpsertWithoutBudgetRevisionsReviewedInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionsReviewedInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsReviewedInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsReviewedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsReviewedInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutBudgetRevisionsReviewedInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionsReviewedInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsReviewedInput
+  >;
+};
+
+export type UserUpdateWithoutBudgetRevisionsReviewedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutBudgetRevisionsReviewedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUpsertWithoutBudgetRevisionsApprovedInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionsApprovedInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsApprovedInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsApprovedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsApprovedInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutBudgetRevisionsApprovedInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionsApprovedInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsApprovedInput
+  >;
+};
+
+export type UserUpdateWithoutBudgetRevisionsApprovedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutBudgetRevisionsApprovedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUpsertWithoutBudgetRevisionsAppliedInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionsAppliedInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsAppliedInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionsAppliedInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionsAppliedInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutBudgetRevisionsAppliedInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionsAppliedInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionsAppliedInput
+  >;
+};
+
+export type UserUpdateWithoutBudgetRevisionsAppliedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutBudgetRevisionsAppliedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserCreateWithoutBudgetRevisionActionLogsInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserUncheckedCreateWithoutBudgetRevisionActionLogsInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutCoLeaderInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutCompleterInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
+};
+
+export type UserCreateOrConnectWithoutBudgetRevisionActionLogsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionActionLogsInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionActionLogsInput
+  >;
+};
+
+export type UserUpsertWithoutBudgetRevisionActionLogsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionActionLogsInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionActionLogsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutBudgetRevisionActionLogsInput,
+    Prisma.UserUncheckedCreateWithoutBudgetRevisionActionLogsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutBudgetRevisionActionLogsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutBudgetRevisionActionLogsInput,
+    Prisma.UserUncheckedUpdateWithoutBudgetRevisionActionLogsInput
+  >;
+};
+
+export type UserUpdateWithoutBudgetRevisionActionLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
+  departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutBudgetRevisionActionLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  projectsAsCoLeader?: Prisma.ProjectUncheckedUpdateManyWithoutCoLeaderNestedInput;
+  projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
+  statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutCompleterNestedInput;
+  roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -1090,6 +2086,12 @@ export type UserCreateWithoutNotificationsInput = {
   projectsAsLeader?: Prisma.ProjectCreateNestedManyWithoutLeaderInput;
   statusRecords?: Prisma.ProjectStatusRecordCreateNestedManyWithoutEnteredByUserInput;
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -1104,6 +2106,12 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedCreateNestedManyWithoutLeaderInput;
   statusRecords?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutEnteredByUserInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutCompleterInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutActorUserInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutCreatorInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutReviewerInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApproverInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedCreateNestedManyWithoutApplierInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedCreateNestedManyWithoutActorUserInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutHeadUserInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput;
 };
@@ -1146,6 +2154,12 @@ export type UserUpdateWithoutNotificationsInput = {
   projectsAsLeader?: Prisma.ProjectUpdateManyWithoutLeaderNestedInput;
   statusRecords?: Prisma.ProjectStatusRecordUpdateManyWithoutEnteredByUserNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -1160,6 +2174,12 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   projectsAsLeader?: Prisma.ProjectUncheckedUpdateManyWithoutLeaderNestedInput;
   statusRecords?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserNestedInput;
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutCompleterNestedInput;
+  statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
+  budgetRevisionsCreated?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutCreatorNestedInput;
+  budgetRevisionsReviewed?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutReviewerNestedInput;
+  budgetRevisionsApproved?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApproverNestedInput;
+  budgetRevisionsApplied?: Prisma.BudgetRevisionUncheckedUpdateManyWithoutApplierNestedInput;
+  budgetRevisionActionLogs?: Prisma.BudgetRevisionActionLogUncheckedUpdateManyWithoutActorUserNestedInput;
   departmentHeadAssignments?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutHeadUserNestedInput;
   departmentHeadAssignmentsMade?: Prisma.DepartmentHeadAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput;
 };
@@ -1174,6 +2194,12 @@ export type UserCountOutputType = {
   statusRecords: number;
   notifications: number;
   roleCompletions: number;
+  statusActionLogs: number;
+  budgetRevisionsCreated: number;
+  budgetRevisionsReviewed: number;
+  budgetRevisionsApproved: number;
+  budgetRevisionsApplied: number;
+  budgetRevisionActionLogs: number;
   departmentHeadAssignments: number;
   departmentHeadAssignmentsMade: number;
 };
@@ -1187,6 +2213,22 @@ export type UserCountOutputTypeSelect<
   statusRecords?: boolean | UserCountOutputTypeCountStatusRecordsArgs;
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs;
   roleCompletions?: boolean | UserCountOutputTypeCountRoleCompletionsArgs;
+  statusActionLogs?: boolean | UserCountOutputTypeCountStatusActionLogsArgs;
+  budgetRevisionsCreated?:
+    | boolean
+    | UserCountOutputTypeCountBudgetRevisionsCreatedArgs;
+  budgetRevisionsReviewed?:
+    | boolean
+    | UserCountOutputTypeCountBudgetRevisionsReviewedArgs;
+  budgetRevisionsApproved?:
+    | boolean
+    | UserCountOutputTypeCountBudgetRevisionsApprovedArgs;
+  budgetRevisionsApplied?:
+    | boolean
+    | UserCountOutputTypeCountBudgetRevisionsAppliedArgs;
+  budgetRevisionActionLogs?:
+    | boolean
+    | UserCountOutputTypeCountBudgetRevisionActionLogsArgs;
   departmentHeadAssignments?:
     | boolean
     | UserCountOutputTypeCountDepartmentHeadAssignmentsArgs;
@@ -1261,6 +2303,66 @@ export type UserCountOutputTypeCountRoleCompletionsArgs<
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountStatusActionLogsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ProjectStatusActionLogWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBudgetRevisionsCreatedArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.BudgetRevisionWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBudgetRevisionsReviewedArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.BudgetRevisionWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBudgetRevisionsApprovedArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.BudgetRevisionWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBudgetRevisionsAppliedArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.BudgetRevisionWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBudgetRevisionActionLogsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.BudgetRevisionActionLogWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountDepartmentHeadAssignmentsArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -1293,6 +2395,22 @@ export type UserSelect<
     statusRecords?: boolean | Prisma.User$statusRecordsArgs<ExtArgs>;
     notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>;
     roleCompletions?: boolean | Prisma.User$roleCompletionsArgs<ExtArgs>;
+    statusActionLogs?: boolean | Prisma.User$statusActionLogsArgs<ExtArgs>;
+    budgetRevisionsCreated?:
+      | boolean
+      | Prisma.User$budgetRevisionsCreatedArgs<ExtArgs>;
+    budgetRevisionsReviewed?:
+      | boolean
+      | Prisma.User$budgetRevisionsReviewedArgs<ExtArgs>;
+    budgetRevisionsApproved?:
+      | boolean
+      | Prisma.User$budgetRevisionsApprovedArgs<ExtArgs>;
+    budgetRevisionsApplied?:
+      | boolean
+      | Prisma.User$budgetRevisionsAppliedArgs<ExtArgs>;
+    budgetRevisionActionLogs?:
+      | boolean
+      | Prisma.User$budgetRevisionActionLogsArgs<ExtArgs>;
     departmentHeadAssignments?:
       | boolean
       | Prisma.User$departmentHeadAssignmentsArgs<ExtArgs>;
@@ -1356,6 +2474,22 @@ export type UserInclude<
   statusRecords?: boolean | Prisma.User$statusRecordsArgs<ExtArgs>;
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>;
   roleCompletions?: boolean | Prisma.User$roleCompletionsArgs<ExtArgs>;
+  statusActionLogs?: boolean | Prisma.User$statusActionLogsArgs<ExtArgs>;
+  budgetRevisionsCreated?:
+    | boolean
+    | Prisma.User$budgetRevisionsCreatedArgs<ExtArgs>;
+  budgetRevisionsReviewed?:
+    | boolean
+    | Prisma.User$budgetRevisionsReviewedArgs<ExtArgs>;
+  budgetRevisionsApproved?:
+    | boolean
+    | Prisma.User$budgetRevisionsApprovedArgs<ExtArgs>;
+  budgetRevisionsApplied?:
+    | boolean
+    | Prisma.User$budgetRevisionsAppliedArgs<ExtArgs>;
+  budgetRevisionActionLogs?:
+    | boolean
+    | Prisma.User$budgetRevisionActionLogsArgs<ExtArgs>;
   departmentHeadAssignments?:
     | boolean
     | Prisma.User$departmentHeadAssignmentsArgs<ExtArgs>;
@@ -1384,6 +2518,12 @@ export type $UserPayload<
     statusRecords: Prisma.$ProjectStatusRecordPayload<ExtArgs>[];
     notifications: Prisma.$NotificationStatusPayload<ExtArgs>[];
     roleCompletions: Prisma.$ProjectRoleCompletionPayload<ExtArgs>[];
+    statusActionLogs: Prisma.$ProjectStatusActionLogPayload<ExtArgs>[];
+    budgetRevisionsCreated: Prisma.$BudgetRevisionPayload<ExtArgs>[];
+    budgetRevisionsReviewed: Prisma.$BudgetRevisionPayload<ExtArgs>[];
+    budgetRevisionsApproved: Prisma.$BudgetRevisionPayload<ExtArgs>[];
+    budgetRevisionsApplied: Prisma.$BudgetRevisionPayload<ExtArgs>[];
+    budgetRevisionActionLogs: Prisma.$BudgetRevisionActionLogPayload<ExtArgs>[];
     departmentHeadAssignments: Prisma.$DepartmentHeadAssignmentPayload<ExtArgs>[];
     departmentHeadAssignmentsMade: Prisma.$DepartmentHeadAssignmentPayload<ExtArgs>[];
   };
@@ -1995,6 +3135,82 @@ export interface Prisma__UserClient<
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$ProjectRoleCompletionPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  statusActionLogs<T extends Prisma.User$statusActionLogsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$statusActionLogsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ProjectStatusActionLogPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  budgetRevisionsCreated<
+    T extends Prisma.User$budgetRevisionsCreatedArgs<ExtArgs> = {},
+  >(
+    args?: Prisma.Subset<T, Prisma.User$budgetRevisionsCreatedArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$BudgetRevisionPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  budgetRevisionsReviewed<
+    T extends Prisma.User$budgetRevisionsReviewedArgs<ExtArgs> = {},
+  >(
+    args?: Prisma.Subset<T, Prisma.User$budgetRevisionsReviewedArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$BudgetRevisionPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  budgetRevisionsApproved<
+    T extends Prisma.User$budgetRevisionsApprovedArgs<ExtArgs> = {},
+  >(
+    args?: Prisma.Subset<T, Prisma.User$budgetRevisionsApprovedArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$BudgetRevisionPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  budgetRevisionsApplied<
+    T extends Prisma.User$budgetRevisionsAppliedArgs<ExtArgs> = {},
+  >(
+    args?: Prisma.Subset<T, Prisma.User$budgetRevisionsAppliedArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$BudgetRevisionPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  budgetRevisionActionLogs<
+    T extends Prisma.User$budgetRevisionActionLogsArgs<ExtArgs> = {},
+  >(
+    args?: Prisma.Subset<T, Prisma.User$budgetRevisionActionLogsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$BudgetRevisionActionLogPayload<ExtArgs>,
         T,
         "findMany",
         GlobalOmitOptions
@@ -2666,6 +3882,192 @@ export type User$roleCompletionsArgs<
   distinct?:
     | Prisma.ProjectRoleCompletionScalarFieldEnum
     | Prisma.ProjectRoleCompletionScalarFieldEnum[];
+};
+
+/**
+ * User.statusActionLogs
+ */
+export type User$statusActionLogsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ProjectStatusActionLog
+   */
+  select?: Prisma.ProjectStatusActionLogSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the ProjectStatusActionLog
+   */
+  omit?: Prisma.ProjectStatusActionLogOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectStatusActionLogInclude<ExtArgs> | null;
+  where?: Prisma.ProjectStatusActionLogWhereInput;
+  orderBy?:
+    | Prisma.ProjectStatusActionLogOrderByWithRelationInput
+    | Prisma.ProjectStatusActionLogOrderByWithRelationInput[];
+  cursor?: Prisma.ProjectStatusActionLogWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.ProjectStatusActionLogScalarFieldEnum
+    | Prisma.ProjectStatusActionLogScalarFieldEnum[];
+};
+
+/**
+ * User.budgetRevisionsCreated
+ */
+export type User$budgetRevisionsCreatedArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the BudgetRevision
+   */
+  select?: Prisma.BudgetRevisionSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the BudgetRevision
+   */
+  omit?: Prisma.BudgetRevisionOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BudgetRevisionInclude<ExtArgs> | null;
+  where?: Prisma.BudgetRevisionWhereInput;
+  orderBy?:
+    | Prisma.BudgetRevisionOrderByWithRelationInput
+    | Prisma.BudgetRevisionOrderByWithRelationInput[];
+  cursor?: Prisma.BudgetRevisionWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.BudgetRevisionScalarFieldEnum
+    | Prisma.BudgetRevisionScalarFieldEnum[];
+};
+
+/**
+ * User.budgetRevisionsReviewed
+ */
+export type User$budgetRevisionsReviewedArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the BudgetRevision
+   */
+  select?: Prisma.BudgetRevisionSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the BudgetRevision
+   */
+  omit?: Prisma.BudgetRevisionOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BudgetRevisionInclude<ExtArgs> | null;
+  where?: Prisma.BudgetRevisionWhereInput;
+  orderBy?:
+    | Prisma.BudgetRevisionOrderByWithRelationInput
+    | Prisma.BudgetRevisionOrderByWithRelationInput[];
+  cursor?: Prisma.BudgetRevisionWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.BudgetRevisionScalarFieldEnum
+    | Prisma.BudgetRevisionScalarFieldEnum[];
+};
+
+/**
+ * User.budgetRevisionsApproved
+ */
+export type User$budgetRevisionsApprovedArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the BudgetRevision
+   */
+  select?: Prisma.BudgetRevisionSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the BudgetRevision
+   */
+  omit?: Prisma.BudgetRevisionOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BudgetRevisionInclude<ExtArgs> | null;
+  where?: Prisma.BudgetRevisionWhereInput;
+  orderBy?:
+    | Prisma.BudgetRevisionOrderByWithRelationInput
+    | Prisma.BudgetRevisionOrderByWithRelationInput[];
+  cursor?: Prisma.BudgetRevisionWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.BudgetRevisionScalarFieldEnum
+    | Prisma.BudgetRevisionScalarFieldEnum[];
+};
+
+/**
+ * User.budgetRevisionsApplied
+ */
+export type User$budgetRevisionsAppliedArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the BudgetRevision
+   */
+  select?: Prisma.BudgetRevisionSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the BudgetRevision
+   */
+  omit?: Prisma.BudgetRevisionOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BudgetRevisionInclude<ExtArgs> | null;
+  where?: Prisma.BudgetRevisionWhereInput;
+  orderBy?:
+    | Prisma.BudgetRevisionOrderByWithRelationInput
+    | Prisma.BudgetRevisionOrderByWithRelationInput[];
+  cursor?: Prisma.BudgetRevisionWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.BudgetRevisionScalarFieldEnum
+    | Prisma.BudgetRevisionScalarFieldEnum[];
+};
+
+/**
+ * User.budgetRevisionActionLogs
+ */
+export type User$budgetRevisionActionLogsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the BudgetRevisionActionLog
+   */
+  select?: Prisma.BudgetRevisionActionLogSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the BudgetRevisionActionLog
+   */
+  omit?: Prisma.BudgetRevisionActionLogOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BudgetRevisionActionLogInclude<ExtArgs> | null;
+  where?: Prisma.BudgetRevisionActionLogWhereInput;
+  orderBy?:
+    | Prisma.BudgetRevisionActionLogOrderByWithRelationInput
+    | Prisma.BudgetRevisionActionLogOrderByWithRelationInput[];
+  cursor?: Prisma.BudgetRevisionActionLogWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.BudgetRevisionActionLogScalarFieldEnum
+    | Prisma.BudgetRevisionActionLogScalarFieldEnum[];
 };
 
 /**

@@ -29,14 +29,22 @@ export async function GET(
               (1000 * 60 * 60 * 24),
           )
         : null, // duration in days
-      enteredBy: record.enteredBy,
+      enteredBy: record.enteredByUser,
       branchChoice: record.branchChoice,
+      actionLogs: record.actionLogs.map((log) => ({
+        id: log.id,
+        actionType: log.actionType,
+        actorRole: log.actorRole,
+        note: log.note,
+        createdAt: log.createdAt,
+        actorUser: log.actorUser,
+      })),
       notifications: record.notifications.map((n) => ({
         type: n.notificationType,
         isRequired: n.isRequired,
         isCompleted: n.isCompleted,
         completedAt: n.completedAt,
-        completedBy: n.completedBy,
+        completedBy: n.completer,
       })),
     }));
 

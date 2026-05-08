@@ -68,9 +68,33 @@ export type DraftState = (typeof DraftState)[keyof typeof DraftState];
 export const ClosureRole = {
   RESEARCH: "RESEARCH",
   PHYSICAL: "PHYSICAL",
+  FINANCE: "FINANCE",
 } as const;
 
 export type ClosureRole = (typeof ClosureRole)[keyof typeof ClosureRole];
+
+export const BudgetRevisionStatus = {
+  BR_DRAFT: "BR_DRAFT",
+  BR_SUBMITTED: "BR_SUBMITTED",
+  BR_RESEARCH_CHECKED: "BR_RESEARCH_CHECKED",
+  BR_WAITING_MEETING: "BR_WAITING_MEETING",
+  BR_BOARD_APPROVED: "BR_BOARD_APPROVED",
+  BR_DEAN_APPROVED: "BR_DEAN_APPROVED",
+  BR_APPLIED: "BR_APPLIED",
+  BR_REJECTED: "BR_REJECTED",
+  BR_CANCELLED: "BR_CANCELLED",
+} as const;
+
+export type BudgetRevisionStatus =
+  (typeof BudgetRevisionStatus)[keyof typeof BudgetRevisionStatus];
+
+export const BudgetApprovalRoute = {
+  BOARD: "BOARD",
+  DEAN: "DEAN",
+} as const;
+
+export type BudgetApprovalRoute =
+  (typeof BudgetApprovalRoute)[keyof typeof BudgetApprovalRoute];
 
 export const EmailDeliveryStatus = {
   PENDING: "PENDING",

@@ -263,6 +263,7 @@ export type ProjectStatusRecordWhereInput = {
     Prisma.UserWhereInput
   >;
   notifications?: Prisma.NotificationStatusListRelationFilter;
+  actionLogs?: Prisma.ProjectStatusActionLogListRelationFilter;
 };
 
 export type ProjectStatusRecordOrderByWithRelationInput = {
@@ -280,6 +281,7 @@ export type ProjectStatusRecordOrderByWithRelationInput = {
   currentFor?: Prisma.ProjectOrderByWithRelationInput;
   enteredByUser?: Prisma.UserOrderByWithRelationInput;
   notifications?: Prisma.NotificationStatusOrderByRelationAggregateInput;
+  actionLogs?: Prisma.ProjectStatusActionLogOrderByRelationAggregateInput;
 };
 
 export type ProjectStatusRecordWhereUniqueInput = Prisma.AtLeast<
@@ -326,6 +328,7 @@ export type ProjectStatusRecordWhereUniqueInput = Prisma.AtLeast<
       Prisma.UserWhereInput
     >;
     notifications?: Prisma.NotificationStatusListRelationFilter;
+    actionLogs?: Prisma.ProjectStatusActionLogListRelationFilter;
   },
   "id"
 >;
@@ -399,6 +402,7 @@ export type ProjectStatusRecordCreateInput = {
   currentFor?: Prisma.ProjectCreateNestedOneWithoutCurrentStatusInput;
   enteredByUser: Prisma.UserCreateNestedOneWithoutStatusRecordsInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordUncheckedCreateInput = {
@@ -414,6 +418,7 @@ export type ProjectStatusRecordUncheckedCreateInput = {
   branchChoice?: string | null;
   currentFor?: Prisma.ProjectUncheckedCreateNestedOneWithoutCurrentStatusInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordUpdateInput = {
@@ -438,6 +443,7 @@ export type ProjectStatusRecordUpdateInput = {
   currentFor?: Prisma.ProjectUpdateOneWithoutCurrentStatusNestedInput;
   enteredByUser?: Prisma.UserUpdateOneRequiredWithoutStatusRecordsNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordUncheckedUpdateInput = {
@@ -462,6 +468,7 @@ export type ProjectStatusRecordUncheckedUpdateInput = {
     | null;
   currentFor?: Prisma.ProjectUncheckedUpdateOneWithoutCurrentStatusNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordCreateManyInput = {
@@ -832,6 +839,34 @@ export type EnumStatusCodeFieldUpdateOperationsInput = {
   set?: $Enums.StatusCode;
 };
 
+export type ProjectStatusRecordCreateNestedOneWithoutActionLogsInput = {
+  create?: Prisma.XOR<
+    Prisma.ProjectStatusRecordCreateWithoutActionLogsInput,
+    Prisma.ProjectStatusRecordUncheckedCreateWithoutActionLogsInput
+  >;
+  connectOrCreate?: Prisma.ProjectStatusRecordCreateOrConnectWithoutActionLogsInput;
+  connect?: Prisma.ProjectStatusRecordWhereUniqueInput;
+};
+
+export type ProjectStatusRecordUpdateOneWithoutActionLogsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.ProjectStatusRecordCreateWithoutActionLogsInput,
+    Prisma.ProjectStatusRecordUncheckedCreateWithoutActionLogsInput
+  >;
+  connectOrCreate?: Prisma.ProjectStatusRecordCreateOrConnectWithoutActionLogsInput;
+  upsert?: Prisma.ProjectStatusRecordUpsertWithoutActionLogsInput;
+  disconnect?: Prisma.ProjectStatusRecordWhereInput | boolean;
+  delete?: Prisma.ProjectStatusRecordWhereInput | boolean;
+  connect?: Prisma.ProjectStatusRecordWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.ProjectStatusRecordUpdateToOneWithWhereWithoutActionLogsInput,
+      Prisma.ProjectStatusRecordUpdateWithoutActionLogsInput
+    >,
+    Prisma.ProjectStatusRecordUncheckedUpdateWithoutActionLogsInput
+  >;
+};
+
 export type ProjectStatusRecordCreateNestedOneWithoutNotificationsInput = {
   create?: Prisma.XOR<
     Prisma.ProjectStatusRecordCreateWithoutNotificationsInput,
@@ -871,6 +906,7 @@ export type ProjectStatusRecordCreateWithoutEnteredByUserInput = {
   project: Prisma.ProjectCreateNestedOneWithoutStatusHistoryInput;
   currentFor?: Prisma.ProjectCreateNestedOneWithoutCurrentStatusInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordUncheckedCreateWithoutEnteredByUserInput = {
@@ -885,6 +921,7 @@ export type ProjectStatusRecordUncheckedCreateWithoutEnteredByUserInput = {
   branchChoice?: string | null;
   currentFor?: Prisma.ProjectUncheckedCreateNestedOneWithoutCurrentStatusInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordCreateOrConnectWithoutEnteredByUserInput = {
@@ -976,6 +1013,7 @@ export type ProjectStatusRecordCreateWithoutCurrentForInput = {
   project: Prisma.ProjectCreateNestedOneWithoutStatusHistoryInput;
   enteredByUser: Prisma.UserCreateNestedOneWithoutStatusRecordsInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordUncheckedCreateWithoutCurrentForInput = {
@@ -990,6 +1028,7 @@ export type ProjectStatusRecordUncheckedCreateWithoutCurrentForInput = {
   notes?: string | null;
   branchChoice?: string | null;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordCreateOrConnectWithoutCurrentForInput = {
@@ -1012,6 +1051,7 @@ export type ProjectStatusRecordCreateWithoutProjectInput = {
   currentFor?: Prisma.ProjectCreateNestedOneWithoutCurrentStatusInput;
   enteredByUser: Prisma.UserCreateNestedOneWithoutStatusRecordsInput;
   notifications?: Prisma.NotificationStatusCreateNestedManyWithoutStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordUncheckedCreateWithoutProjectInput = {
@@ -1026,6 +1066,7 @@ export type ProjectStatusRecordUncheckedCreateWithoutProjectInput = {
   branchChoice?: string | null;
   currentFor?: Prisma.ProjectUncheckedCreateNestedOneWithoutCurrentStatusInput;
   notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordCreateOrConnectWithoutProjectInput = {
@@ -1084,6 +1125,7 @@ export type ProjectStatusRecordUpdateWithoutCurrentForInput = {
   project?: Prisma.ProjectUpdateOneRequiredWithoutStatusHistoryNestedInput;
   enteredByUser?: Prisma.UserUpdateOneRequiredWithoutStatusRecordsNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordUncheckedUpdateWithoutCurrentForInput = {
@@ -1107,6 +1149,7 @@ export type ProjectStatusRecordUncheckedUpdateWithoutCurrentForInput = {
     | string
     | null;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordUpsertWithWhereUniqueWithoutProjectInput = {
@@ -1137,6 +1180,112 @@ export type ProjectStatusRecordUpdateManyWithWhereWithoutProjectInput = {
   >;
 };
 
+export type ProjectStatusRecordCreateWithoutActionLogsInput = {
+  id?: string;
+  statusCode: $Enums.StatusCode;
+  statusLabel: string;
+  subStatus?: string | null;
+  enteredAt?: Date | string;
+  exitedAt?: Date | string | null;
+  notes?: string | null;
+  branchChoice?: string | null;
+  project: Prisma.ProjectCreateNestedOneWithoutStatusHistoryInput;
+  currentFor?: Prisma.ProjectCreateNestedOneWithoutCurrentStatusInput;
+  enteredByUser: Prisma.UserCreateNestedOneWithoutStatusRecordsInput;
+  notifications?: Prisma.NotificationStatusCreateNestedManyWithoutStatusInput;
+};
+
+export type ProjectStatusRecordUncheckedCreateWithoutActionLogsInput = {
+  id?: string;
+  projectId: string;
+  statusCode: $Enums.StatusCode;
+  statusLabel: string;
+  subStatus?: string | null;
+  enteredAt?: Date | string;
+  enteredBy: string;
+  exitedAt?: Date | string | null;
+  notes?: string | null;
+  branchChoice?: string | null;
+  currentFor?: Prisma.ProjectUncheckedCreateNestedOneWithoutCurrentStatusInput;
+  notifications?: Prisma.NotificationStatusUncheckedCreateNestedManyWithoutStatusInput;
+};
+
+export type ProjectStatusRecordCreateOrConnectWithoutActionLogsInput = {
+  where: Prisma.ProjectStatusRecordWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.ProjectStatusRecordCreateWithoutActionLogsInput,
+    Prisma.ProjectStatusRecordUncheckedCreateWithoutActionLogsInput
+  >;
+};
+
+export type ProjectStatusRecordUpsertWithoutActionLogsInput = {
+  update: Prisma.XOR<
+    Prisma.ProjectStatusRecordUpdateWithoutActionLogsInput,
+    Prisma.ProjectStatusRecordUncheckedUpdateWithoutActionLogsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ProjectStatusRecordCreateWithoutActionLogsInput,
+    Prisma.ProjectStatusRecordUncheckedCreateWithoutActionLogsInput
+  >;
+  where?: Prisma.ProjectStatusRecordWhereInput;
+};
+
+export type ProjectStatusRecordUpdateToOneWithWhereWithoutActionLogsInput = {
+  where?: Prisma.ProjectStatusRecordWhereInput;
+  data: Prisma.XOR<
+    Prisma.ProjectStatusRecordUpdateWithoutActionLogsInput,
+    Prisma.ProjectStatusRecordUncheckedUpdateWithoutActionLogsInput
+  >;
+};
+
+export type ProjectStatusRecordUpdateWithoutActionLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  statusCode?:
+    | Prisma.EnumStatusCodeFieldUpdateOperationsInput
+    | $Enums.StatusCode;
+  statusLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+  subStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  enteredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  exitedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  branchChoice?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  project?: Prisma.ProjectUpdateOneRequiredWithoutStatusHistoryNestedInput;
+  currentFor?: Prisma.ProjectUpdateOneWithoutCurrentStatusNestedInput;
+  enteredByUser?: Prisma.UserUpdateOneRequiredWithoutStatusRecordsNestedInput;
+  notifications?: Prisma.NotificationStatusUpdateManyWithoutStatusNestedInput;
+};
+
+export type ProjectStatusRecordUncheckedUpdateWithoutActionLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string;
+  statusCode?:
+    | Prisma.EnumStatusCodeFieldUpdateOperationsInput
+    | $Enums.StatusCode;
+  statusLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+  subStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  enteredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  enteredBy?: Prisma.StringFieldUpdateOperationsInput | string;
+  exitedAt?:
+    | Prisma.NullableDateTimeFieldUpdateOperationsInput
+    | Date
+    | string
+    | null;
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  branchChoice?:
+    | Prisma.NullableStringFieldUpdateOperationsInput
+    | string
+    | null;
+  currentFor?: Prisma.ProjectUncheckedUpdateOneWithoutCurrentStatusNestedInput;
+  notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutStatusNestedInput;
+};
+
 export type ProjectStatusRecordCreateWithoutNotificationsInput = {
   id?: string;
   statusCode: $Enums.StatusCode;
@@ -1149,6 +1298,7 @@ export type ProjectStatusRecordCreateWithoutNotificationsInput = {
   project: Prisma.ProjectCreateNestedOneWithoutStatusHistoryInput;
   currentFor?: Prisma.ProjectCreateNestedOneWithoutCurrentStatusInput;
   enteredByUser: Prisma.UserCreateNestedOneWithoutStatusRecordsInput;
+  actionLogs?: Prisma.ProjectStatusActionLogCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordUncheckedCreateWithoutNotificationsInput = {
@@ -1163,6 +1313,7 @@ export type ProjectStatusRecordUncheckedCreateWithoutNotificationsInput = {
   notes?: string | null;
   branchChoice?: string | null;
   currentFor?: Prisma.ProjectUncheckedCreateNestedOneWithoutCurrentStatusInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutStatusRecordInput;
 };
 
 export type ProjectStatusRecordCreateOrConnectWithoutNotificationsInput = {
@@ -1214,6 +1365,7 @@ export type ProjectStatusRecordUpdateWithoutNotificationsInput = {
   project?: Prisma.ProjectUpdateOneRequiredWithoutStatusHistoryNestedInput;
   currentFor?: Prisma.ProjectUpdateOneWithoutCurrentStatusNestedInput;
   enteredByUser?: Prisma.UserUpdateOneRequiredWithoutStatusRecordsNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordUncheckedUpdateWithoutNotificationsInput = {
@@ -1237,6 +1389,7 @@ export type ProjectStatusRecordUncheckedUpdateWithoutNotificationsInput = {
     | string
     | null;
   currentFor?: Prisma.ProjectUncheckedUpdateOneWithoutCurrentStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordCreateManyEnteredByUserInput = {
@@ -1272,6 +1425,7 @@ export type ProjectStatusRecordUpdateWithoutEnteredByUserInput = {
   project?: Prisma.ProjectUpdateOneRequiredWithoutStatusHistoryNestedInput;
   currentFor?: Prisma.ProjectUpdateOneWithoutCurrentStatusNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordUncheckedUpdateWithoutEnteredByUserInput = {
@@ -1295,6 +1449,7 @@ export type ProjectStatusRecordUncheckedUpdateWithoutEnteredByUserInput = {
     | null;
   currentFor?: Prisma.ProjectUncheckedUpdateOneWithoutCurrentStatusNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordUncheckedUpdateManyWithoutEnteredByUserInput = {
@@ -1351,6 +1506,7 @@ export type ProjectStatusRecordUpdateWithoutProjectInput = {
   currentFor?: Prisma.ProjectUpdateOneWithoutCurrentStatusNestedInput;
   enteredByUser?: Prisma.UserUpdateOneRequiredWithoutStatusRecordsNestedInput;
   notifications?: Prisma.NotificationStatusUpdateManyWithoutStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordUncheckedUpdateWithoutProjectInput = {
@@ -1374,6 +1530,7 @@ export type ProjectStatusRecordUncheckedUpdateWithoutProjectInput = {
     | null;
   currentFor?: Prisma.ProjectUncheckedUpdateOneWithoutCurrentStatusNestedInput;
   notifications?: Prisma.NotificationStatusUncheckedUpdateManyWithoutStatusNestedInput;
+  actionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutStatusRecordNestedInput;
 };
 
 export type ProjectStatusRecordUncheckedUpdateManyWithoutProjectInput = {
@@ -1403,6 +1560,7 @@ export type ProjectStatusRecordUncheckedUpdateManyWithoutProjectInput = {
 
 export type ProjectStatusRecordCountOutputType = {
   notifications: number;
+  actionLogs: number;
 };
 
 export type ProjectStatusRecordCountOutputTypeSelect<
@@ -1412,6 +1570,7 @@ export type ProjectStatusRecordCountOutputTypeSelect<
   notifications?:
     | boolean
     | ProjectStatusRecordCountOutputTypeCountNotificationsArgs;
+  actionLogs?: boolean | ProjectStatusRecordCountOutputTypeCountActionLogsArgs;
 };
 
 /**
@@ -1437,6 +1596,16 @@ export type ProjectStatusRecordCountOutputTypeCountNotificationsArgs<
   where?: Prisma.NotificationStatusWhereInput;
 };
 
+/**
+ * ProjectStatusRecordCountOutputType without action
+ */
+export type ProjectStatusRecordCountOutputTypeCountActionLogsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ProjectStatusActionLogWhereInput;
+};
+
 export type ProjectStatusRecordSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
@@ -1458,6 +1627,7 @@ export type ProjectStatusRecordSelect<
     notifications?:
       | boolean
       | Prisma.ProjectStatusRecord$notificationsArgs<ExtArgs>;
+    actionLogs?: boolean | Prisma.ProjectStatusRecord$actionLogsArgs<ExtArgs>;
     _count?:
       | boolean
       | Prisma.ProjectStatusRecordCountOutputTypeDefaultArgs<ExtArgs>;
@@ -1546,6 +1716,7 @@ export type ProjectStatusRecordInclude<
   notifications?:
     | boolean
     | Prisma.ProjectStatusRecord$notificationsArgs<ExtArgs>;
+  actionLogs?: boolean | Prisma.ProjectStatusRecord$actionLogsArgs<ExtArgs>;
   _count?:
     | boolean
     | Prisma.ProjectStatusRecordCountOutputTypeDefaultArgs<ExtArgs>;
@@ -1575,6 +1746,7 @@ export type $ProjectStatusRecordPayload<
     currentFor: Prisma.$ProjectPayload<ExtArgs> | null;
     enteredByUser: Prisma.$UserPayload<ExtArgs>;
     notifications: Prisma.$NotificationStatusPayload<ExtArgs>[];
+    actionLogs: Prisma.$ProjectStatusActionLogPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -2217,6 +2389,17 @@ export interface Prisma__ProjectStatusRecordClient<
       >
     | Null
   >;
+  actionLogs<T extends Prisma.ProjectStatusRecord$actionLogsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.ProjectStatusRecord$actionLogsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ProjectStatusActionLogPayload<ExtArgs>,
+        T,
+        "findMany",
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2790,6 +2973,37 @@ export type ProjectStatusRecord$notificationsArgs<
   distinct?:
     | Prisma.NotificationStatusScalarFieldEnum
     | Prisma.NotificationStatusScalarFieldEnum[];
+};
+
+/**
+ * ProjectStatusRecord.actionLogs
+ */
+export type ProjectStatusRecord$actionLogsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ProjectStatusActionLog
+   */
+  select?: Prisma.ProjectStatusActionLogSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the ProjectStatusActionLog
+   */
+  omit?: Prisma.ProjectStatusActionLogOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectStatusActionLogInclude<ExtArgs> | null;
+  where?: Prisma.ProjectStatusActionLogWhereInput;
+  orderBy?:
+    | Prisma.ProjectStatusActionLogOrderByWithRelationInput
+    | Prisma.ProjectStatusActionLogOrderByWithRelationInput[];
+  cursor?: Prisma.ProjectStatusActionLogWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?:
+    | Prisma.ProjectStatusActionLogScalarFieldEnum
+    | Prisma.ProjectStatusActionLogScalarFieldEnum[];
 };
 
 /**

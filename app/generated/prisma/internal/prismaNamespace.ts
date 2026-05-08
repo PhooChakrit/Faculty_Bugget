@@ -426,6 +426,9 @@ export const ModelName = {
   ProjectManager: "ProjectManager",
   Meeting: "Meeting",
   ProjectStatusRecord: "ProjectStatusRecord",
+  ProjectStatusActionLog: "ProjectStatusActionLog",
+  BudgetRevision: "BudgetRevision",
+  BudgetRevisionActionLog: "BudgetRevisionActionLog",
   NotificationStatus: "NotificationStatus",
   StatusTransition: "StatusTransition",
 } as const;
@@ -464,6 +467,9 @@ export type TypeMap<
       | "projectManager"
       | "meeting"
       | "projectStatusRecord"
+      | "projectStatusActionLog"
+      | "budgetRevision"
+      | "budgetRevisionActionLog"
       | "notificationStatus"
       | "statusTransition";
     txIsolationLevel: TransactionIsolationLevel;
@@ -1533,6 +1539,234 @@ export type TypeMap<
         };
       };
     };
+    ProjectStatusActionLog: {
+      payload: Prisma.$ProjectStatusActionLogPayload<ExtArgs>;
+      fields: Prisma.ProjectStatusActionLogFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.ProjectStatusActionLogFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.ProjectStatusActionLogFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>;
+        };
+        findFirst: {
+          args: Prisma.ProjectStatusActionLogFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.ProjectStatusActionLogFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>;
+        };
+        findMany: {
+          args: Prisma.ProjectStatusActionLogFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>[];
+        };
+        create: {
+          args: Prisma.ProjectStatusActionLogCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>;
+        };
+        createMany: {
+          args: Prisma.ProjectStatusActionLogCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.ProjectStatusActionLogCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>[];
+        };
+        delete: {
+          args: Prisma.ProjectStatusActionLogDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>;
+        };
+        update: {
+          args: Prisma.ProjectStatusActionLogUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>;
+        };
+        deleteMany: {
+          args: Prisma.ProjectStatusActionLogDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.ProjectStatusActionLogUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.ProjectStatusActionLogUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>[];
+        };
+        upsert: {
+          args: Prisma.ProjectStatusActionLogUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProjectStatusActionLogPayload>;
+        };
+        aggregate: {
+          args: Prisma.ProjectStatusActionLogAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProjectStatusActionLog>;
+        };
+        groupBy: {
+          args: Prisma.ProjectStatusActionLogGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.ProjectStatusActionLogGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.ProjectStatusActionLogCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.ProjectStatusActionLogCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    BudgetRevision: {
+      payload: Prisma.$BudgetRevisionPayload<ExtArgs>;
+      fields: Prisma.BudgetRevisionFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.BudgetRevisionFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.BudgetRevisionFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>;
+        };
+        findFirst: {
+          args: Prisma.BudgetRevisionFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.BudgetRevisionFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>;
+        };
+        findMany: {
+          args: Prisma.BudgetRevisionFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>[];
+        };
+        create: {
+          args: Prisma.BudgetRevisionCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>;
+        };
+        createMany: {
+          args: Prisma.BudgetRevisionCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.BudgetRevisionCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>[];
+        };
+        delete: {
+          args: Prisma.BudgetRevisionDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>;
+        };
+        update: {
+          args: Prisma.BudgetRevisionUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>;
+        };
+        deleteMany: {
+          args: Prisma.BudgetRevisionDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.BudgetRevisionUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.BudgetRevisionUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>[];
+        };
+        upsert: {
+          args: Prisma.BudgetRevisionUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionPayload>;
+        };
+        aggregate: {
+          args: Prisma.BudgetRevisionAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBudgetRevision>;
+        };
+        groupBy: {
+          args: Prisma.BudgetRevisionGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.BudgetRevisionGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.BudgetRevisionCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.BudgetRevisionCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
+    BudgetRevisionActionLog: {
+      payload: Prisma.$BudgetRevisionActionLogPayload<ExtArgs>;
+      fields: Prisma.BudgetRevisionActionLogFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.BudgetRevisionActionLogFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.BudgetRevisionActionLogFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>;
+        };
+        findFirst: {
+          args: Prisma.BudgetRevisionActionLogFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.BudgetRevisionActionLogFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>;
+        };
+        findMany: {
+          args: Prisma.BudgetRevisionActionLogFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>[];
+        };
+        create: {
+          args: Prisma.BudgetRevisionActionLogCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>;
+        };
+        createMany: {
+          args: Prisma.BudgetRevisionActionLogCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.BudgetRevisionActionLogCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>[];
+        };
+        delete: {
+          args: Prisma.BudgetRevisionActionLogDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>;
+        };
+        update: {
+          args: Prisma.BudgetRevisionActionLogUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>;
+        };
+        deleteMany: {
+          args: Prisma.BudgetRevisionActionLogDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.BudgetRevisionActionLogUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.BudgetRevisionActionLogUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>[];
+        };
+        upsert: {
+          args: Prisma.BudgetRevisionActionLogUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetRevisionActionLogPayload>;
+        };
+        aggregate: {
+          args: Prisma.BudgetRevisionActionLogAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBudgetRevisionActionLog>;
+        };
+        groupBy: {
+          args: Prisma.BudgetRevisionActionLogGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.BudgetRevisionActionLogGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.BudgetRevisionActionLogCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.BudgetRevisionActionLogCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
     NotificationStatus: {
       payload: Prisma.$NotificationStatusPayload<ExtArgs>;
       fields: Prisma.NotificationStatusFieldRefs;
@@ -1818,6 +2052,10 @@ export const ProjectScalarFieldEnum = {
   excelFileName: "excelFileName",
   excelFileType: "excelFileType",
   excelUploadedAt: "excelUploadedAt",
+  costCenterFile: "costCenterFile",
+  costCenterFileName: "costCenterFileName",
+  costCenterFileType: "costCenterFileType",
+  costCenterUploadedAt: "costCenterUploadedAt",
 } as const;
 
 export type ProjectScalarFieldEnum =
@@ -1950,6 +2188,67 @@ export const ProjectStatusRecordScalarFieldEnum = {
 export type ProjectStatusRecordScalarFieldEnum =
   (typeof ProjectStatusRecordScalarFieldEnum)[keyof typeof ProjectStatusRecordScalarFieldEnum];
 
+export const ProjectStatusActionLogScalarFieldEnum = {
+  id: "id",
+  projectId: "projectId",
+  statusRecordId: "statusRecordId",
+  actionType: "actionType",
+  actorUserId: "actorUserId",
+  actorRole: "actorRole",
+  note: "note",
+  createdAt: "createdAt",
+} as const;
+
+export type ProjectStatusActionLogScalarFieldEnum =
+  (typeof ProjectStatusActionLogScalarFieldEnum)[keyof typeof ProjectStatusActionLogScalarFieldEnum];
+
+export const BudgetRevisionScalarFieldEnum = {
+  id: "id",
+  projectId: "projectId",
+  status: "status",
+  originalBudgetSnapshot: "originalBudgetSnapshot",
+  proposedBudget: "proposedBudget",
+  reason: "reason",
+  closeAfterApproval: "closeAfterApproval",
+  meetingNo: "meetingNo",
+  meetingDate: "meetingDate",
+  meetingNote: "meetingNote",
+  approvalRoute: "approvalRoute",
+  deanApprovalFileName: "deanApprovalFileName",
+  deanApprovalFileUrl: "deanApprovalFileUrl",
+  affectsCostCenter: "affectsCostCenter",
+  affectsVendor: "affectsVendor",
+  createdBy: "createdBy",
+  submittedAt: "submittedAt",
+  reviewedBy: "reviewedBy",
+  reviewedAt: "reviewedAt",
+  approvedBy: "approvedBy",
+  approvedAt: "approvedAt",
+  appliedBy: "appliedBy",
+  appliedAt: "appliedAt",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+} as const;
+
+export type BudgetRevisionScalarFieldEnum =
+  (typeof BudgetRevisionScalarFieldEnum)[keyof typeof BudgetRevisionScalarFieldEnum];
+
+export const BudgetRevisionActionLogScalarFieldEnum = {
+  id: "id",
+  revisionId: "revisionId",
+  projectId: "projectId",
+  actionType: "actionType",
+  actorUserId: "actorUserId",
+  actorRole: "actorRole",
+  fromStatus: "fromStatus",
+  toStatus: "toStatus",
+  note: "note",
+  createdAt: "createdAt",
+} as const;
+
+export type BudgetRevisionActionLogScalarFieldEnum =
+  (typeof BudgetRevisionActionLogScalarFieldEnum)[keyof typeof BudgetRevisionActionLogScalarFieldEnum];
+
 export const NotificationStatusScalarFieldEnum = {
   id: "id",
   statusId: "statusId",
@@ -1984,6 +2283,13 @@ export const SortOrder = {
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull,
+} as const;
+
+export type JsonNullValueInput =
+  (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput];
+
 export const QueryMode = {
   default: "default",
   insensitive: "insensitive",
@@ -1997,6 +2303,15 @@ export const NullsOrder = {
 } as const;
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull,
+} as const;
+
+export type JsonNullValueFilter =
+  (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];
 
 /**
  * Field references
@@ -2197,6 +2512,46 @@ export type ListEnumStatusCodeFieldRefInput<$PrismaModel> = FieldRefInputType<
 >;
 
 /**
+ * Reference to a field of type 'BudgetRevisionStatus'
+ */
+export type EnumBudgetRevisionStatusFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, "BudgetRevisionStatus">;
+
+/**
+ * Reference to a field of type 'BudgetRevisionStatus[]'
+ */
+export type ListEnumBudgetRevisionStatusFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, "BudgetRevisionStatus[]">;
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "Json"
+>;
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  "QueryMode"
+>;
+
+/**
+ * Reference to a field of type 'BudgetApprovalRoute'
+ */
+export type EnumBudgetApprovalRouteFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, "BudgetApprovalRoute">;
+
+/**
+ * Reference to a field of type 'BudgetApprovalRoute[]'
+ */
+export type ListEnumBudgetApprovalRouteFieldRefInput<$PrismaModel> =
+  FieldRefInputType<$PrismaModel, "BudgetApprovalRoute[]">;
+
+/**
  * Reference to a field of type 'NotificationType'
  */
 export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
@@ -2343,6 +2698,9 @@ export type GlobalOmitConfig = {
   projectManager?: Prisma.ProjectManagerOmit;
   meeting?: Prisma.MeetingOmit;
   projectStatusRecord?: Prisma.ProjectStatusRecordOmit;
+  projectStatusActionLog?: Prisma.ProjectStatusActionLogOmit;
+  budgetRevision?: Prisma.BudgetRevisionOmit;
+  budgetRevisionActionLog?: Prisma.BudgetRevisionActionLogOmit;
   notificationStatus?: Prisma.NotificationStatusOmit;
   statusTransition?: Prisma.StatusTransitionOmit;
 };
