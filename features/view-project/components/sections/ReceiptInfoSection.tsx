@@ -26,6 +26,7 @@ import axios from "axios";
 
 interface ReceiptInfoSectionProps {
   projectId?: string;
+  projectCode?: string | null;
 }
 
 type ImportStatus = "idle" | "selected" | "uploading" | "success" | "error";
@@ -36,7 +37,10 @@ interface ExcelFileInfo {
   uploadedAt: string;
 }
 
-export function ReceiptInfoSection({ projectId }: ReceiptInfoSectionProps) {
+export function ReceiptInfoSection({
+  projectId,
+  projectCode,
+}: ReceiptInfoSectionProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [status, setStatus] = useState<ImportStatus>("idle");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -192,7 +196,9 @@ export function ReceiptInfoSection({ projectId }: ReceiptInfoSectionProps) {
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <Label className="text-muted-foreground">รหัสโครงการ</Label>
-              <div className="text-lg font-medium">{projectId || "-"}</div>
+              <div className="text-lg font-medium">
+                {projectCode?.trim() || "-"}
+              </div>
             </div>
 
             <div className="flex items-center gap-2">

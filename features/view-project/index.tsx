@@ -537,7 +537,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                     {formatStatusDisplay(statusCode)}
                   </div>
                   <div className="mt-2 text-sm text-slate-500">
-                    รหัสโครงการ: {projectData.projectCode || "-"}
+                    รหัสโครงการ: {projectData.projectCode?.trim() || "-"}
                   </div>
                 </div>
                 <select
@@ -762,7 +762,10 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
               </Card>
             )}
 
-            <ReceiptInfoSection projectId={projectId} />
+            <ReceiptInfoSection
+              projectId={projectId}
+              projectCode={projectData?.projectCode}
+            />
 
             <BasicInfoSection
               formData={formData}

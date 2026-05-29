@@ -132,7 +132,15 @@ interface EnhancedProjectData extends ProjectData {
   _costCenterUploadedAt?: string;
   _costCenterDownloadUrl?: string;
   _maintenanceFee?: string; // 10.
+  _maintenanceFeeFileName?: string;
+  _maintenanceFeeFileType?: string;
+  _maintenanceFeeUploadedAt?: string;
+  _maintenanceFeeDownloadUrl?: string;
   _electricityFeeActual?: string; // 14.
+  _electricityFeeActualFileName?: string;
+  _electricityFeeActualFileType?: string;
+  _electricityFeeActualUploadedAt?: string;
+  _electricityFeeActualDownloadUrl?: string;
   _researchComplete?: boolean;
   _physicalComplete?: boolean;
   _closureCompleteFinance?: boolean;
@@ -251,25 +259,25 @@ const COLUMNS = [
   { key: "deanDecisionDate", label: "วันที่", width: "min-w-[120px]" },
   {
     key: "totalBudget",
-    label: "งบประมาณรวม",
+    label: "งบประมาณรวม (บาท)",
     width: "min-w-[120px]",
     align: "right",
   },
   {
     key: "compensation",
-    label: "หมวดค่าตอบแทน",
+    label: "หมวดค่าตอบแทน (บาท)",
     width: "min-w-[120px]",
     align: "right",
   },
   {
     key: "operatingCost",
-    label: "หมวดค่าใช้สอย",
+    label: "หมวดค่าใช้สอย (บาท)",
     width: "min-w-[120px]",
     align: "right",
   },
   {
     key: "maintenanceFeeProposal",
-    label: "ค่าบำรุงสถานที่ (แบบข้อเสนอโครงการ)",
+    label: "ค่าบำรุงสถานที่ (แบบข้อเสนอโครงการ) (บาท)",
     width: "min-w-[140px]",
     align: "right",
     bg: "bg-slate-50",
@@ -277,7 +285,7 @@ const COLUMNS = [
   },
   {
     key: "_maintenanceFee",
-    label: "ค่าบำรุงสถานที่ใช้จริงจากทีมกายภาพ",
+    label: "ค่าบำรุงสถานที่ใช้จริงจากทีมกายภาพ (บาท)",
     width: "min-w-[140px]",
     align: "right",
     editable: true,
@@ -285,19 +293,19 @@ const COLUMNS = [
   },
   {
     key: "materialCost",
-    label: "หมวดค่าวัสดุ",
+    label: "หมวดค่าวัสดุ (บาท)",
     width: "min-w-[120px]",
     align: "right",
   },
   {
     key: "utilities",
-    label: "หมวดสาธารณูปโภค",
+    label: "หมวดสาธารณูปโภค (บาท)",
     width: "min-w-[120px]",
     align: "right",
   },
   {
     key: "electricityFeeProposal",
-    label: "ค่าไฟฟ้า (แบบข้อเสนอโครงการ)",
+    label: "ค่าไฟฟ้า (แบบข้อเสนอโครงการ) (บาท)",
     width: "min-w-[140px]",
     align: "right",
     bg: "bg-slate-50",
@@ -305,7 +313,7 @@ const COLUMNS = [
   },
   {
     key: "_electricityFeeActual",
-    label: "ค่าไฟฟ้าใช้จริงจากทีมกายภาพ",
+    label: "ค่าไฟฟ้าใช้จริงจากทีมกายภาพ (บาท)",
     width: "min-w-[140px]",
     align: "right",
     editable: true,
@@ -313,13 +321,13 @@ const COLUMNS = [
   },
   {
     key: "academicFund",
-    label: "หมวดเงินอุดหนุน",
+    label: "หมวดเงินอุดหนุน (บาท)",
     width: "min-w-[120px]",
     align: "right",
   },
   {
     key: "generalReserve",
-    label: "หมวดเงินสำรอง",
+    label: "หมวดเงินสำรอง (บาท)",
     width: "min-w-[120px]",
     align: "right",
   },
@@ -336,6 +344,20 @@ const COLUMNS = [
     editable: true,
   },
 ];
+
+const MONEY_COLUMN_KEYS = new Set([
+  "totalBudget",
+  "compensation",
+  "operatingCost",
+  "maintenanceFeeProposal",
+  "_maintenanceFee",
+  "materialCost",
+  "utilities",
+  "electricityFeeProposal",
+  "_electricityFeeActual",
+  "academicFund",
+  "generalReserve",
+]);
 
 type StatusFilter =
   | "all"
@@ -392,6 +414,17 @@ const ROLE_DISPLAY_LABELS: Record<UserRole, string> = {
 };
 
 const formatActorName = (name: string) => name.replace(" (Mock)", "");
+
+const formatMoneyDisplay = (value: unknown) => {
+  const raw = String(value ?? "").trim();
+  if (!raw) return "-";
+  const amount = Number(raw.replace(/,/g, ""));
+  if (!Number.isFinite(amount)) return raw;
+  return amount.toLocaleString("th-TH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
 
 const BUDGET_REVISION_STATUS_LABELS: Record<BudgetRevisionStatus, string> = {
   BR_DRAFT: "แบบร่างคำขอแก้ไขงบประมาณ",
@@ -562,11 +595,19 @@ const createMockProjects = (): EnhancedProjectData[] => {
     _costCenter: "",
     _costCenterFileName: "",
     _costCenterFileType: "",
-    _costCenterUploadedAt: "",
-    _costCenterDownloadUrl: "",
-    _maintenanceFee: "0.00",
-    _electricityFeeActual: "0.00",
-    _researchComplete: false,
+      _costCenterUploadedAt: "",
+      _costCenterDownloadUrl: "",
+      _maintenanceFee: "0.00",
+      _maintenanceFeeFileName: "",
+      _maintenanceFeeFileType: "",
+      _maintenanceFeeUploadedAt: "",
+      _maintenanceFeeDownloadUrl: "",
+      _electricityFeeActual: "0.00",
+      _electricityFeeActualFileName: "",
+      _electricityFeeActualFileType: "",
+      _electricityFeeActualUploadedAt: "",
+      _electricityFeeActualDownloadUrl: "",
+      _researchComplete: false,
     _physicalComplete: false,
     _closureCompleteFinance: false,
     _canReleaseProject: false,
@@ -711,7 +752,15 @@ const createMockProjects = (): EnhancedProjectData[] => {
       _costCenterUploadedAt: "8 พฤษภาคม 2569",
       _costCenterDownloadUrl: "#",
       _maintenanceFee: "0.00",
+      _maintenanceFeeFileName: "หลักฐานค่าบำรุงสถานที่.pdf",
+      _maintenanceFeeFileType: "application/pdf",
+      _maintenanceFeeUploadedAt: "8 พฤษภาคม 2569",
+      _maintenanceFeeDownloadUrl: "#",
       _electricityFeeActual: "0.00",
+      _electricityFeeActualFileName: "",
+      _electricityFeeActualFileType: "",
+      _electricityFeeActualUploadedAt: "",
+      _electricityFeeActualDownloadUrl: "",
       _nextWorkLabel: "งานกายภาพยังไม่บันทึก · งานคลังยังไม่ยืนยัน",
       _needsActionBy: ["กายภาพ", "งานคลัง"],
       _releaseChecklist: {
@@ -730,6 +779,14 @@ const createMockProjects = (): EnhancedProjectData[] => {
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       _costCenterUploadedAt: "8 พฤษภาคม 2569",
       _costCenterDownloadUrl: "#",
+      _maintenanceFeeFileName: "",
+      _maintenanceFeeFileType: "",
+      _maintenanceFeeUploadedAt: "",
+      _maintenanceFeeDownloadUrl: "",
+      _electricityFeeActualFileName: "หลักฐานค่าไฟฟ้า.png",
+      _electricityFeeActualFileType: "image/png",
+      _electricityFeeActualUploadedAt: "9 พฤษภาคม 2569",
+      _electricityFeeActualDownloadUrl: "#",
       docLink: "https://example.local/report.pdf",
       _activeBudgetRevision: {
         id: "mock-budget-revision",
@@ -777,6 +834,9 @@ export default function ProjectTrackingPage() {
   const [savingCell, setSavingCell] = useState<string | null>(null);
   const [savingCostCenterFileProjectId, setSavingCostCenterFileProjectId] =
     useState<string | null>(null);
+  const [savingPhysicalFileKey, setSavingPhysicalFileKey] = useState<
+    string | null
+  >(null);
   // Modal for meetings management
   const [editingMeetings, setEditingMeetings] = useState<{
     projectId: string;
@@ -980,15 +1040,13 @@ export default function ProjectTrackingPage() {
 
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("actorRole", userRole);
+      formData.append("actorUserId", currentActor.id);
 
       const response = await fetch(
         `/api/overviews/${project.id}/cost-center-file`,
         {
           method: "POST",
-          headers: {
-            "x-actor-role": userRole,
-            "x-actor-user-id": currentActor.id,
-          },
           body: formData,
         },
       );
@@ -1066,10 +1124,11 @@ export default function ProjectTrackingPage() {
         `/api/overviews/${project.id}/cost-center-file`,
         {
           method: "DELETE",
-          headers: {
-            "x-actor-role": userRole,
-            "x-actor-user-id": currentActor.id,
-          },
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            actorRole: userRole,
+            actorUserId: currentActor.id,
+          }),
         },
       );
 
@@ -1092,6 +1151,182 @@ export default function ProjectTrackingPage() {
       alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
     } finally {
       setSavingCostCenterFileProjectId(null);
+    }
+  };
+
+  type PhysicalFileKind = "maintenance" | "electricity";
+
+  const physicalFileConfig = {
+    maintenance: {
+      fieldKey: "_maintenanceFee",
+      nameKey: "_maintenanceFeeFileName",
+      typeKey: "_maintenanceFeeFileType",
+      uploadedAtKey: "_maintenanceFeeUploadedAt",
+      downloadUrlKey: "_maintenanceFeeDownloadUrl",
+      emptyLabel: "ยังไม่มีไฟล์ค่าบำรุงสถานที่ใช้จริง",
+    },
+    electricity: {
+      fieldKey: "_electricityFeeActual",
+      nameKey: "_electricityFeeActualFileName",
+      typeKey: "_electricityFeeActualFileType",
+      uploadedAtKey: "_electricityFeeActualUploadedAt",
+      downloadUrlKey: "_electricityFeeActualDownloadUrl",
+      emptyLabel: "ยังไม่มีไฟล์ค่าไฟฟ้าใช้จริง",
+    },
+  } as const;
+
+  const getPhysicalFileKind = (fieldKey: string): PhysicalFileKind | null => {
+    if (fieldKey === "_maintenanceFee") return "maintenance";
+    if (fieldKey === "_electricityFeeActual") return "electricity";
+    return null;
+  };
+
+  const isValidPhysicalFile = (file: File) =>
+    /\.(xlsx|xls|csv|pdf|jpg|jpeg|png)$/i.test(file.name);
+
+  const handleUploadPhysicalFile = async (
+    project: EnhancedProjectData,
+    kind: PhysicalFileKind,
+    file: File,
+  ) => {
+    if (!isValidPhysicalFile(file)) {
+      alert("รองรับเฉพาะไฟล์ .xlsx, .xls, .csv, .pdf, .jpg หรือ .png");
+      return;
+    }
+
+    const config = physicalFileConfig[kind];
+    const actionKey = `${project.id}-${kind}`;
+    setSavingPhysicalFileKey(actionKey);
+    try {
+      if (isMockMode) {
+        updateLocalProject(project.id, (item) => ({
+          ...item,
+          [config.nameKey]: file.name,
+          [config.typeKey]: file.type,
+          [config.uploadedAtKey]: new Date().toLocaleDateString("th-TH"),
+          [config.downloadUrlKey]: "#",
+        }));
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("kind", kind);
+      formData.append("file", file);
+      formData.append("actorRole", userRole);
+      formData.append("actorUserId", currentActor.id);
+
+      const response = await fetch(
+        `/api/overviews/${project.id}/physical-fee-file`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const responseData = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(responseData?.error ?? "แนบไฟล์ข้อมูลกายภาพไม่สำเร็จ");
+      }
+
+      const uploadedFile = responseData?.data?.file;
+      updateLocalProject(project.id, (item) => ({
+        ...item,
+        [config.nameKey]: uploadedFile?.name ?? file.name,
+        [config.typeKey]: uploadedFile?.type ?? file.type,
+        [config.uploadedAtKey]: uploadedFile?.uploadedAt
+          ? new Date(uploadedFile.uploadedAt).toLocaleDateString("th-TH")
+          : new Date().toLocaleDateString("th-TH"),
+        [config.downloadUrlKey]:
+          uploadedFile?.downloadUrl ??
+          `/api/overviews/${project.id}/physical-fee-file?kind=${kind}`,
+      }));
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
+    } finally {
+      setSavingPhysicalFileKey(null);
+    }
+  };
+
+  const openPhysicalFilePicker = (
+    project: EnhancedProjectData,
+    kind: PhysicalFileKind,
+  ) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".xlsx,.xls,.csv,.pdf,.jpg,.jpeg,.png";
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (file) {
+        handleUploadPhysicalFile(project, kind, file);
+      }
+    };
+    input.click();
+  };
+
+  const handleDownloadPhysicalFile = (
+    project: EnhancedProjectData,
+    kind: PhysicalFileKind,
+  ) => {
+    if (isMockMode) {
+      alert("โหมดจำลองไม่มีไฟล์จริงสำหรับดาวน์โหลด");
+      return;
+    }
+
+    const config = physicalFileConfig[kind];
+    const url =
+      (project[config.downloadUrlKey] as string | undefined) ||
+      `/api/overviews/${project.id}/physical-fee-file?kind=${kind}`;
+    window.open(url, "_blank");
+  };
+
+  const handleDeletePhysicalFile = async (
+    project: EnhancedProjectData,
+    kind: PhysicalFileKind,
+  ) => {
+    const config = physicalFileConfig[kind];
+    const actionKey = `${project.id}-${kind}`;
+    setSavingPhysicalFileKey(actionKey);
+    try {
+      if (isMockMode) {
+        updateLocalProject(project.id, (item) => ({
+          ...item,
+          [config.nameKey]: "",
+          [config.typeKey]: "",
+          [config.uploadedAtKey]: "",
+          [config.downloadUrlKey]: "",
+        }));
+        return;
+      }
+
+      const response = await fetch(
+        `/api/overviews/${project.id}/physical-fee-file`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            kind,
+            actorRole: userRole,
+            actorUserId: currentActor.id,
+          }),
+        },
+      );
+
+      const responseData = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(responseData?.error ?? "ลบไฟล์ข้อมูลกายภาพไม่สำเร็จ");
+      }
+
+      updateLocalProject(project.id, (item) => ({
+        ...item,
+        [config.nameKey]: "",
+        [config.typeKey]: "",
+        [config.uploadedAtKey]: "",
+        [config.downloadUrlKey]: "",
+      }));
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
+    } finally {
+      setSavingPhysicalFileKey(null);
     }
   };
 
@@ -1400,10 +1635,14 @@ export default function ProjectTrackingPage() {
       editingCell?.projectId === project.id && editingCell?.field === col.key;
     const alignClass = col.align === "right" ? "text-right" : "text-left";
     const fontClass = col.align === "right" ? "font-mono" : "font-normal";
+    const isMoneyColumn = MONEY_COLUMN_KEYS.has(col.key);
+    const displayValue = isMoneyColumn
+      ? formatMoneyDisplay(value)
+      : (value as string) || "-";
 
     // 1. Special Case: Project Code
     if (col.key === "projectCode") {
-      const code = (value as string) || "";
+      const code = (value as string)?.trim() || "-";
       return (
         <span className="text-sm font-semibold text-indigo-900">{code}</span>
       );
@@ -1724,6 +1963,147 @@ export default function ProjectTrackingPage() {
       );
     }
 
+    const physicalFileKind = getPhysicalFileKind(col.key);
+    if (physicalFileKind) {
+      const statusKey = getStatusKey(project._projectStatus);
+      const canManagePhysical =
+        userRole === "กายภาพ" && ["6", "7"].includes(statusKey);
+      const config = physicalFileConfig[physicalFileKind];
+      const fileName = project[config.nameKey] as string | undefined;
+      const uploadedAt = project[config.uploadedAtKey] as string | undefined;
+      const hasFile = Boolean(fileName);
+      const isSavingPhysicalFile =
+        savingPhysicalFileKey === `${project.id}-${physicalFileKind}`;
+
+      return (
+        <div className="space-y-2">
+          {isEditing ? (
+            <div className="flex gap-1 items-center z-50 relative">
+              <Input
+                value={editingValue}
+                onChange={(e) => setEditingValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSaveCell();
+                  if (e.key === "Escape") handleCancelEdit();
+                }}
+                className={`h-8 text-sm ${alignClass} min-w-[80px]`}
+                autoFocus
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-green-600 hover:bg-green-50 shrink-0"
+                onClick={handleSaveCell}
+                disabled={savingCell === `${project.id}-${col.key}`}
+              >
+                {savingCell === `${project.id}-${col.key}` ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <Save size={14} />
+                )}
+              </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-slate-400 hover:bg-slate-50 shrink-0"
+                onClick={handleCancelEdit}
+              >
+                <X size={14} />
+              </Button>
+            </div>
+          ) : (
+            <div className={`flex items-start justify-between group ${alignClass}`}>
+              <div className={`text-sm text-slate-700 ${fontClass} flex-1`}>
+                {displayValue}
+              </div>
+              {isEditable && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity ml-1 shrink-0 mt-0.5"
+                  onClick={() =>
+                    handleStartEdit(project.id, col.key, value as string)
+                  }
+                >
+                  <Pencil size={12} className="text-indigo-600" />
+                </Button>
+              )}
+            </div>
+          )}
+
+          {hasFile ? (
+            <div className="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1.5 text-xs text-emerald-800">
+              <div className="flex items-start gap-1.5">
+                <FileSpreadsheet size={14} className="mt-0.5 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate font-medium">{fileName}</div>
+                  {uploadedAt && (
+                    <div className="mt-0.5 text-[11px] text-emerald-700">
+                      แนบเมื่อ {uploadedAt}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs text-slate-500">
+              {config.emptyLabel}
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-1.5">
+            {hasFile && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-[11px]"
+                onClick={() =>
+                  handleDownloadPhysicalFile(project, physicalFileKind)
+                }
+              >
+                <Download size={12} className="mr-1" />
+                ดาวน์โหลด
+              </Button>
+            )}
+
+            {canManagePhysical && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-[11px]"
+                onClick={() =>
+                  openPhysicalFilePicker(project, physicalFileKind)
+                }
+                disabled={isSavingPhysicalFile}
+              >
+                {isSavingPhysicalFile ? (
+                  <Loader2 size={12} className="mr-1 animate-spin" />
+                ) : (
+                  <Upload size={12} className="mr-1" />
+                )}
+                {hasFile ? "เปลี่ยนไฟล์" : "แนบไฟล์"}
+              </Button>
+            )}
+
+            {canManagePhysical && hasFile && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 border-red-200 text-[11px] text-red-600 hover:bg-red-50"
+                onClick={() =>
+                  handleDeletePhysicalFile(project, physicalFileKind)
+                }
+                disabled={isSavingPhysicalFile}
+              >
+                <Trash2 size={12} className="mr-1" />
+                ลบไฟล์
+              </Button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     // 4. Editing Mode
     if (isEditing) {
       return (
@@ -1770,9 +2150,9 @@ export default function ProjectTrackingPage() {
       <div className={`flex items-start justify-between group ${alignClass}`}>
         <div
           className={`text-sm text-slate-700 ${fontClass} flex-1 ${shouldWrap ? "leading-relaxed" : "truncate"}`}
-          title={value as string}
+          title={displayValue}
         >
-          {(value as string) || "-"}
+          {displayValue}
         </div>
         {isEditable && (
           <Button

@@ -429,7 +429,9 @@ export async function GET(request: NextRequest) {
         !!financeCompletion?.isComplete;
       const hasPhysicalData =
         Boolean(project.maintenanceFeeActual) ||
-        Boolean(project.electricityFeeActual);
+        Boolean(project.electricityFeeActual) ||
+        Boolean(project.maintenanceFeeActualFileName) ||
+        Boolean(project.electricityFeeActualFileName);
       const nextWork = getNextWorkInfo({
         statusCode: project.currentStatusCode,
         hasVendor: releaseChecklist.hasVendor,
@@ -561,7 +563,26 @@ export async function GET(request: NextRequest) {
           ? `/api/overviews/${project.id}/cost-center-file`
           : "",
         _maintenanceFee: formatDecimal(project.maintenanceFeeActual),
+        _maintenanceFeeFileName: project.maintenanceFeeActualFileName || "",
+        _maintenanceFeeFileType: project.maintenanceFeeActualFileType || "",
+        _maintenanceFeeUploadedAt: project.maintenanceFeeActualUploadedAt
+          ? formatThaiDate(project.maintenanceFeeActualUploadedAt)
+          : "",
+        _maintenanceFeeDownloadUrl: project.maintenanceFeeActualFileName
+          ? `/api/overviews/${project.id}/physical-fee-file?kind=maintenance`
+          : "",
         _electricityFeeActual: formatDecimal(project.electricityFeeActual),
+        _electricityFeeActualFileName:
+          project.electricityFeeActualFileName || "",
+        _electricityFeeActualFileType:
+          project.electricityFeeActualFileType || "",
+        _electricityFeeActualUploadedAt:
+          project.electricityFeeActualUploadedAt
+            ? formatThaiDate(project.electricityFeeActualUploadedAt)
+            : "",
+        _electricityFeeActualDownloadUrl: project.electricityFeeActualFileName
+          ? `/api/overviews/${project.id}/physical-fee-file?kind=electricity`
+          : "",
         _researchComplete: !!researchCompletion?.isComplete,
         _physicalComplete: !!physicalCompletion?.isComplete,
         _closureCompleteFinance: !!financeCompletion?.isComplete,

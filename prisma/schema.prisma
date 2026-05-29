@@ -137,6 +137,15 @@ model Project {
   costCenterFileName     String?
   costCenterFileType     String?
   costCenterUploadedAt   DateTime?
+  // Optional actual physical fee attachments
+  maintenanceFeeActualFile       Bytes?
+  maintenanceFeeActualFileName   String?
+  maintenanceFeeActualFileType   String?
+  maintenanceFeeActualUploadedAt DateTime?
+  electricityFeeActualFile       Bytes?
+  electricityFeeActualFileName   String?
+  electricityFeeActualFileType   String?
+  electricityFeeActualUploadedAt DateTime?
 }
 
 model ProjectRoleCompletion {

@@ -9,6 +9,7 @@ import {
   FileText,
   ClipboardPlus,
   BarChart3,
+  Wallet,
 } from "lucide-react";
 
 export function Sidebar() {
@@ -18,6 +19,7 @@ export function Sidebar() {
     { icon: FileText, label: "ข้อมูลโครงการ", href: "/projects" },
     { icon: ClipboardPlus, label: "เพิ่มโครงการ", href: "/add-project" },
     { icon: BarChart3, label: "สรุปโครงการ", href: "/overviews" },
+    { icon: Wallet, label: "Dashboard รายจ่าย", href: "/expense-dashboard" },
   ];
 
   return (

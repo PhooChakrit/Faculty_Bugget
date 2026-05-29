@@ -33,10 +33,11 @@ function isAllowedFile(file: File) {
   );
 }
 
-async function ensurePlanningActor(request: NextRequest, id: string) {
-  const actorRole = request.headers.get("x-actor-role") ?? "";
-  const actorUserId = request.headers.get("x-actor-user-id") ?? "";
-
+async function ensurePlanningActor(
+  id: string,
+  actorRole: string,
+  actorUserId: string,
+) {
   if (actorRole !== "งานแผน" || !actorUserId) {
     return {
       error: Response.json(
@@ -85,10 +86,12 @@ async function ensurePlanningActor(request: NextRequest, id: string) {
 export async function POST(request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const access = await ensurePlanningActor(request, id);
+    const formData = await request.formData();
+    const actorRole = String(formData.get("actorRole") ?? "");
+    const actorUserId = String(formData.get("actorUserId") ?? "");
+    const access = await ensurePlanningActor(id, actorRole, actorUserId);
     if ("error" in access) return access.error;
 
-    const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
     if (!file) {
@@ -191,7 +194,15 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const access = await ensurePlanningActor(request, id);
+    const body = (await request.json().catch(() => ({}))) as {
+      actorRole?: string;
+      actorUserId?: string;
+    };
+    const access = await ensurePlanningActor(
+      id,
+      body.actorRole ?? "",
+      body.actorUserId ?? "",
+    );
     if ("error" in access) return access.error;
 
     await prisma.$transaction([

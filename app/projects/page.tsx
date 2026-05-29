@@ -328,7 +328,7 @@ export default function ProjectListPage() {
                         </td>
                         <td className="p-3 align-middle border-r border-slate-100">
                           <div className="font-mono text-sm text-indigo-900 font-semibold">
-                            {project.projectCode || "รอออกเลข"}
+                            {project.projectCode || "-"}
                           </div>
                           {project.receiptNumber && (
                             <div className="text-[10px] text-slate-400 mt-0.5">
