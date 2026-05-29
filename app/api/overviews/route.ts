@@ -4,7 +4,7 @@ import { successResponse, handleApiError } from "@/lib/api-response";
 import { listOverviewsQuerySchema } from "./schema";
 import { Prisma, ProjectStatus } from "@/app/generated/prisma/client";
 import { actorRoles, mockActorByRole, type ActorRole } from "@/lib/mock-actors";
-import { StatusCode, statusLabels } from "@/lib/status-constants";
+import { formatStatusDisplay } from "@/lib/status-constants";
 
 const INTERNAL_REVIEW_CHECKED_NOTE = "INTERNAL_REVIEW_CHECKED";
 const SCIENCE_DEPARTMENT_CODE = "sci";
@@ -62,13 +62,7 @@ function formatDateInput(date: Date | null | undefined): string {
 }
 
 function toDisplayStatus(statusCode: string | null | undefined): string {
-  if (!statusCode) return "";
-  const label = statusLabels[statusCode as StatusCode];
-  if (!label) return "";
-  if (statusCode === "DRAFT" || statusCode === "RECALL") {
-    return `${statusCode}. ${label}`;
-  }
-  return `${statusCode.replace("STATUS_", "")}. ${label}`;
+  return formatStatusDisplay(statusCode);
 }
 
 function getStatusGroup(
@@ -92,7 +86,7 @@ function getStatusGroup(
     return "WAITING_UNIT_DATA";
   }
   if (statusCode === "STATUS_6" || statusCode === "STATUS_7") return "ACTIVE";
-  if (statusCode === "STATUS_13") return "CLOSED";
+  if (statusCode === "STATUS_8" || statusCode === "STATUS_13") return "CLOSED";
   return "OTHER";
 }
 
@@ -209,9 +203,9 @@ function getNextWorkInfo({
     if (missing.length > 0) {
       return { label: missing.join(" · "), needsActionBy: [...new Set(roles)] };
     }
-    return { label: "พร้อมเสนอปิดโครงการ", needsActionBy: ["งานวิจัย"] };
+    return { label: "พร้อมให้งานคลังปิดโครงการ", needsActionBy: ["งานคลัง"] };
   }
-  if (statusCode === "STATUS_13") {
+  if (statusCode === "STATUS_8" || statusCode === "STATUS_13") {
     return { label: "ปิดโครงการแล้ว", needsActionBy: [] };
   }
 
@@ -459,13 +453,7 @@ export async function GET(request: NextRequest) {
         id: project.id,
         createdAt: project.createdAt.toISOString(),
         receiptNumber: project.receiptNumber || "",
-        projectCode:
-          project.projectCode ||
-          (project.currentStatusCode === "STATUS_6" ||
-          project.currentStatusCode === "STATUS_7" ||
-          project.currentStatusCode === "STATUS_13"
-            ? ""
-            : "ยังไม่อนุมัติ"),
+        projectCode: project.projectCode || "",
         memoTitle: project.memoTitle || project.projectNameThai,
         department: project.department,
         purpose: latestMeeting?.purpose || "-",
@@ -542,6 +530,7 @@ export async function GET(request: NextRequest) {
           no: m.no,
           date: formatDateInput(m.date),
           purpose: m.purpose || "",
+          decisionStatusCode: m.decisionStatusCode || null,
         })),
         _meetingSummary: {
           board: boardMeeting

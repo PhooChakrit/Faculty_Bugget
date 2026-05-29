@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { updateFieldSchema } from "../../schema";
 import { statusService } from "@/lib/status-service";
-import { StatusCode, statusLabels } from "@/lib/status-constants";
+import { StatusCode, formatStatusDisplay } from "@/lib/status-constants";
 import { ensureMockActor } from "@/lib/ensure-mock-actor";
 
 const INTERNAL_REVIEW_CHECKED_NOTE = "INTERNAL_REVIEW_CHECKED";
@@ -32,11 +32,7 @@ const isWorkflowStatusCode = (value: string): value is StatusCode =>
   Object.values(StatusCode).includes(value as StatusCode);
 
 const toDisplayStatus = (statusCode: StatusCode) => {
-  if (statusCode === StatusCode.DRAFT || statusCode === StatusCode.RECALL) {
-    return `${statusCode}. ${statusLabels[statusCode]}`;
-  }
-
-  return `${statusCode.replace("STATUS_", "")}. ${statusLabels[statusCode]}`;
+  return formatStatusDisplay(statusCode);
 };
 
 type RouteContext = {

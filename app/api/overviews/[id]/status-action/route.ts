@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { statusService } from "@/lib/status-service";
-import { StatusCode, statusLabels } from "@/lib/status-constants";
+import { StatusCode, formatStatusDisplay } from "@/lib/status-constants";
 import { ensureMockActor } from "@/lib/ensure-mock-actor";
 import { actorRoles } from "@/lib/mock-actors";
 import { z } from "zod";
@@ -41,7 +41,7 @@ const actionTransitions: Partial<
   DEAN_APPROVE_TO_WAITING_RELEASE: StatusCode.STATUS_5,
   RELEASE_BOARD_PROJECT: StatusCode.STATUS_6,
   RELEASE_DEAN_PROJECT: StatusCode.STATUS_7,
-  CLOSE_PROJECT: StatusCode.STATUS_13,
+  CLOSE_PROJECT: StatusCode.STATUS_8,
   RESUME_RECALL: StatusCode.DRAFT,
 };
 
@@ -59,16 +59,12 @@ const requiredRoleByAction: Record<
   DEAN_APPROVE_TO_WAITING_RELEASE: "งานวิจัย",
   RELEASE_BOARD_PROJECT: "งานวิจัย",
   RELEASE_DEAN_PROJECT: "งานวิจัย",
-  CLOSE_PROJECT: "งานวิจัย",
+  CLOSE_PROJECT: "งานคลัง",
   RESUME_RECALL: "งานวิจัย",
 };
 
 const toDisplayStatus = (statusCode: StatusCode) => {
-  if (statusCode === StatusCode.DRAFT || statusCode === StatusCode.RECALL) {
-    return `${statusCode}. ${statusLabels[statusCode]}`;
-  }
-
-  return `${statusCode.replace("STATUS_", "")}. ${statusLabels[statusCode]}`;
+  return formatStatusDisplay(statusCode);
 };
 
 type RouteContext = {

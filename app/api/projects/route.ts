@@ -6,6 +6,7 @@ import {
 } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
+import { formatStatusDisplay } from "@/lib/status-constants";
 import {
   createProjectSchema,
   createDraftProjectSchema,
@@ -133,7 +134,7 @@ export async function POST(request: NextRequest) {
               leaderId: fallbackLeader.id,
               status: ProjectStatus.DRAFT,
               currentStatusCode: StatusCode.DRAFT,
-              status1: "DRAFT. แบบร่างโครงการ",
+              status1: formatStatusDisplay(StatusCode.DRAFT),
               draftState: "DRAFT",
               draftSavedAt: new Date(),
               projectNameThai: "(แบบร่าง)",
@@ -183,7 +184,7 @@ export async function POST(request: NextRequest) {
             startDate: new Date(startDate),
             endDate: new Date(endDate),
             currentStatusCode: StatusCode.DRAFT,
-            status1: "DRAFT. แบบร่างโครงการ",
+            status1: formatStatusDisplay(StatusCode.DRAFT),
             draftState: "DRAFT",
             draftSavedAt: new Date(),
             // Create target group relations

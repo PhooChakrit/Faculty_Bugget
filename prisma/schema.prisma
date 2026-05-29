@@ -248,15 +248,16 @@ enum IncomeType {
 }
 
 model Meeting {
-  id        String      @id @default(cuid())
-  projectId String
-  type      MeetingType
-  no        String
-  date      DateTime
-  purpose   String?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id                 String      @id @default(cuid())
+  projectId          String
+  type               MeetingType
+  no                 String
+  date               DateTime
+  purpose            String?
+  decisionStatusCode StatusCode?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  project            Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 enum MeetingType {

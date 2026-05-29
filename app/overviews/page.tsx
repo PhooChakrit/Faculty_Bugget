@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { formatStatusDisplay } from "@/lib/status-constants";
 import {
   Pencil,
   Save,
@@ -18,7 +20,6 @@ import {
   FileEdit,
   FileText,
   Plus,
-  CheckCircle2,
   RefreshCw,
   FlaskConical,
   AlertCircle,
@@ -109,6 +110,7 @@ interface MeetingRecord {
   no: string;
   date: string;
   purpose?: string; // เพื่อดำเนินการ
+  decisionStatusCode?: "STATUS_4" | "STATUS_5" | null;
 }
 
 interface MeetingSummaryRecord {
@@ -184,19 +186,6 @@ interface EnhancedProjectData extends ProjectData {
 }
 
 type UserRole = ActorRole;
-type StatusAction =
-  | "SUBMIT_DRAFT"
-  | "DEPT_APPROVE"
-  | "MARK_INTERNAL_REVIEW_CHECKED"
-  | "COMPLETE_RESEARCH_REVIEW"
-  | "RETURN_FOR_REVISION"
-  | "APPROVE_TO_BOARD"
-  | "BOARD_APPROVE_TO_WAITING_RELEASE"
-  | "DEAN_APPROVE_TO_WAITING_RELEASE"
-  | "RELEASE_BOARD_PROJECT"
-  | "RELEASE_DEAN_PROJECT"
-  | "CLOSE_PROJECT"
-  | "RESUME_RECALL";
 
 type BudgetRevisionStatus =
   | "BR_DRAFT"
@@ -208,16 +197,6 @@ type BudgetRevisionStatus =
   | "BR_APPLIED"
   | "BR_REJECTED"
   | "BR_CANCELLED";
-
-type BudgetRevisionAction =
-  | "RESEARCH_CHECK"
-  | "RETURN_TO_OWNER"
-  | "REJECT"
-  | "APPROVE_TO_MEETING"
-  | "MARK_BOARD_APPROVED"
-  | "MARK_DEAN_APPROVED"
-  | "APPLY"
-  | "CANCEL";
 
 // --- Permissions Configuration ---
 const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
@@ -233,15 +212,15 @@ const ROLE_PERMISSIONS: Record<string, UserRole[]> = {
 const COLUMNS = [
   { key: "projectCode", label: "รหัสโครงการ", width: "min-w-[120px]" },
   {
-    key: "_projectStatus",
-    label: "สถานะโครงการ",
-    width: "min-w-[310px]",
-    wrap: true,
-  },
-  {
     key: "memoTitle",
     label: "ชื่อโครงการ",
     width: "min-w-[200px]",
+    wrap: true,
+  },
+  {
+    key: "_projectStatus",
+    label: "สถานะโครงการ",
+    width: "min-w-[310px]",
     wrap: true,
   },
   {
@@ -414,18 +393,18 @@ const ROLE_DISPLAY_LABELS: Record<UserRole, string> = {
 
 const formatActorName = (name: string) => name.replace(" (Mock)", "");
 
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: "แบบร่างโครงการ",
-  RECALL: "ดึงกลับเอกสาร",
-  STATUS_0: "รอหัวหน้าภาควิชาอนุมัติ",
-  STATUS_1: "ฝ่ายวิจัยตรวจสอบ/แก้ไข",
-  STATUS_2: "ฝ่ายวิจัยตรวจสอบแล้ว",
-  STATUS_3: "รอมติที่ประชุม",
-  STATUS_4: "ผ่านมติคณะกรรมการฯ รอข้อมูลประกอบ",
-  STATUS_5: "ผ่านมติคณบดี รอข้อมูลประกอบ",
-  STATUS_6: "อนุมัติให้ดำเนินโครงการ",
-  STATUS_7: "อนุมัติให้ดำเนินโครงการ",
-  STATUS_13: "ปิดโครงการ",
+const BUDGET_REVISION_STATUS_LABELS: Record<BudgetRevisionStatus, string> = {
+  BR_DRAFT: "แบบร่างคำขอแก้ไขงบประมาณ",
+  BR_SUBMITTED: "ยื่นคำขอแก้ไขงบประมาณแล้ว รอฝ่ายวิจัยตรวจสอบ",
+  BR_RESEARCH_CHECKED:
+    "ฝ่ายวิจัยตรวจสอบคำขอแล้ว รอหัวหน้าฝ่ายวิจัยอนุมัติเสนอเข้าที่ประชุม",
+  BR_WAITING_MEETING: "รอมติแก้ไขงบประมาณ",
+  BR_BOARD_APPROVED:
+    "เสนอมติคณะกรรมการบริหารคณะวิทยาศาสตร์ให้แก้งบตามเกณฑ์",
+  BR_DEAN_APPROVED: "เสนอคณบดี",
+  BR_APPLIED: "บันทึกงบประมาณที่อนุมัติแล้ว",
+  BR_REJECTED: "ไม่อนุมัติคำขอแก้ไขงบประมาณ",
+  BR_CANCELLED: "ยกเลิกคำขอแก้ไขงบประมาณ",
 };
 
 const STATUS_ORDER: Record<string, number> = {
@@ -439,16 +418,12 @@ const STATUS_ORDER: Record<string, number> = {
   STATUS_5: 6,
   STATUS_6: 7,
   STATUS_7: 8,
-  STATUS_13: 9,
+  STATUS_8: 9,
+  STATUS_13: 10,
 };
 
 const displayStatusFromCode = (statusCode: string | undefined) => {
-  if (!statusCode) return "";
-  const label = STATUS_LABELS[statusCode] ?? statusCode;
-  if (statusCode === "DRAFT" || statusCode === "RECALL") {
-    return `${statusCode}. ${label}`;
-  }
-  return `${statusCode.replace("STATUS_", "")}. ${label}`;
+  return formatStatusDisplay(statusCode);
 };
 
 const formatMeetingDate = (dateValue: string | undefined) => {
@@ -483,7 +458,7 @@ const getStatusBadgeClass = (statusKey: string) => {
   if (statusKey === "6" || statusKey === "7") {
     return "bg-green-100 text-green-800 border-green-200";
   }
-  if (statusKey === "13")
+  if (statusKey === "8" || statusKey === "13")
     return "bg-emerald-100 text-emerald-800 border-emerald-200";
   return "bg-slate-100 text-slate-700 border-slate-200";
 };
@@ -622,9 +597,9 @@ const createMockProjects = (): EnhancedProjectData[] => {
       projectCode:
         statusCode === "STATUS_6" ||
         statusCode === "STATUS_7" ||
-        statusCode === "STATUS_13"
+        statusCode === "STATUS_8"
           ? `SCI-2569-${id.slice(-3)}`
-          : "ยังไม่อนุมัติ",
+          : "",
       _projectStatus: displayStatusFromCode(statusCode),
       _currentStatusCode: statusCode,
       _statusGroup:
@@ -638,7 +613,7 @@ const createMockProjects = (): EnhancedProjectData[] => {
                 ? "WAITING_MEETING"
                 : statusCode === "STATUS_4" || statusCode === "STATUS_5"
                   ? "WAITING_UNIT_DATA"
-                  : statusCode === "STATUS_13"
+                  : statusCode === "STATUS_8"
                     ? "CLOSED"
                     : "ACTIVE",
       _routeType:
@@ -767,8 +742,8 @@ const createMockProjects = (): EnhancedProjectData[] => {
       _nextWorkLabel: "มีคำขอแก้ไขงบประมาณ",
       _needsActionBy: ["งานวิจัย"],
     }),
-    make("mock-status-13", "STATUS_13", {
-      memoTitle: "ตัวอย่าง State 13 - ปิดโครงการแล้ว",
+    make("mock-status-8", "STATUS_8", {
+      memoTitle: "ตัวอย่าง State 8 - ปิดโครงการแล้ว",
       _nextWorkLabel: "ปิดโครงการแล้ว",
       _needsActionBy: [],
       _researchComplete: true,
@@ -789,6 +764,9 @@ export default function ProjectTrackingPage() {
   const [myWorkFilter, setMyWorkFilter] = useState<MyWorkFilter>("all");
   const [sortOption, setSortOption] = useState<SortOption>("rolePriority");
   const [isMockMode, setIsMockMode] = useState(false);
+  const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
+  const [showBulkApproveConfirm, setShowBulkApproveConfirm] = useState(false);
+  const [isBulkApproving, setIsBulkApproving] = useState(false);
 
   // Individual cell editing state
   const [editingCell, setEditingCell] = useState<{
@@ -797,15 +775,6 @@ export default function ProjectTrackingPage() {
   } | null>(null);
   const [editingValue, setEditingValue] = useState<string>("");
   const [savingCell, setSavingCell] = useState<string | null>(null);
-  const [savingCompletionProjectId, setSavingCompletionProjectId] = useState<
-    string | null
-  >(null);
-  const [savingStatusAction, setSavingStatusAction] = useState<string | null>(
-    null,
-  );
-  const [savingBudgetRevisionAction, setSavingBudgetRevisionAction] = useState<
-    string | null
-  >(null);
   const [savingCostCenterFileProjectId, setSavingCostCenterFileProjectId] =
     useState<string | null>(null);
   // Modal for meetings management
@@ -848,6 +817,10 @@ export default function ProjectTrackingPage() {
   useEffect(() => {
     loadProjects();
   }, []);
+
+  useEffect(() => {
+    setSelectedProjectIds([]);
+  }, [userRole, searchQuery, departmentFilter, statusFilter, myWorkFilter]);
 
   const handleEnterMockMode = () => {
     setIsMockMode(true);
@@ -974,451 +947,6 @@ export default function ProjectTrackingPage() {
       );
     } finally {
       setSavingCell(null);
-    }
-  };
-
-  const handleToggleCompletion = async (
-    project: EnhancedProjectData,
-    role: "RESEARCH" | "PHYSICAL" | "FINANCE",
-    isComplete: boolean,
-  ) => {
-    setSavingCompletionProjectId(project.id);
-    try {
-      if (isMockMode) {
-        setProjects((prev) =>
-          prev.map((item) => {
-            if (item.id !== project.id) return item;
-            const nextResearch =
-              role === "RESEARCH" ? isComplete : !!item._researchComplete;
-            const nextPhysical =
-              role === "PHYSICAL" ? isComplete : !!item._physicalComplete;
-            const nextFinance =
-              role === "FINANCE" ? isComplete : !!item._closureCompleteFinance;
-            return {
-              ...item,
-              _researchComplete: nextResearch,
-              _physicalComplete: nextPhysical,
-              _closureCompleteFinance: nextFinance,
-              _canCloseProject: nextResearch && nextPhysical && nextFinance,
-            };
-          }),
-        );
-        return;
-      }
-
-      const response = await fetch(`/api/overviews/${project.id}/completion`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          role,
-          isComplete,
-          actorRole: userRole,
-          actorUserId: currentActor.id,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.error ?? "Failed to update completion");
-      }
-
-      setProjects((prev) =>
-        prev.map((item) => {
-          if (item.id !== project.id) return item;
-          const nextResearch =
-            role === "RESEARCH" ? isComplete : !!item._researchComplete;
-          const nextPhysical =
-            role === "PHYSICAL" ? isComplete : !!item._physicalComplete;
-          const nextFinance =
-            role === "FINANCE" ? isComplete : !!item._closureCompleteFinance;
-          return {
-            ...item,
-            _researchComplete: nextResearch,
-            _physicalComplete: nextPhysical,
-            _closureCompleteFinance: nextFinance,
-            _canCloseProject: nextResearch && nextPhysical && nextFinance,
-          };
-        }),
-      );
-    } catch (error) {
-      console.error("Error saving completion:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกความครบถ้วนข้อมูล");
-    } finally {
-      setSavingCompletionProjectId(null);
-    }
-  };
-
-  const handleStatusAction = async (
-    project: EnhancedProjectData,
-    action: StatusAction,
-  ) => {
-    const actionKey = `${project.id}-${action}`;
-    setSavingStatusAction(actionKey);
-
-    try {
-      if (isMockMode) {
-        const actionToStatus: Partial<Record<StatusAction, string>> = {
-          SUBMIT_DRAFT: "STATUS_0",
-          DEPT_APPROVE: "STATUS_1",
-          COMPLETE_RESEARCH_REVIEW: "STATUS_2",
-          RETURN_FOR_REVISION: "STATUS_1",
-          APPROVE_TO_BOARD: "STATUS_3",
-          BOARD_APPROVE_TO_WAITING_RELEASE: "STATUS_4",
-          DEAN_APPROVE_TO_WAITING_RELEASE: "STATUS_5",
-          RELEASE_BOARD_PROJECT: "STATUS_6",
-          RELEASE_DEAN_PROJECT: "STATUS_7",
-          CLOSE_PROJECT: "STATUS_13",
-          RESUME_RECALL: "DRAFT",
-        };
-
-        if (action === "MARK_INTERNAL_REVIEW_CHECKED") {
-          updateLocalProject(project.id, (item) => ({
-            ...item,
-            _internalReviewChecked: true,
-            _latestInternalReviewAction: {
-              actorRole: userRole,
-              actorName: currentActor.name,
-              createdAt: new Date().toLocaleDateString("th-TH"),
-            },
-          }));
-          return;
-        }
-
-        const nextCode = actionToStatus[action];
-        if (nextCode) {
-          updateLocalProject(project.id, (item) =>
-            recalcReleaseState({
-              ...item,
-              _currentStatusCode: nextCode,
-              _projectStatus: displayStatusFromCode(nextCode),
-              _statusGroup:
-                nextCode === "DRAFT"
-                  ? "DRAFT"
-                  : nextCode === "STATUS_0"
-                    ? "DEPT_HEAD"
-                    : nextCode === "STATUS_1" || nextCode === "STATUS_2"
-                      ? "RESEARCH_REVIEW"
-                      : nextCode === "STATUS_3"
-                        ? "WAITING_MEETING"
-                        : nextCode === "STATUS_4" || nextCode === "STATUS_5"
-                          ? "WAITING_UNIT_DATA"
-                          : nextCode === "STATUS_13"
-                            ? "CLOSED"
-                            : "ACTIVE",
-              _routeType:
-                nextCode === "STATUS_5" || nextCode === "STATUS_7"
-                  ? "DEAN"
-                  : nextCode === "STATUS_4" || nextCode === "STATUS_6"
-                    ? "BOARD"
-                    : "NONE",
-              projectCode:
-                nextCode === "STATUS_6" || nextCode === "STATUS_7"
-                  ? item.projectCode === "ยังไม่อนุมัติ"
-                    ? `MOCK-${item.id.slice(-4).toUpperCase()}`
-                    : item.projectCode
-                  : item.projectCode,
-              _internalReviewChecked:
-                nextCode === "STATUS_1" ? item._internalReviewChecked : false,
-            }),
-          );
-        }
-        return;
-      }
-
-      const response = await fetch(
-        `/api/overviews/${project.id}/status-action`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            action,
-            actorRole: userRole,
-            actorUserId: currentActor.id,
-          }),
-        },
-      );
-
-      const responseData = await response.json().catch(() => null);
-      if (!response.ok) {
-        throw new Error(
-          typeof responseData?.error === "string"
-            ? responseData.error
-            : "ดำเนินการสถานะไม่สำเร็จ",
-        );
-      }
-
-      const data = responseData?.data;
-      setProjects((prev) =>
-        prev.map((item) => {
-          if (item.id !== project.id) return item;
-
-          if (action === "MARK_INTERNAL_REVIEW_CHECKED") {
-            return {
-              ...item,
-              _internalReviewChecked: true,
-              _latestInternalReviewAction: {
-                actorRole: userRole,
-                actorName: currentActor.name,
-                createdAt: new Date().toLocaleDateString("th-TH"),
-              },
-            };
-          }
-
-          const nextStatus = data?.displayStatus ?? item._projectStatus;
-          return {
-            ...item,
-            _projectStatus: nextStatus,
-            _currentStatusCode:
-              data?.currentStatusCode ?? item._currentStatusCode,
-            projectCode: data?.project?.projectCode ?? item.projectCode,
-            _internalReviewChecked:
-              getStatusKey(nextStatus) === "1"
-                ? item._internalReviewChecked
-                : false,
-          };
-        }),
-      );
-    } catch (error) {
-      console.error("Error running status action:", error);
-      alert(
-        error instanceof Error
-          ? error.message
-          : "เกิดข้อผิดพลาดในการดำเนินการสถานะ",
-      );
-    } finally {
-      setSavingStatusAction(null);
-    }
-  };
-
-  const handleCreateBudgetRevision = async (project: EnhancedProjectData) => {
-    const reason = window.prompt("เหตุผลการขอแก้ไขงบประมาณ");
-    if (!reason?.trim()) return;
-
-    const proposedBudgetText = window.prompt(
-      'ระบุงบประมาณใหม่เป็น JSON หรือเว้นว่างเพื่อใช้ตัวเลขเดิม เช่น {"expenseSupplies":1000}',
-      "{}",
-    );
-
-    let proposedBudget: Record<string, number> = {};
-    try {
-      proposedBudget = proposedBudgetText?.trim()
-        ? JSON.parse(proposedBudgetText)
-        : {};
-    } catch {
-      alert("รูปแบบ JSON ไม่ถูกต้อง");
-      return;
-    }
-
-    setSavingBudgetRevisionAction(`${project.id}-CREATE`);
-    try {
-      if (isMockMode) {
-        updateLocalProject(project.id, (item) => ({
-          ...item,
-          _activeBudgetRevision: {
-            id: `mock-br-${Date.now()}`,
-            status: "BR_SUBMITTED",
-            reason,
-            closeAfterApproval: false,
-            affectsCostCenter: false,
-            affectsVendor: false,
-          },
-          _nextWorkLabel: "มีคำขอแก้ไขงบประมาณ",
-          _needsActionBy: ["งานวิจัย"],
-          _rolePriority: { ...item._rolePriority, งานวิจัย: 0 },
-        }));
-        return;
-      }
-
-      const response = await fetch(
-        `/api/projects/${project.id}/budget-revisions`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            actorRole: userRole,
-            actorUserId: currentActor.id,
-            reason,
-            proposedBudget,
-          }),
-        },
-      );
-
-      const responseData = await response.json().catch(() => null);
-      if (!response.ok) {
-        throw new Error(
-          responseData?.error ?? "สร้างคำขอแก้ไขงบประมาณไม่สำเร็จ",
-        );
-      }
-
-      const revision = responseData?.data?.revision;
-      setProjects((prev) =>
-        prev.map((item) =>
-          item.id === project.id
-            ? {
-                ...item,
-                _activeBudgetRevision: revision
-                  ? {
-                      id: revision.id,
-                      status: revision.status,
-                      reason: revision.reason,
-                      closeAfterApproval: revision.closeAfterApproval,
-                      affectsCostCenter: revision.affectsCostCenter,
-                      affectsVendor: revision.affectsVendor,
-                    }
-                  : item._activeBudgetRevision,
-              }
-            : item,
-        ),
-      );
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
-    } finally {
-      setSavingBudgetRevisionAction(null);
-    }
-  };
-
-  const handleBudgetRevisionAction = async (
-    project: EnhancedProjectData,
-    action: BudgetRevisionAction,
-  ) => {
-    const revision = project._activeBudgetRevision;
-    if (!revision) return;
-
-    const actionKey = `${revision.id}-${action}`;
-    setSavingBudgetRevisionAction(actionKey);
-
-    try {
-      if (isMockMode) {
-        const nextStatusByAction: Partial<
-          Record<BudgetRevisionAction, BudgetRevisionStatus>
-        > = {
-          RESEARCH_CHECK: "BR_RESEARCH_CHECKED",
-          RETURN_TO_OWNER: "BR_DRAFT",
-          APPROVE_TO_MEETING: "BR_WAITING_MEETING",
-          MARK_BOARD_APPROVED: "BR_BOARD_APPROVED",
-          MARK_DEAN_APPROVED: "BR_DEAN_APPROVED",
-        };
-        updateLocalProject(project.id, (item) => {
-          if (
-            action === "APPLY" ||
-            action === "REJECT" ||
-            action === "CANCEL"
-          ) {
-            return {
-              ...item,
-              _activeBudgetRevision: null,
-              _currentStatusCode:
-                action === "APPLY" && revision.status === "BR_DEAN_APPROVED"
-                  ? "STATUS_7"
-                  : item._currentStatusCode,
-              _projectStatus:
-                action === "APPLY" && revision.status === "BR_DEAN_APPROVED"
-                  ? displayStatusFromCode("STATUS_7")
-                  : item._projectStatus,
-              _routeType:
-                action === "APPLY" && revision.status === "BR_DEAN_APPROVED"
-                  ? "DEAN"
-                  : item._routeType,
-            };
-          }
-          return {
-            ...item,
-            _activeBudgetRevision: item._activeBudgetRevision
-              ? {
-                  ...item._activeBudgetRevision,
-                  status:
-                    nextStatusByAction[action] ??
-                    item._activeBudgetRevision.status,
-                }
-              : null,
-          };
-        });
-        return;
-      }
-
-      if (action === "MARK_BOARD_APPROVED" || action === "MARK_DEAN_APPROVED") {
-        const meetingNo = window.prompt(
-          "ครั้งที่ประชุม",
-          revision.meetingNo ?? "",
-        );
-        if (!meetingNo) return;
-        const meetingDate = window.prompt("วันที่ประชุม (YYYY-MM-DD)", "");
-        if (!meetingDate) return;
-        const deanApprovalFileUrl =
-          action === "MARK_DEAN_APPROVED"
-            ? window.prompt(
-                "เอกสาร/ลิงก์อนุมัติจากคณบดี",
-                revision.deanApprovalFileUrl ?? "",
-              )
-            : undefined;
-
-        const updateResponse = await fetch(
-          `/api/budget-revisions/${revision.id}`,
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              actorRole: userRole,
-              actorUserId: currentActor.id,
-              meetingNo,
-              meetingDate,
-              deanApprovalFileUrl,
-            }),
-          },
-        );
-        if (!updateResponse.ok) {
-          const errorData = await updateResponse.json().catch(() => null);
-          throw new Error(errorData?.error ?? "บันทึกข้อมูลมติไม่สำเร็จ");
-        }
-      }
-
-      const response = await fetch(
-        `/api/budget-revisions/${revision.id}/action`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action,
-            actorRole: userRole,
-            actorUserId: currentActor.id,
-          }),
-        },
-      );
-
-      const responseData = await response.json().catch(() => null);
-      if (!response.ok) {
-        throw new Error(
-          responseData?.error ?? "ดำเนินการคำขอแก้ไขงบประมาณไม่สำเร็จ",
-        );
-      }
-
-      const updatedRevision = responseData?.data?.revision;
-      setProjects((prev) =>
-        prev.map((item) =>
-          item.id === project.id
-            ? {
-                ...item,
-                _activeBudgetRevision:
-                  updatedRevision?.status === "BR_APPLIED" ||
-                  updatedRevision?.status === "BR_REJECTED" ||
-                  updatedRevision?.status === "BR_CANCELLED"
-                    ? null
-                    : {
-                        ...(item._activeBudgetRevision ?? revision),
-                        status: updatedRevision?.status ?? revision.status,
-                      },
-              }
-            : item,
-        ),
-      );
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
-    } finally {
-      setSavingBudgetRevisionAction(null);
     }
   };
 
@@ -1764,131 +1292,102 @@ export default function ProjectTrackingPage() {
     userRole,
   ]);
 
+  const canBulkApproveState2 = userRole === "หัวหน้าฝ่ายวิจัย";
+  const selectableProjectIds = useMemo(
+    () =>
+      canBulkApproveState2
+        ? filteredProjects
+            .filter((project) => project._currentStatusCode === "STATUS_2")
+            .map((project) => project.id)
+        : [],
+    [canBulkApproveState2, filteredProjects],
+  );
+  const selectedSelectableProjectIds = selectedProjectIds.filter((id) =>
+    selectableProjectIds.includes(id),
+  );
+  const isAllSelectableSelected =
+    selectableProjectIds.length > 0 &&
+    selectedSelectableProjectIds.length === selectableProjectIds.length;
+
+  const toggleSelectProject = (projectId: string, checked: boolean) => {
+    setSelectedProjectIds((prev) =>
+      checked
+        ? Array.from(new Set([...prev, projectId]))
+        : prev.filter((id) => id !== projectId),
+    );
+  };
+
+  const toggleSelectAllVisibleState2 = (checked: boolean) => {
+    setSelectedProjectIds(checked ? selectableProjectIds : []);
+  };
+
+  const handleBulkApproveState2 = async () => {
+    const ids = selectedSelectableProjectIds;
+    if (ids.length === 0) return;
+    setIsBulkApproving(true);
+    try {
+      if (isMockMode) {
+        setProjects((prev) =>
+          prev.map((project) =>
+            ids.includes(project.id)
+              ? {
+                  ...project,
+                  _currentStatusCode: "STATUS_3",
+                  _projectStatus: displayStatusFromCode("STATUS_3"),
+                  _statusGroup: "WAITING_MEETING",
+                  _nextWorkLabel: "รอฝ่ายวิจัยบันทึกมติ",
+                  _needsActionBy: ["งานวิจัย"],
+                }
+              : project,
+          ),
+        );
+        setSelectedProjectIds([]);
+        setShowBulkApproveConfirm(false);
+        return;
+      }
+
+      const response = await fetch("/api/projects/status-actions/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "APPROVE_TO_BOARD",
+          projectIds: ids,
+          actorRole: userRole,
+          actorUserId: currentActor.id,
+        }),
+      });
+      const responseData = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(responseData?.error ?? "อนุมัติแบบกลุ่มไม่สำเร็จ");
+      }
+
+      setProjects((prev) =>
+        prev.map((project) =>
+          ids.includes(project.id)
+            ? {
+                ...project,
+                _currentStatusCode: "STATUS_3",
+                _projectStatus: displayStatusFromCode("STATUS_3"),
+                _statusGroup: "WAITING_MEETING",
+                _nextWorkLabel: "รอฝ่ายวิจัยบันทึกมติ",
+                _needsActionBy: ["งานวิจัย"],
+              }
+            : project,
+        ),
+      );
+      setSelectedProjectIds([]);
+      setShowBulkApproveConfirm(false);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
+    } finally {
+      setIsBulkApproving(false);
+    }
+  };
+
   const departments = useMemo(() => {
     const depts = new Set(projects.map((p) => p.department).filter(Boolean));
     return Array.from(depts).sort();
   }, [projects]);
-
-  const getWorkflowActions = (project: EnhancedProjectData) => {
-    const statusKey = getStatusKey(project._projectStatus);
-    const hasBoardMeeting = project._meetings.some(
-      (meeting) => meeting.type === "BOARD",
-    );
-    const isAssignedDepartmentHead =
-      Boolean(project._departmentHeadUserId) &&
-      project._departmentHeadUserId === currentActor.id;
-
-    const actions: Array<{
-      action: StatusAction;
-      label: string;
-      role: UserRole;
-      variant?: "default" | "outline";
-      disabled?: boolean;
-      reason?: string;
-    }> = [];
-
-    if (statusKey === "DRAFT") {
-      actions.push({
-        action: "SUBMIT_DRAFT",
-        label: "ยื่นเสนอหัวหน้าภาค",
-        role: "USER",
-      });
-    } else if (statusKey === "0") {
-      actions.push({
-        action: "DEPT_APPROVE",
-        label: "อนุมัติส่งฝ่ายวิจัย",
-        role: "ภาควิชาวิทยาศาสตร์",
-        disabled: !isAssignedDepartmentHead,
-        reason: project._departmentHeadName
-          ? `ต้องเป็นหัวหน้าภาคที่กำหนด: ${formatActorName(
-              project._departmentHeadName,
-            )}`
-          : "ยังไม่ได้กำหนดหัวหน้าภาค",
-      });
-    } else if (statusKey === "1") {
-      if (!project._internalReviewChecked) {
-        actions.push({
-          action: "MARK_INTERNAL_REVIEW_CHECKED",
-          label: "ตรวจสอบแล้ว (1.5)",
-          role: "งานวิจัย",
-          variant: "outline",
-        });
-      } else {
-        actions.push({
-          action: "COMPLETE_RESEARCH_REVIEW",
-          label: "เสนอหัวหน้าฝ่ายวิจัย",
-          role: "งานวิจัย",
-        });
-      }
-    } else if (statusKey === "2") {
-      actions.push({
-        action: "RETURN_FOR_REVISION",
-        label: "ส่งกลับแก้ไข",
-        role: "งานวิจัย",
-        variant: "outline",
-      });
-      actions.push({
-        action: "APPROVE_TO_BOARD",
-        label: "อนุมัติเสนอเข้าที่ประชุม",
-        role: "หัวหน้าฝ่ายวิจัย",
-      });
-    } else if (statusKey === "3") {
-      actions.push({
-        action: "BOARD_APPROVE_TO_WAITING_RELEASE",
-        label: "บันทึกมติคณะกรรมการฯ",
-        role: "งานวิจัย",
-        disabled: !hasBoardMeeting,
-        reason: "ต้องบันทึกมติคณะกรรมการฯ ก่อน",
-      });
-      actions.push({
-        action: "DEAN_APPROVE_TO_WAITING_RELEASE",
-        label: "บันทึกมติคณบดี",
-        role: "งานวิจัย",
-        disabled: !hasBoardMeeting,
-        reason: "ต้องบันทึกมติคณะกรรมการฯ ก่อน",
-      });
-    } else if (statusKey === "4") {
-      actions.push({
-        action: "RELEASE_BOARD_PROJECT",
-        label: "อนุมัติดำเนินโครงการ",
-        role: "งานวิจัย",
-        disabled: !project._canReleaseProject,
-        reason: "ต้องมีรหัสเจ้าหนี้และศูนย์ต้นทุนครบถ้วน",
-      });
-    } else if (statusKey === "5") {
-      actions.push({
-        action: "RELEASE_DEAN_PROJECT",
-        label: "อนุมัติดำเนินโครงการ",
-        role: "งานวิจัย",
-        disabled: !project._canReleaseProject,
-        reason: "ต้องมีรหัสเจ้าหนี้ ศูนย์ต้นทุน และเอกสารอนุมัติคณบดีครบถ้วน",
-      });
-    } else if (statusKey === "6") {
-      actions.push({
-        action: "CLOSE_PROJECT",
-        label: "ปิดโครงการ",
-        role: "งานวิจัย",
-        disabled: !project._canCloseProject,
-        reason: "ต้องมีรายงานและการยืนยันจากฝ่ายวิจัย งานกายภาพ และงานคลัง",
-      });
-    } else if (statusKey === "7") {
-      actions.push({
-        action: "CLOSE_PROJECT",
-        label: "ปิดโครงการ",
-        role: "งานวิจัย",
-        disabled: !project._canCloseProject,
-        reason: "ต้องมีรายงานและการยืนยันจากฝ่ายวิจัย งานกายภาพ และงานคลัง",
-      });
-    } else if (statusKey === "RECALL") {
-      actions.push({
-        action: "RESUME_RECALL",
-        label: "อนุมัติกลับแบบร่าง",
-        role: "งานวิจัย",
-      });
-    }
-
-    return actions;
-  };
 
   // Helper to render cell content based on column definition
   const renderCell = (
@@ -1902,20 +1401,21 @@ export default function ProjectTrackingPage() {
     const alignClass = col.align === "right" ? "text-right" : "text-left";
     const fontClass = col.align === "right" ? "font-mono" : "font-normal";
 
-    // 1. Special Case: Project Code (Link)
+    // 1. Special Case: Project Code
     if (col.key === "projectCode") {
       const code = (value as string) || "";
-      const isUnapproved = code === "ยังไม่อนุมัติ" || !code;
+      return (
+        <span className="text-sm font-semibold text-indigo-900">{code}</span>
+      );
+    }
+
+    if (col.key === "memoTitle") {
       return (
         <Link
           href={`/projects/${project.id}`}
-          className={`text-sm font-semibold hover:underline ${
-            isUnapproved
-              ? "text-slate-500 hover:text-slate-700"
-              : "text-indigo-900 hover:text-indigo-600"
-          }`}
+          className="text-sm font-semibold text-indigo-900 hover:text-indigo-600 hover:underline"
         >
-          {isUnapproved ? "ยังไม่อนุมัติ" : code}
+          {(value as string) || "-"}
         </Link>
       );
     }
@@ -2004,63 +1504,8 @@ export default function ProjectTrackingPage() {
       const isActiveProject = statusNumber === "6" || statusNumber === "7";
       const isWaitingRelease = statusNumber === "4" || statusNumber === "5";
       const isStatus1 = statusNumber === "1";
-      const canManageResearch = userRole === "งานวิจัย";
-      const canManagePhysical = userRole === "กายภาพ";
-      const canManageFinance = userRole === "งานคลัง";
-      const workflowActions = getWorkflowActions(project);
       const budgetRevision = project._activeBudgetRevision;
       const routeBadgeLabel = getRouteBadgeLabel(project);
-      const budgetRevisionActions: Array<{
-        action: BudgetRevisionAction;
-        label: string;
-        role: UserRole;
-      }> = [];
-
-      if (budgetRevision) {
-        if (budgetRevision.status === "BR_SUBMITTED") {
-          budgetRevisionActions.push(
-            {
-              action: "RESEARCH_CHECK",
-              label: "ตรวจสอบคำขอ",
-              role: "งานวิจัย",
-            },
-            {
-              action: "RETURN_TO_OWNER",
-              label: "ส่งกลับให้แก้ไข",
-              role: "งานวิจัย",
-            },
-            { action: "REJECT", label: "ปฏิเสธ", role: "งานวิจัย" },
-          );
-        } else if (budgetRevision.status === "BR_RESEARCH_CHECKED") {
-          budgetRevisionActions.push({
-            action: "APPROVE_TO_MEETING",
-            label: "อนุมัติเสนอเข้าที่ประชุม",
-            role: "หัวหน้าฝ่ายวิจัย",
-          });
-        } else if (budgetRevision.status === "BR_WAITING_MEETING") {
-          budgetRevisionActions.push(
-            {
-              action: "MARK_BOARD_APPROVED",
-              label: "บันทึกมติคณะกรรมการฯ",
-              role: "งานวิจัย",
-            },
-            {
-              action: "MARK_DEAN_APPROVED",
-              label: "บันทึกมติคณบดี",
-              role: "งานวิจัย",
-            },
-          );
-        } else if (
-          budgetRevision.status === "BR_BOARD_APPROVED" ||
-          budgetRevision.status === "BR_DEAN_APPROVED"
-        ) {
-          budgetRevisionActions.push({
-            action: "APPLY",
-            label: "บันทึกงบที่อนุมัติ",
-            role: "งานวิจัย",
-          });
-        }
-      }
 
       return (
         <div className={`space-y-2 ${alignClass}`}>
@@ -2177,111 +1622,16 @@ export default function ProjectTrackingPage() {
                     : "ยังไม่ยืนยัน"}
                 </span>
 
-                {canManageResearch && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-6 text-[11px]"
-                    onClick={() =>
-                      handleToggleCompletion(
-                        project,
-                        "RESEARCH",
-                        !project._researchComplete,
-                      )
-                    }
-                    disabled={savingCompletionProjectId === project.id}
-                  >
-                    {project._researchComplete
-                      ? "ยกเลิกการยืนยัน"
-                      : "ยืนยันข้อมูล"}
-                  </Button>
-                )}
-
-                {canManagePhysical && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-6 text-[11px]"
-                    onClick={() =>
-                      handleToggleCompletion(
-                        project,
-                        "PHYSICAL",
-                        !project._physicalComplete,
-                      )
-                    }
-                    disabled={savingCompletionProjectId === project.id}
-                  >
-                    {project._physicalComplete
-                      ? "ยกเลิกการยืนยัน"
-                      : "ยืนยันข้อมูล"}
-                  </Button>
-                )}
-
-                {canManageFinance && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-6 text-[11px]"
-                    onClick={() =>
-                      handleToggleCompletion(
-                        project,
-                        "FINANCE",
-                        !project._closureCompleteFinance,
-                      )
-                    }
-                    disabled={savingCompletionProjectId === project.id}
-                  >
-                    {project._closureCompleteFinance
-                      ? "ยกเลิกการยืนยัน"
-                      : "ยืนยันงานคลัง"}
-                  </Button>
-                )}
-              </div>
-            )}
-
-            {isActiveProject && userRole === "USER" && !budgetRevision && (
-              <div className="mt-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-7 text-[11px]"
-                  onClick={() => handleCreateBudgetRevision(project)}
-                  disabled={
-                    savingBudgetRevisionAction === `${project.id}-CREATE`
-                  }
-                >
-                  ยื่นคำขอแก้ไขงบประมาณ
-                </Button>
               </div>
             )}
 
             {budgetRevision && (
               <div className="mt-2 space-y-1 rounded border border-amber-200 bg-amber-50 p-2 text-[11px] text-amber-800">
                 <div className="font-medium">
-                  คำขอแก้ไขงบประมาณ: {budgetRevision.status}
+                  คำขอแก้ไขงบประมาณ:{" "}
+                  {BUDGET_REVISION_STATUS_LABELS[budgetRevision.status]}
                 </div>
                 <div className="line-clamp-2">{budgetRevision.reason}</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {budgetRevisionActions
-                    .filter((action) => action.role === userRole)
-                    .map((action) => {
-                      const actionKey = `${budgetRevision.id}-${action.action}`;
-                      return (
-                        <Button
-                          key={action.action}
-                          size="sm"
-                          variant="outline"
-                          className="h-6 bg-white text-[11px]"
-                          onClick={() =>
-                            handleBudgetRevisionAction(project, action.action)
-                          }
-                          disabled={savingBudgetRevisionAction === actionKey}
-                        >
-                          {action.label}
-                        </Button>
-                      );
-                    })}
-                </div>
               </div>
             )}
 
@@ -2291,47 +1641,6 @@ export default function ProjectTrackingPage() {
               </div>
             )}
           </div>
-
-          {workflowActions.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {workflowActions
-                .filter((action) => action.role === userRole)
-                .map((action) => {
-                  const actionKey = `${project.id}-${action.action}`;
-                  const isSaving = savingStatusAction === actionKey;
-                  return (
-                    <Button
-                      key={action.action}
-                      size="sm"
-                      variant={action.variant ?? "default"}
-                      className="h-7 text-[11px]"
-                      onClick={() => handleStatusAction(project, action.action)}
-                      disabled={isSaving || action.disabled}
-                      title={action.disabled ? action.reason : undefined}
-                    >
-                      {isSaving ? (
-                        <Loader2 size={12} className="animate-spin mr-1" />
-                      ) : action.action === "MARK_INTERNAL_REVIEW_CHECKED" ? (
-                        <CheckCircle2 size={12} className="mr-1" />
-                      ) : null}
-                      {action.label}
-                    </Button>
-                  );
-                })}
-            </div>
-          )}
-
-          {workflowActions.some(
-            (action) => action.role === userRole && action.disabled,
-          ) && (
-            <div className="text-[11px] text-amber-700">
-              {
-                workflowActions.find(
-                  (action) => action.role === userRole && action.disabled,
-                )?.reason
-              }
-            </div>
-          )}
         </div>
       );
     }
@@ -2676,11 +1985,39 @@ export default function ProjectTrackingPage() {
 
         {/* Table Content */}
         <div className="flex-1 overflow-auto bg-slate-100/50 p-4">
+          {canBulkApproveState2 && selectableProjectIds.length > 0 && (
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm text-indigo-900">
+              <div>
+                เลือกแล้ว {selectedSelectableProjectIds.length} จาก{" "}
+                {selectableProjectIds.length} โครงการใน State 2 ที่แสดงอยู่
+              </div>
+              <Button
+                size="sm"
+                disabled={selectedSelectableProjectIds.length === 0}
+                onClick={() => setShowBulkApproveConfirm(true)}
+              >
+                อนุมัติเสนอคณะกรรมการฯ
+              </Button>
+            </div>
+          )}
           <Card className="border-none shadow-lg overflow-hidden h-full flex flex-col bg-white rounded-lg">
             <div className="overflow-auto flex-1">
               <table className="w-full border-collapse text-left">
                 <thead className="bg-slate-800 text-slate-200 sticky top-0 z-10 text-xs uppercase shadow-sm">
                   <tr>
+                    {canBulkApproveState2 && (
+                      <th className="w-10 border-r border-slate-700/50 p-3">
+                        <input
+                          type="checkbox"
+                          checked={isAllSelectableSelected}
+                          onChange={(event) =>
+                            toggleSelectAllVisibleState2(event.target.checked)
+                          }
+                          disabled={selectableProjectIds.length === 0}
+                          aria-label="เลือกโครงการ State 2 ทั้งหมดที่แสดงอยู่"
+                        />
+                      </th>
+                    )}
                     {COLUMNS.map((col) => {
                       const canEdit = isColumnEditable(col);
                       const isDetailsColumn = [
@@ -2718,7 +2055,9 @@ export default function ProjectTrackingPage() {
                   {isLoading ? (
                     <tr>
                       <td
-                        colSpan={COLUMNS.length}
+                        colSpan={
+                          COLUMNS.length + (canBulkApproveState2 ? 1 : 0)
+                        }
                         className="p-10 text-center text-slate-400"
                       >
                         กำลังโหลด...
@@ -2727,7 +2066,9 @@ export default function ProjectTrackingPage() {
                   ) : filteredProjects.length === 0 ? (
                     <tr>
                       <td
-                        colSpan={COLUMNS.length}
+                        colSpan={
+                          COLUMNS.length + (canBulkApproveState2 ? 1 : 0)
+                        }
                         className="p-10 text-center text-slate-400"
                       >
                         ไม่พบข้อมูล
@@ -2736,6 +2077,22 @@ export default function ProjectTrackingPage() {
                   ) : (
                     filteredProjects.map((project) => (
                       <tr key={project.id} className="group hover:bg-slate-50">
+                        {canBulkApproveState2 && (
+                          <td className="border-r border-slate-100 p-3 align-top">
+                            <input
+                              type="checkbox"
+                              checked={selectedProjectIds.includes(project.id)}
+                              onChange={(event) =>
+                                toggleSelectProject(
+                                  project.id,
+                                  event.target.checked,
+                                )
+                              }
+                              disabled={project._currentStatusCode !== "STATUS_2"}
+                              aria-label={`เลือก ${project.memoTitle}`}
+                            />
+                          </td>
+                        )}
                         {COLUMNS.map((col) => {
                           const canEdit = isColumnEditable(col);
                           const isDetailsColumn = [
@@ -2775,6 +2132,19 @@ export default function ProjectTrackingPage() {
             </div>
           </Card>
         </div>
+
+        <ConfirmDialog
+          open={showBulkApproveConfirm}
+          onOpenChange={(open) => {
+            if (!open && !isBulkApproving) setShowBulkApproveConfirm(false);
+          }}
+          title="ยืนยันอนุมัติแบบกลุ่ม"
+          description={`กำลังจะอนุมัติโครงการ State 2 จำนวน ${selectedSelectableProjectIds.length} รายการ เพื่อเสนอคณะกรรมการบริหารคณะวิทยาศาสตร์`}
+          confirmLabel="ยืนยันอนุมัติ"
+          cancelLabel="ยกเลิก"
+          loading={isBulkApproving}
+          onConfirm={handleBulkApproveState2}
+        />
 
         {/* --- MODAL: Meetings Management --- */}
         {editingMeetings && (

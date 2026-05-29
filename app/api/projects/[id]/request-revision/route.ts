@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { StatusCode } from "@/app/generated/prisma/client";
+import { formatStatusDisplay } from "@/lib/status-constants";
 
 /**
  * POST /api/projects/[id]/request-revision
@@ -35,7 +36,7 @@ export async function POST(
       where: { id },
       data: {
         currentStatusCode: StatusCode.RECALL,
-        status1: "RECALL. ดึงกลับเอกสาร",
+        status1: formatStatusDisplay(StatusCode.RECALL),
         draftState: "SUBMITTED",
       },
     });

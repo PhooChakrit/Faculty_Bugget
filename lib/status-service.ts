@@ -212,7 +212,7 @@ export class StatusTransitionService {
 
     if (
       (currentStatus === "STATUS_6" || currentStatus === "STATUS_7") &&
-      toStatus === "STATUS_13"
+      toStatus === "STATUS_8"
     ) {
       const hasReportLink = Boolean(project.docLink?.trim());
       if (!hasReportLink) {
@@ -231,6 +231,13 @@ export class StatusTransitionService {
             "ต้องให้งานวิจัย กายภาพ และงานคลังยืนยันข้อมูลครบก่อนปิดโครงการ",
         };
       }
+    }
+
+    if (toStatus === "STATUS_13") {
+      return {
+        isValid: false,
+        reason: "STATUS_13 ถูกยกเลิกสำหรับ workflow ใหม่ กรุณาใช้ STATUS_8",
+      };
     }
 
     if (currentStatus === "STATUS_1" && toStatus === "RECALL") {

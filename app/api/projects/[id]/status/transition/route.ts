@@ -4,7 +4,7 @@ import { ProjectStatus, type StatusCode } from "@/app/generated/prisma/client";
 import { isActorRole } from "@/lib/mock-actors";
 import { ensureMockActor } from "@/lib/ensure-mock-actor";
 import prisma from "@/lib/prisma";
-import { statusLabels } from "@/lib/status-constants";
+import { formatStatusDisplay } from "@/lib/status-constants";
 
 const ACTIVE_WORKFLOW_STATUS_CODES = new Set([
   "DRAFT",
@@ -16,16 +16,12 @@ const ACTIVE_WORKFLOW_STATUS_CODES = new Set([
   "STATUS_5",
   "STATUS_6",
   "STATUS_7",
-  "STATUS_13",
+  "STATUS_8",
   "RECALL",
 ]);
 
 const toDisplayStatus = (statusCode: StatusCode) => {
-  if (statusCode === "DRAFT" || statusCode === "RECALL") {
-    return `${statusCode}. ${statusLabels[statusCode]}`;
-  }
-
-  return `${statusCode.replace("STATUS_", "")}. ${statusLabels[statusCode]}`;
+  return formatStatusDisplay(statusCode);
 };
 
 /**
@@ -100,6 +96,9 @@ export async function POST(
     const isDraftSubmit = fromStatus === "DRAFT" && toStatus === "STATUS_0";
     const isResearchHeadApproval =
       fromStatus === "STATUS_2" && toStatus === "STATUS_3";
+    const isCloseProject =
+      (fromStatus === "STATUS_6" || fromStatus === "STATUS_7") &&
+      toStatus === "STATUS_8";
 
     if (isDeptGateForward) {
       const hasAssignment =
@@ -137,6 +136,8 @@ export async function POST(
       isAuthorized = actorRole === "USER";
     } else if (isResearchHeadApproval) {
       isAuthorized = actorRole === "หัวหน้าฝ่ายวิจัย";
+    } else if (isCloseProject) {
+      isAuthorized = actorRole === "งานคลัง";
     } else {
       isAuthorized = actorRole === "งานวิจัย";
     }

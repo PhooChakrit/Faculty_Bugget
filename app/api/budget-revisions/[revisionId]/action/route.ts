@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { ensureMockActor } from "@/lib/ensure-mock-actor";
 import { actorRoles } from "@/lib/mock-actors";
-import { statusLabels } from "@/lib/status-constants";
+import { formatStatusDisplay, statusLabels } from "@/lib/status-constants";
 import type {
   BudgetRevisionStatus,
   Prisma,
@@ -263,7 +263,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
           data: {
             currentStatusCode: "STATUS_7",
             currentStatusId: statusRecord.id,
-            status1: `7. ${statusLabels.STATUS_7}`,
+            status1: formatStatusDisplay("STATUS_7"),
             status1Date: new Date(),
           },
         });

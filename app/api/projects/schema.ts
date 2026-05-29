@@ -21,6 +21,7 @@ export const workflowStatusCodeSchema = z.enum([
   "STATUS_5",
   "STATUS_6",
   "STATUS_7",
+  "STATUS_8",
   "STATUS_13",
   "RECALL",
 ]);
