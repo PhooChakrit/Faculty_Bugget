@@ -2,12 +2,14 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { statusService } from "@/lib/status-service";
+import { actorRoles } from "@/lib/mock-actors";
+import { ensureMockActor } from "@/lib/ensure-mock-actor";
 
 const completionSchema = z.object({
-  role: z.enum(["RESEARCH", "PHYSICAL"]),
+  role: z.enum(["RESEARCH", "PHYSICAL", "FINANCE"]),
   isComplete: z.boolean(),
   notes: z.string().optional(),
-  actorRole: z.enum(["ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"]),
+  actorRole: z.enum(actorRoles),
   actorUserId: z.string().min(1),
 });
 
@@ -26,7 +28,9 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         ? "RESEARCH"
         : payload.actorRole === "กายภาพ"
           ? "PHYSICAL"
-          : null;
+          : payload.actorRole === "งานคลัง"
+            ? "FINANCE"
+            : null;
 
     if (!roleByActor || roleByActor !== payload.role) {
       return Response.json(
@@ -35,11 +39,19 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
     }
 
+    const actorUser = await ensureMockActor(payload.actorUserId);
+    if (!actorUser) {
+      return Response.json(
+        { error: "ไม่พบผู้ใช้สำหรับบันทึกความครบถ้วน" },
+        { status: 400 },
+      );
+    }
+
     const result = await statusService.setRoleCompletion(
       id,
       payload.role,
       payload.isComplete,
-      payload.actorUserId,
+      actorUser.id,
       payload.notes,
     );
 

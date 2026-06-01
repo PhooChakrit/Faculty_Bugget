@@ -271,14 +271,17 @@ function AddProjectContent() {
       );
       const payload: UpdateProjectInput = {
         ...(base as UpdateProjectInput),
-        status: "PENDING_APPROVAL",
-        currentStatusCode: "STATUS_1",
       };
       await projectService.updateProject(projectId, payload);
+      await projectService.transitionStatus(projectId, {
+        toStatus: "STATUS_0",
+        userId: leaderIdRef.current,
+        actorRole: "USER",
+      });
       lastSyncedRef.current = mergeSyncedPayload(lastSyncedRef.current, {
         ...base,
         status: "PENDING_APPROVAL",
-        currentStatusCode: "STATUS_1",
+        currentStatusCode: "STATUS_0",
       } as Record<string, unknown>);
       setShowSubmitConfirm(false);
       setShowPreview(false);

@@ -6,7 +6,7 @@ import {
 } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
-import { generateProjectId } from "@/lib/generate-project-id";
+import { formatStatusDisplay } from "@/lib/status-constants";
 import {
   createProjectSchema,
   createDraftProjectSchema,
@@ -127,13 +127,16 @@ export async function POST(request: NextRequest) {
               select: { id: true },
             }));
 
-          const id = await generateProjectId(tx);
+          const id = crypto.randomUUID();
           return tx.project.create({
             data: {
               id,
               leaderId: fallbackLeader.id,
               status: ProjectStatus.DRAFT,
               currentStatusCode: StatusCode.DRAFT,
+              status1: formatStatusDisplay(StatusCode.DRAFT),
+              draftState: "DRAFT",
+              draftSavedAt: new Date(),
               projectNameThai: "(แบบร่าง)",
               leaderPosition: "-",
               department: "-",
@@ -181,7 +184,7 @@ export async function POST(request: NextRequest) {
             startDate: new Date(startDate),
             endDate: new Date(endDate),
             currentStatusCode: StatusCode.DRAFT,
-            status1: "DRAFT. แบบร่างโครงการ",
+            status1: formatStatusDisplay(StatusCode.DRAFT),
             draftState: "DRAFT",
             draftSavedAt: new Date(),
             // Create target group relations

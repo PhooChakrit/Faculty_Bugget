@@ -21,28 +21,22 @@ export enum StatusCode {
 
 export const statusLabels: Record<StatusCode, string> = {
   [StatusCode.DRAFT]: "แบบร่างโครงการ",
-  [StatusCode.STATUS_0]: "รอหัวหน้าภาคอนุมัติส่งงานวิจัย",
-  [StatusCode.STATUS_1]:
-    "งานบริหารวิจัยและบริการวิชาการ ดำเนินการตรวจสอบ/แก้ไข",
-  [StatusCode.STATUS_2]:
-    "งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
-  [StatusCode.STATUS_3]:
-    "งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
-  [StatusCode.STATUS_4]:
-    "มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์อนุมัติ และให้เสนองานบริหารวิจัยและบริการวิชาการเพื่อดำเนินการต่อไป",
-  [StatusCode.STATUS_5]:
-    "มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์เห็นชอบ และให้เสนอกลุ่มภารกิจการประชุม ศูนย์บริหารกลางเพื่อดำเนินการต่อไป",
-  [StatusCode.STATUS_6]: "เสนอคณบดี เพื่อพิจารณาอนุมัติโครงการ",
+  [StatusCode.STATUS_0]: "เสนอหัวหน้าภาควิชา",
+  [StatusCode.STATUS_1]: "ฝ่ายวิจัยตรวจสอบ/แก้ไข",
+  [StatusCode.STATUS_2]: "เสนอรองคณบดีฝ่ายวิจัย",
+  [StatusCode.STATUS_3]: "เสนอคณะกรรมการบริหารคณะวิทยาศาสตร์",
+  [StatusCode.STATUS_4]: "เสนอคณบดีเพื่อพิจารณา",
+  [StatusCode.STATUS_5]: "เสนอที่ประชุมคณบดีแก่คณะวิทยาศาสตร์",
+  [StatusCode.STATUS_6]: "อนุมัติโครงการ อยู่ระหว่างดำเนินการ",
   [StatusCode.STATUS_7]:
-    "เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
-  [StatusCode.STATUS_8]: "คณบดีอนุมัติโครงการ (ระหว่างดำเนินโครงการ)",
-  [StatusCode.STATUS_9]:
-    "มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์ (ระหว่างดำเนินโครงการ)",
-  [StatusCode.STATUS_10]: "จัดส่งรายงานผลการดำเนินโครงการแล้ว",
+    "อนุมัติโครงการจากมติที่ประชุมคณบดี อยู่ระหว่างดำเนินการ",
+  [StatusCode.STATUS_8]: "ปิดโครงการ",
+  [StatusCode.STATUS_9]: "(Deprecated) ไม่ใช้ใน workflow หลัก",
+  [StatusCode.STATUS_10]: "(Deprecated) ไม่ใช้ใน workflow หลัก",
   [StatusCode.STATUS_11]: "(Deprecated) ยกเลิกสถานะนี้ตามมติที่ประชุม",
   [StatusCode.STATUS_12]:
     "(Legacy) ภาควิชาจัดส่งรายงานการดำเนินโครงการเรียบร้อยแล้ว",
-  [StatusCode.STATUS_13]: "ปิดโครงการ",
+  [StatusCode.STATUS_13]: "(Deprecated) ปิดโครงการเดิม ใช้ STATUS_8 แทน",
   [StatusCode.STATUS_14]: "ระงับโครงการ",
   [StatusCode.STATUS_15]: "อื่นๆ",
   [StatusCode.RECALL]: "ดึงกลับเอกสาร",
@@ -80,6 +74,20 @@ export function getStatusBadge(code: string | null | undefined): {
   return { label, className };
 }
 
+export function formatStatusDisplay(code: string | null | undefined): string {
+  if (!code) return "";
+
+  const key = code as StatusCode;
+  const label = statusLabels[key];
+  if (!label) return code;
+
+  if (key === StatusCode.DRAFT || key === StatusCode.RECALL) {
+    return `${key}. ${label}`;
+  }
+
+  return `${code.replace("STATUS_", "")}. ${label}`;
+}
+
 export interface AllowedStatusTransition {
   fromStatus: StatusCode;
   toStatus: StatusCode;
@@ -93,7 +101,7 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   {
     fromStatus: StatusCode.DRAFT,
     toStatus: StatusCode.STATUS_0,
-    label: "ส่งหัวหน้าภาคพิจารณา",
+    label: "เสนอหัวหน้าภาควิชา",
     condition: "DEPT_HEAD_APPROVAL_REQUIRED",
     order: 1,
   },
@@ -110,7 +118,7 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   {
     fromStatus: StatusCode.STATUS_1,
     toStatus: StatusCode.STATUS_2,
-    label: "ตรวจสอบเรียบร้อย",
+    label: "เสนอรองคณบดีฝ่ายวิจัย",
     order: 1,
   },
   {
@@ -140,7 +148,7 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   {
     fromStatus: StatusCode.STATUS_2,
     toStatus: StatusCode.STATUS_3,
-    label: "เสนอคณะกรรมการ",
+    label: "เสนอคณะกรรมการบริหารคณะวิทยาศาสตร์",
     order: 2,
   },
 
@@ -148,59 +156,55 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   {
     fromStatus: StatusCode.STATUS_3,
     toStatus: StatusCode.STATUS_4,
-    label: "มติอนุมัติ",
+    label: "เสนอคณบดีเพื่อพิจารณา",
     order: 1,
   },
   {
     fromStatus: StatusCode.STATUS_3,
     toStatus: StatusCode.STATUS_5,
-    label: "มติเห็นชอบ",
+    label: "เสนอที่ประชุมคณบดีแก่คณะวิทยาศาสตร์",
     order: 2,
   },
 
-  // Path A: Approval route (4->6->8->10)
+  // Path A: board-approved project route (4->6)
   {
     fromStatus: StatusCode.STATUS_4,
     toStatus: StatusCode.STATUS_6,
-    label: "เสนอคณบดี",
+    label: "อนุมัติโครงการ อยู่ระหว่างดำเนินการ",
+    order: 1,
+  },
+
+  // Path B: dean-approved project route (5->7)
+  {
+    fromStatus: StatusCode.STATUS_5,
+    toStatus: StatusCode.STATUS_7,
+    label: "อนุมัติโครงการจากมติที่ประชุมคณบดี อยู่ระหว่างดำเนินการ",
+    order: 1,
+  },
+
+  {
+    fromStatus: StatusCode.STATUS_6,
+    toStatus: StatusCode.STATUS_7,
+    label: "แก้ไขงบประมาณผ่านมติคณบดี",
+    condition: "BUDGET_REVISION_DEAN_APPROVED",
     order: 1,
   },
   {
     fromStatus: StatusCode.STATUS_6,
     toStatus: StatusCode.STATUS_8,
-    label: "คณบดีอนุมัติ",
-    order: 1,
-  },
-  {
-    fromStatus: StatusCode.STATUS_8,
-    toStatus: StatusCode.STATUS_10,
-    label: "อัปโหลดรายงานผลการดำเนินโครงการ",
-    condition: "REPORT_UPLOADED",
-    order: 1,
-  },
-
-  // Path B: Endorsement route (5->7->9->10)
-  {
-    fromStatus: StatusCode.STATUS_5,
-    toStatus: StatusCode.STATUS_7,
-    label: "เสนอประชุมคณบดี",
-    order: 1,
+    label: "ปิดโครงการ",
+    condition: "CLOSURE_COMPLETE",
+    order: 2,
   },
   {
     fromStatus: StatusCode.STATUS_7,
-    toStatus: StatusCode.STATUS_9,
-    label: "มติอนุมัติ",
-    order: 1,
-  },
-  {
-    fromStatus: StatusCode.STATUS_9,
-    toStatus: StatusCode.STATUS_10,
-    label: "อัปโหลดรายงานผลการดำเนินโครงการ",
-    condition: "REPORT_UPLOADED",
+    toStatus: StatusCode.STATUS_8,
+    label: "ปิดโครงการ",
+    condition: "CLOSURE_COMPLETE",
     order: 1,
   },
 
-  // STATUS_10 is terminal for the active workflow.
+  // STATUS_8 is terminal for the active workflow. STATUS_13 is legacy only.
 ];
 
 export enum NotificationType {

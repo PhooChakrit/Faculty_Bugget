@@ -88,6 +88,21 @@ export type Meeting = Prisma.MeetingModel
  */
 export type ProjectStatusRecord = Prisma.ProjectStatusRecordModel
 /**
+ * Model ProjectStatusActionLog
+ * 
+ */
+export type ProjectStatusActionLog = Prisma.ProjectStatusActionLogModel
+/**
+ * Model BudgetRevision
+ * 
+ */
+export type BudgetRevision = Prisma.BudgetRevisionModel
+/**
+ * Model BudgetRevisionActionLog
+ * 
+ */
+export type BudgetRevisionActionLog = Prisma.BudgetRevisionActionLogModel
+/**
  * Model NotificationStatus
  * 
  */

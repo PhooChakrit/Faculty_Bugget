@@ -3,6 +3,12 @@ import prisma from "@/lib/prisma";
 import { successResponse, handleApiError } from "@/lib/api-response";
 import { listOverviewsQuerySchema } from "./schema";
 import { Prisma, ProjectStatus } from "@/app/generated/prisma/client";
+import { actorRoles, mockActorByRole, type ActorRole } from "@/lib/mock-actors";
+import { formatStatusDisplay } from "@/lib/status-constants";
+
+const INTERNAL_REVIEW_CHECKED_NOTE = "INTERNAL_REVIEW_CHECKED";
+const SCIENCE_DEPARTMENT_CODE = "sci";
+const SCIENCE_DEPARTMENT_LABEL = "ภาควิชาวิทยาศาสตร์";
 
 // Typed project payload used in this route
 type ProjectWithRelations = Prisma.ProjectGetPayload<{
@@ -10,8 +16,25 @@ type ProjectWithRelations = Prisma.ProjectGetPayload<{
     meetings: true;
     leader: { select: { id: true; name: true; email: true } };
     coLeader: { select: { id: true; name: true; email: true } };
-    currentStatus: { include: { notifications: true } };
+    currentStatus: {
+      include: {
+        notifications: true;
+        actionLogs: {
+          include: {
+            actorUser: { select: { id: true; name: true; email: true } };
+          };
+        };
+      };
+    };
     roleCompletions: true;
+    budgetRevisions: {
+      include: {
+        actionLogs: {
+          orderBy: { createdAt: "desc" };
+          take: 1;
+        };
+      };
+    };
   };
 }>;
 
@@ -33,30 +56,204 @@ function formatThaiDate(date: Date | null | undefined): string {
   }).format(date);
 }
 
+function formatDateInput(date: Date | null | undefined): string {
+  if (!date) return "";
+  return date.toISOString().slice(0, 10);
+}
+
 function toDisplayStatus(statusCode: string | null | undefined): string {
-  if (!statusCode) return "";
-  if (statusCode === "DRAFT") return "DRAFT. แบบร่างโครงการ";
-  if (statusCode === "STATUS_0") return "0. แบบร่างโครงการ (รอดำเนินการ)";
-  if (statusCode === "RECALL") return "RECALL. ดึงกลับเอกสาร";
+  return formatStatusDisplay(statusCode);
+}
 
-  const statusMap: Record<string, string> = {
-    STATUS_0: "0. รอหัวหน้าภาคอนุมัติส่งงานวิจัย",
-    STATUS_1: "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
-    STATUS_2: "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
-    STATUS_3:
-      "3. งานบริหารวิจัยและบริการวิชาการเสนอเข้าที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์",
-    STATUS_4:
-      "4. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์อนุมัติ และให้เสนองานบริหารวิจัยและบริการวิชาการเพื่อดำเนินการต่อไป",
-    STATUS_5:
-      "5. มติที่ประชุมคณะกรรมการการบริหารคณะวิทยาศาสตร์เห็นชอบ และให้เสนอกลุ่มภารกิจการประชุม ศูนย์บริหารกลางเพื่อดำเนินการต่อไป",
-    STATUS_6: "6. เสนอคณบดี เพื่อพิจารณาอนุมัติโครงการ",
-    STATUS_7: "7. เสนอต่อที่ประชุมคณบดีแก่คณะวิทยาศาสตร์ เพื่อพิจารณาทักท้วง",
-    STATUS_8: "8. คณบดีอนุมัติโครงการ",
-    STATUS_9: "9. มติคณบดีอนุมัติและเสนอคณะวิทยาศาสตร์",
-    STATUS_10: "10. อนุมัติโครงการ",
-  };
+function getStatusGroup(
+  statusCode: string | null | undefined,
+):
+  | "DRAFT"
+  | "DEPT_HEAD"
+  | "RESEARCH_REVIEW"
+  | "WAITING_MEETING"
+  | "WAITING_UNIT_DATA"
+  | "ACTIVE"
+  | "CLOSED"
+  | "OTHER" {
+  if (statusCode === "DRAFT" || statusCode === "RECALL") return "DRAFT";
+  if (statusCode === "STATUS_0") return "DEPT_HEAD";
+  if (statusCode === "STATUS_1" || statusCode === "STATUS_2") {
+    return "RESEARCH_REVIEW";
+  }
+  if (statusCode === "STATUS_3") return "WAITING_MEETING";
+  if (statusCode === "STATUS_4" || statusCode === "STATUS_5") {
+    return "WAITING_UNIT_DATA";
+  }
+  if (statusCode === "STATUS_6" || statusCode === "STATUS_7") return "ACTIVE";
+  if (statusCode === "STATUS_8" || statusCode === "STATUS_13") return "CLOSED";
+  return "OTHER";
+}
 
-  return statusMap[statusCode] ?? "";
+function getRouteType(
+  statusCode: string | null | undefined,
+): "BOARD" | "DEAN" | "NONE" {
+  if (statusCode === "STATUS_4" || statusCode === "STATUS_6") return "BOARD";
+  if (statusCode === "STATUS_5" || statusCode === "STATUS_7") return "DEAN";
+  return "NONE";
+}
+
+function getNextWorkInfo({
+  statusCode,
+  hasVendor,
+  hasCostCenter,
+  hasDeanApproval,
+  hasDocLink,
+  researchComplete,
+  physicalComplete,
+  financeComplete,
+  hasPhysicalData,
+  hasActiveBudgetRevision,
+}: {
+  statusCode: string | null | undefined;
+  hasVendor: boolean;
+  hasCostCenter: boolean;
+  hasDeanApproval: boolean;
+  hasDocLink: boolean;
+  researchComplete: boolean;
+  physicalComplete: boolean;
+  financeComplete: boolean;
+  hasPhysicalData: boolean;
+  hasActiveBudgetRevision: boolean;
+}): { label: string; needsActionBy: ActorRole[] } {
+  if (statusCode === "DRAFT" || statusCode === "RECALL") {
+    return {
+      label: "รอเจ้าของโครงการแก้ไขและยื่นเสนอ",
+      needsActionBy: ["USER"],
+    };
+  }
+  if (statusCode === "STATUS_0") {
+    return {
+      label: "รอหัวหน้าภาควิชาอนุมัติ",
+      needsActionBy: ["ภาควิชาวิทยาศาสตร์"],
+    };
+  }
+  if (statusCode === "STATUS_1") {
+    return {
+      label: "รอฝ่ายวิจัยตรวจสอบข้อมูล",
+      needsActionBy: ["งานวิจัย"],
+    };
+  }
+  if (statusCode === "STATUS_2") {
+    return {
+      label: "รอหัวหน้าฝ่ายวิจัยพิจารณา",
+      needsActionBy: ["หัวหน้าฝ่ายวิจัย"],
+    };
+  }
+  if (statusCode === "STATUS_3") {
+    return {
+      label: "รอฝ่ายวิจัยบันทึกมติ",
+      needsActionBy: ["งานวิจัย"],
+    };
+  }
+  if (statusCode === "STATUS_4" || statusCode === "STATUS_5") {
+    const missing: string[] = [];
+    const roles: ActorRole[] = [];
+    if (!hasVendor) {
+      missing.push("รอรหัสเจ้าหนี้จากงานคลัง");
+      roles.push("งานคลัง");
+    }
+    if (!hasCostCenter) {
+      missing.push("รอศูนย์ต้นทุนจากงานแผน");
+      roles.push("งานแผน");
+    }
+    if (statusCode === "STATUS_5" && !hasDeanApproval) {
+      missing.push("รอเอกสารอนุมัติคณบดีจากฝ่ายวิจัย");
+      roles.push("งานวิจัย");
+    }
+    if (missing.length > 0) {
+      return { label: missing.join(" · "), needsActionBy: [...new Set(roles)] };
+    }
+    return {
+      label: "รอฝ่ายวิจัยอนุมัติให้ดำเนินโครงการ",
+      needsActionBy: ["งานวิจัย"],
+    };
+  }
+  if (statusCode === "STATUS_6" || statusCode === "STATUS_7") {
+    if (hasActiveBudgetRevision) {
+      return {
+        label: "มีคำขอแก้ไขงบประมาณ",
+        needsActionBy: ["งานวิจัย"],
+      };
+    }
+
+    const missing: string[] = [];
+    const roles: ActorRole[] = [];
+    if (!hasDocLink) {
+      missing.push("รอรายงานผลจากเจ้าของโครงการ");
+      roles.push("USER");
+    }
+    if (!researchComplete) {
+      missing.push("ฝ่ายวิจัยยังไม่บันทึก");
+      roles.push("งานวิจัย");
+    }
+    if (hasPhysicalData && !physicalComplete) {
+      missing.push("งานกายภาพยังไม่บันทึก");
+      roles.push("กายภาพ");
+    }
+    if (!financeComplete) {
+      missing.push("งานคลังยังไม่ยืนยัน");
+      roles.push("งานคลัง");
+    }
+    if (missing.length > 0) {
+      return { label: missing.join(" · "), needsActionBy: [...new Set(roles)] };
+    }
+    return { label: "พร้อมให้งานคลังปิดโครงการ", needsActionBy: ["งานคลัง"] };
+  }
+  if (statusCode === "STATUS_8" || statusCode === "STATUS_13") {
+    return { label: "ปิดโครงการแล้ว", needsActionBy: [] };
+  }
+
+  return { label: "ตรวจสอบสถานะโครงการ", needsActionBy: [] };
+}
+
+function buildRolePriority(
+  statusCode: string | null | undefined,
+  needsActionBy: ActorRole[],
+  activeBudgetRevisionStatus: string | null | undefined,
+): Record<ActorRole, number> {
+  const priorities = actorRoles.reduce(
+    (acc, role) => {
+      acc[role] = needsActionBy.includes(role) ? 0 : 3;
+      return acc;
+    },
+    {} as Record<ActorRole, number>,
+  );
+
+  if (statusCode === "DRAFT" || statusCode === "RECALL") priorities.USER = 0;
+  if (statusCode === "STATUS_1" || statusCode === "STATUS_3") {
+    priorities["งานวิจัย"] = 0;
+  }
+  if (statusCode === "STATUS_2") priorities["หัวหน้าฝ่ายวิจัย"] = 0;
+  if (statusCode === "STATUS_4" || statusCode === "STATUS_5") {
+    priorities["งานวิจัย"] = Math.min(priorities["งานวิจัย"], 1);
+  }
+  if (statusCode === "STATUS_6" || statusCode === "STATUS_7") {
+    priorities.USER = Math.min(priorities.USER, 1);
+  }
+
+  if (activeBudgetRevisionStatus) {
+    if (activeBudgetRevisionStatus === "BR_SUBMITTED") {
+      priorities["งานวิจัย"] = 0;
+    } else if (activeBudgetRevisionStatus === "BR_RESEARCH_CHECKED") {
+      priorities["หัวหน้าฝ่ายวิจัย"] = 0;
+    } else if (
+      activeBudgetRevisionStatus === "BR_WAITING_MEETING" ||
+      activeBudgetRevisionStatus === "BR_BOARD_APPROVED" ||
+      activeBudgetRevisionStatus === "BR_DEAN_APPROVED"
+    ) {
+      priorities["งานวิจัย"] = 0;
+    } else if (activeBudgetRevisionStatus === "BR_DRAFT") {
+      priorities.USER = 0;
+    }
+  }
+
+  return priorities;
 }
 
 // GET /api/overviews - List all projects in overview format
@@ -110,13 +307,55 @@ export async function GET(request: NextRequest) {
           currentStatus: {
             include: {
               notifications: true,
+              actionLogs: {
+                orderBy: { createdAt: "desc" },
+                include: {
+                  actorUser: {
+                    select: { id: true, name: true, email: true },
+                  },
+                },
+              },
             },
           },
           roleCompletions: true,
+          budgetRevisions: {
+            where: {
+              status: {
+                notIn: ["BR_APPLIED", "BR_REJECTED", "BR_CANCELLED"],
+              },
+            },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+            include: {
+              actionLogs: {
+                orderBy: { createdAt: "desc" },
+                take: 1,
+              },
+            },
+          },
         },
       }),
       prisma.project.count({ where }),
     ]);
+
+    const departments = Array.from(
+      new Set(projects.map((project) => project.department).filter(Boolean)),
+    );
+    const departmentAssignments =
+      departments.length > 0
+        ? await prisma.departmentHeadAssignment.findMany({
+            where: { department: { in: departments } },
+            include: {
+              headUser: { select: { id: true, name: true, email: true } },
+            },
+          })
+        : [];
+    const assignmentByDepartment = new Map(
+      departmentAssignments.map((assignment) => [
+        assignment.department,
+        assignment,
+      ]),
+    );
 
     // Transform projects to overview format
     const overviewData = projects.map((project: ProjectWithRelations) => {
@@ -144,11 +383,79 @@ export async function GET(request: NextRequest) {
       const physicalCompletion = project.roleCompletions.find(
         (row) => row.role === "PHYSICAL",
       );
+      const financeCompletion = project.roleCompletions.find(
+        (row) => row.role === "FINANCE",
+      );
+      const activeBudgetRevision = project.budgetRevisions[0] ?? null;
+      const latestInternalReviewAction = project.currentStatus?.actionLogs.find(
+        (log) => log.actionType === INTERNAL_REVIEW_CHECKED_NOTE,
+      );
+      const departmentHeadAssignment = assignmentByDepartment.get(
+        project.department,
+      );
+      const scienceDepartmentHead =
+        project.department === SCIENCE_DEPARTMENT_CODE
+          ? mockActorByRole[SCIENCE_DEPARTMENT_LABEL]
+          : null;
+      const departmentHeadUserId =
+        departmentHeadAssignment?.headUserId ?? scienceDepartmentHead?.id ?? "";
+      const departmentHeadName =
+        departmentHeadAssignment?.headUser.name ??
+        scienceDepartmentHead?.name ??
+        "";
+
+      const releaseChecklist = {
+        hasProjectCode:
+          Boolean(project.projectCode?.trim()) ||
+          project.currentStatusCode === "STATUS_4" ||
+          project.currentStatusCode === "STATUS_5",
+        hasVendor: Boolean(project.vendorCode?.trim()),
+        hasCostCenter: Boolean(
+          project.costCenter?.trim() || project.costCenterFileName?.trim(),
+        ),
+        hasDeanApproval:
+          project.currentStatusCode !== "STATUS_5" ||
+          Boolean(project.docLink?.trim()),
+      };
+      const canReleaseProject =
+        releaseChecklist.hasProjectCode &&
+        releaseChecklist.hasVendor &&
+        releaseChecklist.hasCostCenter &&
+        releaseChecklist.hasDeanApproval;
+      const canCloseProject =
+        Boolean(project.docLink?.trim()) &&
+        !!researchCompletion?.isComplete &&
+        !!physicalCompletion?.isComplete &&
+        !!financeCompletion?.isComplete;
+      const hasPhysicalData =
+        Boolean(project.maintenanceFeeActual) ||
+        Boolean(project.electricityFeeActual) ||
+        Boolean(project.maintenanceFeeActualFileName) ||
+        Boolean(project.electricityFeeActualFileName);
+      const nextWork = getNextWorkInfo({
+        statusCode: project.currentStatusCode,
+        hasVendor: releaseChecklist.hasVendor,
+        hasCostCenter: releaseChecklist.hasCostCenter,
+        hasDeanApproval: releaseChecklist.hasDeanApproval,
+        hasDocLink: Boolean(project.docLink?.trim()),
+        researchComplete: !!researchCompletion?.isComplete,
+        physicalComplete: !!physicalCompletion?.isComplete,
+        financeComplete: !!financeCompletion?.isComplete,
+        hasPhysicalData,
+        hasActiveBudgetRevision: Boolean(activeBudgetRevision),
+      });
+      const rolePriority = buildRolePriority(
+        project.currentStatusCode,
+        nextWork.needsActionBy,
+        activeBudgetRevision?.status,
+      );
+      const routeType = getRouteType(project.currentStatusCode);
 
       return {
         id: project.id,
+        createdAt: project.createdAt.toISOString(),
         receiptNumber: project.receiptNumber || "",
-        projectCode: project.projectCode || project.id,
+        projectCode: project.projectCode || "",
         memoTitle: project.memoTitle || project.projectNameThai,
         department: project.department,
         purpose: latestMeeting?.purpose || "-",
@@ -218,19 +525,108 @@ export async function GET(request: NextRequest) {
 
         // Enhanced fields for overview table
         _projectStatus:
-          project.status1 || toDisplayStatus(project.currentStatusCode),
+          toDisplayStatus(project.currentStatusCode) || project.status1 || "",
         _meetings: project.meetings.map((m) => ({
           id: m.id,
           type: m.type,
           no: m.no,
-          date: formatThaiDate(m.date),
+          date: formatDateInput(m.date),
           purpose: m.purpose || "",
+          decisionStatusCode: m.decisionStatusCode || null,
         })),
+        _meetingSummary: {
+          board: boardMeeting
+            ? {
+                id: boardMeeting.id,
+                no: boardMeeting.no,
+                date: formatThaiDate(boardMeeting.date),
+                purpose: boardMeeting.purpose || "",
+              }
+            : null,
+          dean: deanMeeting
+            ? {
+                id: deanMeeting.id,
+                no: deanMeeting.no,
+                date: formatThaiDate(deanMeeting.date),
+                purpose: deanMeeting.purpose || "",
+                approvalLink: project.docLink || "",
+              }
+            : null,
+        },
         _costCenter: project.costCenter || "",
+        _costCenterFileName: project.costCenterFileName || "",
+        _costCenterFileType: project.costCenterFileType || "",
+        _costCenterUploadedAt: project.costCenterUploadedAt
+          ? formatThaiDate(project.costCenterUploadedAt)
+          : "",
+        _costCenterDownloadUrl: project.costCenterFileName
+          ? `/api/overviews/${project.id}/cost-center-file`
+          : "",
         _maintenanceFee: formatDecimal(project.maintenanceFeeActual),
+        _maintenanceFeeFileName: project.maintenanceFeeActualFileName || "",
+        _maintenanceFeeFileType: project.maintenanceFeeActualFileType || "",
+        _maintenanceFeeUploadedAt: project.maintenanceFeeActualUploadedAt
+          ? formatThaiDate(project.maintenanceFeeActualUploadedAt)
+          : "",
+        _maintenanceFeeDownloadUrl: project.maintenanceFeeActualFileName
+          ? `/api/overviews/${project.id}/physical-fee-file?kind=maintenance`
+          : "",
         _electricityFeeActual: formatDecimal(project.electricityFeeActual),
+        _electricityFeeActualFileName:
+          project.electricityFeeActualFileName || "",
+        _electricityFeeActualFileType:
+          project.electricityFeeActualFileType || "",
+        _electricityFeeActualUploadedAt:
+          project.electricityFeeActualUploadedAt
+            ? formatThaiDate(project.electricityFeeActualUploadedAt)
+            : "",
+        _electricityFeeActualDownloadUrl: project.electricityFeeActualFileName
+          ? `/api/overviews/${project.id}/physical-fee-file?kind=electricity`
+          : "",
         _researchComplete: !!researchCompletion?.isComplete,
         _physicalComplete: !!physicalCompletion?.isComplete,
+        _closureCompleteFinance: !!financeCompletion?.isComplete,
+        _canReleaseProject: canReleaseProject,
+        _canCloseProject: canCloseProject,
+        _releaseChecklist: releaseChecklist,
+        _currentStatusCode: project.currentStatusCode,
+        _statusGroup: getStatusGroup(project.currentStatusCode),
+        _routeType: routeType,
+        _nextWorkLabel: nextWork.label,
+        _needsActionBy: nextWork.needsActionBy,
+        _rolePriority: rolePriority,
+        _activeBudgetRevision: activeBudgetRevision
+          ? {
+              id: activeBudgetRevision.id,
+              status: activeBudgetRevision.status,
+              reason: activeBudgetRevision.reason,
+              closeAfterApproval: activeBudgetRevision.closeAfterApproval,
+              meetingNo: activeBudgetRevision.meetingNo,
+              meetingDate: activeBudgetRevision.meetingDate
+                ? formatThaiDate(activeBudgetRevision.meetingDate)
+                : "",
+              meetingNote: activeBudgetRevision.meetingNote,
+              approvalRoute: activeBudgetRevision.approvalRoute,
+              affectsCostCenter: activeBudgetRevision.affectsCostCenter,
+              affectsVendor: activeBudgetRevision.affectsVendor,
+              deanApprovalFileUrl: activeBudgetRevision.deanApprovalFileUrl,
+              latestAction: activeBudgetRevision.actionLogs[0] ?? null,
+            }
+          : null,
+        _internalReviewChecked:
+          project.currentStatusCode === "STATUS_1" &&
+          !!project.currentStatus?.notes?.includes(
+            INTERNAL_REVIEW_CHECKED_NOTE,
+          ),
+        _latestInternalReviewAction: latestInternalReviewAction
+          ? {
+              actorRole: latestInternalReviewAction.actorRole,
+              actorName: latestInternalReviewAction.actorUser.name,
+              createdAt: formatThaiDate(latestInternalReviewAction.createdAt),
+            }
+          : null,
+        _departmentHeadUserId: departmentHeadUserId,
+        _departmentHeadName: departmentHeadName,
         _draftState: project.draftState,
 
         // Additional required fields (placeholders for now)

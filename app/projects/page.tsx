@@ -21,6 +21,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 // Matches API Response from /api/projects
 interface ProjectSummary {
   id: string;
+  projectCode: string | null;
   receiptNumber: string | null;
   projectNameThai: string;
   leader: { name: string } | null;
@@ -123,6 +124,7 @@ export default function ProjectListPage() {
     const lowerQuery = searchQuery.toLowerCase();
     return projects.filter(
       (p) =>
+        p.projectCode?.toLowerCase().includes(lowerQuery) ||
         p.projectNameThai?.toLowerCase().includes(lowerQuery) ||
         p.receiptNumber?.toLowerCase().includes(lowerQuery) ||
         p.department?.toLowerCase().includes(lowerQuery),
@@ -326,7 +328,7 @@ export default function ProjectListPage() {
                         </td>
                         <td className="p-3 align-middle border-r border-slate-100">
                           <div className="font-mono text-sm text-indigo-900 font-semibold">
-                            {project.id}
+                            {project.projectCode || "-"}
                           </div>
                           {project.receiptNumber && (
                             <div className="text-[10px] text-slate-400 mt-0.5">

@@ -65,6 +65,9 @@ export const ModelName = {
   ProjectManager: 'ProjectManager',
   Meeting: 'Meeting',
   ProjectStatusRecord: 'ProjectStatusRecord',
+  ProjectStatusActionLog: 'ProjectStatusActionLog',
+  BudgetRevision: 'BudgetRevision',
+  BudgetRevisionActionLog: 'BudgetRevisionActionLog',
   NotificationStatus: 'NotificationStatus',
   StatusTransition: 'StatusTransition'
 } as const
@@ -174,7 +177,23 @@ export const ProjectScalarFieldEnum = {
   draftState: 'draftState',
   draftSavedAt: 'draftSavedAt',
   submittedAt: 'submittedAt',
-  submittedByRole: 'submittedByRole'
+  submittedByRole: 'submittedByRole',
+  excelFile: 'excelFile',
+  excelFileName: 'excelFileName',
+  excelFileType: 'excelFileType',
+  excelUploadedAt: 'excelUploadedAt',
+  costCenterFile: 'costCenterFile',
+  costCenterFileName: 'costCenterFileName',
+  costCenterFileType: 'costCenterFileType',
+  costCenterUploadedAt: 'costCenterUploadedAt',
+  maintenanceFeeActualFile: 'maintenanceFeeActualFile',
+  maintenanceFeeActualFileName: 'maintenanceFeeActualFileName',
+  maintenanceFeeActualFileType: 'maintenanceFeeActualFileType',
+  maintenanceFeeActualUploadedAt: 'maintenanceFeeActualUploadedAt',
+  electricityFeeActualFile: 'electricityFeeActualFile',
+  electricityFeeActualFileName: 'electricityFeeActualFileName',
+  electricityFeeActualFileType: 'electricityFeeActualFileType',
+  electricityFeeActualUploadedAt: 'electricityFeeActualUploadedAt'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -284,6 +303,7 @@ export const MeetingScalarFieldEnum = {
   no: 'no',
   date: 'date',
   purpose: 'purpose',
+  decisionStatusCode: 'decisionStatusCode',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -305,6 +325,67 @@ export const ProjectStatusRecordScalarFieldEnum = {
 } as const
 
 export type ProjectStatusRecordScalarFieldEnum = (typeof ProjectStatusRecordScalarFieldEnum)[keyof typeof ProjectStatusRecordScalarFieldEnum]
+
+
+export const ProjectStatusActionLogScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  statusRecordId: 'statusRecordId',
+  actionType: 'actionType',
+  actorUserId: 'actorUserId',
+  actorRole: 'actorRole',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type ProjectStatusActionLogScalarFieldEnum = (typeof ProjectStatusActionLogScalarFieldEnum)[keyof typeof ProjectStatusActionLogScalarFieldEnum]
+
+
+export const BudgetRevisionScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  status: 'status',
+  originalBudgetSnapshot: 'originalBudgetSnapshot',
+  proposedBudget: 'proposedBudget',
+  reason: 'reason',
+  closeAfterApproval: 'closeAfterApproval',
+  meetingNo: 'meetingNo',
+  meetingDate: 'meetingDate',
+  meetingNote: 'meetingNote',
+  approvalRoute: 'approvalRoute',
+  deanApprovalFileName: 'deanApprovalFileName',
+  deanApprovalFileUrl: 'deanApprovalFileUrl',
+  affectsCostCenter: 'affectsCostCenter',
+  affectsVendor: 'affectsVendor',
+  createdBy: 'createdBy',
+  submittedAt: 'submittedAt',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  appliedBy: 'appliedBy',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BudgetRevisionScalarFieldEnum = (typeof BudgetRevisionScalarFieldEnum)[keyof typeof BudgetRevisionScalarFieldEnum]
+
+
+export const BudgetRevisionActionLogScalarFieldEnum = {
+  id: 'id',
+  revisionId: 'revisionId',
+  projectId: 'projectId',
+  actionType: 'actionType',
+  actorUserId: 'actorUserId',
+  actorRole: 'actorRole',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type BudgetRevisionActionLogScalarFieldEnum = (typeof BudgetRevisionActionLogScalarFieldEnum)[keyof typeof BudgetRevisionActionLogScalarFieldEnum]
 
 
 export const NotificationStatusScalarFieldEnum = {
@@ -342,6 +423,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: 'JsonNull'
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -356,4 +444,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull',
+  AnyNull: 'AnyNull'
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

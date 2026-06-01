@@ -7,6 +7,7 @@ import type {
 } from "../app/generated/prisma/client";
 import { allowedTransitions, statusLabels } from "./status-constants";
 import { generateProjectId } from "./generate-project-id";
+import { mockActorByRole } from "./mock-actors";
 
 export interface TransitionValidationResult {
   isValid: boolean;
@@ -30,6 +31,7 @@ export interface NotificationChecklistItem {
 export interface ClosureProgress {
   researchComplete: boolean;
   physicalComplete: boolean;
+  financeComplete: boolean;
   bothComplete: boolean;
 }
 
@@ -38,6 +40,8 @@ type RecallReviewDecision = "APPROVE" | "REJECT";
 const RECALL_REQUEST_TAG = "RECALL_REQUEST";
 const RECALL_APPROVED_PREFIX = "RECALL_APPROVED";
 const RECALL_REJECTED_PREFIX = "RECALL_REJECTED";
+const SCIENCE_DEPARTMENT_CODE = "sci";
+const SCIENCE_DEPARTMENT_LABEL = "ภาควิชาวิทยาศาสตร์";
 
 export class StatusTransitionService {
   async getDepartmentHeadAssignment(projectId: string): Promise<{
@@ -64,6 +68,13 @@ export class StatusTransitionService {
     });
 
     if (!assignment) {
+      if (department === SCIENCE_DEPARTMENT_CODE) {
+        return {
+          department,
+          headUserId: mockActorByRole[SCIENCE_DEPARTMENT_LABEL].id,
+        };
+      }
+
       return null;
     }
 
@@ -182,18 +193,51 @@ export class StatusTransitionService {
       };
     }
 
+    if (toStatus === "STATUS_6" || toStatus === "STATUS_7") {
+      const hasVendor = Boolean(project.vendorCode?.trim());
+      const hasCostCenter = Boolean(
+        project.costCenter?.trim() || project.costCenterFileName?.trim(),
+      );
+      const hasDeanApproval =
+        toStatus === "STATUS_6" || Boolean(project.docLink?.trim());
+
+      if (!hasVendor || !hasCostCenter || !hasDeanApproval) {
+        return {
+          isValid: false,
+          reason:
+            "ต้องมีรหัสเจ้าหนี้ ไฟล์ศูนย์ต้นทุน และเอกสารอนุมัติคณบดีสำหรับเส้นทางคณบดีก่อนอนุมัติให้ดำเนินโครงการ",
+        };
+      }
+    }
+
     if (
-      (currentStatus === "STATUS_8" || currentStatus === "STATUS_9") &&
-      toStatus === "STATUS_10"
+      (currentStatus === "STATUS_6" || currentStatus === "STATUS_7") &&
+      toStatus === "STATUS_8"
     ) {
       const hasReportLink = Boolean(project.docLink?.trim());
       if (!hasReportLink) {
         return {
           isValid: false,
           reason:
-            "ต้องแนบลิงก์รายงานผลการดำเนินโครงการ (docLink) ก่อนเปลี่ยนเป็นสถานะ 10",
+            "ต้องแนบลิงก์รายงานผลการดำเนินโครงการ (docLink) ก่อนปิดโครงการ",
         };
       }
+
+      const progress = await this.getClosureProgress(projectId);
+      if (!progress.bothComplete) {
+        return {
+          isValid: false,
+          reason:
+            "ต้องให้งานวิจัย กายภาพ และงานคลังยืนยันข้อมูลครบก่อนปิดโครงการ",
+        };
+      }
+    }
+
+    if (toStatus === "STATUS_13") {
+      return {
+        isValid: false,
+        reason: "STATUS_13 ถูกยกเลิกสำหรับ workflow ใหม่ กรุณาใช้ STATUS_8",
+      };
     }
 
     if (currentStatus === "STATUS_1" && toStatus === "RECALL") {
@@ -244,65 +288,70 @@ export class StatusTransitionService {
 
     // Execute transition in a transaction
     try {
-      const result = await prisma.$transaction(async (tx) => {
-        // 1. Close current status record (set exitedAt)
-        const project = await tx.project.findUnique({
-          where: { id: projectId },
-          select: {
-            currentStatusId: true,
-            currentStatusCode: true,
-            projectCode: true,
-            submittedAt: true,
-          },
-        });
-
-        const shouldGenerateProjectCode =
-          (project?.currentStatusCode === "STATUS_0" ||
-            project?.currentStatusCode === "DRAFT") &&
-          toStatus === "STATUS_1" &&
-          !project.projectCode;
-        const generatedProjectCode = shouldGenerateProjectCode
-          ? projectId
-          : null;
-
-        if (project?.currentStatusId) {
-          await tx.projectStatusRecord.update({
-            where: { id: project.currentStatusId },
-            data: { exitedAt: new Date() },
+      const result = await prisma.$transaction(
+        async (tx) => {
+          // 1. Close current status record (set exitedAt)
+          const project = await tx.project.findUnique({
+            where: { id: projectId },
+            select: {
+              currentStatusId: true,
+              currentStatusCode: true,
+              projectCode: true,
+              submittedAt: true,
+            },
           });
-        }
 
-        // 2. Create new status record
-        const newStatusRecord = await tx.projectStatusRecord.create({
-          data: {
-            projectId,
-            statusCode: toStatus,
-            statusLabel: statusLabels[toStatus], // Get label from constants
-            enteredAt: new Date(),
-            enteredBy: userId,
-            branchChoice,
-          },
-        });
+          const shouldGenerateProjectCode =
+            (toStatus === "STATUS_6" || toStatus === "STATUS_7") &&
+            !project?.projectCode;
+          const generatedProjectCode = shouldGenerateProjectCode
+            ? await generateProjectId(tx)
+            : null;
 
-        // 3. Update project's current status
-        await tx.project.update({
-          where: { id: projectId },
-          data: {
-            currentStatusCode: toStatus,
-            currentStatusId: newStatusRecord.id,
-            ...(generatedProjectCode && { projectCode: generatedProjectCode }),
-            draftState: toStatus === "DRAFT" ? "DRAFT" : "SUBMITTED",
-            submittedAt:
-              toStatus === "DRAFT"
-                ? null
-                : (project?.submittedAt ?? new Date()),
-          },
-        });
+          if (project?.currentStatusId) {
+            await tx.projectStatusRecord.update({
+              where: { id: project.currentStatusId },
+              data: { exitedAt: new Date() },
+            });
+          }
 
-        return newStatusRecord;
-      });
+          // 2. Create new status record
+          const newStatusRecord = await tx.projectStatusRecord.create({
+            data: {
+              projectId,
+              statusCode: toStatus,
+              statusLabel: statusLabels[toStatus], // Get label from constants
+              enteredAt: new Date(),
+              enteredBy: userId,
+              branchChoice,
+            },
+          });
 
-      if (toStatus === "STATUS_8" || toStatus === "STATUS_9") {
+          // 3. Update project's current status
+          await tx.project.update({
+            where: { id: projectId },
+            data: {
+              currentStatusCode: toStatus,
+              currentStatusId: newStatusRecord.id,
+              ...(generatedProjectCode && {
+                projectCode: generatedProjectCode,
+              }),
+              draftState: toStatus === "DRAFT" ? "DRAFT" : "SUBMITTED",
+              submittedAt:
+                toStatus === "DRAFT"
+                  ? null
+                  : (project?.submittedAt ?? new Date()),
+            },
+          });
+
+          return newStatusRecord;
+        },
+        {
+          isolationLevel: "Serializable",
+        },
+      );
+
+      if (toStatus === "STATUS_6" || toStatus === "STATUS_7") {
         await this.sendApprovalEmails(projectId);
       }
 
@@ -404,6 +453,25 @@ export class StatusTransitionService {
         role: "PHYSICAL",
       },
     });
+
+    await tx.projectRoleCompletion.upsert({
+      where: {
+        projectId_role: {
+          projectId,
+          role: "FINANCE",
+        },
+      },
+      update: {
+        isComplete: false,
+        completedAt: null,
+        completedBy: null,
+        notes: null,
+      },
+      create: {
+        projectId,
+        role: "FINANCE",
+      },
+    });
   }
 
   async getClosureProgress(projectId: string): Promise<ClosureProgress> {
@@ -419,11 +487,14 @@ export class StatusTransitionService {
       rows.find((row) => row.role === "RESEARCH")?.isComplete ?? false;
     const physicalComplete =
       rows.find((row) => row.role === "PHYSICAL")?.isComplete ?? false;
+    const financeComplete =
+      rows.find((row) => row.role === "FINANCE")?.isComplete ?? false;
 
     return {
       researchComplete,
       physicalComplete,
-      bothComplete: researchComplete && physicalComplete,
+      financeComplete,
+      bothComplete: researchComplete && physicalComplete && financeComplete,
     };
   }
 
@@ -444,10 +515,13 @@ export class StatusTransitionService {
         return { success: false, error: "โครงการไม่พบในระบบ" };
       }
 
-      if (project.currentStatusCode !== "STATUS_10") {
+      if (
+        project.currentStatusCode !== "STATUS_6" &&
+        project.currentStatusCode !== "STATUS_7"
+      ) {
         return {
           success: false,
-          error: "โครงการต้องอยู่ในสถานะ 10 (อนุมัติโครงการ)",
+          error: "โครงการต้องอยู่ในสถานะ 6 หรือ 7 (ดำเนินโครงการได้)",
         };
       }
 
@@ -589,7 +663,7 @@ export class StatusTransitionService {
           from: fromAddress,
           to: [to],
           subject,
-          html: `<p>โครงการ ${projectId} ได้รับอนุมัติและเข้าสู่สถานะ 10 (อนุมัติโครงการ)</p>`,
+          html: `<p>โครงการ ${projectId} ได้รับอนุมัติและสามารถดำเนินโครงการได้</p>`,
         }),
       });
 
@@ -867,10 +941,11 @@ export class StatusTransitionService {
     transitioned?: boolean;
     statusCode?: number;
   }> {
-    if (actorRole !== "ภาควิชา") {
+    if (actorRole !== "ภาควิชาวิทยาศาสตร์") {
       return {
         success: false,
-        error: "เฉพาะหัวหน้าภาค (ภาควิชา) เท่านั้นที่รับรองคำขอเรียกคืนได้",
+        error:
+          "เฉพาะหัวหน้าภาค (ภาควิชาวิทยาศาสตร์) เท่านั้นที่รับรองคำขอเรียกคืนได้",
         statusCode: 403,
       };
     }
@@ -994,6 +1069,14 @@ export class StatusTransitionService {
               select: { id: true, name: true },
             },
           },
+        },
+        actionLogs: {
+          include: {
+            actorUser: {
+              select: { id: true, name: true, email: true },
+            },
+          },
+          orderBy: { createdAt: "desc" },
         },
       },
       orderBy: { enteredAt: "desc" },

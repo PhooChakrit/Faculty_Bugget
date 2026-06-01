@@ -11,7 +11,7 @@ import {
   updateProjectSchema,
   UpdateProjectInput,
 } from "../schema";
-import { generateProjectId } from "@/lib/generate-project-id";
+import { formatStatusDisplay } from "@/lib/status-constants";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -33,6 +33,28 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         incomeItems: true,
         collaborators: true,
         managers: true,
+        meetings: { orderBy: { date: "asc" } },
+        roleCompletions: true,
+        currentStatus: {
+          include: {
+            actionLogs: {
+              orderBy: { createdAt: "desc" },
+              take: 5,
+              include: {
+                actorUser: { select: { id: true, name: true, email: true } },
+              },
+            },
+          },
+        },
+        budgetRevisions: {
+          where: {
+            status: {
+              notIn: ["BR_APPLIED", "BR_REJECTED", "BR_CANCELLED"],
+            },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 1,
+        },
       },
     });
 
@@ -79,6 +101,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     if (existingProject.currentStatusCode === "STATUS_10") {
       return errorResponse("Project has ended and cannot be edited", 409);
+    }
+
+    if (
+      projectData.currentStatusCode &&
+      projectData.currentStatusCode !== existingProject.currentStatusCode
+    ) {
+      return errorResponse(
+        "Workflow status must be changed through the status transition API",
+        400,
+      );
     }
 
     // Update project with transaction for relations
@@ -166,29 +198,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
 
         // Sync status1 display string when currentStatusCode is explicitly set
-        const statusCodeToStatus1: Record<string, string> = {
-          DRAFT: "DRAFT. แบบร่างโครงการ",
-          STATUS_0: "0. แบบร่างโครงการ (รอดำเนินการ)",
-          STATUS_1:
-            "1. งานบริหารวิจัยและบริการวิชาการ รอดำเนินการตรวจสอบ/แก้ไข",
-          STATUS_2:
-            "2. งานบริหารวิจัยและบริการวิชาการ ตรวจสอบ/แก้ไข เรียบร้อยแล้ว",
-          RECALL: "RECALL. ดึงกลับเอกสาร",
-        };
         const derivedStatus1 = projectData.currentStatusCode
-          ? (statusCodeToStatus1[projectData.currentStatusCode] ?? null)
+          ? formatStatusDisplay(projectData.currentStatusCode)
           : null;
 
-        // Assign projectCode = id when first transitioning to STATUS_1
-        const needsProjectCode =
-          projectData.currentStatusCode === "STATUS_1" &&
-          !existingProject.projectCode;
-        const newProjectCode = needsProjectCode ? existingProject.id : null;
         if (derivedStatus1) {
           updateData.status1 = derivedStatus1;
-        }
-        if (newProjectCode) {
-          updateData.projectCode = newProjectCode;
         }
 
         // Update project

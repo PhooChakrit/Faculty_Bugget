@@ -22,8 +22,7 @@ export const workflowStatusCodeSchema = z.enum([
   "STATUS_6",
   "STATUS_7",
   "STATUS_8",
-  "STATUS_9",
-  "STATUS_10",
+  "STATUS_13",
   "RECALL",
 ]);
 
@@ -134,7 +133,15 @@ export const listProjectsQuerySchema = z.object({
   search: z.string().optional(),
   leaderId: z.string().optional(),
   actorRole: z
-    .enum(["USER", "ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"])
+    .enum([
+      "USER",
+      "ภาควิชาวิทยาศาสตร์",
+      "งานวิจัย",
+      "หัวหน้าฝ่ายวิจัย",
+      "งานแผน",
+      "งานคลัง",
+      "กายภาพ",
+    ])
     .default("USER"),
 });
 

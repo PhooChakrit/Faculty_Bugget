@@ -39,9 +39,7 @@ export function ConfirmDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description && (
-            <DialogDescription>{description}</DialogDescription>
-          )}
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         <DialogFooter className="gap-2">
           <Button
@@ -51,11 +49,7 @@ export function ConfirmDialog({
           >
             {cancelLabel}
           </Button>
-          <Button
-            variant={variant}
-            onClick={onConfirm}
-            disabled={loading}
-          >
+          <Button variant={variant} onClick={onConfirm} disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {confirmLabel}
           </Button>

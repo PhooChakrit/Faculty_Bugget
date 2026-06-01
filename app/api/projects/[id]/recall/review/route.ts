@@ -4,7 +4,13 @@ import { statusService } from "@/lib/status-service";
 
 const reviewRecallSchema = z.object({
   reviewerId: z.string().min(1),
-  actorRole: z.enum(["ภาควิชา", "งานวิจัย", "งานแผน", "งานคลัง", "กายภาพ"]),
+  actorRole: z.enum([
+    "ภาควิชาวิทยาศาสตร์",
+    "งานวิจัย",
+    "งานแผน",
+    "งานคลัง",
+    "กายภาพ",
+  ]),
   decision: z.enum(["APPROVE", "REJECT"]),
   note: z.string().optional(),
 });

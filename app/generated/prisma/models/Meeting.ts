@@ -31,6 +31,7 @@ export type MeetingMinAggregateOutputType = {
   no: string | null
   date: Date | null
   purpose: string | null
+  decisionStatusCode: $Enums.StatusCode | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +43,7 @@ export type MeetingMaxAggregateOutputType = {
   no: string | null
   date: Date | null
   purpose: string | null
+  decisionStatusCode: $Enums.StatusCode | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,6 +55,7 @@ export type MeetingCountAggregateOutputType = {
   no: number
   date: number
   purpose: number
+  decisionStatusCode: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -66,6 +69,7 @@ export type MeetingMinAggregateInputType = {
   no?: true
   date?: true
   purpose?: true
+  decisionStatusCode?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,6 +81,7 @@ export type MeetingMaxAggregateInputType = {
   no?: true
   date?: true
   purpose?: true
+  decisionStatusCode?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -88,6 +93,7 @@ export type MeetingCountAggregateInputType = {
   no?: true
   date?: true
   purpose?: true
+  decisionStatusCode?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -172,6 +178,7 @@ export type MeetingGroupByOutputType = {
   no: string
   date: Date
   purpose: string | null
+  decisionStatusCode: $Enums.StatusCode | null
   createdAt: Date
   updatedAt: Date
   _count: MeetingCountAggregateOutputType | null
@@ -204,6 +211,7 @@ export type MeetingWhereInput = {
   no?: Prisma.StringFilter<"Meeting"> | string
   date?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   purpose?: Prisma.StringNullableFilter<"Meeting"> | string | null
+  decisionStatusCode?: Prisma.EnumStatusCodeNullableFilter<"Meeting"> | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
@@ -216,6 +224,7 @@ export type MeetingOrderByWithRelationInput = {
   no?: Prisma.SortOrder
   date?: Prisma.SortOrder
   purpose?: Prisma.SortOrderInput | Prisma.SortOrder
+  decisionStatusCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
@@ -231,6 +240,7 @@ export type MeetingWhereUniqueInput = Prisma.AtLeast<{
   no?: Prisma.StringFilter<"Meeting"> | string
   date?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   purpose?: Prisma.StringNullableFilter<"Meeting"> | string | null
+  decisionStatusCode?: Prisma.EnumStatusCodeNullableFilter<"Meeting"> | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
@@ -243,6 +253,7 @@ export type MeetingOrderByWithAggregationInput = {
   no?: Prisma.SortOrder
   date?: Prisma.SortOrder
   purpose?: Prisma.SortOrderInput | Prisma.SortOrder
+  decisionStatusCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MeetingCountOrderByAggregateInput
@@ -260,6 +271,7 @@ export type MeetingScalarWhereWithAggregatesInput = {
   no?: Prisma.StringWithAggregatesFilter<"Meeting"> | string
   date?: Prisma.DateTimeWithAggregatesFilter<"Meeting"> | Date | string
   purpose?: Prisma.StringNullableWithAggregatesFilter<"Meeting"> | string | null
+  decisionStatusCode?: Prisma.EnumStatusCodeNullableWithAggregatesFilter<"Meeting"> | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Meeting"> | Date | string
 }
@@ -270,6 +282,7 @@ export type MeetingCreateInput = {
   no: string
   date: Date | string
   purpose?: string | null
+  decisionStatusCode?: $Enums.StatusCode | null
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutMeetingsInput
@@ -282,6 +295,7 @@ export type MeetingUncheckedCreateInput = {
   no: string
   date: Date | string
   purpose?: string | null
+  decisionStatusCode?: $Enums.StatusCode | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -292,6 +306,7 @@ export type MeetingUpdateInput = {
   no?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionStatusCode?: Prisma.NullableEnumStatusCodeFieldUpdateOperationsInput | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutMeetingsNestedInput
@@ -304,6 +319,7 @@ export type MeetingUncheckedUpdateInput = {
   no?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionStatusCode?: Prisma.NullableEnumStatusCodeFieldUpdateOperationsInput | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -315,6 +331,7 @@ export type MeetingCreateManyInput = {
   no: string
   date: Date | string
   purpose?: string | null
+  decisionStatusCode?: $Enums.StatusCode | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -325,6 +342,7 @@ export type MeetingUpdateManyMutationInput = {
   no?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionStatusCode?: Prisma.NullableEnumStatusCodeFieldUpdateOperationsInput | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -336,6 +354,7 @@ export type MeetingUncheckedUpdateManyInput = {
   no?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionStatusCode?: Prisma.NullableEnumStatusCodeFieldUpdateOperationsInput | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,6 +376,7 @@ export type MeetingCountOrderByAggregateInput = {
   no?: Prisma.SortOrder
   date?: Prisma.SortOrder
   purpose?: Prisma.SortOrder
+  decisionStatusCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -368,6 +388,7 @@ export type MeetingMaxOrderByAggregateInput = {
   no?: Prisma.SortOrder
   date?: Prisma.SortOrder
   purpose?: Prisma.SortOrder
+  decisionStatusCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -379,6 +400,7 @@ export type MeetingMinOrderByAggregateInput = {
   no?: Prisma.SortOrder
   date?: Prisma.SortOrder
   purpose?: Prisma.SortOrder
+  decisionStatusCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -429,12 +451,17 @@ export type EnumMeetingTypeFieldUpdateOperationsInput = {
   set?: $Enums.MeetingType
 }
 
+export type NullableEnumStatusCodeFieldUpdateOperationsInput = {
+  set?: $Enums.StatusCode | null
+}
+
 export type MeetingCreateWithoutProjectInput = {
   id?: string
   type: $Enums.MeetingType
   no: string
   date: Date | string
   purpose?: string | null
+  decisionStatusCode?: $Enums.StatusCode | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -445,6 +472,7 @@ export type MeetingUncheckedCreateWithoutProjectInput = {
   no: string
   date: Date | string
   purpose?: string | null
+  decisionStatusCode?: $Enums.StatusCode | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -485,6 +513,7 @@ export type MeetingScalarWhereInput = {
   no?: Prisma.StringFilter<"Meeting"> | string
   date?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   purpose?: Prisma.StringNullableFilter<"Meeting"> | string | null
+  decisionStatusCode?: Prisma.EnumStatusCodeNullableFilter<"Meeting"> | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
 }
@@ -495,6 +524,7 @@ export type MeetingCreateManyProjectInput = {
   no: string
   date: Date | string
   purpose?: string | null
+  decisionStatusCode?: $Enums.StatusCode | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -505,6 +535,7 @@ export type MeetingUpdateWithoutProjectInput = {
   no?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionStatusCode?: Prisma.NullableEnumStatusCodeFieldUpdateOperationsInput | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -515,6 +546,7 @@ export type MeetingUncheckedUpdateWithoutProjectInput = {
   no?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionStatusCode?: Prisma.NullableEnumStatusCodeFieldUpdateOperationsInput | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -525,6 +557,7 @@ export type MeetingUncheckedUpdateManyWithoutProjectInput = {
   no?: Prisma.StringFieldUpdateOperationsInput | string
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decisionStatusCode?: Prisma.NullableEnumStatusCodeFieldUpdateOperationsInput | $Enums.StatusCode | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -538,6 +571,7 @@ export type MeetingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   no?: boolean
   date?: boolean
   purpose?: boolean
+  decisionStatusCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -550,6 +584,7 @@ export type MeetingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   no?: boolean
   date?: boolean
   purpose?: boolean
+  decisionStatusCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -562,6 +597,7 @@ export type MeetingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   no?: boolean
   date?: boolean
   purpose?: boolean
+  decisionStatusCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -574,11 +610,12 @@ export type MeetingSelectScalar = {
   no?: boolean
   date?: boolean
   purpose?: boolean
+  decisionStatusCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "type" | "no" | "date" | "purpose" | "createdAt" | "updatedAt", ExtArgs["result"]["meeting"]>
+export type MeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "type" | "no" | "date" | "purpose" | "decisionStatusCode" | "createdAt" | "updatedAt", ExtArgs["result"]["meeting"]>
 export type MeetingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
@@ -601,6 +638,7 @@ export type $MeetingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     no: string
     date: Date
     purpose: string | null
+    decisionStatusCode: $Enums.StatusCode | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["meeting"]>
@@ -1033,6 +1071,7 @@ export interface MeetingFieldRefs {
   readonly no: Prisma.FieldRef<"Meeting", 'String'>
   readonly date: Prisma.FieldRef<"Meeting", 'DateTime'>
   readonly purpose: Prisma.FieldRef<"Meeting", 'String'>
+  readonly decisionStatusCode: Prisma.FieldRef<"Meeting", 'StatusCode'>
   readonly createdAt: Prisma.FieldRef<"Meeting", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Meeting", 'DateTime'>
 }
