@@ -59,6 +59,9 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       return Response.json({ error: result.error }, { status: 400 });
     }
 
+    // ครบ 3 ฝ่าย → แจ้งงานคลังให้ปิดโครงการ
+    await statusService.notifyOnClosureProgress(id);
+
     return successResponse({
       success: true,
       progress: result.progress,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { statusService } from "@/lib/status-service";
 
 /**
  * POST /api/projects/[id]/summary/submit
@@ -92,6 +93,11 @@ export async function POST(
         });
       }
     });
+
+    // เจ้าของส่งรายงานผล (docLink) แล้ว → ขอให้ 3 ฝ่ายยืนยันปิดโครงการ
+    if (docLink) {
+      await statusService.notifyOnDataProgress(projectId);
+    }
 
     return NextResponse.json({
       success: true,

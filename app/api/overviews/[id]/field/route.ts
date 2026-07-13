@@ -418,6 +418,9 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         : []),
     ]);
 
+    // ข้อมูลประกอบเปลี่ยน (รหัสเจ้าหนี้/ศูนย์ต้นทุน) → เช็คว่าพร้อมอนุมัติแล้วหรือยัง
+    await statusService.notifyOnDataProgress(id);
+
     return successResponse({
       success: true,
       project: updatedProject,

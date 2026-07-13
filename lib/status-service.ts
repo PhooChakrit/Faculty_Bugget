@@ -8,6 +8,12 @@ import type {
 import { allowedTransitions, statusLabels } from "./status-constants";
 import { generateProjectId } from "./generate-project-id";
 import { mockActorByRole } from "./mock-actors";
+import {
+  eventRecipients,
+  renderEventEmail,
+  type NotificationEvent,
+  type RecipientRole,
+} from "./email-templates";
 
 export interface TransitionValidationResult {
   isValid: boolean;
@@ -351,9 +357,7 @@ export class StatusTransitionService {
         },
       );
 
-      if (toStatus === "STATUS_6" || toStatus === "STATUS_7") {
-        await this.sendApprovalEmails(projectId);
-      }
+      await this.notifyOnStatusEntered(projectId, toStatus);
 
       return {
         success: true,
@@ -563,71 +567,222 @@ export class StatusTransitionService {
     }
   }
 
-  private async sendApprovalEmails(projectId: string): Promise<void> {
+  // ────────────────────────────────────────────────────────────
+  // Email notification (next-actor model)
+  // แจ้ง role ที่ต้องลงมือทำขั้นถัดไป — ไม่ใช่แจ้งเจ้าของโครงการทุกสถานะ
+  // ปัจจุบันใช้อีเมลของ mock actor ต่อ role (dev) ยกเว้นหัวหน้าภาคที่ดึงจาก
+  // DepartmentHeadAssignment ของโครงการนั้นจริง
+  // ────────────────────────────────────────────────────────────
+
+  /** แจ้งเตือนเมื่อโครงการ "เข้า" สถานะใหม่ (เรียกหลัง transition) */
+  async notifyOnStatusEntered(
+    projectId: string,
+    toStatus: StatusCode,
+  ): Promise<void> {
+    switch (toStatus) {
+      case "STATUS_0":
+        await this.sendEvent(projectId, "AWAIT_DEPT_HEAD");
+        break;
+      case "STATUS_1":
+        await this.sendEvent(projectId, "AWAIT_RESEARCH_REVIEW");
+        break;
+      case "STATUS_2":
+        await this.sendEvent(projectId, "AWAIT_RESEARCH_HEAD");
+        break;
+      case "STATUS_4":
+        await this.sendEvent(projectId, "REQUEST_VENDOR_COSTCENTER");
+        break;
+      case "STATUS_5":
+        await this.sendEvent(projectId, "REQUEST_VENDOR_COSTCENTER");
+        await this.sendEvent(projectId, "REQUEST_DEAN_DOC");
+        break;
+      // STATUS_3 / 6 / 7 / 8 / DRAFT / RECALL → ไม่มีอีเมลตอน enter
+      default:
+        break;
+    }
+  }
+
+  /**
+   * แจ้งเตือนเมื่อ "ข้อมูลประกอบ" ถูกอัปเดต (เรียกจาก field / meetings / summary-submit route)
+   * - STATUS_4: ครบ vendor + costCenter → พร้อมอนุมัติ → แจ้งงานวิจัย
+   * - STATUS_5: ครบ vendor + costCenter + เอกสารคณบดี(docLink) → แจ้งงานวิจัย
+   * - STATUS_6/7: มีลิงก์รายงาน(docLink) แล้ว → ขอให้ 3 ฝ่ายยืนยันปิดโครงการ
+   */
+  async notifyOnDataProgress(projectId: string): Promise<void> {
     const project = await prisma.project.findUnique({
       where: { id: projectId },
-      include: {
-        leader: {
-          select: { email: true, name: true },
-        },
+      select: {
+        currentStatusCode: true,
+        vendorCode: true,
+        costCenter: true,
+        costCenterFileName: true,
+        docLink: true,
       },
     });
-
     if (!project) return;
 
-    const recipients: Array<{ email: string; recipientRole: string }> = [];
+    const hasVendor = Boolean(project.vendorCode?.trim());
+    const hasCostCenter = Boolean(
+      project.costCenter?.trim() || project.costCenterFileName?.trim(),
+    );
+    const hasDocLink = Boolean(project.docLink?.trim());
 
-    if (project.leader.email) {
-      recipients.push({
-        email: project.leader.email,
-        recipientRole: "PROJECT_OWNER",
-      });
+    switch (project.currentStatusCode) {
+      case "STATUS_4":
+        if (hasVendor && hasCostCenter) {
+          await this.sendEvent(projectId, "READY_TO_RELEASE");
+        }
+        break;
+      case "STATUS_5":
+        if (hasVendor && hasCostCenter && hasDocLink) {
+          await this.sendEvent(projectId, "READY_TO_RELEASE");
+        }
+        break;
+      case "STATUS_6":
+      case "STATUS_7":
+        if (hasDocLink) {
+          await this.sendEvent(projectId, "AWAIT_CLOSURE_CONFIRM");
+        }
+        break;
+      default:
+        break;
     }
+  }
 
-    const physicalList = (process.env.PHYSICAL_ROLE_EMAILS ?? "")
-      .split(",")
-      .map((value) => value.trim())
-      .filter(Boolean);
-
-    for (const email of physicalList) {
-      recipients.push({
-        email,
-        recipientRole: "PHYSICAL",
-      });
-    }
-
-    if (recipients.length === 0) {
+  /**
+   * แจ้งเตือนเมื่อ "ความครบถ้วนปิดโครงการ" เปลี่ยน (เรียกจาก completion route)
+   * ครบ 3 ฝ่าย + มีลิงก์รายงาน → แจ้งงานคลังให้ปิดโครงการ
+   */
+  async notifyOnClosureProgress(projectId: string): Promise<void> {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { currentStatusCode: true, docLink: true },
+    });
+    if (!project) return;
+    if (
+      project.currentStatusCode !== "STATUS_6" &&
+      project.currentStatusCode !== "STATUS_7"
+    ) {
       return;
     }
+    if (!project.docLink?.trim()) return;
 
-    const subject = `อนุมัติโครงการ ${project.projectCode ?? project.id}`;
+    const progress = await this.getClosureProgress(projectId);
+    if (progress.bothComplete) {
+      await this.sendEvent(projectId, "READY_TO_CLOSE");
+    }
+  }
 
-    for (const recipient of recipients) {
+  /** หาอีเมล + label ของ role ผู้รับ (mock actor emails; หัวหน้าภาคดึงจาก assignment จริง) */
+  private async resolveRecipient(
+    projectId: string,
+    project: {
+      leader: { email: string | null; name: string | null } | null;
+    },
+    role: RecipientRole,
+  ): Promise<{ email: string; label: string } | null> {
+    switch (role) {
+      case "PROJECT_OWNER":
+        return project.leader?.email
+          ? { email: project.leader.email, label: "เจ้าของโครงการ" }
+          : null;
+      case "DEPT_HEAD": {
+        const assignment =
+          await this.getDepartmentHeadAssignment(projectId);
+        if (assignment?.headUserId) {
+          const head = await prisma.user.findUnique({
+            where: { id: assignment.headUserId },
+            select: { email: true },
+          });
+          if (head?.email) {
+            return { email: head.email, label: "หัวหน้าภาควิชา" };
+          }
+        }
+        const mock = mockActorByRole["ภาควิชาวิทยาศาสตร์"];
+        return { email: mock.email, label: "หัวหน้าภาควิชา" };
+      }
+      case "RESEARCH":
+        return {
+          email: mockActorByRole["งานวิจัย"].email,
+          label: "เจ้าหน้าที่งานวิจัย",
+        };
+      case "RESEARCH_HEAD":
+        return {
+          email: mockActorByRole["หัวหน้าฝ่ายวิจัย"].email,
+          label: "หัวหน้าฝ่ายวิจัย",
+        };
+      case "PLANNING":
+        return { email: mockActorByRole["งานแผน"].email, label: "งานแผน" };
+      case "FINANCE":
+        return { email: mockActorByRole["งานคลัง"].email, label: "งานคลัง" };
+      case "PHYSICAL":
+        return { email: mockActorByRole["กายภาพ"].email, label: "งานกายภาพ" };
+      default:
+        return null;
+    }
+  }
+
+  /** ส่งอีเมลของเหตุการณ์หนึ่งไปยังผู้รับทุก role พร้อม log + กันส่งซ้ำ */
+  private async sendEvent(
+    projectId: string,
+    event: NotificationEvent,
+  ): Promise<void> {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: {
+        id: true,
+        projectCode: true,
+        projectNameThai: true,
+        leader: { select: { email: true, name: true } },
+        currentStatus: { select: { enteredAt: true } },
+      },
+    });
+    if (!project) return;
+
+    const projectRef = project.projectCode ?? project.id;
+    const baseUrl = process.env.APP_BASE_URL?.replace(/\/+$/, "");
+    const projectUrl = baseUrl ? `${baseUrl}/projects/${project.id}` : null;
+    // กันส่งซ้ำเฉพาะภายในช่วงสถานะปัจจุบัน (re-entry สถานะเดิมจะส่งใหม่ได้)
+    const dedupeSince = project.currentStatus?.enteredAt ?? new Date(0);
+
+    for (const role of eventRecipients(event)) {
+      const recipient = await this.resolveRecipient(projectId, project, role);
+      if (!recipient?.email) continue;
+
+      const rendered = renderEventEmail(event, {
+        projectRef,
+        projectName: project.projectNameThai,
+        recipientLabel: recipient.label,
+        projectUrl,
+      });
+
       const exists = await prisma.approvalEmailLog.findFirst({
         where: {
           projectId,
           recipient: recipient.email,
-          status: {
-            in: ["SENT", "PENDING"] as EmailDeliveryStatus[],
-          },
+          subject: rendered.subject,
+          status: { in: ["SENT", "PENDING"] as EmailDeliveryStatus[] },
+          createdAt: { gte: dedupeSince },
         },
       });
-
-      if (exists) {
-        continue;
-      }
+      if (exists) continue;
 
       const log = await prisma.approvalEmailLog.create({
         data: {
           projectId,
           recipient: recipient.email,
-          recipientRole: recipient.recipientRole,
-          subject,
+          recipientRole: role,
+          subject: rendered.subject,
           status: "PENDING",
         },
       });
 
-      await this.dispatchEmail(log.id, recipient.email, subject, project.id);
+      await this.dispatchEmail(
+        log.id,
+        recipient.email,
+        rendered.subject,
+        rendered.html,
+      );
     }
   }
 
@@ -635,7 +790,7 @@ export class StatusTransitionService {
     logId: string,
     to: string,
     subject: string,
-    projectId: string,
+    html: string,
   ): Promise<void> {
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromAddress = process.env.APPROVAL_EMAIL_FROM;
@@ -663,7 +818,7 @@ export class StatusTransitionService {
           from: fromAddress,
           to: [to],
           subject,
-          html: `<p>โครงการ ${projectId} ได้รับอนุมัติและสามารถดำเนินโครงการได้</p>`,
+          html,
         }),
       });
 
