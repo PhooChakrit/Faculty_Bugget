@@ -1,3 +1,4 @@
+import nodemailer, { type Transporter } from "nodemailer";
 import { prisma } from "./prisma";
 import type {
   ClosureRole,
@@ -48,6 +49,34 @@ const RECALL_APPROVED_PREFIX = "RECALL_APPROVED";
 const RECALL_REJECTED_PREFIX = "RECALL_REJECTED";
 const SCIENCE_DEPARTMENT_CODE = "sci";
 const SCIENCE_DEPARTMENT_LABEL = "ภาควิชาวิทยาศาสตร์";
+
+// ── SMTP transporter (singleton) ───────────────────────────────
+// Gmail: SMTP_HOST=smtp.gmail.com, SMTP_PORT=587, SMTP_SECURE=false,
+//        SMTP_USER=<your@gmail.com>, SMTP_PASS=<App Password 16 หลัก>
+// เปลี่ยนไปใช้ SMTP ของคณะ/มหาลัยภายหลังได้โดยแก้แค่ env ไม่ต้องแตะโค้ด
+let mailTransporter: Transporter | null = null;
+
+function getMailTransporter(): Transporter | null {
+  const host = process.env.SMTP_HOST;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  // ขาดค่าใดค่าหนึ่ง → ถือว่ายังไม่ตั้งค่า (dispatchEmail จะ mark SKIPPED)
+  if (!host || !user || !pass) {
+    return null;
+  }
+
+  if (!mailTransporter) {
+    mailTransporter = nodemailer.createTransport({
+      host,
+      port: Number(process.env.SMTP_PORT ?? 587),
+      secure: process.env.SMTP_SECURE === "true", // true = port 465, false = 587 (STARTTLS)
+      auth: { user, pass },
+    });
+  }
+
+  return mailTransporter;
+}
 
 export class StatusTransitionService {
   async getDepartmentHeadAssignment(projectId: string): Promise<{
@@ -792,47 +821,29 @@ export class StatusTransitionService {
     subject: string,
     html: string,
   ): Promise<void> {
-    const resendApiKey = process.env.RESEND_API_KEY;
+    const transporter = getMailTransporter();
     const fromAddress = process.env.APPROVAL_EMAIL_FROM;
 
-    if (!resendApiKey || !fromAddress) {
+    // ยังไม่ตั้งค่า SMTP → ไม่ส่งจริง แต่บันทึกไว้ว่า SKIPPED
+    if (!transporter || !fromAddress) {
       await prisma.approvalEmailLog.update({
         where: { id: logId },
         data: {
           status: "SKIPPED",
           errorMessage:
-            "Missing RESEND_API_KEY or APPROVAL_EMAIL_FROM configuration",
+            "Missing SMTP configuration (SMTP_HOST / SMTP_USER / SMTP_PASS / APPROVAL_EMAIL_FROM)",
         },
       });
       return;
     }
 
     try {
-      const response = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendApiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: fromAddress,
-          to: [to],
-          subject,
-          html,
-        }),
+      await transporter.sendMail({
+        from: fromAddress,
+        to,
+        subject,
+        html,
       });
-
-      if (!response.ok) {
-        const errorBody = await response.text();
-        await prisma.approvalEmailLog.update({
-          where: { id: logId },
-          data: {
-            status: "FAILED",
-            errorMessage: errorBody.slice(0, 500),
-          },
-        });
-        return;
-      }
 
       await prisma.approvalEmailLog.update({
         where: { id: logId },
@@ -848,7 +859,9 @@ export class StatusTransitionService {
         data: {
           status: "FAILED",
           errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
+            error instanceof Error
+              ? error.message.slice(0, 500)
+              : "Unknown error",
         },
       });
     }
