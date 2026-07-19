@@ -702,53 +702,86 @@ export class StatusTransitionService {
     }
   }
 
-  /** หาอีเมล + label ของ role ผู้รับ (mock actor emails; หัวหน้าภาคดึงจาก assignment จริง) */
+  /** label ภาษาไทยของแต่ละ role ผู้รับ (ใช้ในหัวอีเมลและ fallback) */
+  private static readonly RECIPIENT_LABELS: Record<RecipientRole, string> = {
+    PROJECT_OWNER: "เจ้าของโครงการ",
+    DEPT_HEAD: "หัวหน้าภาควิชา",
+    RESEARCH: "เจ้าหน้าที่งานวิจัย",
+    RESEARCH_HEAD: "หัวหน้าฝ่ายวิจัย",
+    PLANNING: "งานแผน",
+    FINANCE: "งานคลัง",
+    PHYSICAL: "งานกายภาพ",
+  };
+
+  /** map role ผู้รับ → key ของ mockActorByRole (ใช้เป็น fallback สุดท้าย) */
+  private static readonly MOCK_ROLE_KEY: Partial<
+    Record<RecipientRole, keyof typeof mockActorByRole>
+  > = {
+    DEPT_HEAD: "ภาควิชาวิทยาศาสตร์",
+    RESEARCH: "งานวิจัย",
+    RESEARCH_HEAD: "หัวหน้าฝ่ายวิจัย",
+    PLANNING: "งานแผน",
+    FINANCE: "งานคลัง",
+    PHYSICAL: "กายภาพ",
+  };
+
+  /** โหลด override อีเมลต่อ role จากตาราง RoleEmailSetting (คืน map role→email) */
+  private async loadRoleEmailOverrides(): Promise<
+    Partial<Record<RecipientRole, string>>
+  > {
+    const rows = await prisma.roleEmailSetting.findMany();
+    const map: Partial<Record<RecipientRole, string>> = {};
+    for (const row of rows) {
+      const email = row.email?.trim();
+      if (email) map[row.role as RecipientRole] = email;
+    }
+    return map;
+  }
+
+  /**
+   * หาอีเมล + label ของ role ผู้รับ ตามลำดับความสำคัญ:
+   * 1) override จากตาราง RoleEmailSetting (ที่ผู้ใช้ตั้งค่าผ่าน UI)
+   * 2) เฉพาะ PROJECT_OWNER → อีเมลเจ้าของโครงการจริง / DEPT_HEAD → assignment จริง
+   * 3) fallback → mock actor emails
+   */
   private async resolveRecipient(
     projectId: string,
     project: {
       leader: { email: string | null; name: string | null } | null;
     },
     role: RecipientRole,
+    overrides: Partial<Record<RecipientRole, string>>,
   ): Promise<{ email: string; label: string } | null> {
-    switch (role) {
-      case "PROJECT_OWNER":
-        return project.leader?.email
-          ? { email: project.leader.email, label: "เจ้าของโครงการ" }
-          : null;
-      case "DEPT_HEAD": {
-        const assignment =
-          await this.getDepartmentHeadAssignment(projectId);
-        if (assignment?.headUserId) {
-          const head = await prisma.user.findUnique({
-            where: { id: assignment.headUserId },
-            select: { email: true },
-          });
-          if (head?.email) {
-            return { email: head.email, label: "หัวหน้าภาควิชา" };
-          }
-        }
-        const mock = mockActorByRole["ภาควิชาวิทยาศาสตร์"];
-        return { email: mock.email, label: "หัวหน้าภาควิชา" };
-      }
-      case "RESEARCH":
-        return {
-          email: mockActorByRole["งานวิจัย"].email,
-          label: "เจ้าหน้าที่งานวิจัย",
-        };
-      case "RESEARCH_HEAD":
-        return {
-          email: mockActorByRole["หัวหน้าฝ่ายวิจัย"].email,
-          label: "หัวหน้าฝ่ายวิจัย",
-        };
-      case "PLANNING":
-        return { email: mockActorByRole["งานแผน"].email, label: "งานแผน" };
-      case "FINANCE":
-        return { email: mockActorByRole["งานคลัง"].email, label: "งานคลัง" };
-      case "PHYSICAL":
-        return { email: mockActorByRole["กายภาพ"].email, label: "งานกายภาพ" };
-      default:
-        return null;
+    const label = StatusTransitionService.RECIPIENT_LABELS[role];
+
+    // 1) override จาก setting มาก่อนเสมอ
+    if (overrides[role]) {
+      return { email: overrides[role]!, label };
     }
+
+    // 2) กรณีพิเศษที่มีแหล่งอีเมล "จริง" ต่อโครงการ
+    if (role === "PROJECT_OWNER") {
+      return project.leader?.email
+        ? { email: project.leader.email, label }
+        : null;
+    }
+    if (role === "DEPT_HEAD") {
+      const assignment = await this.getDepartmentHeadAssignment(projectId);
+      if (assignment?.headUserId) {
+        const head = await prisma.user.findUnique({
+          where: { id: assignment.headUserId },
+          select: { email: true },
+        });
+        if (head?.email) return { email: head.email, label };
+      }
+    }
+
+    // 3) fallback → mock actor
+    const mockKey = StatusTransitionService.MOCK_ROLE_KEY[role];
+    if (mockKey) {
+      return { email: mockActorByRole[mockKey].email, label };
+    }
+    return null;
   }
 
   /** ส่งอีเมลของเหตุการณ์หนึ่งไปยังผู้รับทุก role พร้อม log + กันส่งซ้ำ */
@@ -773,9 +806,15 @@ export class StatusTransitionService {
     const projectUrl = baseUrl ? `${baseUrl}/projects/${project.id}` : null;
     // กันส่งซ้ำเฉพาะภายในช่วงสถานะปัจจุบัน (re-entry สถานะเดิมจะส่งใหม่ได้)
     const dedupeSince = project.currentStatus?.enteredAt ?? new Date(0);
+    const overrides = await this.loadRoleEmailOverrides();
 
     for (const role of eventRecipients(event)) {
-      const recipient = await this.resolveRecipient(projectId, project, role);
+      const recipient = await this.resolveRecipient(
+        projectId,
+        project,
+        role,
+        overrides,
+      );
       if (!recipient?.email) continue;
 
       const rendered = renderEventEmail(event, {

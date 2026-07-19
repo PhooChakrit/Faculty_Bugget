@@ -43,6 +43,11 @@ export type ProjectRoleCompletion = Prisma.ProjectRoleCompletionModel
  */
 export type ApprovalEmailLog = Prisma.ApprovalEmailLogModel
 /**
+ * Model RoleEmailSetting
+ * อีเมลผู้รับแจ้งเตือนต่อ role (override mock emails) — role เป็น key เช่น RESEARCH/FINANCE
+ */
+export type RoleEmailSetting = Prisma.RoleEmailSettingModel
+/**
  * Model TargetGroup
  * 
  */

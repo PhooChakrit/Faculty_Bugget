@@ -182,6 +182,13 @@ model ApprovalEmailLog {
   @@index([status])
 }
 
+/// อีเมลผู้รับแจ้งเตือนต่อ role (override mock emails) — role เป็น key เช่น RESEARCH/FINANCE
+model RoleEmailSetting {
+  role      String   @id
+  email     String
+  updatedAt DateTime @updatedAt
+}
+
 model TargetGroup {
   id       String               @id @default(cuid())
   name     String               @unique

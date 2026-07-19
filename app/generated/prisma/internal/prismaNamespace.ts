@@ -389,6 +389,7 @@ export const ModelName = {
   Project: 'Project',
   ProjectRoleCompletion: 'ProjectRoleCompletion',
   ApprovalEmailLog: 'ApprovalEmailLog',
+  RoleEmailSetting: 'RoleEmailSetting',
   TargetGroup: 'TargetGroup',
   ProjectTargetGroup: 'ProjectTargetGroup',
   Strategy: 'Strategy',
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "departmentHeadAssignment" | "project" | "projectRoleCompletion" | "approvalEmailLog" | "targetGroup" | "projectTargetGroup" | "strategy" | "projectStrategy" | "incomeItem" | "projectCollaborator" | "projectManager" | "meeting" | "projectStatusRecord" | "projectStatusActionLog" | "budgetRevision" | "budgetRevisionActionLog" | "notificationStatus" | "statusTransition"
+    modelProps: "user" | "departmentHeadAssignment" | "project" | "projectRoleCompletion" | "approvalEmailLog" | "roleEmailSetting" | "targetGroup" | "projectTargetGroup" | "strategy" | "projectStrategy" | "incomeItem" | "projectCollaborator" | "projectManager" | "meeting" | "projectStatusRecord" | "projectStatusActionLog" | "budgetRevision" | "budgetRevisionActionLog" | "notificationStatus" | "statusTransition"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -789,6 +790,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ApprovalEmailLogCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ApprovalEmailLogCountAggregateOutputType> | number
+        }
+      }
+    }
+    RoleEmailSetting: {
+      payload: Prisma.$RoleEmailSettingPayload<ExtArgs>
+      fields: Prisma.RoleEmailSettingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RoleEmailSettingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RoleEmailSettingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>
+        }
+        findFirst: {
+          args: Prisma.RoleEmailSettingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RoleEmailSettingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>
+        }
+        findMany: {
+          args: Prisma.RoleEmailSettingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>[]
+        }
+        create: {
+          args: Prisma.RoleEmailSettingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>
+        }
+        createMany: {
+          args: Prisma.RoleEmailSettingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RoleEmailSettingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>[]
+        }
+        delete: {
+          args: Prisma.RoleEmailSettingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>
+        }
+        update: {
+          args: Prisma.RoleEmailSettingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>
+        }
+        deleteMany: {
+          args: Prisma.RoleEmailSettingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RoleEmailSettingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RoleEmailSettingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>[]
+        }
+        upsert: {
+          args: Prisma.RoleEmailSettingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleEmailSettingPayload>
+        }
+        aggregate: {
+          args: Prisma.RoleEmailSettingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoleEmailSetting>
+        }
+        groupBy: {
+          args: Prisma.RoleEmailSettingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoleEmailSettingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RoleEmailSettingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoleEmailSettingCountAggregateOutputType> | number
         }
       }
     }
@@ -2009,6 +2084,15 @@ export const ApprovalEmailLogScalarFieldEnum = {
 export type ApprovalEmailLogScalarFieldEnum = (typeof ApprovalEmailLogScalarFieldEnum)[keyof typeof ApprovalEmailLogScalarFieldEnum]
 
 
+export const RoleEmailSettingScalarFieldEnum = {
+  role: 'role',
+  email: 'email',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoleEmailSettingScalarFieldEnum = (typeof RoleEmailSettingScalarFieldEnum)[keyof typeof RoleEmailSettingScalarFieldEnum]
+
+
 export const TargetGroupScalarFieldEnum = {
   id: 'id',
   name: 'name'
@@ -2584,6 +2668,7 @@ export type GlobalOmitConfig = {
   project?: Prisma.ProjectOmit
   projectRoleCompletion?: Prisma.ProjectRoleCompletionOmit
   approvalEmailLog?: Prisma.ApprovalEmailLogOmit
+  roleEmailSetting?: Prisma.RoleEmailSettingOmit
   targetGroup?: Prisma.TargetGroupOmit
   projectTargetGroup?: Prisma.ProjectTargetGroupOmit
   strategy?: Prisma.StrategyOmit

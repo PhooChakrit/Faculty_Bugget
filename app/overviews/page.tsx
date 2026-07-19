@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { RoleEmailSettingsDialog } from "@/components/RoleEmailSettingsDialog";
 import { formatStatusDisplay } from "@/lib/status-constants";
 import {
   Pencil,
@@ -27,6 +28,7 @@ import {
   Download,
   Trash2,
   FileSpreadsheet,
+  Mail,
 } from "lucide-react";
 import { mockActorByRole, mockActors, type ActorRole } from "@/lib/mock-actors";
 
@@ -823,6 +825,7 @@ export default function ProjectTrackingPage() {
   const [isMockMode, setIsMockMode] = useState(false);
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [showBulkApproveConfirm, setShowBulkApproveConfirm] = useState(false);
+  const [showRoleEmailSettings, setShowRoleEmailSettings] = useState(false);
   const [isBulkApproving, setIsBulkApproving] = useState(false);
 
   // Individual cell editing state
@@ -2274,6 +2277,16 @@ export default function ProjectTrackingPage() {
                 </Button>
                 <Button
                   variant="outline"
+                  size="sm"
+                  className="h-9"
+                  onClick={() => setShowRoleEmailSettings(true)}
+                  title="ตั้งค่าอีเมลผู้รับแจ้งเตือนแต่ละฝ่าย"
+                >
+                  <Mail size={14} className="mr-1.5" />
+                  ตั้งค่าอีเมล
+                </Button>
+                <Button
+                  variant="outline"
                   size="icon"
                   className="h-9 w-9"
                   onClick={isMockMode ? handleExitMockMode : loadProjects}
@@ -2524,6 +2537,11 @@ export default function ProjectTrackingPage() {
           cancelLabel="ยกเลิก"
           loading={isBulkApproving}
           onConfirm={handleBulkApproveState2}
+        />
+
+        <RoleEmailSettingsDialog
+          open={showRoleEmailSettings}
+          onOpenChange={setShowRoleEmailSettings}
         />
 
         {/* --- MODAL: Meetings Management --- */}

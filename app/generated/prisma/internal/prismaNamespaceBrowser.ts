@@ -56,6 +56,7 @@ export const ModelName = {
   Project: 'Project',
   ProjectRoleCompletion: 'ProjectRoleCompletion',
   ApprovalEmailLog: 'ApprovalEmailLog',
+  RoleEmailSetting: 'RoleEmailSetting',
   TargetGroup: 'TargetGroup',
   ProjectTargetGroup: 'ProjectTargetGroup',
   Strategy: 'Strategy',
@@ -228,6 +229,15 @@ export const ApprovalEmailLogScalarFieldEnum = {
 } as const
 
 export type ApprovalEmailLogScalarFieldEnum = (typeof ApprovalEmailLogScalarFieldEnum)[keyof typeof ApprovalEmailLogScalarFieldEnum]
+
+
+export const RoleEmailSettingScalarFieldEnum = {
+  role: 'role',
+  email: 'email',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoleEmailSettingScalarFieldEnum = (typeof RoleEmailSettingScalarFieldEnum)[keyof typeof RoleEmailSettingScalarFieldEnum]
 
 
 export const TargetGroupScalarFieldEnum = {
