@@ -633,7 +633,12 @@ export class StatusTransitionService {
         await this.sendEvent(projectId, "REQUEST_VENDOR_COSTCENTER");
         await this.sendEvent(projectId, "REQUEST_DEAN_DOC");
         break;
-      // STATUS_3 / 6 / 7 / 8 / DRAFT / RECALL → ไม่มีอีเมลตอน enter
+      case "STATUS_6":
+      case "STATUS_7":
+        // อนุมัติแล้ว → แจ้งเจ้าของโครงการให้อัปโหลดรายงานผล
+        await this.sendEvent(projectId, "AWAIT_REPORT_UPLOAD");
+        break;
+      // STATUS_3 / 8 / DRAFT / RECALL → ไม่มีอีเมลตอน enter
       default:
         break;
     }
@@ -654,6 +659,7 @@ export class StatusTransitionService {
         costCenter: true,
         costCenterFileName: true,
         docLink: true,
+        reportFileName: true,
       },
     });
     if (!project) return;
@@ -663,6 +669,7 @@ export class StatusTransitionService {
       project.costCenter?.trim() || project.costCenterFileName?.trim(),
     );
     const hasDocLink = Boolean(project.docLink?.trim());
+    const hasReport = Boolean(project.reportFileName?.trim());
 
     switch (project.currentStatusCode) {
       case "STATUS_4":
@@ -677,7 +684,8 @@ export class StatusTransitionService {
         break;
       case "STATUS_6":
       case "STATUS_7":
-        if (hasDocLink) {
+        // เจ้าของอัปโหลดไฟล์รายงานแล้ว → ขอให้ 3 ฝ่ายยืนยันปิดโครงการ
+        if (hasReport) {
           await this.sendEvent(projectId, "AWAIT_CLOSURE_CONFIRM");
         }
         break;
@@ -693,7 +701,7 @@ export class StatusTransitionService {
   async notifyOnClosureProgress(projectId: string): Promise<void> {
     const project = await prisma.project.findUnique({
       where: { id: projectId },
-      select: { currentStatusCode: true, docLink: true },
+      select: { currentStatusCode: true, reportFileName: true },
     });
     if (!project) return;
     if (
@@ -702,7 +710,7 @@ export class StatusTransitionService {
     ) {
       return;
     }
-    if (!project.docLink?.trim()) return;
+    if (!project.reportFileName?.trim()) return;
 
     const progress = await this.getClosureProgress(projectId);
     if (progress.bothComplete) {

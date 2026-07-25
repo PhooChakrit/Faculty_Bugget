@@ -21,7 +21,8 @@ export type NotificationEvent =
   | "REQUEST_VENDOR_COSTCENTER" // เข้า STATUS_4/5 → งานคลัง + งานแผน
   | "REQUEST_DEAN_DOC" // เข้า STATUS_5 → งานวิจัย (แนบเอกสารอนุมัติคณบดี)
   | "READY_TO_RELEASE" // ข้อมูลประกอบครบ → งานวิจัย (กดอนุมัติดำเนินการ)
-  | "AWAIT_CLOSURE_CONFIRM" // เจ้าของส่งรายงานแล้ว → งานวิจัย/กายภาพ/งานคลัง
+  | "AWAIT_REPORT_UPLOAD" // เข้า STATUS_6/7 (อนุมัติแล้ว) → เจ้าของโครงการ (อัปโหลดรายงาน)
+  | "AWAIT_CLOSURE_CONFIRM" // เจ้าของอัปโหลดรายงานแล้ว → งานวิจัย/กายภาพ/งานคลัง
   | "READY_TO_CLOSE"; // สามฝ่ายยืนยันครบ → งานคลัง (กดปิดโครงการ)
 
 export interface EmailTemplateContext {
@@ -47,6 +48,7 @@ const EVENT_RECIPIENTS: Record<NotificationEvent, RecipientRole[]> = {
   REQUEST_VENDOR_COSTCENTER: ["FINANCE", "PLANNING"],
   REQUEST_DEAN_DOC: ["RESEARCH"],
   READY_TO_RELEASE: ["RESEARCH"],
+  AWAIT_REPORT_UPLOAD: ["PROJECT_OWNER"],
   AWAIT_CLOSURE_CONFIRM: ["RESEARCH", "PHYSICAL", "FINANCE"],
   READY_TO_CLOSE: ["FINANCE"],
 };
@@ -112,6 +114,13 @@ const EVENT_TEMPLATES: Record<NotificationEvent, EventTemplate> = {
     subject: (c) => `พร้อมอนุมัติ: โครงการ ${c.projectRef} (ข้อมูลครบแล้ว)`,
     body: `<p style="margin:0">ข้อมูลประกอบครบถ้วนแล้ว โครงการพร้อมให้ <strong>ฝ่ายวิจัย</strong> กดอนุมัติเพื่อให้เริ่มดำเนินโครงการ กรุณาเข้าระบบเพื่อดำเนินการ</p>`,
     cta: "อนุมัติให้ดำเนินการ",
+  },
+  AWAIT_REPORT_UPLOAD: {
+    accentColor: "#7c3aed",
+    heading: "โครงการได้รับอนุมัติแล้ว — กรุณาอัปโหลดรายงานผล",
+    subject: (c) => `อนุมัติแล้ว: โครงการ ${c.projectRef} กรุณาอัปโหลดรายงานผล`,
+    body: `<p style="margin:0">โครงการของท่าน <strong>ได้รับอนุมัติให้ดำเนินการ</strong> แล้ว เมื่อดำเนินโครงการเสร็จ กรุณาเข้าระบบเพื่อ <strong>อัปโหลดไฟล์รายงานผลการดำเนินโครงการ</strong> เพื่อเข้าสู่ขั้นตอนปิดโครงการ</p>`,
+    cta: "อัปโหลดรายงานผล",
   },
   AWAIT_CLOSURE_CONFIRM: {
     accentColor: "#16a34a",

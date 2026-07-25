@@ -6,6 +6,7 @@ import {
   successResponse,
 } from "@/lib/api-response";
 import { ensureMockActor } from "@/lib/ensure-mock-actor";
+import { statusService } from "@/lib/status-service";
 
 type RouteContext = {
   params: Promise<{
@@ -139,6 +140,9 @@ export async function POST(request: NextRequest, context: RouteContext) {
         },
       }),
     ]);
+
+    // เจ้าของอัปโหลดรายงานแล้ว → ขอให้ 3 ฝ่ายยืนยันปิดโครงการ
+    await statusService.notifyOnDataProgress(id);
 
     return successResponse({
       message: "แนบไฟล์รายงานสำเร็จ",
