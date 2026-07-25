@@ -145,6 +145,10 @@ export type ProjectMinAggregateOutputType = {
   electricityFeeActualFileName: string | null
   electricityFeeActualFileType: string | null
   electricityFeeActualUploadedAt: Date | null
+  reportFile: runtime.Bytes | null
+  reportFileName: string | null
+  reportFileType: string | null
+  reportUploadedAt: Date | null
 }
 
 export type ProjectMaxAggregateOutputType = {
@@ -230,6 +234,10 @@ export type ProjectMaxAggregateOutputType = {
   electricityFeeActualFileName: string | null
   electricityFeeActualFileType: string | null
   electricityFeeActualUploadedAt: Date | null
+  reportFile: runtime.Bytes | null
+  reportFileName: string | null
+  reportFileType: string | null
+  reportUploadedAt: Date | null
 }
 
 export type ProjectCountAggregateOutputType = {
@@ -315,6 +323,10 @@ export type ProjectCountAggregateOutputType = {
   electricityFeeActualFileName: number
   electricityFeeActualFileType: number
   electricityFeeActualUploadedAt: number
+  reportFile: number
+  reportFileName: number
+  reportFileType: number
+  reportUploadedAt: number
   _all: number
 }
 
@@ -438,6 +450,10 @@ export type ProjectMinAggregateInputType = {
   electricityFeeActualFileName?: true
   electricityFeeActualFileType?: true
   electricityFeeActualUploadedAt?: true
+  reportFile?: true
+  reportFileName?: true
+  reportFileType?: true
+  reportUploadedAt?: true
 }
 
 export type ProjectMaxAggregateInputType = {
@@ -523,6 +539,10 @@ export type ProjectMaxAggregateInputType = {
   electricityFeeActualFileName?: true
   electricityFeeActualFileType?: true
   electricityFeeActualUploadedAt?: true
+  reportFile?: true
+  reportFileName?: true
+  reportFileType?: true
+  reportUploadedAt?: true
 }
 
 export type ProjectCountAggregateInputType = {
@@ -608,6 +628,10 @@ export type ProjectCountAggregateInputType = {
   electricityFeeActualFileName?: true
   electricityFeeActualFileType?: true
   electricityFeeActualUploadedAt?: true
+  reportFile?: true
+  reportFileName?: true
+  reportFileType?: true
+  reportUploadedAt?: true
   _all?: true
 }
 
@@ -780,6 +804,10 @@ export type ProjectGroupByOutputType = {
   electricityFeeActualFileName: string | null
   electricityFeeActualFileType: string | null
   electricityFeeActualUploadedAt: Date | null
+  reportFile: runtime.Bytes | null
+  reportFileName: string | null
+  reportFileType: string | null
+  reportUploadedAt: Date | null
   _count: ProjectCountAggregateOutputType | null
   _avg: ProjectAvgAggregateOutputType | null
   _sum: ProjectSumAggregateOutputType | null
@@ -888,6 +916,10 @@ export type ProjectWhereInput = {
   electricityFeeActualFileName?: Prisma.StringNullableFilter<"Project"> | string | null
   electricityFeeActualFileType?: Prisma.StringNullableFilter<"Project"> | string | null
   electricityFeeActualUploadedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  reportFile?: Prisma.BytesNullableFilter<"Project"> | runtime.Bytes | null
+  reportFileName?: Prisma.StringNullableFilter<"Project"> | string | null
+  reportFileType?: Prisma.StringNullableFilter<"Project"> | string | null
+  reportUploadedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   currentStatus?: Prisma.XOR<Prisma.ProjectStatusRecordNullableScalarRelationFilter, Prisma.ProjectStatusRecordWhereInput> | null
   statusHistory?: Prisma.ProjectStatusRecordListRelationFilter
   roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter
@@ -987,6 +1019,10 @@ export type ProjectOrderByWithRelationInput = {
   electricityFeeActualFileName?: Prisma.SortOrderInput | Prisma.SortOrder
   electricityFeeActualFileType?: Prisma.SortOrderInput | Prisma.SortOrder
   electricityFeeActualUploadedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reportFile?: Prisma.SortOrderInput | Prisma.SortOrder
+  reportFileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  reportFileType?: Prisma.SortOrderInput | Prisma.SortOrder
+  reportUploadedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   currentStatus?: Prisma.ProjectStatusRecordOrderByWithRelationInput
   statusHistory?: Prisma.ProjectStatusRecordOrderByRelationAggregateInput
   roleCompletions?: Prisma.ProjectRoleCompletionOrderByRelationAggregateInput
@@ -1089,6 +1125,10 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   electricityFeeActualFileName?: Prisma.StringNullableFilter<"Project"> | string | null
   electricityFeeActualFileType?: Prisma.StringNullableFilter<"Project"> | string | null
   electricityFeeActualUploadedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  reportFile?: Prisma.BytesNullableFilter<"Project"> | runtime.Bytes | null
+  reportFileName?: Prisma.StringNullableFilter<"Project"> | string | null
+  reportFileType?: Prisma.StringNullableFilter<"Project"> | string | null
+  reportUploadedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   currentStatus?: Prisma.XOR<Prisma.ProjectStatusRecordNullableScalarRelationFilter, Prisma.ProjectStatusRecordWhereInput> | null
   statusHistory?: Prisma.ProjectStatusRecordListRelationFilter
   roleCompletions?: Prisma.ProjectRoleCompletionListRelationFilter
@@ -1188,6 +1228,10 @@ export type ProjectOrderByWithAggregationInput = {
   electricityFeeActualFileName?: Prisma.SortOrderInput | Prisma.SortOrder
   electricityFeeActualFileType?: Prisma.SortOrderInput | Prisma.SortOrder
   electricityFeeActualUploadedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reportFile?: Prisma.SortOrderInput | Prisma.SortOrder
+  reportFileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  reportFileType?: Prisma.SortOrderInput | Prisma.SortOrder
+  reportUploadedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
   _avg?: Prisma.ProjectAvgOrderByAggregateInput
   _max?: Prisma.ProjectMaxOrderByAggregateInput
@@ -1281,6 +1325,10 @@ export type ProjectScalarWhereWithAggregatesInput = {
   electricityFeeActualFileName?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   electricityFeeActualFileType?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   electricityFeeActualUploadedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+  reportFile?: Prisma.BytesNullableWithAggregatesFilter<"Project"> | runtime.Bytes | null
+  reportFileName?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  reportFileType?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  reportUploadedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
 }
 
 export type ProjectCreateInput = {
@@ -1363,6 +1411,10 @@ export type ProjectCreateInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -1462,6 +1514,10 @@ export type ProjectUncheckedCreateInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -1555,6 +1611,10 @@ export type ProjectUpdateInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -1654,6 +1714,10 @@ export type ProjectUncheckedUpdateInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -1750,6 +1814,10 @@ export type ProjectCreateManyInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
 }
 
 export type ProjectUpdateManyMutationInput = {
@@ -1832,6 +1900,10 @@ export type ProjectUpdateManyMutationInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProjectUncheckedUpdateManyInput = {
@@ -1917,6 +1989,10 @@ export type ProjectUncheckedUpdateManyInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProjectListRelationFilter = {
@@ -2012,6 +2088,10 @@ export type ProjectCountOrderByAggregateInput = {
   electricityFeeActualFileName?: Prisma.SortOrder
   electricityFeeActualFileType?: Prisma.SortOrder
   electricityFeeActualUploadedAt?: Prisma.SortOrder
+  reportFile?: Prisma.SortOrder
+  reportFileName?: Prisma.SortOrder
+  reportFileType?: Prisma.SortOrder
+  reportUploadedAt?: Prisma.SortOrder
 }
 
 export type ProjectAvgOrderByAggregateInput = {
@@ -2115,6 +2195,10 @@ export type ProjectMaxOrderByAggregateInput = {
   electricityFeeActualFileName?: Prisma.SortOrder
   electricityFeeActualFileType?: Prisma.SortOrder
   electricityFeeActualUploadedAt?: Prisma.SortOrder
+  reportFile?: Prisma.SortOrder
+  reportFileName?: Prisma.SortOrder
+  reportFileType?: Prisma.SortOrder
+  reportUploadedAt?: Prisma.SortOrder
 }
 
 export type ProjectMinOrderByAggregateInput = {
@@ -2200,6 +2284,10 @@ export type ProjectMinOrderByAggregateInput = {
   electricityFeeActualFileName?: Prisma.SortOrder
   electricityFeeActualFileType?: Prisma.SortOrder
   electricityFeeActualUploadedAt?: Prisma.SortOrder
+  reportFile?: Prisma.SortOrder
+  reportFileName?: Prisma.SortOrder
+  reportFileType?: Prisma.SortOrder
+  reportUploadedAt?: Prisma.SortOrder
 }
 
 export type ProjectSumOrderByAggregateInput = {
@@ -2616,6 +2704,10 @@ export type ProjectCreateWithoutCoLeaderInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -2713,6 +2805,10 @@ export type ProjectUncheckedCreateWithoutCoLeaderInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -2816,6 +2912,10 @@ export type ProjectCreateWithoutLeaderInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -2913,6 +3013,10 @@ export type ProjectUncheckedCreateWithoutLeaderInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -3038,6 +3142,10 @@ export type ProjectScalarWhereInput = {
   electricityFeeActualFileName?: Prisma.StringNullableFilter<"Project"> | string | null
   electricityFeeActualFileType?: Prisma.StringNullableFilter<"Project"> | string | null
   electricityFeeActualUploadedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
+  reportFile?: Prisma.BytesNullableFilter<"Project"> | runtime.Bytes | null
+  reportFileName?: Prisma.StringNullableFilter<"Project"> | string | null
+  reportFileType?: Prisma.StringNullableFilter<"Project"> | string | null
+  reportUploadedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
 }
 
 export type ProjectUpsertWithWhereUniqueWithoutLeaderInput = {
@@ -3136,6 +3244,10 @@ export type ProjectCreateWithoutRoleCompletionsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
@@ -3234,6 +3346,10 @@ export type ProjectUncheckedCreateWithoutRoleCompletionsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput
@@ -3342,6 +3458,10 @@ export type ProjectUpdateWithoutRoleCompletionsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
@@ -3440,6 +3560,10 @@ export type ProjectUncheckedUpdateWithoutRoleCompletionsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -3532,6 +3656,10 @@ export type ProjectCreateWithoutApprovalEmailLogsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -3630,6 +3758,10 @@ export type ProjectUncheckedCreateWithoutApprovalEmailLogsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput
@@ -3738,6 +3870,10 @@ export type ProjectUpdateWithoutApprovalEmailLogsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -3836,6 +3972,10 @@ export type ProjectUncheckedUpdateWithoutApprovalEmailLogsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -3928,6 +4068,10 @@ export type ProjectCreateWithoutTargetGroupsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -4026,6 +4170,10 @@ export type ProjectUncheckedCreateWithoutTargetGroupsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -4134,6 +4282,10 @@ export type ProjectUpdateWithoutTargetGroupsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -4232,6 +4384,10 @@ export type ProjectUncheckedUpdateWithoutTargetGroupsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -4324,6 +4480,10 @@ export type ProjectCreateWithoutStrategiesInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -4422,6 +4582,10 @@ export type ProjectUncheckedCreateWithoutStrategiesInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -4530,6 +4694,10 @@ export type ProjectUpdateWithoutStrategiesInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -4628,6 +4796,10 @@ export type ProjectUncheckedUpdateWithoutStrategiesInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -4720,6 +4892,10 @@ export type ProjectCreateWithoutIncomeItemsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -4818,6 +4994,10 @@ export type ProjectUncheckedCreateWithoutIncomeItemsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -4926,6 +5106,10 @@ export type ProjectUpdateWithoutIncomeItemsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -5024,6 +5208,10 @@ export type ProjectUncheckedUpdateWithoutIncomeItemsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -5116,6 +5304,10 @@ export type ProjectCreateWithoutCollaboratorsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -5214,6 +5406,10 @@ export type ProjectUncheckedCreateWithoutCollaboratorsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -5322,6 +5518,10 @@ export type ProjectUpdateWithoutCollaboratorsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -5420,6 +5620,10 @@ export type ProjectUncheckedUpdateWithoutCollaboratorsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -5512,6 +5716,10 @@ export type ProjectCreateWithoutManagersInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -5610,6 +5818,10 @@ export type ProjectUncheckedCreateWithoutManagersInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -5718,6 +5930,10 @@ export type ProjectUpdateWithoutManagersInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -5816,6 +6032,10 @@ export type ProjectUncheckedUpdateWithoutManagersInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -5908,6 +6128,10 @@ export type ProjectCreateWithoutMeetingsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -6006,6 +6230,10 @@ export type ProjectUncheckedCreateWithoutMeetingsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -6114,6 +6342,10 @@ export type ProjectUpdateWithoutMeetingsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -6212,6 +6444,10 @@ export type ProjectUncheckedUpdateWithoutMeetingsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -6304,6 +6540,10 @@ export type ProjectCreateWithoutStatusHistoryInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
@@ -6402,6 +6642,10 @@ export type ProjectUncheckedCreateWithoutStatusHistoryInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
   statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedCreateNestedManyWithoutProjectInput
@@ -6499,6 +6743,10 @@ export type ProjectCreateWithoutCurrentStatusInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogCreateNestedManyWithoutProjectInput
@@ -6596,6 +6844,10 @@ export type ProjectUncheckedCreateWithoutCurrentStatusInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -6705,6 +6957,10 @@ export type ProjectUpdateWithoutStatusHistoryInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
@@ -6803,6 +7059,10 @@ export type ProjectUncheckedUpdateWithoutStatusHistoryInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
   statusActionLogs?: Prisma.ProjectStatusActionLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -6906,6 +7166,10 @@ export type ProjectUpdateWithoutCurrentStatusInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUpdateManyWithoutProjectNestedInput
@@ -7003,6 +7267,10 @@ export type ProjectUncheckedUpdateWithoutCurrentStatusInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -7096,6 +7364,10 @@ export type ProjectCreateWithoutStatusActionLogsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -7194,6 +7466,10 @@ export type ProjectUncheckedCreateWithoutStatusActionLogsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -7302,6 +7578,10 @@ export type ProjectUpdateWithoutStatusActionLogsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -7400,6 +7680,10 @@ export type ProjectUncheckedUpdateWithoutStatusActionLogsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -7492,6 +7776,10 @@ export type ProjectCreateWithoutBudgetRevisionsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordCreateNestedOneWithoutCurrentForInput
   statusHistory?: Prisma.ProjectStatusRecordCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionCreateNestedManyWithoutProjectInput
@@ -7590,6 +7878,10 @@ export type ProjectUncheckedCreateWithoutBudgetRevisionsInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedCreateNestedManyWithoutProjectInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedCreateNestedManyWithoutProjectInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedCreateNestedManyWithoutProjectInput
@@ -7698,6 +7990,10 @@ export type ProjectUpdateWithoutBudgetRevisionsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -7796,6 +8092,10 @@ export type ProjectUncheckedUpdateWithoutBudgetRevisionsInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -7890,6 +8190,10 @@ export type ProjectCreateManyCoLeaderInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
 }
 
 export type ProjectCreateManyLeaderInput = {
@@ -7974,6 +8278,10 @@ export type ProjectCreateManyLeaderInput = {
   electricityFeeActualFileName?: string | null
   electricityFeeActualFileType?: string | null
   electricityFeeActualUploadedAt?: Date | string | null
+  reportFile?: runtime.Bytes | null
+  reportFileName?: string | null
+  reportFileType?: string | null
+  reportUploadedAt?: Date | string | null
 }
 
 export type ProjectUpdateWithoutCoLeaderInput = {
@@ -8056,6 +8364,10 @@ export type ProjectUpdateWithoutCoLeaderInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -8153,6 +8465,10 @@ export type ProjectUncheckedUpdateWithoutCoLeaderInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -8248,6 +8564,10 @@ export type ProjectUncheckedUpdateManyWithoutCoLeaderInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ProjectUpdateWithoutLeaderInput = {
@@ -8330,6 +8650,10 @@ export type ProjectUpdateWithoutLeaderInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentStatus?: Prisma.ProjectStatusRecordUpdateOneWithoutCurrentForNestedInput
   statusHistory?: Prisma.ProjectStatusRecordUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUpdateManyWithoutProjectNestedInput
@@ -8427,6 +8751,10 @@ export type ProjectUncheckedUpdateWithoutLeaderInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusHistory?: Prisma.ProjectStatusRecordUncheckedUpdateManyWithoutProjectNestedInput
   roleCompletions?: Prisma.ProjectRoleCompletionUncheckedUpdateManyWithoutProjectNestedInput
   approvalEmailLogs?: Prisma.ApprovalEmailLogUncheckedUpdateManyWithoutProjectNestedInput
@@ -8522,6 +8850,10 @@ export type ProjectUncheckedUpdateManyWithoutLeaderInput = {
   electricityFeeActualFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   electricityFeeActualUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reportFile?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null
+  reportFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportFileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reportUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -8728,6 +9060,10 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   electricityFeeActualFileName?: boolean
   electricityFeeActualFileType?: boolean
   electricityFeeActualUploadedAt?: boolean
+  reportFile?: boolean
+  reportFileName?: boolean
+  reportFileType?: boolean
+  reportUploadedAt?: boolean
   currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Project$statusHistoryArgs<ExtArgs>
   roleCompletions?: boolean | Prisma.Project$roleCompletionsArgs<ExtArgs>
@@ -8828,6 +9164,10 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   electricityFeeActualFileName?: boolean
   electricityFeeActualFileType?: boolean
   electricityFeeActualUploadedAt?: boolean
+  reportFile?: boolean
+  reportFileName?: boolean
+  reportFileType?: boolean
+  reportUploadedAt?: boolean
   currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>
   leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -8916,6 +9256,10 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   electricityFeeActualFileName?: boolean
   electricityFeeActualFileType?: boolean
   electricityFeeActualUploadedAt?: boolean
+  reportFile?: boolean
+  reportFileName?: boolean
+  reportFileType?: boolean
+  reportUploadedAt?: boolean
   currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>
   coLeader?: boolean | Prisma.Project$coLeaderArgs<ExtArgs>
   leader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -9004,9 +9348,13 @@ export type ProjectSelectScalar = {
   electricityFeeActualFileName?: boolean
   electricityFeeActualFileType?: boolean
   electricityFeeActualUploadedAt?: boolean
+  reportFile?: boolean
+  reportFileName?: boolean
+  reportFileType?: boolean
+  reportUploadedAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "receiptNumber" | "createdAt" | "updatedAt" | "status" | "projectNameThai" | "projectNameEng" | "leaderId" | "leaderPosition" | "department" | "coLeaderId" | "startDate" | "endDate" | "background" | "projectDetails" | "objectives" | "scope" | "implementationPlan" | "serviceType" | "participantCount" | "venue" | "committee" | "expectedBenefits" | "projectEvaluation" | "budgetSourceExtGov" | "budgetSourceExtPrivate" | "budgetSourceExtForeign" | "budgetSourceInternal" | "expenseRemuneration" | "expenseSupplies" | "expenseMaterials" | "expenseUtilities" | "expenseSubsidy" | "expenseReserve" | "note2" | "note3" | "participantDetails" | "projectCode" | "memoTitle" | "vendorCode" | "costCenter" | "fundOwner" | "maintenanceFeeProposal" | "maintenanceFeeActual" | "electricityFeeProposal" | "electricityFeeActual" | "status1" | "status1Date" | "status2" | "status2Date" | "status3" | "status3Date" | "status4" | "status4Date" | "status5" | "status5Date" | "responsible" | "docNumber" | "docDate" | "docLink" | "currentStatusCode" | "currentStatusId" | "draftState" | "draftSavedAt" | "submittedAt" | "submittedByRole" | "excelFile" | "excelFileName" | "excelFileType" | "excelUploadedAt" | "costCenterFile" | "costCenterFileName" | "costCenterFileType" | "costCenterUploadedAt" | "maintenanceFeeActualFile" | "maintenanceFeeActualFileName" | "maintenanceFeeActualFileType" | "maintenanceFeeActualUploadedAt" | "electricityFeeActualFile" | "electricityFeeActualFileName" | "electricityFeeActualFileType" | "electricityFeeActualUploadedAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "receiptNumber" | "createdAt" | "updatedAt" | "status" | "projectNameThai" | "projectNameEng" | "leaderId" | "leaderPosition" | "department" | "coLeaderId" | "startDate" | "endDate" | "background" | "projectDetails" | "objectives" | "scope" | "implementationPlan" | "serviceType" | "participantCount" | "venue" | "committee" | "expectedBenefits" | "projectEvaluation" | "budgetSourceExtGov" | "budgetSourceExtPrivate" | "budgetSourceExtForeign" | "budgetSourceInternal" | "expenseRemuneration" | "expenseSupplies" | "expenseMaterials" | "expenseUtilities" | "expenseSubsidy" | "expenseReserve" | "note2" | "note3" | "participantDetails" | "projectCode" | "memoTitle" | "vendorCode" | "costCenter" | "fundOwner" | "maintenanceFeeProposal" | "maintenanceFeeActual" | "electricityFeeProposal" | "electricityFeeActual" | "status1" | "status1Date" | "status2" | "status2Date" | "status3" | "status3Date" | "status4" | "status4Date" | "status5" | "status5Date" | "responsible" | "docNumber" | "docDate" | "docLink" | "currentStatusCode" | "currentStatusId" | "draftState" | "draftSavedAt" | "submittedAt" | "submittedByRole" | "excelFile" | "excelFileName" | "excelFileType" | "excelUploadedAt" | "costCenterFile" | "costCenterFileName" | "costCenterFileType" | "costCenterUploadedAt" | "maintenanceFeeActualFile" | "maintenanceFeeActualFileName" | "maintenanceFeeActualFileType" | "maintenanceFeeActualUploadedAt" | "electricityFeeActualFile" | "electricityFeeActualFileName" | "electricityFeeActualFileType" | "electricityFeeActualUploadedAt" | "reportFile" | "reportFileName" | "reportFileType" | "reportUploadedAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   currentStatus?: boolean | Prisma.Project$currentStatusArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Project$statusHistoryArgs<ExtArgs>
@@ -9136,6 +9484,10 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     electricityFeeActualFileName: string | null
     electricityFeeActualFileType: string | null
     electricityFeeActualUploadedAt: Date | null
+    reportFile: runtime.Bytes | null
+    reportFileName: string | null
+    reportFileType: string | null
+    reportUploadedAt: Date | null
   }, ExtArgs["result"]["project"]>
   composites: {}
 }
@@ -9655,6 +10007,10 @@ export interface ProjectFieldRefs {
   readonly electricityFeeActualFileName: Prisma.FieldRef<"Project", 'String'>
   readonly electricityFeeActualFileType: Prisma.FieldRef<"Project", 'String'>
   readonly electricityFeeActualUploadedAt: Prisma.FieldRef<"Project", 'DateTime'>
+  readonly reportFile: Prisma.FieldRef<"Project", 'Bytes'>
+  readonly reportFileName: Prisma.FieldRef<"Project", 'String'>
+  readonly reportFileType: Prisma.FieldRef<"Project", 'String'>
+  readonly reportUploadedAt: Prisma.FieldRef<"Project", 'DateTime'>
 }
     
 

@@ -541,7 +541,7 @@ export class StatusTransitionService {
     try {
       const project = await prisma.project.findUnique({
         where: { id: projectId },
-        select: { currentStatusCode: true },
+        select: { currentStatusCode: true, reportFileName: true },
       });
 
       if (!project) {
@@ -555,6 +555,14 @@ export class StatusTransitionService {
         return {
           success: false,
           error: "โครงการต้องอยู่ในสถานะ 6 หรือ 7 (ดำเนินโครงการได้)",
+        };
+      }
+
+      if (isComplete && !project.reportFileName) {
+        return {
+          success: false,
+          error:
+            "ยืนยันข้อมูลได้หลังจากเจ้าของโครงการอัปโหลดไฟล์รายงานผลการดำเนินโครงการแล้วเท่านั้น",
         };
       }
 

@@ -146,6 +146,11 @@ model Project {
   electricityFeeActualFileName   String?
   electricityFeeActualFileType   String?
   electricityFeeActualUploadedAt DateTime?
+  // Project report uploaded by the project owner while in progress (STATUS_6/7)
+  reportFile       Bytes?
+  reportFileName   String?
+  reportFileType   String?
+  reportUploadedAt DateTime?
 }
 
 model ProjectRoleCompletion {
