@@ -135,10 +135,12 @@ export default function ExpenseDashboardPage() {
       icon: Layers3,
     },
     {
-      label: "รวมประมาณการรายจ่าย (บาท)",
-      value: data ? formatMoney(data.summary.totalExpense) : "-",
-      caption: "รวมจาก 6 หมวดรายจ่าย",
-      icon: Wallet,
+      label: "หมวดรายจ่ายสูงสุด",
+      value: data?.summary.topCategory?.label ?? "-",
+      caption: data?.summary.topCategory
+        ? `${formatMoney(data.summary.topCategory.total)} บาท`
+        : "ไม่มีข้อมูล",
+      icon: BarChart3,
     },
     {
       label: "เฉลี่ยต่อโครงการ (บาท)",
@@ -147,12 +149,10 @@ export default function ExpenseDashboardPage() {
       icon: Calculator,
     },
     {
-      label: "หมวดรายจ่ายสูงสุด",
-      value: data?.summary.topCategory?.label ?? "-",
-      caption: data?.summary.topCategory
-        ? `${formatMoney(data.summary.topCategory.total)} บาท`
-        : "ไม่มีข้อมูล",
-      icon: BarChart3,
+      label: "รวมประมาณการรายจ่าย (บาท)",
+      value: data ? formatMoney(data.summary.totalExpense) : "-",
+      caption: "รวมจาก 6 หมวดรายจ่าย",
+      icon: Wallet,
     },
   ];
 

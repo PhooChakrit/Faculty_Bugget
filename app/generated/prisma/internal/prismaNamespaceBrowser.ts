@@ -193,7 +193,11 @@ export const ProjectScalarFieldEnum = {
   electricityFeeActualFile: 'electricityFeeActualFile',
   electricityFeeActualFileName: 'electricityFeeActualFileName',
   electricityFeeActualFileType: 'electricityFeeActualFileType',
-  electricityFeeActualUploadedAt: 'electricityFeeActualUploadedAt'
+  electricityFeeActualUploadedAt: 'electricityFeeActualUploadedAt',
+  reportFile: 'reportFile',
+  reportFileName: 'reportFileName',
+  reportFileType: 'reportFileType',
+  reportUploadedAt: 'reportUploadedAt'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
