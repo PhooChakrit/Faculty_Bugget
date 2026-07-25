@@ -423,7 +423,7 @@ export async function GET(request: NextRequest) {
         releaseChecklist.hasCostCenter &&
         releaseChecklist.hasDeanApproval;
       const canCloseProject =
-        Boolean(project.docLink?.trim()) &&
+        Boolean(project.reportFileName?.trim() || project.docLink?.trim()) &&
         !!researchCompletion?.isComplete &&
         !!physicalCompletion?.isComplete &&
         !!financeCompletion?.isComplete;

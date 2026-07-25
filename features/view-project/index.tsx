@@ -293,7 +293,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
   );
   const canReleaseDean = Boolean(canReleaseBoard && projectData?.docLink);
   const canCloseProject = Boolean(
-    projectData?.docLink &&
+    (projectData?.reportFileName || projectData?.docLink) &&
       roleCompletion("RESEARCH") &&
       roleCompletion("PHYSICAL") &&
       roleCompletion("FINANCE"),
