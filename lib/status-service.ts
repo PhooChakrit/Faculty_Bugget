@@ -249,12 +249,14 @@ export class StatusTransitionService {
       (currentStatus === "STATUS_6" || currentStatus === "STATUS_7") &&
       toStatus === "STATUS_8"
     ) {
-      const hasReportLink = Boolean(project.docLink?.trim());
-      if (!hasReportLink) {
+      // รับได้ทั้งไฟล์รายงานที่อัปโหลด (reportFileName) หรือลิงก์รายงาน (docLink)
+      const hasReport = Boolean(
+        project.reportFileName?.trim() || project.docLink?.trim(),
+      );
+      if (!hasReport) {
         return {
           isValid: false,
-          reason:
-            "ต้องแนบลิงก์รายงานผลการดำเนินโครงการ (docLink) ก่อนปิดโครงการ",
+          reason: "ต้องแนบไฟล์รายงานผลการดำเนินโครงการก่อนปิดโครงการ",
         };
       }
 
