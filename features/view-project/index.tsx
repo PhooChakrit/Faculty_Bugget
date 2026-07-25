@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { ArrowLeft, Loader2, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  FileText,
+  Loader2,
+  Plus,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { Collaborator, FormData, Notes, Manager } from "../add-project/types";
 import { formatStatusDisplay } from "@/lib/status-constants";
 import { mockActorByRole, mockActors, type ActorRole } from "@/lib/mock-actors";
@@ -54,6 +61,8 @@ type ProjectRecord = {
   vendorCode?: string | null;
   costCenter?: string | null;
   costCenterFileName?: string | null;
+  reportFileName?: string | null;
+  reportUploadedAt?: string | null;
   currentStatus?: {
     notes?: string | null;
     actionLogs?: Array<{
@@ -97,6 +106,9 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
   } | null>(null);
   const [meetingForm, setMeetingForm] = useState<MeetingFormState | null>(null);
   const [savingMeeting, setSavingMeeting] = useState(false);
+  const [uploadingReport, setUploadingReport] = useState(false);
+  const [deletingReport, setDeletingReport] = useState(false);
+  const reportFileInputRef = useRef<HTMLInputElement>(null);
 
   // Lookup data / relations
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
@@ -474,6 +486,60 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
     }
   };
 
+  const uploadReportFile = async (file: File) => {
+    if (!projectData) return;
+    setUploadingReport(true);
+    try {
+      // NOTE: the FormData type imported from ../add-project/types shadows the
+      // DOM FormData in this module, so reach for the global explicitly.
+      const payload = new globalThis.FormData();
+      payload.append("file", file);
+      payload.append("actorRole", userRole);
+      payload.append("actorUserId", currentActor.id);
+      const response = await fetch(
+        `/api/overviews/${projectData.id}/report-file`,
+        {
+          method: "POST",
+          body: payload,
+        },
+      );
+      const responseData = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(responseData?.error ?? "อัปโหลดไฟล์รายงานไม่สำเร็จ");
+      }
+      window.location.reload();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
+      setUploadingReport(false);
+    }
+  };
+
+  const deleteReportFile = async () => {
+    if (!projectData) return;
+    setDeletingReport(true);
+    try {
+      const response = await fetch(
+        `/api/overviews/${projectData.id}/report-file`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            actorRole: userRole,
+            actorUserId: currentActor.id,
+          }),
+        },
+      );
+      const responseData = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(responseData?.error ?? "ลบไฟล์รายงานไม่สำเร็จ");
+      }
+      window.location.reload();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
+      setDeletingReport(false);
+    }
+  };
+
   const toggleCompletion = async (role: "RESEARCH" | "PHYSICAL" | "FINANCE") => {
     if (!projectData) return;
     setSavingAction(`COMPLETION_${role}`);
@@ -630,6 +696,93 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                 </div>
 
                 {canShowCompletionSection && (
+                  <div className="rounded border border-slate-200 bg-slate-50 p-3">
+                    <div className="text-sm font-semibold text-slate-700">
+                      ไฟล์รายงานผลการดำเนินโครงการ
+                    </div>
+                    {projectData.reportFileName ? (
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                        <a
+                          href={`/api/overviews/${projectData.id}/report-file`}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-emerald-800 hover:bg-emerald-100"
+                          title="ดาวน์โหลดไฟล์รายงาน"
+                        >
+                          <FileText size={14} />
+                          <span className="max-w-60 truncate font-medium">
+                            {projectData.reportFileName}
+                          </span>
+                        </a>
+                        {projectData.reportUploadedAt && (
+                          <span className="text-xs text-slate-500">
+                            อัปโหลดเมื่อ{" "}
+                            {new Date(
+                              projectData.reportUploadedAt,
+                            ).toLocaleDateString("th-TH", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </span>
+                        )}
+                        {userRole === "USER" && (
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="text-red-400 hover:text-red-600"
+                            disabled={deletingReport}
+                            title="ลบไฟล์รายงาน"
+                            onClick={deleteReportFile}
+                          >
+                            {deletingReport ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="mt-1 text-sm text-slate-500">
+                        ยังไม่มีไฟล์รายงานจากเจ้าของโครงการ
+                      </div>
+                    )}
+                    {userRole === "USER" && (
+                      <div className="mt-2">
+                        <input
+                          ref={reportFileInputRef}
+                          type="file"
+                          accept=".pdf,.doc,.docx,.xlsx,.xls"
+                          className="hidden"
+                          onChange={(event) => {
+                            const file = event.target.files?.[0];
+                            if (file) uploadReportFile(file);
+                            event.target.value = "";
+                          }}
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={uploadingReport}
+                          onClick={() => reportFileInputRef.current?.click()}
+                        >
+                          {uploadingReport ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Upload className="mr-2 h-4 w-4" />
+                          )}
+                          {projectData.reportFileName
+                            ? "เปลี่ยนไฟล์รายงาน"
+                            : "อัปโหลดไฟล์รายงาน"}
+                        </Button>
+                        <p className="mt-1 text-xs text-slate-500">
+                          รองรับ .pdf, .doc, .docx, .xlsx, .xls ขนาดไม่เกิน 10 MB
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {canShowCompletionSection && (
                   <div className="grid gap-2 text-sm md:grid-cols-3">
                     {["RESEARCH", "PHYSICAL", "FINANCE"].map((role) => (
                       <div
@@ -653,7 +806,17 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                           <Button
                             size="sm"
                             variant="outline"
-                            disabled={savingAction === `COMPLETION_${role}`}
+                            disabled={
+                              savingAction === `COMPLETION_${role}` ||
+                              (!roleCompletion(role) &&
+                                !projectData.reportFileName)
+                            }
+                            title={
+                              !roleCompletion(role) &&
+                              !projectData.reportFileName
+                                ? "รอเจ้าของโครงการอัปโหลดไฟล์รายงานก่อน"
+                                : undefined
+                            }
                             onClick={() =>
                               toggleCompletion(
                                 role as "RESEARCH" | "PHYSICAL" | "FINANCE",
@@ -665,6 +828,12 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                               : "ยืนยันข้อมูล"}
                           </Button>
                         )}
+                        {!roleCompletion(role) &&
+                          !projectData.reportFileName && (
+                            <div className="text-xs text-slate-500">
+                              รอไฟล์รายงานจากเจ้าของโครงการ
+                            </div>
+                          )}
                       </div>
                     ))}
                   </div>
@@ -784,7 +953,11 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
 
             <ProjectDetailsSection formData={formData} />
 
-            <BudgetAndNotesSection formData={formData} notes={notes} />
+            <BudgetAndNotesSection
+              formData={formData}
+              notes={notes}
+              projectId={projectData?.id ?? projectId}
+            />
           </div>
         </div>
       </main>

@@ -3,15 +3,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Check } from "lucide-react";
 import { FormData, Notes, IncomeItem } from "@/features/add-project/types";
+import { ExcelImportControl } from "../ExcelImportControl";
 
 interface BudgetAndNotesSectionProps {
   formData: FormData;
   notes: Notes;
+  projectId?: string;
 }
 
 export function BudgetAndNotesSection({
   formData,
   notes,
+  projectId,
 }: BudgetAndNotesSectionProps) {
   const formatCurrency = (value: string | number) => {
     const num = typeof value === "string" ? parseFloat(value) : value;
@@ -79,7 +82,10 @@ export function BudgetAndNotesSection({
       <CardContent className="space-y-6 pt-6">
         {/* Budget Sources Section */}
         <div>
-          <h3 className="font-medium mb-3">งบประมาณ</h3>
+          <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+            <h3 className="font-medium">งบประมาณ</h3>
+            <ExcelImportControl projectId={projectId} />
+          </div>
           <div className="border rounded-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-muted">
