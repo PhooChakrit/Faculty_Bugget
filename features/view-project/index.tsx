@@ -468,6 +468,10 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
 
   const saveMeeting = async () => {
     if (!projectData || !meetingForm) return;
+    // ครั้งที่และวันที่เป็นข้อมูลบังคับ
+    if (!meetingForm.no.trim() || !meetingForm.date.trim()) {
+      return;
+    }
     setSavingMeeting(true);
     try {
       const response = await fetch(`/api/overviews/${projectData.id}/meetings`, {
@@ -1032,16 +1036,23 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium">ครั้งที่</label>
+                <label className="mb-1 block text-sm font-medium">
+                  ครั้งที่ <span className="text-red-500">*</span>
+                </label>
                 <Input
                   value={meetingForm.no}
                   onChange={(event) =>
                     setMeetingForm({ ...meetingForm, no: event.target.value })
                   }
                 />
+                {!meetingForm.no.trim() && (
+                  <p className="mt-1 text-xs text-red-500">กรุณาระบุครั้งที่</p>
+                )}
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium">วันที่</label>
+                <label className="mb-1 block text-sm font-medium">
+                  วันที่ <span className="text-red-500">*</span>
+                </label>
                 <Input
                   type="date"
                   value={meetingForm.date}
@@ -1049,6 +1060,9 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                     setMeetingForm({ ...meetingForm, date: event.target.value })
                   }
                 />
+                {!meetingForm.date.trim() && (
+                  <p className="mt-1 text-xs text-red-500">กรุณาระบุวันที่</p>
+                )}
               </div>
               {statusCode === "STATUS_3" && meetingForm.type === "BOARD" && (
                 <div>
@@ -1065,7 +1079,9 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                     }
                     className="h-9 w-full rounded border border-slate-200 px-3 text-sm"
                   >
-                    <option value="STATUS_4">เสนอคณบดีเพื่อพิจารณา</option>
+                    <option value="STATUS_4">
+                      เสนอคณบดีเพื่อพิจารณาอนุมัติ
+                    </option>
                     <option value="STATUS_5">
                       เสนอที่ประชุมคณบดีแก่คณะวิทยาศาสตร์
                     </option>
@@ -1115,7 +1131,14 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
               >
                 ยกเลิก
               </Button>
-              <Button onClick={saveMeeting} disabled={savingMeeting}>
+              <Button
+                onClick={saveMeeting}
+                disabled={
+                  savingMeeting ||
+                  !meetingForm.no.trim() ||
+                  !meetingForm.date.trim()
+                }
+              >
                 {savingMeeting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
