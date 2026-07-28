@@ -259,15 +259,7 @@ export class StatusTransitionService {
           reason: "ต้องแนบไฟล์รายงานผลการดำเนินโครงการก่อนปิดโครงการ",
         };
       }
-
-      const progress = await this.getClosureProgress(projectId);
-      if (!progress.bothComplete) {
-        return {
-          isValid: false,
-          reason:
-            "ต้องให้งานวิจัย กายภาพ และงานคลังยืนยันข้อมูลครบก่อนปิดโครงการ",
-        };
-      }
+      // ไม่ต้องรอการยืนยันจาก 3 ฝ่ายแล้ว — เจ้าของอัปโหลดรายงานเสร็จปิดได้เลย
     }
 
     if (toStatus === "STATUS_13") {
@@ -620,20 +612,24 @@ export class StatusTransitionService {
         break;
       case "STATUS_6":
       case "STATUS_7":
-        // อนุมัติแล้ว → แจ้งเจ้าของโครงการให้อัปโหลดรายงานผล
+        // เปิดโครงการ → แจ้งเจ้าของให้อัปโหลดรายงาน + แจ้ง 4 ฝ่าย (งานกายภาพเข้ามากรอกค่าใช้จ่าย)
         await this.sendEvent(projectId, "AWAIT_REPORT_UPLOAD");
+        await this.sendEvent(projectId, "PROJECT_OPENED");
         break;
-      // STATUS_3 / 8 / DRAFT / RECALL → ไม่มีอีเมลตอน enter
+      case "STATUS_8":
+        // ปิดโครงการ → แจ้ง 4 ฝ่าย
+        await this.sendEvent(projectId, "PROJECT_CLOSED");
+        break;
+      // STATUS_3 / DRAFT / RECALL → ไม่มีอีเมลตอน enter
       default:
         break;
     }
   }
 
   /**
-   * แจ้งเตือนเมื่อ "ข้อมูลประกอบ" ถูกอัปเดต (เรียกจาก field / meetings / summary-submit route)
+   * แจ้งเตือนเมื่อ "ข้อมูลประกอบ" ถูกอัปเดต (เรียกจาก field / meetings route)
    * - STATUS_4: ครบ vendor + costCenter → พร้อมอนุมัติ → แจ้งงานวิจัย
    * - STATUS_5: ครบ vendor + costCenter + เอกสารคณบดี(docLink) → แจ้งงานวิจัย
-   * - STATUS_6/7: มีลิงก์รายงาน(docLink) แล้ว → ขอให้ 3 ฝ่ายยืนยันปิดโครงการ
    */
   async notifyOnDataProgress(projectId: string): Promise<void> {
     const project = await prisma.project.findUnique({
@@ -644,7 +640,6 @@ export class StatusTransitionService {
         costCenter: true,
         costCenterFileName: true,
         docLink: true,
-        reportFileName: true,
       },
     });
     if (!project) return;
@@ -654,7 +649,6 @@ export class StatusTransitionService {
       project.costCenter?.trim() || project.costCenterFileName?.trim(),
     );
     const hasDocLink = Boolean(project.docLink?.trim());
-    const hasReport = Boolean(project.reportFileName?.trim());
 
     switch (project.currentStatusCode) {
       case "STATUS_4":
@@ -667,39 +661,8 @@ export class StatusTransitionService {
           await this.sendEvent(projectId, "READY_TO_RELEASE");
         }
         break;
-      case "STATUS_6":
-      case "STATUS_7":
-        // เจ้าของอัปโหลดไฟล์รายงานแล้ว → ขอให้ 3 ฝ่ายยืนยันปิดโครงการ
-        if (hasReport) {
-          await this.sendEvent(projectId, "AWAIT_CLOSURE_CONFIRM");
-        }
-        break;
       default:
         break;
-    }
-  }
-
-  /**
-   * แจ้งเตือนเมื่อ "ความครบถ้วนปิดโครงการ" เปลี่ยน (เรียกจาก completion route)
-   * ครบ 3 ฝ่าย + มีลิงก์รายงาน → แจ้งงานคลังให้ปิดโครงการ
-   */
-  async notifyOnClosureProgress(projectId: string): Promise<void> {
-    const project = await prisma.project.findUnique({
-      where: { id: projectId },
-      select: { currentStatusCode: true, reportFileName: true },
-    });
-    if (!project) return;
-    if (
-      project.currentStatusCode !== "STATUS_6" &&
-      project.currentStatusCode !== "STATUS_7"
-    ) {
-      return;
-    }
-    if (!project.reportFileName?.trim()) return;
-
-    const progress = await this.getClosureProgress(projectId);
-    if (progress.bothComplete) {
-      await this.sendEvent(projectId, "READY_TO_CLOSE");
     }
   }
 

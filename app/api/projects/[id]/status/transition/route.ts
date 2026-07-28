@@ -139,7 +139,7 @@ export async function POST(
     } else if (isResearchHeadApproval) {
       isAuthorized = actorRole === "หัวหน้าฝ่ายวิจัย";
     } else if (isCloseProject) {
-      isAuthorized = actorRole === "งานคลัง";
+      isAuthorized = actorRole === "USER";
     } else if (isRecallResume) {
       isAuthorized = actorRole === "USER" || actorRole === "งานวิจัย";
     } else {

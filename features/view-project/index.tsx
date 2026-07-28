@@ -286,19 +286,13 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
     projectData?.currentStatus?.notes?.includes("INTERNAL_REVIEW_CHECKED"),
   );
   const activeBudgetRevision = projectData?.budgetRevisions?.[0] ?? null;
-  const roleCompletion = (role: string) =>
-    projectData?.roleCompletions?.find((item) => item.role === role)
-      ?.isComplete ?? false;
   const canReleaseBoard = Boolean(
     projectData?.vendorCode &&
       (projectData?.costCenter || projectData?.costCenterFileName),
   );
   const canReleaseDean = Boolean(canReleaseBoard && projectData?.docLink);
   const canCloseProject = Boolean(
-    (projectData?.reportFileName || projectData?.docLink) &&
-      roleCompletion("RESEARCH") &&
-      roleCompletion("PHYSICAL") &&
-      roleCompletion("FINANCE"),
+    projectData?.reportFileName || projectData?.docLink,
   );
   const statusDetailText = useMemo(() => {
     if (statusCode === "DRAFT") {
@@ -325,7 +319,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
       return "รอข้อมูลหลังมติคณบดี ได้แก่ รหัสเจ้าหนี้ ศูนย์ต้นทุน และเอกสารอนุมัติคณบดี";
     }
     if (statusCode === "STATUS_6" || statusCode === "STATUS_7") {
-      return "โครงการได้รับอนุมัติให้ดำเนินการ รอรายงานและการยืนยันข้อมูลเพื่อปิดโครงการ";
+      return "โครงการได้รับอนุมัติให้ดำเนินการ เมื่อเจ้าของโครงการอัปโหลดไฟล์รายงานผลแล้ว สามารถกดปิดโครงการได้เลย";
     }
     if (statusCode === "STATUS_8") {
       return "ปิดโครงการแล้ว";
@@ -426,9 +420,9 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
       actions.push({
         action: "CLOSE_PROJECT",
         label: "ปิดโครงการ",
-        role: "งานคลัง",
+        role: "USER",
         disabled: !canCloseProject,
-        reason: "ต้องมีรายงานและการยืนยันจากฝ่ายวิจัย งานกายภาพ และงานคลัง",
+        reason: "ต้องอัปโหลดไฟล์รายงานผลการดำเนินโครงการก่อนปิดโครงการ",
       });
     }
     return actions;
@@ -556,32 +550,6 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
     } catch (error) {
       alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
       setDeletingReport(false);
-    }
-  };
-
-  const toggleCompletion = async (role: "RESEARCH" | "PHYSICAL" | "FINANCE") => {
-    if (!projectData) return;
-    setSavingAction(`COMPLETION_${role}`);
-    try {
-      const response = await fetch(`/api/overviews/${projectData.id}/completion`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          role,
-          isComplete: !roleCompletion(role),
-          actorRole: userRole,
-          actorUserId: currentActor.id,
-        }),
-      });
-      const responseData = await response.json().catch(() => null);
-      if (!response.ok) {
-        throw new Error(responseData?.error ?? "บันทึกการยืนยันไม่สำเร็จ");
-      }
-      window.location.reload();
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
-    } finally {
-      setSavingAction(null);
     }
   };
 
@@ -799,63 +767,6 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                         </p>
                       </div>
                     )}
-                  </div>
-                )}
-
-                {canShowCompletionSection && (
-                  <div className="grid gap-2 text-sm md:grid-cols-3">
-                    {["RESEARCH", "PHYSICAL", "FINANCE"].map((role) => (
-                      <div
-                        key={role}
-                        className="space-y-2 rounded border border-slate-200 bg-slate-50 p-2"
-                      >
-                        <div>
-                          {role === "RESEARCH"
-                            ? "ฝ่ายวิจัย"
-                            : role === "PHYSICAL"
-                              ? "งานกายภาพ"
-                              : "งานคลัง"}{" "}
-                          :{" "}
-                          {roleCompletion(role)
-                            ? "ยืนยันแล้ว"
-                            : "ยังไม่ยืนยัน"}
-                        </div>
-                        {((role === "RESEARCH" && userRole === "งานวิจัย") ||
-                          (role === "PHYSICAL" && userRole === "กายภาพ") ||
-                          (role === "FINANCE" && userRole === "งานคลัง")) && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            disabled={
-                              savingAction === `COMPLETION_${role}` ||
-                              (!roleCompletion(role) &&
-                                !projectData.reportFileName)
-                            }
-                            title={
-                              !roleCompletion(role) &&
-                              !projectData.reportFileName
-                                ? "รอเจ้าของโครงการอัปโหลดไฟล์รายงานก่อน"
-                                : undefined
-                            }
-                            onClick={() =>
-                              toggleCompletion(
-                                role as "RESEARCH" | "PHYSICAL" | "FINANCE",
-                              )
-                            }
-                          >
-                            {roleCompletion(role)
-                              ? "ยกเลิกการยืนยัน"
-                              : "ยืนยันข้อมูล"}
-                          </Button>
-                        )}
-                        {!roleCompletion(role) &&
-                          !projectData.reportFileName && (
-                            <div className="text-xs text-slate-500">
-                              รอไฟล์รายงานจากเจ้าของโครงการ
-                            </div>
-                          )}
-                      </div>
-                    ))}
                   </div>
                 )}
 

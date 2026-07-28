@@ -61,7 +61,7 @@ const requiredRoleByAction: Record<
   DEAN_APPROVE_TO_WAITING_RELEASE: "งานวิจัย",
   RELEASE_BOARD_PROJECT: "งานวิจัย",
   RELEASE_DEAN_PROJECT: "งานวิจัย",
-  CLOSE_PROJECT: "งานคลัง",
+  CLOSE_PROJECT: "USER",
   RETURN_FOR_EDIT: "งานวิจัย",
   RESUME_RECALL: "งานวิจัย",
 };

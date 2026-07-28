@@ -22,8 +22,8 @@ export type NotificationEvent =
   | "REQUEST_DEAN_DOC" // เข้า STATUS_5 → งานวิจัย (แนบเอกสารอนุมัติคณบดี)
   | "READY_TO_RELEASE" // ข้อมูลประกอบครบ → งานวิจัย (กดอนุมัติดำเนินการ)
   | "AWAIT_REPORT_UPLOAD" // เข้า STATUS_6/7 (อนุมัติแล้ว) → เจ้าของโครงการ (อัปโหลดรายงาน)
-  | "AWAIT_CLOSURE_CONFIRM" // เจ้าของอัปโหลดรายงานแล้ว → งานวิจัย/กายภาพ/งานคลัง
-  | "READY_TO_CLOSE"; // สามฝ่ายยืนยันครบ → งานคลัง (กดปิดโครงการ)
+  | "PROJECT_OPENED" // เปิดโครงการ (เข้า 6/7) → งานวิจัย/งานคลัง/งานแผน/งานกายภาพ
+  | "PROJECT_CLOSED"; // ปิดโครงการ (เข้า 8) → งานวิจัย/งานคลัง/งานแผน/งานกายภาพ
 
 export interface EmailTemplateContext {
   projectRef: string;
@@ -49,8 +49,8 @@ const EVENT_RECIPIENTS: Record<NotificationEvent, RecipientRole[]> = {
   REQUEST_DEAN_DOC: ["RESEARCH"],
   READY_TO_RELEASE: ["RESEARCH"],
   AWAIT_REPORT_UPLOAD: ["PROJECT_OWNER"],
-  AWAIT_CLOSURE_CONFIRM: ["RESEARCH", "PHYSICAL", "FINANCE"],
-  READY_TO_CLOSE: ["FINANCE"],
+  PROJECT_OPENED: ["RESEARCH", "FINANCE", "PLANNING", "PHYSICAL"],
+  PROJECT_CLOSED: ["RESEARCH", "FINANCE", "PLANNING", "PHYSICAL"],
 };
 
 export function eventRecipients(event: NotificationEvent): RecipientRole[] {
@@ -122,19 +122,20 @@ const EVENT_TEMPLATES: Record<NotificationEvent, EventTemplate> = {
     body: `<p style="margin:0">โครงการของท่าน <strong>ได้รับอนุมัติให้ดำเนินการ</strong> แล้ว เมื่อดำเนินโครงการเสร็จ กรุณาเข้าระบบเพื่อ <strong>อัปโหลดไฟล์รายงานผลการดำเนินโครงการ</strong> เพื่อเข้าสู่ขั้นตอนปิดโครงการ</p>`,
     cta: "อัปโหลดรายงานผล",
   },
-  AWAIT_CLOSURE_CONFIRM: {
-    accentColor: "#16a34a",
-    heading: "เจ้าของโครงการส่งรายงานผลแล้ว — ขอยืนยันปิดโครงการ",
-    subject: (c) => `ขอยืนยันปิดโครงการ: โครงการ ${c.projectRef}`,
-    body: `<p style="margin:0">เจ้าของโครงการได้ส่งรายงานผลการดำเนินโครงการแล้ว กรุณายืนยันความครบถ้วนของเอกสารปิดโครงการในส่วนของท่าน (<strong>งานวิจัย / งานกายภาพ / งานคลัง</strong>) เมื่อครบทั้งสามฝ่ายจึงจะปิดโครงการได้</p>`,
-    cta: "ยืนยันข้อมูลปิดโครงการ",
+  PROJECT_OPENED: {
+    accentColor: "#7c3aed",
+    heading: "โครงการเปิดดำเนินการแล้ว",
+    subject: (c) => `เปิดโครงการ: โครงการ ${c.projectRef} อยู่ระหว่างดำเนินการ`,
+    body: `<p style="margin:0">โครงการนี้ได้รับอนุมัติและอยู่ระหว่างดำเนินการแล้ว กรุณาให้แต่ละฝ่ายเข้ามาบันทึกข้อมูลในส่วนที่เกี่ยวข้อง</p>
+      <p style="margin:12px 0 0"><strong>งานกายภาพ</strong> — กรุณาเข้ามากรอกค่าใช้จ่ายจริง (ค่าบำรุงสถานที่ / ค่าไฟฟ้า)</p>`,
+    cta: "เปิดดูรายละเอียดโครงการ",
   },
-  READY_TO_CLOSE: {
+  PROJECT_CLOSED: {
     accentColor: "#16a34a",
-    heading: "โครงการพร้อมปิด — ทั้งสามฝ่ายยืนยันครบแล้ว",
-    subject: (c) => `พร้อมปิดโครงการ: โครงการ ${c.projectRef}`,
-    body: `<p style="margin:0">งานวิจัย งานกายภาพ และงานคลัง ยืนยันข้อมูลปิดโครงการครบทั้งสามฝ่ายแล้ว กรุณาให้ <strong>งานคลัง</strong> ดำเนินการปิดโครงการเป็นขั้นสุดท้าย</p>`,
-    cta: "ปิดโครงการ",
+    heading: "ปิดโครงการเรียบร้อยแล้ว",
+    subject: (c) => `ปิดโครงการ: โครงการ ${c.projectRef} เรียบร้อยแล้ว`,
+    body: `<p style="margin:0">โครงการนี้ได้ปิดโครงการเรียบร้อยแล้ว ขอบคุณสำหรับการดำเนินงานของทุกฝ่าย เอกสารและข้อมูลทั้งหมดถูกบันทึกในระบบเป็นที่เรียบร้อย</p>`,
+    cta: "เปิดดูรายละเอียดโครงการ",
   },
 };
 

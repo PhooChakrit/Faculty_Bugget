@@ -422,11 +422,10 @@ export async function GET(request: NextRequest) {
         releaseChecklist.hasVendor &&
         releaseChecklist.hasCostCenter &&
         releaseChecklist.hasDeanApproval;
-      const canCloseProject =
-        Boolean(project.reportFileName?.trim() || project.docLink?.trim()) &&
-        !!researchCompletion?.isComplete &&
-        !!physicalCompletion?.isComplete &&
-        !!financeCompletion?.isComplete;
+      // เจ้าของอัปโหลดไฟล์รายงานแล้วปิดได้เลย (ไม่ต้องรอ 3 ฝ่ายยืนยัน)
+      const canCloseProject = Boolean(
+        project.reportFileName?.trim() || project.docLink?.trim(),
+      );
       const hasPhysicalData =
         Boolean(project.maintenanceFeeActual) ||
         Boolean(project.electricityFeeActual) ||
