@@ -649,7 +649,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                   <div className="text-sm font-semibold text-slate-500">
                     รายละเอียดการดำเนินการตามสถานะ
                   </div>
-                  <div className="mt-1 text-sm text-slate-700">
+                  <div className="mt-1 text-base font-medium leading-relaxed text-slate-900">
                     {statusDetailText}
                   </div>
                 </div>
