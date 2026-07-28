@@ -39,7 +39,8 @@ type WorkflowAction =
   | "RELEASE_BOARD_PROJECT"
   | "RELEASE_DEAN_PROJECT"
   | "CLOSE_PROJECT"
-  | "RETURN_FOR_EDIT";
+  | "RETURN_FOR_EDIT"
+  | "RETURN_FOR_REVISION";
 
 type MeetingFormState = {
   id?: string;
@@ -398,6 +399,12 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
         action: "APPROVE_TO_BOARD",
         label: "อนุมัติเสนอคณะกรรมการฯ",
         role: "หัวหน้าฝ่ายวิจัย",
+      });
+      actions.push({
+        action: "RETURN_FOR_REVISION",
+        label: "ส่งกลับแก้ไข",
+        role: "หัวหน้าฝ่ายวิจัย",
+        variant: "outline",
       });
     } else if (statusCode === "STATUS_4") {
       actions.push({

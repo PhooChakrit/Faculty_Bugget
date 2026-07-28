@@ -55,7 +55,7 @@ const requiredRoleByAction: Record<
   DEPT_APPROVE: "ภาควิชาวิทยาศาสตร์",
   MARK_INTERNAL_REVIEW_CHECKED: "งานวิจัย",
   COMPLETE_RESEARCH_REVIEW: "งานวิจัย",
-  RETURN_FOR_REVISION: "งานวิจัย",
+  RETURN_FOR_REVISION: "หัวหน้าฝ่ายวิจัย",
   APPROVE_TO_BOARD: "หัวหน้าฝ่ายวิจัย",
   BOARD_APPROVE_TO_WAITING_RELEASE: "งานวิจัย",
   DEAN_APPROVE_TO_WAITING_RELEASE: "งานวิจัย",
