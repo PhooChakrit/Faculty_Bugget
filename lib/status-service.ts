@@ -277,24 +277,7 @@ export class StatusTransitionService {
       };
     }
 
-    if (currentStatus === "STATUS_1" && toStatus === "RECALL") {
-      const recallRequest = project.currentStatus?.notifications.find(
-        (n) =>
-          n.notificationType === "DEPT_HEAD" &&
-          n.recipient === RECALL_REQUEST_TAG,
-      );
-
-      const isApproved =
-        recallRequest?.isCompleted &&
-        Boolean(recallRequest.notes?.startsWith(RECALL_APPROVED_PREFIX));
-
-      if (!isApproved) {
-        return {
-          isValid: false,
-          reason: "ต้องผ่านการรับรองคำขอเรียกคืนจากหัวหน้าภาคก่อน",
-        };
-      }
-    }
+    // STATUS_1 → RECALL (ส่งกลับแก้ไข): ฝ่ายวิจัยส่งกลับได้เลย ไม่ต้องผ่านการอนุมัติ
 
     return {
       isValid: true,

@@ -99,6 +99,8 @@ export async function POST(
     const isCloseProject =
       (fromStatus === "STATUS_6" || fromStatus === "STATUS_7") &&
       toStatus === "STATUS_8";
+    // เจ้าของ (หรือฝ่ายวิจัย) แก้ไขโครงการที่ถูกส่งกลับแก้ไขแล้ว ส่งกลับให้ตรวจใหม่
+    const isRecallResume = fromStatus === "RECALL" && toStatus === "STATUS_1";
 
     if (isDeptGateForward) {
       const hasAssignment =
@@ -138,6 +140,8 @@ export async function POST(
       isAuthorized = actorRole === "หัวหน้าฝ่ายวิจัย";
     } else if (isCloseProject) {
       isAuthorized = actorRole === "งานคลัง";
+    } else if (isRecallResume) {
+      isAuthorized = actorRole === "USER" || actorRole === "งานวิจัย";
     } else {
       isAuthorized = actorRole === "งานวิจัย";
     }

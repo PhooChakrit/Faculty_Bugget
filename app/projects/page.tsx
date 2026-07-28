@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, type MouseEvent } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,13 +10,13 @@ import {
   Eye,
   FileText,
   Loader2,
+  Pencil,
   Plus,
-  RotateCcw,
   Search,
   Trash2,
 } from "lucide-react";
 import { getStatusBadge } from "@/lib/status-constants";
-import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { mockActors, type ActorRole } from "@/lib/mock-actors";
 
 // Matches API Response from /api/projects
 interface ProjectSummary {
@@ -41,14 +41,15 @@ export default function ProjectListPage() {
     new Set(),
   );
   const [isDeleting, setIsDeleting] = useState(false);
-  const [requestingRevisionId, setRequestingRevisionId] = useState<
-    string | null
-  >(null);
-  const [revisionDialogProjectId, setRevisionDialogProjectId] = useState<
-    string | null
-  >(null);
+  // บทบาทจำลอง (ยังไม่มี auth จริง) — ใช้กำหนดว่าปุ่ม "แก้ไขโครงการ" จะแสดงเมื่อใด
+  const [userRole, setUserRole] = useState<ActorRole>("USER");
 
   const router = useRouter();
+
+  // ปุ่ม "แก้ไขโครงการ" แสดงเมื่อ: ฝ่ายวิจัยเห็นได้ทุกโครงการ,
+  // เจ้าของโครงการเห็นเฉพาะโครงการที่ถูกส่งกลับแก้ไข (RECALL)
+  const canEditProject = (statusCode: string | null) =>
+    userRole === "งานวิจัย" || (userRole === "USER" && statusCode === "RECALL");
 
   const fetchProjects = async () => {
     try {
@@ -80,44 +81,6 @@ export default function ProjectListPage() {
     );
   };
 
-  const handleRequestRevision = (
-    e: MouseEvent<HTMLButtonElement>,
-    projectId: string,
-  ) => {
-    e.stopPropagation();
-    setRevisionDialogProjectId(projectId);
-  };
-
-  const handleConfirmRevision = async () => {
-    if (!revisionDialogProjectId) return;
-    const projectId = revisionDialogProjectId;
-    setRequestingRevisionId(projectId);
-    try {
-      const res = await fetch(`/api/projects/${projectId}/request-revision`, {
-        method: "POST",
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        alert(
-          typeof data?.error === "string"
-            ? data.error
-            : "เกิดข้อผิดพลาดในการส่งคำขอ",
-        );
-        return;
-      }
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === projectId ? { ...p, currentStatusCode: "RECALL" } : p,
-        ),
-      );
-      setRevisionDialogProjectId(null);
-    } catch (err) {
-      console.error(err);
-      alert("เกิดข้อผิดพลาดในการส่งคำขอ");
-    } finally {
-      setRequestingRevisionId(null);
-    }
-  };
 
   const filteredProjects = useMemo(() => {
     if (!searchQuery.trim()) return projects;
@@ -210,6 +173,18 @@ export default function ProjectListPage() {
                 ลบ ({selectedProjects.size})
               </Button>
             )}
+            <select
+              value={userRole}
+              onChange={(e) => setUserRole(e.target.value as ActorRole)}
+              className="h-9 rounded border border-slate-200 bg-slate-100 px-3 text-sm focus:ring-indigo-500"
+              title="บทบาทจำลอง (dev)"
+            >
+              {mockActors.map((actor) => (
+                <option key={actor.id} value={actor.role}>
+                  {actor.name}
+                </option>
+              ))}
+            </select>
             <Button
               onClick={() => router.push("/add-project")}
               className="h-9 px-5 bg-indigo-600 hover:bg-indigo-700 transition-all font-medium"
@@ -361,22 +336,18 @@ export default function ProjectListPage() {
                             className="flex items-center justify-center gap-0.5"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            {project.currentStatusCode === "STATUS_1" && (
+                            {canEditProject(project.currentStatusCode) && (
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                title="ขอแก้ไขเอกสาร"
+                                title="แก้ไขโครงการ"
                                 className="h-7 w-7 text-amber-500 hover:text-amber-700 hover:bg-amber-50 rounded-full shrink-0"
-                                onClick={(e) =>
-                                  handleRequestRevision(e, project.id)
-                                }
-                                disabled={requestingRevisionId === project.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push(`/add-project?id=${project.id}`);
+                                }}
                               >
-                                {requestingRevisionId === project.id ? (
-                                  <Loader2 size={14} className="animate-spin" />
-                                ) : (
-                                  <RotateCcw size={14} />
-                                )}
+                                <Pencil size={14} />
                               </Button>
                             )}
                             <Button
@@ -400,16 +371,6 @@ export default function ProjectListPage() {
           </Card>
         </div>
       </main>
-
-      <ConfirmDialog
-        open={revisionDialogProjectId !== null}
-        onOpenChange={(open) => !open && setRevisionDialogProjectId(null)}
-        title="ขอแก้ไขเอกสาร"
-        description="ต้องการส่งคำขอแก้ไขเอกสารใช่หรือไม่?"
-        confirmLabel="ส่งคำขอ"
-        loading={requestingRevisionId !== null}
-        onConfirm={handleConfirmRevision}
-      />
     </div>
   );
 }

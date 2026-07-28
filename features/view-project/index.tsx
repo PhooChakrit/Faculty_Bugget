@@ -38,7 +38,8 @@ type WorkflowAction =
   | "APPROVE_TO_BOARD"
   | "RELEASE_BOARD_PROJECT"
   | "RELEASE_DEAN_PROJECT"
-  | "CLOSE_PROJECT";
+  | "CLOSE_PROJECT"
+  | "RETURN_FOR_EDIT";
 
 type MeetingFormState = {
   id?: string;
@@ -358,6 +359,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
       role: ActorRole;
       disabled?: boolean;
       reason?: string;
+      variant?: "default" | "outline" | "destructive";
     }> = [];
     if (statusCode === "DRAFT") {
       actions.push({
@@ -385,6 +387,12 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
               role: "งานวิจัย",
             },
       );
+      actions.push({
+        action: "RETURN_FOR_EDIT",
+        label: "ส่งกลับแก้ไข",
+        role: "งานวิจัย",
+        variant: "outline",
+      });
     } else if (statusCode === "STATUS_2") {
       actions.push({
         action: "APPROVE_TO_BOARD",
@@ -678,6 +686,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                     .map((action) => (
                       <Button
                         key={action.action}
+                        variant={action.variant}
                         disabled={Boolean(action.disabled) || savingAction === action.action}
                         title={action.reason}
                         onClick={() =>
