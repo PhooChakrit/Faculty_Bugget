@@ -812,6 +812,35 @@ const createMockProjects = (): EnhancedProjectData[] => {
   ];
 };
 
+/** แสดงมติ/ข้อสั่งการ — ถ้ายาวเกินไปจะซ่อนไว้ กด"อ่านเพิ่ม" เพื่อดูข้อความเต็ม */
+function PurposeText({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const LIMIT = 60;
+  const isLong = text.length > LIMIT;
+
+  if (!isLong) {
+    return (
+      <div className="text-sm text-slate-700 leading-relaxed">{text}</div>
+    );
+  }
+
+  return (
+    <div className="text-sm text-slate-700 leading-relaxed">
+      {expanded ? text : `${text.slice(0, LIMIT)}…`}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setExpanded((v) => !v);
+        }}
+        className="ml-1 text-xs font-medium text-indigo-600 hover:underline"
+      >
+        {expanded ? "ย่อ" : "อ่านเพิ่ม"}
+      </button>
+    </div>
+  );
+}
+
 export default function ProjectTrackingPage() {
   const [userRole, setUserRole] = useState<UserRole>("USER");
   const [projects, setProjects] = useState<EnhancedProjectData[]>([]);
@@ -1673,8 +1702,8 @@ export default function ProjectTrackingPage() {
 
       return (
         <div className="flex items-start justify-between group">
-          <div className="text-sm text-slate-700 flex-1 leading-relaxed">
-            {purposeValue}
+          <div className="flex-1">
+            <PurposeText text={purposeValue} />
           </div>
           <Button
             size="icon"
@@ -1879,7 +1908,7 @@ export default function ProjectTrackingPage() {
 
             {statusNumber === "RECALL" && (
               <div className="mt-2 text-[11px] text-amber-700">
-                อยู่ในขั้นดึงกลับเอกสาร
+                อยู่ในขั้นตอนส่งกลับแก้ไข
               </div>
             )}
           </div>
