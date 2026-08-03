@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import {
   ArrowLeft,
+  FileSpreadsheet,
   FileText,
   Loader2,
   Plus,
@@ -682,6 +683,18 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                       </Button>
                     ))}
                 </div>
+
+                {userRole === "งานวิจัย" && (
+                  <div>
+                    <a
+                      href={`/api/projects/${projectData.id}/export-excel`}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-100"
+                    >
+                      <FileSpreadsheet size={16} />
+                      นำออก Excel (ประมาณการรายรับ-รายจ่าย)
+                    </a>
+                  </div>
+                )}
 
                 {canShowCompletionSection && (
                   <div className="rounded border border-slate-200 bg-slate-50 p-3">

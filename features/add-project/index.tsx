@@ -394,6 +394,7 @@ function AddProjectContent() {
                   setFormData={setFormData}
                   notes={notes}
                   setNotes={setNotes}
+                  projectId={projectId ?? undefined}
                 />
 
                 {Object.keys(errors).length > 0 && (

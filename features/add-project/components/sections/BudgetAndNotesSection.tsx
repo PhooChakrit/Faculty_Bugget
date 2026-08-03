@@ -7,6 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { FormData, Notes, IncomeItem } from "../../types";
 import { InfoModal } from "@/components/InfoModal";
 import { MoneyInput } from "../MoneyInput";
+import { ExcelImportControl } from "@/features/view-project/components/ExcelImportControl";
 
 interface BudgetAndNotesSectionProps {
   formData: FormData;
@@ -16,6 +17,7 @@ interface BudgetAndNotesSectionProps {
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   notes: Notes;
   setNotes: React.Dispatch<React.SetStateAction<Notes>>;
+  projectId?: string;
 }
 
 export function BudgetAndNotesSection({
@@ -24,6 +26,7 @@ export function BudgetAndNotesSection({
   setFormData,
   notes,
   setNotes,
+  projectId,
 }: BudgetAndNotesSectionProps) {
   const toNum = (v: string | undefined) =>
     Number((v ?? "").replace(/,/g, "") || 0);
@@ -226,7 +229,10 @@ export function BudgetAndNotesSection({
       <CardContent className="space-y-6">
         {/* Budget Sources Section */}
         <div>
-          <h3 className="font-medium mb-3">งบประมาณ</h3>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 className="font-medium">งบประมาณ</h3>
+            {projectId && <ExcelImportControl projectId={projectId} />}
+          </div>
           <div>
             <table className="w-full">
               <thead className="bg-muted rounded-t-lg">
