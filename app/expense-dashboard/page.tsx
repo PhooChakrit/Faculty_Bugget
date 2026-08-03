@@ -62,6 +62,7 @@ type ExpenseDashboardData = {
     departments: string[];
     fiscalYears: FilterOption[];
     statuses: FilterOption[];
+    expenseCategories: FilterOption[];
   };
 };
 
@@ -82,6 +83,7 @@ export default function ExpenseDashboardPage() {
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("APPROVED");
   const [fiscalYearFilter, setFiscalYearFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,6 +98,7 @@ export default function ExpenseDashboardPage() {
           department: departmentFilter,
           status: statusFilter,
           fiscalYear: fiscalYearFilter,
+          category: categoryFilter,
         });
         const response = await fetch(`/api/expense-dashboard?${params}`, {
           signal: controller.signal,
@@ -115,7 +118,7 @@ export default function ExpenseDashboardPage() {
 
     loadDashboard();
     return () => controller.abort();
-  }, [departmentFilter, fiscalYearFilter, statusFilter]);
+  }, [departmentFilter, fiscalYearFilter, statusFilter, categoryFilter]);
 
   const maxDepartmentTotal = useMemo(() => {
     if (!data?.departments.length) return 0;
@@ -223,6 +226,22 @@ export default function ExpenseDashboardPage() {
                 {(data?.filters.departments ?? []).map((department) => (
                   <option key={department} value={department}>
                     {department}
+                  </option>
+                ))}
+              </select>
+
+              <label className="ml-2 text-xs font-semibold text-slate-500">
+                หมวดรายจ่าย
+              </label>
+              <select
+                value={categoryFilter}
+                onChange={(event) => setCategoryFilter(event.target.value)}
+                className="h-9 rounded border border-slate-200 bg-slate-50 px-3 text-sm focus:ring-indigo-500"
+              >
+                <option value="all">ทุกหมวดรายจ่าย</option>
+                {(data?.filters.expenseCategories ?? []).map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>

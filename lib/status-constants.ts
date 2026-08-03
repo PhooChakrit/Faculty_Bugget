@@ -39,7 +39,7 @@ export const statusLabels: Record<StatusCode, string> = {
   [StatusCode.STATUS_13]: "(Deprecated) ปิดโครงการเดิม ใช้ STATUS_8 แทน",
   [StatusCode.STATUS_14]: "ระงับโครงการ",
   [StatusCode.STATUS_15]: "อื่นๆ",
-  [StatusCode.RECALL]: "ดึงกลับเอกสาร",
+  [StatusCode.RECALL]: "ส่งกลับแก้ไข",
 };
 
 export const statusColors: Record<StatusCode, string> = {
@@ -124,17 +124,16 @@ export const allowedTransitions: AllowedStatusTransition[] = [
   {
     fromStatus: StatusCode.STATUS_1,
     toStatus: StatusCode.RECALL,
-    label: "ร้องขอดึงกลับ",
-    condition: "DEPT_ONLY",
+    label: "ส่งกลับแก้ไข",
+    condition: "RESEARCH_ONLY",
     order: 2,
   },
 
-  // From RECALL
+  // From RECALL (ส่งกลับแก้ไข) — เจ้าของแก้เสร็จแล้วส่งกลับให้ฝ่ายวิจัยตรวจใหม่
   {
     fromStatus: StatusCode.RECALL,
-    toStatus: StatusCode.DRAFT,
-    label: "อนุมัติดึงกลับ",
-    condition: "STAFF_ONLY",
+    toStatus: StatusCode.STATUS_1,
+    label: "ส่งกลับให้ฝ่ายวิจัยตรวจใหม่",
     order: 1,
   },
 

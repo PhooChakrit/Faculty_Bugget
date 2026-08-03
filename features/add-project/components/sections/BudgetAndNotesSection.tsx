@@ -7,6 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { FormData, Notes, IncomeItem } from "../../types";
 import { InfoModal } from "@/components/InfoModal";
 import { MoneyInput } from "../MoneyInput";
+import { ExcelImportControl } from "@/features/view-project/components/ExcelImportControl";
 
 interface BudgetAndNotesSectionProps {
   formData: FormData;
@@ -16,6 +17,7 @@ interface BudgetAndNotesSectionProps {
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   notes: Notes;
   setNotes: React.Dispatch<React.SetStateAction<Notes>>;
+  projectId?: string;
 }
 
 export function BudgetAndNotesSection({
@@ -24,6 +26,7 @@ export function BudgetAndNotesSection({
   setFormData,
   notes,
   setNotes,
+  projectId,
 }: BudgetAndNotesSectionProps) {
   const toNum = (v: string | undefined) =>
     Number((v ?? "").replace(/,/g, "") || 0);
@@ -226,7 +229,10 @@ export function BudgetAndNotesSection({
       <CardContent className="space-y-6">
         {/* Budget Sources Section */}
         <div>
-          <h3 className="font-medium mb-3">งบประมาณ</h3>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 className="font-medium">งบประมาณ</h3>
+            {projectId && <ExcelImportControl projectId={projectId} />}
+          </div>
           <div>
             <table className="w-full">
               <thead className="bg-muted rounded-t-lg">
@@ -629,7 +635,7 @@ export function BudgetAndNotesSection({
                       <InfoModal
                         title="หมวดสาธารณูปโภค"
                         content={
-                          "ค่าสาธารณูปโภคที่จัดสรรให้มหาวิทยาลัย เช่น ค่าไฟฟ้า ค่าน้ำประปา ค่าบำรุงสถานที่และระบบสื่อสาร\n\nโดยทั่วไปตั้งไว้ประมาณร้อยละ 5 ของงบประมาณรวมของโครงการ ตามประกาศจุฬาลงกรณ์มหาวิทยาลัย เรื่องเกณฑ์และอัตราการเบิกจ่ายในการให้บริการทางวิชาการ พ.ศ. 2564"
+                          "เงินอุดหนุนค่าสาธารณูปโภคที่จัดสรรให้มหาวิทยาลัย เช่น ค่าไฟฟ้า ค่าไปรษณีย์ กรณีมีการใช้ห้องส่วนกลางของคณะวิทยาศาสตร์\n\nโดยทั่วไปตั้งไว้อย่างน้อยร้อยละ 5 ของรายรับจากแหล่งทุนภายนอก คำนวณค่าไฟฟ้าได้ตามประกาศจุฬาลงกรณ์มหาวิทยาลัย เรื่อง เกณฑ์การใช้และอัตราค่าใช้สถานที่ของคณะวิทยาศาสตร์ พ.ศ. 2565 (หากใช้จ่ายจริงเกิน 5% ต้องชำระตามจำนวนที่ใช้จริง กรณีไม่มีการใช้ไฟฟ้า ต้องตั้งอย่างน้อย 5%)"
                         }
                       />
                     </span>
@@ -650,7 +656,7 @@ export function BudgetAndNotesSection({
                       <InfoModal
                         title="หมวดเงินอุดหนุน"
                         content={
-                          "เงินอุดหนุนกองทุนวิชาการที่โครงการจัดสรรให้มหาวิทยาลัย/ส่วนงาน จากรายรับของโครงการบริการวิชาการ\n\nโดยทั่วไปตั้งไว้ประมาณร้อยละ 10 ของงบประมาณรวมของโครงการ ตามระเบียบจุฬาลงกรณ์มหาวิทยาลัย ว่าด้วยการดำเนินโครงการการให้บริการทางวิชาการ พ.ศ. 2564"
+                          "เงินอุดหนุนพัฒนาวิชาการ คณะวิทยาศาสตร์ ที่โครงการจัดสรรให้จากรายรับของโครงการ\n\nโดยทั่วไปตั้งไว้อย่างน้อยร้อยละ 10 ของงบประมาณรวมของโครงการ"
                         }
                       />
                     </span>
@@ -671,7 +677,7 @@ export function BudgetAndNotesSection({
                       <InfoModal
                         title="หมวดเงินสำรอง"
                         content={
-                          "เงินสำรองทั่วไปของโครงการ สำหรับรายจ่ายที่ไม่ได้คาดการณ์ไว้ล่วงหน้า\n\nคืองบประมาณส่วนที่เหลือหลังจากจัดสรรหมวดค่าตอบแทน ค่าใช้สอย ค่าวัสดุ สาธารณูปโภค และเงินอุดหนุนครบแล้ว การเบิกจ่ายต้องได้รับอนุมัติตามระเบียบก่อน"
+                          "เงินสำรองทั่วไปของโครงการ สำหรับรายรับที่เหนือรายจ่าย\n\nโดยทั่วไปตั้งไว้อย่างน้อยร้อยละ 5 ของงบประมาณรวมของโครงการ\nหมายเหตุ: กรณีมีรายรับเหนือรายจ่าย ขอให้ใส่ในหมวดเงินสำรอง"
                         }
                       />
                     </span>

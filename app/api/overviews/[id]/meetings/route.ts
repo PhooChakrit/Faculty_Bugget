@@ -144,6 +144,9 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       ]);
     }
 
+    // เอกสารอนุมัติคณบดี (docLink) อาจถูกตั้งค่า → เช็คว่าเส้น B พร้อมอนุมัติหรือยัง
+    await statusService.notifyOnDataProgress(id);
+
     return successResponse({
       success: true,
       project: result,

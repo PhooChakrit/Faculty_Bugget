@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/Sidebar";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { RoleEmailSettingsDialog } from "@/components/RoleEmailSettingsDialog";
 import { formatStatusDisplay } from "@/lib/status-constants";
 import {
   Pencil,
@@ -27,6 +28,7 @@ import {
   Download,
   Trash2,
   FileSpreadsheet,
+  Mail,
 } from "lucide-react";
 import { mockActorByRole, mockActors, type ActorRole } from "@/lib/mock-actors";
 
@@ -810,6 +812,35 @@ const createMockProjects = (): EnhancedProjectData[] => {
   ];
 };
 
+/** แสดงมติ/ข้อสั่งการ — ถ้ายาวเกินไปจะซ่อนไว้ กด"อ่านเพิ่ม" เพื่อดูข้อความเต็ม */
+function PurposeText({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const LIMIT = 60;
+  const isLong = text.length > LIMIT;
+
+  if (!isLong) {
+    return (
+      <div className="text-sm text-slate-700 leading-relaxed">{text}</div>
+    );
+  }
+
+  return (
+    <div className="text-sm text-slate-700 leading-relaxed">
+      {expanded ? text : `${text.slice(0, LIMIT)}…`}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setExpanded((v) => !v);
+        }}
+        className="ml-1 text-xs font-medium text-indigo-600 hover:underline"
+      >
+        {expanded ? "ย่อ" : "อ่านเพิ่ม"}
+      </button>
+    </div>
+  );
+}
+
 export default function ProjectTrackingPage() {
   const [userRole, setUserRole] = useState<UserRole>("USER");
   const [projects, setProjects] = useState<EnhancedProjectData[]>([]);
@@ -823,6 +854,7 @@ export default function ProjectTrackingPage() {
   const [isMockMode, setIsMockMode] = useState(false);
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [showBulkApproveConfirm, setShowBulkApproveConfirm] = useState(false);
+  const [showRoleEmailSettings, setShowRoleEmailSettings] = useState(false);
   const [isBulkApproving, setIsBulkApproving] = useState(false);
 
   // Individual cell editing state
@@ -1670,8 +1702,8 @@ export default function ProjectTrackingPage() {
 
       return (
         <div className="flex items-start justify-between group">
-          <div className="text-sm text-slate-700 flex-1 leading-relaxed">
-            {purposeValue}
+          <div className="flex-1">
+            <PurposeText text={purposeValue} />
           </div>
           <Button
             size="icon"
@@ -1876,7 +1908,7 @@ export default function ProjectTrackingPage() {
 
             {statusNumber === "RECALL" && (
               <div className="mt-2 text-[11px] text-amber-700">
-                อยู่ในขั้นดึงกลับเอกสาร
+                อยู่ในขั้นตอนส่งกลับแก้ไข
               </div>
             )}
           </div>
@@ -2274,6 +2306,16 @@ export default function ProjectTrackingPage() {
                 </Button>
                 <Button
                   variant="outline"
+                  size="sm"
+                  className="h-9"
+                  onClick={() => setShowRoleEmailSettings(true)}
+                  title="ตั้งค่าอีเมลผู้รับแจ้งเตือนแต่ละฝ่าย"
+                >
+                  <Mail size={14} className="mr-1.5" />
+                  ตั้งค่าอีเมล
+                </Button>
+                <Button
+                  variant="outline"
                   size="icon"
                   className="h-9 w-9"
                   onClick={isMockMode ? handleExitMockMode : loadProjects}
@@ -2524,6 +2566,11 @@ export default function ProjectTrackingPage() {
           cancelLabel="ยกเลิก"
           loading={isBulkApproving}
           onConfirm={handleBulkApproveState2}
+        />
+
+        <RoleEmailSettingsDialog
+          open={showRoleEmailSettings}
+          onOpenChange={setShowRoleEmailSettings}
         />
 
         {/* --- MODAL: Meetings Management --- */}
