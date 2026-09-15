@@ -6,6 +6,7 @@ import {
   successResponse,
 } from "@/lib/api-response";
 import { ensureMockActor } from "@/lib/ensure-mock-actor";
+import { statusService } from "@/lib/status-service";
 
 type RouteContext = {
   params: Promise<{
@@ -138,6 +139,9 @@ export async function POST(request: NextRequest, context: RouteContext) {
         },
       }),
     ]);
+
+    // ศูนย์ต้นทุนถูกแนบแล้ว → เช็คว่าข้อมูลประกอบครบ พร้อมอนุมัติหรือยัง
+    await statusService.notifyOnDataProgress(id);
 
     return successResponse({
       message: "แนบไฟล์ศูนย์ต้นทุนสำเร็จ",

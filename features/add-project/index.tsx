@@ -122,6 +122,8 @@ function AddProjectContent() {
   const lastSyncedRef = useRef<Record<string, unknown> | null>(null);
   const leaderIdRef = useRef(DEFAULT_LEADER_ID);
   const draftJustCreatedRef = useRef(false);
+  // สถานะปัจจุบันของโครงการที่กำลังแก้ (ใช้เลือกปลายทางตอน submit)
+  const currentStatusRef = useRef<string | null>(null);
 
   /** Load project when id in URL */
   useEffect(() => {
@@ -154,6 +156,7 @@ function AddProjectContent() {
         clearPendingDraftSession();
         const { form, collaborators: col, notes: n } = projectApiToFormState(p);
         leaderIdRef.current = p.leaderId || DEFAULT_LEADER_ID;
+        currentStatusRef.current = p.currentStatusCode ?? null;
         methods.reset(form);
         setCollaborators(col);
         setNotes(n);
@@ -273,15 +276,20 @@ function AddProjectContent() {
         ...(base as UpdateProjectInput),
       };
       await projectService.updateProject(projectId, payload);
+      // โครงการที่ถูกส่งกลับแก้ไข (RECALL) → กลับไป STATUS_1 ให้ฝ่ายวิจัยตรวจใหม่
+      // โครงการร่าง (DRAFT) → เสนอหัวหน้าภาควิชา (STATUS_0) ตามปกติ
+      const isRecallEdit = currentStatusRef.current === "RECALL";
+      const nextStatus = isRecallEdit ? "STATUS_1" : "STATUS_0";
       await projectService.transitionStatus(projectId, {
-        toStatus: "STATUS_0",
+        toStatus: nextStatus,
         userId: leaderIdRef.current,
         actorRole: "USER",
       });
+      currentStatusRef.current = nextStatus;
       lastSyncedRef.current = mergeSyncedPayload(lastSyncedRef.current, {
         ...base,
         status: "PENDING_APPROVAL",
-        currentStatusCode: "STATUS_0",
+        currentStatusCode: nextStatus,
       } as Record<string, unknown>);
       setShowSubmitConfirm(false);
       setShowPreview(false);
@@ -386,6 +394,7 @@ function AddProjectContent() {
                   setFormData={setFormData}
                   notes={notes}
                   setNotes={setNotes}
+                  projectId={projectId ?? undefined}
                 />
 
                 {Object.keys(errors).length > 0 && (

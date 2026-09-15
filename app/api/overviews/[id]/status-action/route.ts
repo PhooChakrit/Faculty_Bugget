@@ -22,6 +22,7 @@ const statusActionSchema = z.object({
     "RELEASE_BOARD_PROJECT",
     "RELEASE_DEAN_PROJECT",
     "CLOSE_PROJECT",
+    "RETURN_FOR_EDIT",
     "RESUME_RECALL",
   ]),
   actorRole: z.enum(actorRoles),
@@ -42,7 +43,8 @@ const actionTransitions: Partial<
   RELEASE_BOARD_PROJECT: StatusCode.STATUS_6,
   RELEASE_DEAN_PROJECT: StatusCode.STATUS_7,
   CLOSE_PROJECT: StatusCode.STATUS_8,
-  RESUME_RECALL: StatusCode.DRAFT,
+  RETURN_FOR_EDIT: StatusCode.RECALL,
+  RESUME_RECALL: StatusCode.STATUS_1,
 };
 
 const requiredRoleByAction: Record<
@@ -53,13 +55,14 @@ const requiredRoleByAction: Record<
   DEPT_APPROVE: "ภาควิชาวิทยาศาสตร์",
   MARK_INTERNAL_REVIEW_CHECKED: "งานวิจัย",
   COMPLETE_RESEARCH_REVIEW: "งานวิจัย",
-  RETURN_FOR_REVISION: "งานวิจัย",
+  RETURN_FOR_REVISION: "หัวหน้าฝ่ายวิจัย",
   APPROVE_TO_BOARD: "หัวหน้าฝ่ายวิจัย",
   BOARD_APPROVE_TO_WAITING_RELEASE: "งานวิจัย",
   DEAN_APPROVE_TO_WAITING_RELEASE: "งานวิจัย",
   RELEASE_BOARD_PROJECT: "งานวิจัย",
   RELEASE_DEAN_PROJECT: "งานวิจัย",
-  CLOSE_PROJECT: "งานคลัง",
+  CLOSE_PROJECT: "USER",
+  RETURN_FOR_EDIT: "งานวิจัย",
   RESUME_RECALL: "งานวิจัย",
 };
 

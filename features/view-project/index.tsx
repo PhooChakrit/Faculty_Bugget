@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import {
   ArrowLeft,
+  FileSpreadsheet,
   FileText,
   Loader2,
   Plus,
@@ -38,7 +39,9 @@ type WorkflowAction =
   | "APPROVE_TO_BOARD"
   | "RELEASE_BOARD_PROJECT"
   | "RELEASE_DEAN_PROJECT"
-  | "CLOSE_PROJECT";
+  | "CLOSE_PROJECT"
+  | "RETURN_FOR_EDIT"
+  | "RETURN_FOR_REVISION";
 
 type MeetingFormState = {
   id?: string;
@@ -284,19 +287,13 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
     projectData?.currentStatus?.notes?.includes("INTERNAL_REVIEW_CHECKED"),
   );
   const activeBudgetRevision = projectData?.budgetRevisions?.[0] ?? null;
-  const roleCompletion = (role: string) =>
-    projectData?.roleCompletions?.find((item) => item.role === role)
-      ?.isComplete ?? false;
   const canReleaseBoard = Boolean(
     projectData?.vendorCode &&
       (projectData?.costCenter || projectData?.costCenterFileName),
   );
   const canReleaseDean = Boolean(canReleaseBoard && projectData?.docLink);
   const canCloseProject = Boolean(
-    projectData?.docLink &&
-      roleCompletion("RESEARCH") &&
-      roleCompletion("PHYSICAL") &&
-      roleCompletion("FINANCE"),
+    projectData?.reportFileName || projectData?.docLink,
   );
   const statusDetailText = useMemo(() => {
     if (statusCode === "DRAFT") {
@@ -323,7 +320,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
       return "รอข้อมูลหลังมติคณบดี ได้แก่ รหัสเจ้าหนี้ ศูนย์ต้นทุน และเอกสารอนุมัติคณบดี";
     }
     if (statusCode === "STATUS_6" || statusCode === "STATUS_7") {
-      return "โครงการได้รับอนุมัติให้ดำเนินการ รอรายงานและการยืนยันข้อมูลเพื่อปิดโครงการ";
+      return "โครงการได้รับอนุมัติให้ดำเนินการ เมื่อเจ้าของโครงการอัปโหลดไฟล์รายงานผลแล้ว สามารถกดปิดโครงการได้เลย";
     }
     if (statusCode === "STATUS_8") {
       return "ปิดโครงการแล้ว";
@@ -358,6 +355,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
       role: ActorRole;
       disabled?: boolean;
       reason?: string;
+      variant?: "default" | "outline" | "destructive";
     }> = [];
     if (statusCode === "DRAFT") {
       actions.push({
@@ -385,11 +383,23 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
               role: "งานวิจัย",
             },
       );
+      actions.push({
+        action: "RETURN_FOR_EDIT",
+        label: "ส่งกลับแก้ไข",
+        role: "งานวิจัย",
+        variant: "outline",
+      });
     } else if (statusCode === "STATUS_2") {
       actions.push({
         action: "APPROVE_TO_BOARD",
         label: "อนุมัติเสนอคณะกรรมการฯ",
         role: "หัวหน้าฝ่ายวิจัย",
+      });
+      actions.push({
+        action: "RETURN_FOR_REVISION",
+        label: "ส่งกลับแก้ไข",
+        role: "หัวหน้าฝ่ายวิจัย",
+        variant: "outline",
       });
     } else if (statusCode === "STATUS_4") {
       actions.push({
@@ -411,9 +421,9 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
       actions.push({
         action: "CLOSE_PROJECT",
         label: "ปิดโครงการ",
-        role: "งานคลัง",
+        role: "USER",
         disabled: !canCloseProject,
-        reason: "ต้องมีรายงานและการยืนยันจากฝ่ายวิจัย งานกายภาพ และงานคลัง",
+        reason: "ต้องอัปโหลดไฟล์รายงานผลการดำเนินโครงการก่อนปิดโครงการ",
       });
     }
     return actions;
@@ -453,6 +463,10 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
 
   const saveMeeting = async () => {
     if (!projectData || !meetingForm) return;
+    // ครั้งที่และวันที่เป็นข้อมูลบังคับ
+    if (!meetingForm.no.trim() || !meetingForm.date.trim()) {
+      return;
+    }
     setSavingMeeting(true);
     try {
       const response = await fetch(`/api/overviews/${projectData.id}/meetings`, {
@@ -540,32 +554,6 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
     }
   };
 
-  const toggleCompletion = async (role: "RESEARCH" | "PHYSICAL" | "FINANCE") => {
-    if (!projectData) return;
-    setSavingAction(`COMPLETION_${role}`);
-    try {
-      const response = await fetch(`/api/overviews/${projectData.id}/completion`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          role,
-          isComplete: !roleCompletion(role),
-          actorRole: userRole,
-          actorUserId: currentActor.id,
-        }),
-      });
-      const responseData = await response.json().catch(() => null);
-      if (!response.ok) {
-        throw new Error(responseData?.error ?? "บันทึกการยืนยันไม่สำเร็จ");
-      }
-      window.location.reload();
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "เกิดข้อผิดพลาด");
-    } finally {
-      setSavingAction(null);
-    }
-  };
-
   if (loading) return <div className="p-8">กำลังโหลดข้อมูล...</div>;
   if (error) return <div className="p-8 text-red-500">{error}</div>;
   if (!projectId && !formData)
@@ -630,7 +618,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                   <div className="text-sm font-semibold text-slate-500">
                     รายละเอียดการดำเนินการตามสถานะ
                   </div>
-                  <div className="mt-1 text-sm text-slate-700">
+                  <div className="mt-1 text-base font-medium leading-relaxed text-slate-900">
                     {statusDetailText}
                   </div>
                 </div>
@@ -678,6 +666,7 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                     .map((action) => (
                       <Button
                         key={action.action}
+                        variant={action.variant}
                         disabled={Boolean(action.disabled) || savingAction === action.action}
                         title={action.reason}
                         onClick={() =>
@@ -694,6 +683,18 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                       </Button>
                     ))}
                 </div>
+
+                {userRole === "งานวิจัย" && (
+                  <div>
+                    <a
+                      href={`/api/projects/${projectData.id}/export-excel`}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-100"
+                    >
+                      <FileSpreadsheet size={16} />
+                      นำออก Excel (ประมาณการรายรับ-รายจ่าย)
+                    </a>
+                  </div>
+                )}
 
                 {canShowCompletionSection && (
                   <div className="rounded border border-slate-200 bg-slate-50 p-3">
@@ -779,63 +780,6 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                         </p>
                       </div>
                     )}
-                  </div>
-                )}
-
-                {canShowCompletionSection && (
-                  <div className="grid gap-2 text-sm md:grid-cols-3">
-                    {["RESEARCH", "PHYSICAL", "FINANCE"].map((role) => (
-                      <div
-                        key={role}
-                        className="space-y-2 rounded border border-slate-200 bg-slate-50 p-2"
-                      >
-                        <div>
-                          {role === "RESEARCH"
-                            ? "ฝ่ายวิจัย"
-                            : role === "PHYSICAL"
-                              ? "งานกายภาพ"
-                              : "งานคลัง"}{" "}
-                          :{" "}
-                          {roleCompletion(role)
-                            ? "ยืนยันแล้ว"
-                            : "ยังไม่ยืนยัน"}
-                        </div>
-                        {((role === "RESEARCH" && userRole === "งานวิจัย") ||
-                          (role === "PHYSICAL" && userRole === "กายภาพ") ||
-                          (role === "FINANCE" && userRole === "งานคลัง")) && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            disabled={
-                              savingAction === `COMPLETION_${role}` ||
-                              (!roleCompletion(role) &&
-                                !projectData.reportFileName)
-                            }
-                            title={
-                              !roleCompletion(role) &&
-                              !projectData.reportFileName
-                                ? "รอเจ้าของโครงการอัปโหลดไฟล์รายงานก่อน"
-                                : undefined
-                            }
-                            onClick={() =>
-                              toggleCompletion(
-                                role as "RESEARCH" | "PHYSICAL" | "FINANCE",
-                              )
-                            }
-                          >
-                            {roleCompletion(role)
-                              ? "ยกเลิกการยืนยัน"
-                              : "ยืนยันข้อมูล"}
-                          </Button>
-                        )}
-                        {!roleCompletion(role) &&
-                          !projectData.reportFileName && (
-                            <div className="text-xs text-slate-500">
-                              รอไฟล์รายงานจากเจ้าของโครงการ
-                            </div>
-                          )}
-                      </div>
-                    ))}
                   </div>
                 )}
 
@@ -1016,16 +960,23 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium">ครั้งที่</label>
+                <label className="mb-1 block text-sm font-medium">
+                  ครั้งที่ <span className="text-red-500">*</span>
+                </label>
                 <Input
                   value={meetingForm.no}
                   onChange={(event) =>
                     setMeetingForm({ ...meetingForm, no: event.target.value })
                   }
                 />
+                {!meetingForm.no.trim() && (
+                  <p className="mt-1 text-xs text-red-500">กรุณาระบุครั้งที่</p>
+                )}
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium">วันที่</label>
+                <label className="mb-1 block text-sm font-medium">
+                  วันที่ <span className="text-red-500">*</span>
+                </label>
                 <Input
                   type="date"
                   value={meetingForm.date}
@@ -1033,6 +984,9 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                     setMeetingForm({ ...meetingForm, date: event.target.value })
                   }
                 />
+                {!meetingForm.date.trim() && (
+                  <p className="mt-1 text-xs text-red-500">กรุณาระบุวันที่</p>
+                )}
               </div>
               {statusCode === "STATUS_3" && meetingForm.type === "BOARD" && (
                 <div>
@@ -1049,7 +1003,9 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
                     }
                     className="h-9 w-full rounded border border-slate-200 px-3 text-sm"
                   >
-                    <option value="STATUS_4">เสนอคณบดีเพื่อพิจารณา</option>
+                    <option value="STATUS_4">
+                      เสนอคณบดีเพื่อพิจารณาอนุมัติ
+                    </option>
                     <option value="STATUS_5">
                       เสนอที่ประชุมคณบดีแก่คณะวิทยาศาสตร์
                     </option>
@@ -1099,7 +1055,14 @@ export default function ViewProjectPage({ projectId }: ViewProjectPageProps) {
               >
                 ยกเลิก
               </Button>
-              <Button onClick={saveMeeting} disabled={savingMeeting}>
+              <Button
+                onClick={saveMeeting}
+                disabled={
+                  savingMeeting ||
+                  !meetingForm.no.trim() ||
+                  !meetingForm.date.trim()
+                }
+              >
                 {savingMeeting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}

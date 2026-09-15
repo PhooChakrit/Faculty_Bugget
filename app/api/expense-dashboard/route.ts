@@ -48,10 +48,24 @@ export async function GET(request: NextRequest) {
     const department = searchParams.get("department")?.trim() || "all";
     const status = searchParams.get("status")?.trim() || "APPROVED";
     const fiscalYear = searchParams.get("fiscalYear")?.trim() || "all";
+    const category = searchParams.get("category")?.trim() || "all";
 
     if (status !== "APPROVED" && !STATUS_FILTERS.has(status)) {
       return errorResponse("Invalid status filter", 400);
     }
+
+    const categoryKeys = expenseCategories.map((item) => item.key) as string[];
+    if (category !== "all" && !categoryKeys.includes(category)) {
+      return errorResponse("Invalid category filter", 400);
+    }
+    // หมวดที่ใช้คำนวณยอด — ทั้งหมด หรือเฉพาะหมวดที่เลือก (ใช้ร่วมกับ filter ภาควิชาได้)
+    const activeCategories: ReadonlyArray<{
+      key: ExpenseCategoryKey;
+      label: string;
+    }> =
+      category === "all"
+        ? expenseCategories
+        : expenseCategories.filter((item) => item.key === category);
 
     const fiscalYearNumber =
       fiscalYear !== "all" ? Number.parseInt(fiscalYear, 10) : null;
@@ -115,12 +129,13 @@ export async function GET(request: NextRequest) {
         }),
       ]);
 
-    const categoryTotals = expenseCategories.map((category) => ({
-      key: category.key,
-      label: category.label,
+    const categoryTotals = activeCategories.map((activeCategory) => ({
+      key: activeCategory.key,
+      label: activeCategory.label,
       total: projects.reduce(
         (sum, project) =>
-          sum + decimalToNumber(project[category.key as ExpenseCategoryKey]),
+          sum +
+          decimalToNumber(project[activeCategory.key as ExpenseCategoryKey]),
         0,
       ),
     }));
@@ -144,9 +159,10 @@ export async function GET(request: NextRequest) {
       { fiscalYear: number; projectCount: number; totalExpense: number }
     >();
     const projectRows = projects.map((project) => {
-      const total = expenseCategories.reduce(
-        (sum, category) =>
-          sum + decimalToNumber(project[category.key as ExpenseCategoryKey]),
+      const total = activeCategories.reduce(
+        (sum, activeCategory) =>
+          sum +
+          decimalToNumber(project[activeCategory.key as ExpenseCategoryKey]),
         0,
       );
       const departmentSummary = departmentMap.get(project.department) ?? {
@@ -231,6 +247,10 @@ export async function GET(request: NextRequest) {
             label: formatStatusDisplay(code),
           })),
         ],
+        expenseCategories: expenseCategories.map((item) => ({
+          value: item.key,
+          label: item.label,
+        })),
       },
     });
   } catch (error) {
