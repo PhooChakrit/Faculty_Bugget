@@ -1,0 +1,43 @@
+name: faculty-budget
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file: .env.production
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # ไม่ publish port: DB เข้าได้เฉพาะจากใน Docker network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    env_file: .env.production
+    depends_on:
+      db:
+        condition: service_healthy
+    # ผูกกับ 127.0.0.1 เท่านั้น ให้ Caddy เป็นตัวรับจากข้างนอก (Docker ข้าม UFW)
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  # รันเฉพาะตอนสั่ง: docker compose -f compose.prod.yml run --rm migrate
+  migrate:
+    build:
+      context: .
+      target: build
+    env_file: .env.production
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["npx", "prisma", "migrate", "deploy"]
+    profiles: ["tools"]
+
+volumes:
+  pgdata:
